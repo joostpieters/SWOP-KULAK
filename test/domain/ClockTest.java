@@ -1,5 +1,6 @@
 package domain;
 
+import java.util.GregorianCalendar;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -38,10 +39,19 @@ public class ClockTest {
     @Test
     public void testAdvanceTime() {
         System.out.println("advanceTime");
+        Clock instance = new Clock(new GregorianCalendar(2015, 2, 26));
+        instance.advanceTime(new GregorianCalendar(2015, 2, 27));
+        
+    }
+    
+    /**
+     * Test of advanceTime method, of class Clock, when a timestamp in the past is given.
+     */
+    @Test (expected=IllegalArgumentException.class)
+    public void testAdvanceTimeWithPastTime() {
+        System.out.println("advanceTime");
         Clock instance = new Clock();
-        instance.advanceTime();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        instance.advanceTime(new GregorianCalendar(1994, 30, 11));
     }
     
 }
