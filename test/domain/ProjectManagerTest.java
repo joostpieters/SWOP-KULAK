@@ -1,5 +1,6 @@
 package domain;
 
+import exception.ObjectNotFoundException;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import org.junit.After;
@@ -35,61 +36,14 @@ public class ProjectManagerTest {
     }
 
     /**
-     * Test of getProjects method, of class ProjectManager.
-     */
-    @Test
-    public void testGetProjects() {
-        System.out.println("getProjects");
-        ProjectManager instance = new ProjectManager();
-        ArrayList<Project> expResult = null;
-        ArrayList<Project> result = instance.getProjects();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of createProject method, of class ProjectManager.
-     */
-    @Test
-    public void testCreateProject() {
-        System.out.println("createProject");
-        String name = "";
-        String description = "";
-        GregorianCalendar startTime = null;
-        GregorianCalendar dueTime = null;
-        ProjectManager instance = new ProjectManager();
-        instance.createProject(name, description, startTime, dueTime);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of addProject method, of class ProjectManager.
-     */
-    @Test
-    public void testAddProject() {
-        System.out.println("addProject");
-        Project project = null;
-        ProjectManager instance = new ProjectManager();
-        instance.addProject(project);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
      * Test of getProject method, of class ProjectManager.
      */
-    @Test
-    public void testGetProject() {
+    @Test (expected=ObjectNotFoundException.class)
+    public void testGetProject() throws ObjectNotFoundException{
         System.out.println("getProject");
-        int pId = 0;
         ProjectManager instance = new ProjectManager();
-        Project expResult = null;
-        Project result = instance.getProject(pId);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        instance.getProject(12);
+        
     }
 
     /**
