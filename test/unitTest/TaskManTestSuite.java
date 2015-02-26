@@ -1,4 +1,9 @@
-package domain;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package unitTest;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -12,12 +17,7 @@ import org.junit.runners.Suite;
  * @author Mathias
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ClockTest.class, 
-                     DurationTest.class, 
-                     ProjectManagerTest.class,
-                     ProjectTest.class,
-                     TaskTest.class,
-                     Timespan.class})
+@Suite.SuiteClasses({})
 public class TaskManTestSuite {
 
     @BeforeClass
