@@ -1,11 +1,15 @@
 package domain;
 
 import java.util.GregorianCalendar;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import domain.Status;
+import domain.Task;
 import static org.junit.Assert.*;
 
 /**
@@ -60,6 +64,18 @@ public class TaskTest {
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
+    }
+    
+    /**
+     * Test of generation of ids, of class Task?
+     */
+    @Test
+    public void testTaskGeneratedIds()
+    {
+    	Task instance0 = new Task("Some task", 60, 0.2, null, Status.AVAILABLE);
+    	Task instance1 = new Task("Some other task", 90, 0.3, null, Status.AVAILABLE);
+    	assertNotEquals(instance0.getId(), instance1.getId());
+    	assertTrue(instance1.getId() > instance0.getId());
     }
     
 }
