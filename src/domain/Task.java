@@ -47,10 +47,6 @@ public class Task {
         
     }
     
-    private boolean checkUpdate(GregorianCalendar start, GregorianCalendar end, Status status){
-        return true;
-    }
-    
     public boolean isAvailable(){
         return true;
     }
