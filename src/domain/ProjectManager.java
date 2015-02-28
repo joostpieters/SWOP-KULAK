@@ -30,6 +30,7 @@ public class ProjectManager {
     
     /**
      * Creates a new project with the given details and add it to this projectmanager.
+     * The new project gets an id that equals the number of projects in this projectmanager.
      * 
      * @param name The name of the project
      * @param description The description of the project
@@ -37,8 +38,7 @@ public class ProjectManager {
      * @param dueTime The time by which the project should be ended.
      */
     public void createProject(String name, String description, GregorianCalendar startTime, GregorianCalendar dueTime){
-        // TODO ID
-        addProject(new Project(0,name, name, dueTime, dueTime));
+        addProject(new Project(projects.size(),name, name, dueTime, dueTime));
     }
     
     /**
@@ -65,6 +65,14 @@ public class ProjectManager {
             throw new ObjectNotFoundException("The project with the specified id doesn't exist.", pId);
         }
         
+    }
+    
+    /**
+     * 
+     * @return The number of projects that are managed by this projectmanager. 
+     */
+    public int getNbProjects(){
+        return projects.size();
     }
     
     public ArrayList<Task> getAvailableTasks(){

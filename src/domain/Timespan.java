@@ -1,6 +1,7 @@
 package domain;
 
-import java.util.GregorianCalendar;
+import java.time.LocalDateTime;
+
 
 /**
  * This class represents a timespan with a start and end time
@@ -9,7 +10,9 @@ import java.util.GregorianCalendar;
  */
 public class Timespan {
     
-    private final GregorianCalendar startTime, endTime;
+    private final LocalDateTime startTime, endTime;
+    
+    private final Duration duration;
     
     /**
      * Initialize this timespan with the given begin and end time.
@@ -18,7 +21,7 @@ public class Timespan {
      * @param endTime The end time of this timespan
      * @throws IllegalArgumentException If the given start and end time don't form a valid interval. 
      */
-    public Timespan(GregorianCalendar startTime, GregorianCalendar endTime) throws IllegalArgumentException {
+    public Timespan(LocalDateTime startTime, LocalDateTime endTime) throws IllegalArgumentException {
         
         if(!isValidTimeInterval(startTime, endTime)){
             throw new IllegalArgumentException("The start time is later than the end time.");
@@ -26,6 +29,7 @@ public class Timespan {
         
         this.startTime = startTime;
         this.endTime = endTime;
+        duration = new Duration(startTime, endTime);
     }
 
     /**
@@ -35,22 +39,22 @@ public class Timespan {
      * @param end The end time of the interval
      * @return True if and only if the start time is strictly before the end time
      */
-    private boolean isValidTimeInterval(GregorianCalendar start, GregorianCalendar end){
-        return start.before(end);
+    private boolean isValidTimeInterval(LocalDateTime start, LocalDateTime end){
+        return start.isBefore(end);
     }
     
     /** 
      * @return The time this timespan starts
      */
-    public GregorianCalendar getStartTime() {
-        return (GregorianCalendar) startTime.clone();
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
     
     /** 
      * @return The time this timespan ends
      */
-    public GregorianCalendar getEndTime() {
-        return (GregorianCalendar) endTime.clone();
+    public LocalDateTime getEndTime() {
+        return endTime;
     }
     
     /**
@@ -62,5 +66,29 @@ public class Timespan {
     public boolean overlapsWith(Timespan anotherTimespan){
         return anotherTimespan.getStartTime().compareTo(endTime) <= 0 &&
                startTime.compareTo(anotherTimespan.getEndTime()) <= 0;
+    }
+    
+    /**
+     * Returns the duration by which the given duration exceeds the duration
+     * of this timespan.
+     * 
+     * @param duration The duration to check the delay.
+     * @return A duration representing the amount of time the given duration 
+     * exceeds the duration of this timespan. If the given duration is shorter 
+     * than the duration of this timespan, a duration of 0 is returned.
+     */
+    public Duration getDelay(Duration duration){
+        if(getDuration().compareTo(duration) > 0){
+            return new Duration(0);
+        }
+        
+        return duration.subtract(getDuration());
+    }
+    
+    /** 
+     * @return The duration of this timespan 
+     */
+    public Duration getDuration() {
+        return duration;
     }
 }
