@@ -1,6 +1,7 @@
 package domain;
 
-import java.util.GregorianCalendar;
+import exception.ObjectNotFoundException;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedMap;
@@ -17,8 +18,8 @@ public class Project {
     private final int id;
     private final String name;
     private final String description;
-    private final GregorianCalendar creationTime;
-    private final GregorianCalendar dueTime;
+    private final LocalDateTime creationTime;
+    private final LocalDateTime dueTime;
     private final SortedMap<Integer, Task> tasks = new TreeMap<>();
     
     /**
@@ -29,7 +30,7 @@ public class Project {
      * @param 	creation
      * @param 	due
      */
-    public Project(int id, String name, String descr, GregorianCalendar creation, GregorianCalendar due){
+    public Project(int id, String name, String descr, LocalDateTime creation, LocalDateTime due){
     	if(!this.checkTimeOrder(creation, due))
     		throw new IllegalArgumentException("The creation time was after the due time.");
     	
@@ -68,14 +69,14 @@ public class Project {
 	/**
 	 * @return 	the creationTime
 	 */
-	public GregorianCalendar getCreationTime() {
+	public LocalDateTime getCreationTime() {
 		return creationTime;
 	}
 
 	/**
 	 * @return 	the dueTime
 	 */
-	public GregorianCalendar getDueTime() {
+	public LocalDateTime getDueTime() {
 		return dueTime;
 	}
 
@@ -91,11 +92,12 @@ public class Project {
 	 * 
 	 * @param 	tid
 	 * @return	
+        * @throws exception.ObjectNotFoundException 	
 	 */
-	public Task getTask(int tid) {
+	public Task getTask(int tid) throws ObjectNotFoundException {
 		Task t = tasks.get(id);
 		if(t == null)
-			throw new IllegalArgumentException("Task with tid " + tid + " doesn't exist.");
+			throw new ObjectNotFoundException("Task doesn't exist.", tid);
 		return t;
 	}
 	
@@ -120,8 +122,8 @@ public class Project {
 	 * @return
 	 */
 	//TODO: Information expert?
-	public boolean checkTimeOrder(GregorianCalendar start, GregorianCalendar end) {
-		return start.before(end);
+	public boolean checkTimeOrder(LocalDateTime start, LocalDateTime end) {
+		return start.isBefore(end);
 	}
     
     /****************************************
@@ -136,8 +138,9 @@ public class Project {
 	 * @param 	altFor
 	 * @param 	prereq
 	 * @param 	status
+     * @throws exception.ObjectNotFoundException
 	 */
-	public void createTask(String descr, int estDur, int accdev, int altFor, int[] prereq, Status status) {
+	public void createTask(String descr, int estDur, int accdev, int altFor, int[] prereq, Status status) throws ObjectNotFoundException {
 		Task[] arr = new Task[prereq.length];
 		for(int i : prereq) {
 			arr[i] = getTask(prereq[i]);
@@ -155,7 +158,7 @@ public class Project {
 	 * @param 	end
 	 * @param 	status
 	 */
-	public void updateTask(int tid, GregorianCalendar start, GregorianCalendar end, Status status) {
+	public void updateTask(int tid, LocalDateTime start, LocalDateTime end, Status status) throws ObjectNotFoundException {
 		if(!checkTimeOrder(start, end))
     		throw new IllegalArgumentException("The creation time was after the due time.");
 		getTask(tid).update(start, end, status);

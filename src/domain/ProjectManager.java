@@ -2,7 +2,7 @@ package domain;
 
 import exception.ObjectNotFoundException;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
+import java.time.LocalDateTime;
 
 /**
  * This class represents a manager to contain the projects in the system.
@@ -37,7 +37,7 @@ public class ProjectManager {
      * @param startTime The start time of the project
      * @param dueTime The time by which the project should be ended.
      */
-    public void createProject(String name, String description, GregorianCalendar startTime, GregorianCalendar dueTime){
+    public void createProject(String name, String description, LocalDateTime startTime, LocalDateTime dueTime){
         addProject(new Project(projects.size(),name, name, dueTime, dueTime));
     }
     
