@@ -1,6 +1,6 @@
 package domain;
 
-import java.util.GregorianCalendar;
+import java.time.LocalDateTime;
 
 /**
  * This class represents the system clock
@@ -9,14 +9,14 @@ import java.util.GregorianCalendar;
  */
 public class Clock {
     
-    private GregorianCalendar time;
+    private LocalDateTime time;
     
     /**
      * Initializes this clock with the given time.
      * 
      * @param time The intitial time to start the clock on
      */
-    public Clock(GregorianCalendar time) {
+    public Clock(LocalDateTime time) {
         this.time = time;
     }
     
@@ -24,7 +24,7 @@ public class Clock {
      * Initializes this clock with the current time as its inception moment.
      */
     public Clock() {
-        this(new GregorianCalendar());
+        this(LocalDateTime.now());
     }
     
     /**
@@ -34,8 +34,8 @@ public class Clock {
      * @throws IllegalArgumentException The given time lays strictly in the past, 
      * compared to this clocks time.
      */
-    public void advanceTime(GregorianCalendar time) throws IllegalArgumentException{
-        if(time.before(this.time)){
+    public void advanceTime(LocalDateTime time) throws IllegalArgumentException{
+        if(time.isBefore(this.time)){
             throw new IllegalArgumentException("The given timestamp is strictly before the current system time.");
         }
         
