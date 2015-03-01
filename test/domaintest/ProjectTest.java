@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
  */
 public class ProjectTest {
 	
-	public static double EPS = 1e-15;
+	private static final double EPS = 1e-15;
 	
 	private int id = 0;
 	private String name = "Mobile Steps";
@@ -49,12 +49,17 @@ public class ProjectTest {
     
     @Before
     public void setUp() {
+    	p = new Project(id, name, descr, create, due);
+    	
+    	//TODO: easy constructors!!!
+    	t1 = new Task("bla1", 8, 0f, new ArrayList<Task>(), Status.AVAILABLE);
+    	t2 = new Task("bla2", 8, 0.1f, new ArrayList<Task>(), Status.AVAILABLE);
 
     	ArrayList<Task> prereq = new ArrayList<>();
     	prereq.add(t1);
     	prereq.add(t2);
-    	t3 = new Task("bla3", 7, 0.2f, prereq, Status.UNAVAILABLE);
     	
+    	t3 = new Task("bla3", 7, 0.2f, prereq, Status.UNAVAILABLE);
     	//TODO: add alternative!!!
     	t4 = new Task("bla4", 9, 0.3f, new ArrayList<>(), Status.AVAILABLE);
     }
@@ -146,7 +151,7 @@ public class ProjectTest {
     /**
      * Test addTask method with null-task.
      */
-    @Test (expected = IllegalArgumentException.class)
+    @Test (expected = NullPointerException.class)
     public void testAddTaskNull() {
     	p.addTask(null);
     }
@@ -172,6 +177,7 @@ public class ProjectTest {
     @Test
     public void testAddTaskAlternative() {
     	//TODO: implement
+    	p.addTask(t4);
     	fail("not implemented yet");
     }
     
@@ -206,9 +212,6 @@ public class ProjectTest {
      */
     @Test
     public void testCreateTask() {
-    	p.addTask(t1);
-    	p.addTask(t2);
-    	
     	String descr = "design system";
     	int estDur = 8;
     	int accDev = 20;
@@ -216,7 +219,8 @@ public class ProjectTest {
     	int alternative = -1;
     	//TODO: how to indicate there are no prereqs?
     	int[] prereq = new int[]{};
-    	Status stat = Status.UNAVAILABLE;
+    	Status stat = Status.AVAILABLE;
+    	
     	p.createTask(descr, estDur, accDev, alternative, prereq, stat);
     	
     	SortedMap<Integer, Task> tasks = p.getTasks();
@@ -229,7 +233,152 @@ public class ProjectTest {
     	//TODO: is this the expected behaviour?
     	assertEquals(added.getAlternativeTask(), null);
     	assertTrue(added.getPrerequisiteTasks().isEmpty());
+    }
+    
+    /**
+     * Test createTask method with valid parameters and alternative.
+     */
+    @Test
+    public void testCreateTaskAlternative() {
+    	p.addTask(t1);
+    	String descr = "design system";
+    	int estDur = 8;
+    	int accDev = 20;
+    	int alternative = t1.getId();
+    	//TODO: how to indicate there are no prereqs?
+    	int[] prereq = new int[]{};
+    	Status stat = Status.AVAILABLE;
     	
+    	p.createTask(descr, estDur, accDev, alternative, prereq, stat);
+    	
+    	SortedMap<Integer, Task> tasks = p.getTasks();
+    	assertFalse(tasks.isEmpty());
+    	
+    	Task added = tasks.get(tasks.firstKey());
+    	assertEquals(added.getDescription(), descr);
+    	assertEquals(added.getEstimatedDuration(), estDur);
+    	assertEquals(added.getAcceptableDeviation(), (double) accDev / 100, EPS);
+    	assertEquals(added.getAlternativeTask(), t1);
+    	assertTrue(added.getPrerequisiteTasks().isEmpty());
+    }
+    
+    /**
+     * Test createTask method with valid parameters and prereqs.
+     */
+    @Test
+    public void testCreateTaskPrereqs() {
+    	p.addTask(t1);
+    	p.addTask(t2);
+    	String descr = "design system";
+    	int estDur = 8;
+    	int accDev = 20;
+    	//TODO: how to indicate there are no alternatives?
+    	int alternative = -1;
+    	int[] prereq = new int[]{t1.getId(), t2.getId()};
+    	Status stat = Status.AVAILABLE;
+    	
+    	p.createTask(descr, estDur, accDev, alternative, prereq, stat);
+    	
+    	SortedMap<Integer, Task> tasks = p.getTasks();
+    	assertFalse(tasks.isEmpty());
+    	
+    	Task added = tasks.get(tasks.firstKey());
+    	assertEquals(added.getDescription(), descr);
+    	assertEquals(added.getEstimatedDuration(), estDur);
+    	assertEquals(added.getAcceptableDeviation(), (double) accDev / 100, EPS);
+    	//TODO: is this the expected behaviour?
+    	assertEquals(added.getAlternativeTask(), null);
+    	assertTrue(added.getPrerequisiteTasks().isEmpty());
+    }
+    
+    /**
+     * Test createTask method with invalid alternative.
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testCreateTaskInvalidAlternative() {
+    	String descr = "design system";
+    	int estDur = 8;
+    	int accDev = 20;
+    	int alternative = t1.getId();
+    	int[] prereq = new int[]{};
+    	Status stat = Status.AVAILABLE;
+    	
+    	p.createTask(descr, estDur, accDev, alternative, prereq, stat);
+    }
+    
+    /**
+     * Test createTask method with invalid prereqs.
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testCreateTaskInvalidPrereqs() {
+    	String descr = "design system";
+    	int estDur = 8;
+    	int accDev = 20;
+    	//TODO: how to indicate there are no alternatives?
+    	int alternative = -1;
+    	int[] prereq = new int[]{t1.getId(), t2.getId()};
+    	Status stat = Status.AVAILABLE;
+    	
+    	p.createTask(descr, estDur, accDev, alternative, prereq, stat);
+    }
+    
+    /**
+     * Test createTask method with invalid prereqs.
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testCreateTaskInvalidPrereqs2() {
+    	p.addTask(t1);
+    	String descr = "design system";
+    	int estDur = 8;
+    	int accDev = 20;
+    	//TODO: how to indicate there are no alternatives?
+    	int alternative = -1;
+    	int[] prereq = new int[]{t1.getId(), t2.getId()};
+    	Status stat = Status.AVAILABLE;
+    	
+    	p.createTask(descr, estDur, accDev, alternative, prereq, stat);
+    }
+    
+    //TODO: ook testen op parameters Task???
+    
+    /**
+     * Test updateTask method with valid parameters.
+     */
+    @Test
+    public void testUpdateTask() {
+    	p.addTask(t1);
+    	p.addTask(t2);
+    	
+    	p.updateTask(t1.getId(), LocalDateTime.of(2015, 2, 16, 12, 30), LocalDateTime.of(2015, 2, 20, 9, 30), Status.AVAILABLE);
+    	//TODO: How to test adaption of times?
+    	assertEquals(t1.getStatus(), Status.AVAILABLE);
+    }
+    
+    /**
+     * Test updateTask method when no tasks.
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testUpdateTaskEmpty() {
+    	assertTrue(p.getTasks().isEmpty());
+    	p.updateTask(t1.getId(), LocalDateTime.of(2015, 2, 16, 12, 30), LocalDateTime.of(2015, 2, 20, 9, 30), Status.AVAILABLE);
+    }
+    
+    /**
+     * Test updateTask method with wrong tid.
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testUpdateTaskInvalidId() {
+    	p.addTask(t1);
+    	p.updateTask(t2.getId(), LocalDateTime.of(2015, 2, 16, 12, 30), LocalDateTime.of(2015, 2, 20, 9, 30), Status.AVAILABLE);
+    }
+    
+    /**
+     * Test updateTask method with illegal time interval.
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testUpdateTaskInvalidTimeInterval() {
+    	p.addTask(t1);
+    	p.updateTask(t1.getId(), LocalDateTime.of(2015, 2, 20, 12, 30), LocalDateTime.of(2015, 2, 16, 9, 30), Status.AVAILABLE);
     }
     
 }
