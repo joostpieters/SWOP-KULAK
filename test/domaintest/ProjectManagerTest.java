@@ -1,13 +1,18 @@
-package domain;
+package domaintest;
 
+import domain.ProjectManager;
+import domain.Task;
 import exception.ObjectNotFoundException;
+
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
