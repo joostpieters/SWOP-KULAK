@@ -1,6 +1,6 @@
-package domain;
+package domaintest;
 
-import java.util.GregorianCalendar;
+import java.time.LocalDateTime;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -43,8 +43,8 @@ public class TaskTest {
     @Test
     public void testUpdate() {
         System.out.println("update");
-        GregorianCalendar start = null;
-        GregorianCalendar end = null;
+        LocalDateTime start = null;
+        LocalDateTime end = null;
         Status status = null;
         Task instance = null;
         instance.update(start, end, status);
@@ -72,8 +72,8 @@ public class TaskTest {
     @Test
     public void testTaskGeneratedIds()
     {
-    	Task instance0 = new Task("Some task", 60, 0.2, null, Status.AVAILABLE);
-    	Task instance1 = new Task("Some other task", 90, 0.3, null, Status.AVAILABLE);
+    	Task instance0 = new Task("Some task", 60, 0.2f, null, Status.AVAILABLE);
+    	Task instance1 = new Task("Some other task", 90, 0.3f, null, Status.AVAILABLE);
     	assertNotEquals(instance0.getId(), instance1.getId());
     	assertTrue(instance1.getId() > instance0.getId());
     }

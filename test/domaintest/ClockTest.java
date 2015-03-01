@@ -1,11 +1,14 @@
-package domain;
+package domaintest;
 
 import java.util.GregorianCalendar;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import domain.Clock;
 import static org.junit.Assert.*;
 
 /**
