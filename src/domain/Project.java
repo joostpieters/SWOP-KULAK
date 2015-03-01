@@ -22,12 +22,23 @@ public class Project {
     private final SortedMap<Integer, Task> tasks = new TreeMap<>();
     
     /**
+     * Construct a new project, with given id, name, description, 
+     * creation time and due time.
      * 
      * @param 	id
+     * 			The id for this project.
      * @param 	name
+     * 			The name for this project.
      * @param 	descr
+     * 			The description for this project.
      * @param 	creation
+     * 			The creation time for this project.
      * @param 	due
+     * 			The due time for this project.
+     * @throws	IllegalArgumentException
+     * 			if id < 0
+     * 			or if name or descr = null
+     * 			or if creation and due form an invalid time pair.
      */
     public Project(int id, String name, String descr, LocalDateTime creation, LocalDateTime due){
     	if(!checkTimeOrder(creation, due))
@@ -49,35 +60,35 @@ public class Project {
      ****************************************/
     
     /**
-	 * @return 	the id
+	 * @return 	the id of this project.
 	 */
 	public int getId() {
 		return id;
 	}
 
 	/**
-	 * @return 	the name
+	 * @return 	the name of this project.
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @return 	the description
+	 * @return 	the description of this project.
 	 */
 	public String getDescription() {
 		return description;
 	}
 
 	/**
-	 * @return 	the creationTime
+	 * @return 	the creationTime of this project.
 	 */
 	public LocalDateTime getCreationTime() {
 		return creationTime;
 	}
 
 	/**
-	 * @return 	the dueTime
+	 * @return 	the dueTime of this project.
 	 */
 	public LocalDateTime getDueTime() {
 		return dueTime;
@@ -85,31 +96,50 @@ public class Project {
 
 	/**
 	 * 
-	 * @return	the tasks
+	 * @return	a list of tasks contained in this project.
 	 */
 	public SortedMap<Integer, Task> getTasks(){
         return new TreeMap<>(tasks);
     }
 	
 	/**
+	 * Get a task with given id contained in this project.
 	 * 
 	 * @param 	tid
-	 * @return	
+	 * 			The id of the task to be returned.
+	 * @return	The task with the given id if it is contained in this,
+	 * 			null otherwise.
 	 */
 	public Task getTask(int tid) {
 		Task t = tasks.get(id);
-		if(t == null)
-			throw new IllegalArgumentException("Task with tid " + tid + " doesn't exist.");
+		//TODO: toch een exception?
+//		if(t == null)
+//			throw new IllegalArgumentException("Task with tid " + tid + " doesn't exist.");
 		return t;
 	}
 	
 	/**
+	 * Add a task to the list of tasks for this project.
 	 * 
 	 * @param 	t
+	 * 			The task to be added.
+	 * @throws	NullPointerException
+	 * 			if t == null.
+	 * @throws	IllegalArgumentException
+	 * 			if t.getAlternativeTask() doesn't exist in this project
+	 * 			or if there exists a task in t.getPrerequisiteTasks() 
+	 * 			which doesn't exist in this project.
 	 */
 	public void addTask(Task t) {
 		if(t == null)
 			throw new NullPointerException("You can't add null-tasks to a project.");
+		if(t.getAlternativeTask() != null && !tasks.containsKey(t.getAlternativeTask().getId()))
+			throw new IllegalArgumentException(
+					"The task this task should be an alternative for, doesn't exist in this project.");
+		for(Task x : t.getPrerequisiteTasks())
+			if(!tasks.containsKey(x.getId()))
+				throw new IllegalArgumentException(
+						"One of the prerequisite tasks doesn't exist in this project.");
 		this.tasks.put(t.getId(), t);
 	}
 
@@ -118,12 +148,13 @@ public class Project {
      ****************************************/
 	
 	/**
+	 * Check whether this time pair is correct.
 	 * 
 	 * @param start
 	 * @param end
 	 * @return
 	 */
-	//TODO: Information expert?
+	//TODO: Information expert? Necessary?
 	public boolean checkTimeOrder(LocalDateTime start, LocalDateTime end) {
 		return start.isBefore(end);
 	}
@@ -133,13 +164,20 @@ public class Project {
      ****************************************/
     
 	/**
+	 * Create a new task and add it to this project.
 	 * 
 	 * @param 	descr
+	 * 			The description for the new task.
 	 * @param 	estDur
+	 * 			The estimated duration for the new task in hours.
 	 * @param 	accdev
+	 * 			The acceptable deviation for the new task in %.
 	 * @param 	altFor
+	 * 			The id this task is an alternative for.
 	 * @param 	prereq
+	 * 			An array of id's of tasks that the new task will depend on.
 	 * @param 	status
+	 * 			The status for this new task.
 	 */
 	public void createTask(String descr, int estDur, int accdev, int altFor, int[] prereq, Status status) {
 		Task[] arr = new Task[prereq.length];
@@ -153,11 +191,16 @@ public class Project {
 	}
 	
 	/**
+	 * Update the task with given id and updated start time end time and status.
 	 * 
 	 * @param 	tid
+	 * 			The id for the task to be updated.
 	 * @param 	start
+	 * 			The updated start time.
 	 * @param 	end
+	 * 			The updated end time.
 	 * @param 	status
+	 * 			The updated status.
 	 */
 	public void updateTask(int tid, LocalDateTime start, LocalDateTime end, Status status) {
 		if(!checkTimeOrder(start, end))
@@ -166,8 +209,9 @@ public class Project {
 	}
 	
 	/**
+	 * Return all tasks from this project which are available.
 	 * 
-	 * @return	
+	 * @return	all tasks t for which t.isAvailable() is true.
 	 */
 	public List<Task> getAvailableTasks() {
 		List<Task> result = new LinkedList<Task>();

@@ -44,6 +44,7 @@ public class Task {
 			throw new IllegalArgumentException("The acceptable deviation has to be between 0 and 1.");
 
 		//TODO: alternative task???
+		//TODO: prereq = [null, null] mogelijk!
 		this.id = generateId();
 		this.estimatedDuration = new Duration(estDur);
 		this.id = Task.generateId();
