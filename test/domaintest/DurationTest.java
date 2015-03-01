@@ -1,12 +1,15 @@
-package domain;
+package domaintest;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import domain.Duration;
 import static org.junit.Assert.*;
 
 /**
