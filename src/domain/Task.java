@@ -14,7 +14,7 @@ public class Task {
 
 	private String description;
 
-	private float acceptableDeviation;
+	private int acceptableDeviation;
 
 	private Timespan timeSpan;
 
@@ -22,11 +22,44 @@ public class Task {
 
 	private Task alternativeTask;
 
-	private ArrayList<Task> prerequisiteTasks;
+	private Task[] prerequisiteTasks;
 
 	private Status status;
 
 	private static int nextId=0;
+
+	/**
+	 * Initializes this task based on the given description, estimated duration, acceptable deviation
+	 *  and prerequisite tasks.
+	 *  
+	 * @param description
+	 *        The description of this task.
+	 * @param estDur
+	 *        The estimated duration in minutes of this task.
+	 * @param accDev
+	 *        The acceptable deviation of this task expressed as an integer between 0 and 100.
+	 * @param prereq
+	 *        The list of prerequisite tasks for this task.
+	 */
+	public Task(String description, long estDur, int accDev, Task[] prereq)
+	{
+		this(description, estDur, accDev, prereq, null);
+	}
+
+	/**
+	 * Initializes this task based on the given description, estimated duration and acceptable deviation.
+	 *  
+	 * @param description
+	 *        The description of this task.
+	 * @param estDur
+	 *        The estimated duration in minutes of this task.
+	 * @param accDev
+	 *        The acceptable deviation of this task expressed as an integer between 0 and 100.
+	 */
+	public Task(String description, long estDur, int accDev)
+	{
+		this(description, estDur, accDev, null, Status.AVAILABLE);
+	}
 
 	/**
 	 * Initializes this task based on the given description, estimated duration, acceptable deviation,
@@ -34,26 +67,56 @@ public class Task {
 	 * 
 	 * @param description The description of this task.
 	 * @param estDur The estimated duration in minutes of this task.
-	 * @param accDev The acceptable deviation of this task expressed as a float between 0 and 1.
+	 * @param accDev The acceptable deviation of this task expressed as an integer between 0 and 100.
 	 * @param prereq The list of prerequisite tasks which need to be finished before this task can be started.
 	 * @param status The status of this task.
-	 * @throws IllegalArgumentException The given acceptable deviation is not valid.
 	 */
-	public Task(String description, long estDur, float accDev, ArrayList<Task> prereq, Status status){
-		if(!isValidAcceptableDeviation(accDev))
-			throw new IllegalArgumentException("The acceptable deviation has to be between 0 and 1.");
-
-		//TODO: alternative task???
-		//TODO: prereq = [null, null] mogelijk!
+	public Task(String description, long estDur, int accDev, Task[] prereq, Status status){
 		this.id = generateId();
-		this.estimatedDuration = new Duration(estDur);
-		this.id = Task.generateId();
 		this.description = description;
-		this.acceptableDeviation = accDev;
-		this.prerequisiteTasks = prereq;
+		this.estimatedDuration = new Duration(estDur);
+		setAcceptableDeviation(accDev);
+		setPrerequisiteTasks(prereq);
 		this.status = status;
-		if(this.prerequisiteTasks == null) // TODO mag dit null zijn?
-			this.prerequisiteTasks = new ArrayList<Task>();
+	}
+
+	/**
+	 * Sets the list of prerequisite tasks to the given list of prerequisite tasks.
+	 * 
+	 * @param prereq
+	 *        The new list of prerequisite tasks for this task.
+	 * @throws IllegalArgumentException
+	 *         If this task can't have the given list of prerequisite tasks as its list of prerequisite tasks.
+	 */
+	private void setPrerequisiteTasks(Task[] prereq)
+	{
+		if(!canHaveAsPrerequisiteTasks(prereq))
+			throw new IllegalArgumentException(
+					"This task can't have the given list of prerequisite tasks as its prerequisite tasks.");
+		this.prerequisiteTasks = prereq;
+	}
+
+	/**
+	 * Checks whether this task can have the given list of prerequisite tasks as its prerequisite tasks.
+	 * 
+	 * @param  prereq
+	 *         The list of prerequisite tasks to check.
+	 * @return False if the list is null.
+	 *         False if any of the tasks in the given list is null.
+	 *         False if any of the tasks in the given list is equal to this task.
+	 *         True otherwise.
+	 */
+	public boolean canHaveAsPrerequisiteTasks(Task[] prereq)
+	{
+		if(prereq==null)
+			return false;
+		for(Task t: prereq)
+			if(t==null || t==this)
+				return false;
+		/**
+		 * TODO lus detectie
+		 */
+		return true;
 	}
 
 	/**
@@ -88,9 +151,9 @@ public class Task {
 		return this.timeSpan;
 	}
 	/**
-	 * @return The acceptable deviation of this task expressed as a float between 0 and 1.
+	 * @return The acceptable deviation of this task expressed as an int between 0 and 100.
 	 */
-	public float getAcceptableDeviation()
+	public int getAcceptableDeviation()
 	{
 		return this.acceptableDeviation;
 	}
@@ -106,9 +169,9 @@ public class Task {
 	/**
 	 * @return The list of prerequisite tasks for this task.
 	 */
-	public ArrayList<Task> getPrerequisiteTasks()
+	public Task[] getPrerequisiteTasks()
 	{
-		return (ArrayList<Task>)this.prerequisiteTasks.clone();
+		return (Task[])getPrerequisiteTasks().clone();
 	}
 
 	/**
@@ -116,9 +179,28 @@ public class Task {
 	 */
 	public Status getStatus()
 	{
+		if(this.status.equals(Status.UNAVAILABLE))
+			updateStatus();
 		return this.status;
 	}
-	
+
+
+	/**
+	 * Updates the status of this task to AVAILABLE if all the prerequisite tasks are
+	 * fulfilled and if the status of this task is currently equal to UNAVAILABLE.
+	 */
+	private void updateStatus()
+	{
+		if(this.status.equals(Status.UNAVAILABLE))
+		{
+			boolean allPrerequisitesFulfilled = true;
+			for(Task t : getPrerequisiteTasks())
+				if(!t.isFulfilled())
+					allPrerequisitesFulfilled = false;
+			if(allPrerequisitesFulfilled)
+				setStatus(Status.AVAILABLE);
+		}
+	}
 	/**
 	 *  Calculates the duration by which this task been delayed.
 	 *  
@@ -130,31 +212,48 @@ public class Task {
 	{
 		if(getTimeSpan()==null)
 			return new Duration(0);
-		
+
 		return getTimeSpan().getDelay(calculateMaxDuration());
 	}
-	
-	/** TODO hoort dit wel in task?
+
+	/**
 	 * Calculates the maximum duration of this task by which this task will still be finished on time.
 	 * 
-	 * @return The estimated duration of this task multiplied by (1 + (the acceptable deviation of this task))
+	 * @return The estimated duration of this task multiplied by (100 + (the acceptable deviation of this task))/100
 	 */
 	private Duration calculateMaxDuration()
 	{
-		int maxMinutes = (int)(getEstimatedDuration().toMinutes()*(1+getAcceptableDeviation()));
-		return new Duration(maxMinutes);
+		return getEstimatedDuration().multiplyBy( (100d + getAcceptableDeviation())/100d );
 	}
+
 	/**
-	 * Checks whether the given acceptable deviation is valid.
+	 * Sets this task his acceptable deviation to the given acceptable deviation.
 	 * 
-	 * @param  accDev The acceptable deviation.
-	 * @return True if and only if the given acceptable deviation is between 0 and 1.
+	 * @param accDev
+	 *        
+	 * @throws IllegalArgumentException
+	 *         If this task can't have the given acceptable deviation as its acceptable deviation.
 	 */
-	private boolean isValidAcceptableDeviation(float accDev)
+	private void setAcceptableDeviation(int accDev) throws IllegalArgumentException
 	{
-		return (0 <= accDev) && (accDev <= 1);
+		if(!canHaveAsAcceptableDeviation(accDev))
+			throw new IllegalArgumentException(
+					"This task can't have the given acceptable deviation as its acceptable deviation.");
+		this.acceptableDeviation = accDev;
 	}
-	
+
+	/**
+	 * Checks whether this task can have the given acceptable deviation as its acceptable deviation.
+	 * 
+	 * @param  accDev
+	 *         The acceptable deviation.
+	 * @return True if and only if the given acceptable deviation is between 0 and 100.
+	 */
+	public boolean canHaveAsAcceptableDeviation(int accDev)
+	{
+		return (0 <= accDev) && (accDev <= 100);
+	}
+
 	/**
 	 * Updates the status and the time span of this task.
 	 * 
@@ -171,7 +270,7 @@ public class Task {
 
 		setTimeSpan(new Timespan(start, end));
 		setStatus(status);
-		
+
 	}
 
 	/**
@@ -197,7 +296,7 @@ public class Task {
 	 */
 	public boolean isFulfilled()
 	{
-		if(getStatus().equals(Status.FINISHED)) // TODO replace with isFinished()?
+		if(getStatus().equals(Status.FINISHED))
 			return true;
 		if(getAlternativeTask() != null)
 			return getAlternativeTask().isFulfilled();
@@ -216,8 +315,8 @@ public class Task {
 			throw new IllegalStateException("Attempted to set task status to FINISHED while the task is not available.");
 		this.status = status;
 	}
-	
-	
+
+
 	/**
 	 * Sets the time span of this task to the given time span.
 	 * 
@@ -230,7 +329,7 @@ public class Task {
 			throw new IllegalArgumentException("The given time span is not a valid time span for this task");
 		this.timeSpan = timeSpan;
 	}
-	
+
 	/**
 	 * Checks whether this task ends before the given time.
 	 * 
@@ -245,7 +344,7 @@ public class Task {
 					"Tried to check whether this task ends before the given time while this task doesn't have a time span.");
 		return getTimeSpan().getEndTime().isBefore(startTime); // TODO misschien beter in Timespan klasse?
 	}
-	
+
 	/** TODO unfinished
 	 * Checks whether the given time span is a valid time span for this task.
 	 * 
@@ -274,7 +373,7 @@ public class Task {
 	{
 		return getTimeSpan() != null;
 	}
-	
+
 	/**
 	 * Checks whether the given task is a valid alternative task for this task.
 	 * 
@@ -321,7 +420,7 @@ public class Task {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Sets the alternative task of this task to the given alternative task.
 	 * 
