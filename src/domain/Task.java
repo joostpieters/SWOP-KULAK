@@ -77,7 +77,7 @@ public class Task {
 		this.estimatedDuration = new Duration(estDur);
 		setAcceptableDeviation(accDev);
 		setPrerequisiteTasks(prereq);
-		this.status = status;
+		setStatus(status);
 	}
 
 	/**
@@ -311,8 +311,8 @@ public class Task {
 	 */
 	private void setStatus(Status status)
 	{
-		if(status.equals(Status.FINISHED) && !this.isAvailable())
-			throw new IllegalStateException("Attempted to set task status to FINISHED while the task is not available.");
+		if((status.equals(Status.FINISHED) || status.equals(Status.FAILED)) )
+			throw new IllegalStateException("Attempted to set task status to FINISHED or FAILEDwhile the task is not available.");
 		this.status = status;
 	}
 
