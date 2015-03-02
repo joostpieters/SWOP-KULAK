@@ -180,5 +180,18 @@ public class DurationTest {
     }
 
     
+    /**
+     * Test of multiplyBy method, of class Duration.
+     */
+    @Test
+    public void testMultiplyBy() {
+        // different days
+        
+        Duration instance = new Duration(1941);
+        
+        assertEquals(1165, instance.multiplyBy(0.6).toMinutes());
+        
+            
+    }
     
 }

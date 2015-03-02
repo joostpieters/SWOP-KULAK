@@ -255,6 +255,17 @@ public class Duration implements Comparable<Duration>{
     }
     
     /**
+     * Returns a copy of this duration multiplied by the given mulitplicant
+     * 
+     * @param multiplicant The value to multiply this duration by
+     * @return A duration, based on this duration, multiplied by the given multiplicant,
+     * rounded to the nearest integer.
+     */
+    public Duration multiplyBy(double multiplicant){
+        return new Duration(Math.round(multiplicant * toMinutes()));
+    }
+    
+    /**
      * Compare the length of this duration with the given duration 
      * 
      * @param duration The duration to compare with
