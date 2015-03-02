@@ -13,12 +13,13 @@ import java.util.TreeMap;
  * @author Frederic, Mathias, Pieter-Jan 
  */
 public class Project {
+	
+	public static final int[] NO_DEPENDENCIES = new int[]{};
     
     private final int id;
     private final String name;
     private final String description;
-    private final LocalDateTime creationTime;
-    private final LocalDateTime dueTime;
+    private final Timespan creationDueTime;
     private final SortedMap<Integer, Task> tasks = new TreeMap<>();
     
     /**
@@ -41,8 +42,6 @@ public class Project {
      * 			or if creation and due form an invalid time pair.
      */
     public Project(int id, String name, String descr, LocalDateTime creation, LocalDateTime due){
-    	if(!checkTimeOrder(creation, due))
-    		throw new IllegalArgumentException("The creation time was after the due time.");
     	if(id < 0)
     		throw new IllegalArgumentException("id should be bigger than zero.");
     	if(name == null || descr == null)
@@ -51,8 +50,7 @@ public class Project {
     	this.id = id;
     	this.name = name;
     	this.description = descr;
-    	this.creationTime = creation;
-    	this.dueTime = due;
+    	this.creationDueTime = new Timespan(creation, due);
     }
     
     /****************************************
@@ -84,14 +82,14 @@ public class Project {
 	 * @return 	the creationTime of this project.
 	 */
 	public LocalDateTime getCreationTime() {
-		return creationTime;
+		return creationDueTime.getStartTime();
 	}
 
 	/**
 	 * @return 	the dueTime of this project.
 	 */
 	public LocalDateTime getDueTime() {
-		return dueTime;
+		return creationDueTime.getEndTime();
 	}
 
 	/**
@@ -112,9 +110,8 @@ public class Project {
 	 */
 	public Task getTask(int tid) {
 		Task t = tasks.get(id);
-		//TODO: toch een exception?
-//		if(t == null)
-//			throw new IllegalArgumentException("Task with tid " + tid + " doesn't exist.");
+		if(t == null)
+			throw new IllegalArgumentException("Task with tid " + tid + " doesn't exist.");
 		return t;
 	}
 	
@@ -179,33 +176,15 @@ public class Project {
 	 * @param 	status
 	 * 			The status for this new task.
 	 */
-	public void createTask(String descr, int estDur, int accdev, int altFor, int[] prereq, Status status) {
+	public void createTask(String descr, int estDur, int accdev, int[] prereq, Status status) {
 		Task[] arr = new Task[prereq.length];
 		for(int i : prereq) {
 			arr[i] = getTask(prereq[i]);
 		}
 		//TODO: Constructor for Task!!!!
-		//Task t = new Task(descr, estDur, accdev, getTask(altFor), arr, status);
-		//addTask(t);
+		Task t = new Task(descr, estDur, accdev, arr, status);
+		addTask(t);
 		throw new IllegalStateException("waiting for new task constructor.");
-	}
-	
-	/**
-	 * Update the task with given id and updated start time end time and status.
-	 * 
-	 * @param 	tid
-	 * 			The id for the task to be updated.
-	 * @param 	start
-	 * 			The updated start time.
-	 * @param 	end
-	 * 			The updated end time.
-	 * @param 	status
-	 * 			The updated status.
-	 */
-	public void updateTask(int tid, LocalDateTime start, LocalDateTime end, Status status) {
-		if(!checkTimeOrder(start, end))
-    		throw new IllegalArgumentException("The creation time was after the due time.");
-		getTask(tid).update(start, end, status);
 	}
 	
 	/**
