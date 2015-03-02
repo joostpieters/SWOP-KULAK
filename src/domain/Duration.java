@@ -148,6 +148,8 @@ public class Duration implements Comparable<Duration>{
                 !(time.getDayOfWeek().equals(DayOfWeek.SATURDAY) || time.getDayOfWeek().equals(DayOfWeek.SUNDAY));
     }
     
+    
+    
     /**
      * Get the number of workdays between the given time moments.
      * 

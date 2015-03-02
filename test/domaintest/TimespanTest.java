@@ -92,14 +92,43 @@ public class TimespanTest {
      * Test getDelay method of Timespan
      */
      @Test
-    public void testGetDelay() {
+    public void testGetExcess() {
         LocalDateTime start = LocalDateTime.of(2015, 1, 6, 12, 23);
         LocalDateTime end = LocalDateTime.of(2015, 1, 6, 14, 30);
         Timespan timespan = new Timespan(start, end);
         Duration dur = new Duration(130);
-        assertEquals(3, timespan.getDelay(dur).toMinutes());
+        assertEquals(3, timespan.getExcess(dur).toMinutes());
         dur = new Duration(100);
-        assertEquals(0, timespan.getDelay(dur).toMinutes());
+        assertEquals(0, timespan.getExcess(dur).toMinutes());
     }
+        
+    /**
+     * Test overlapswith methode of timespan
+     */
+    @Test
+    public void testIsBefore() {
+        LocalDateTime start1 = LocalDateTime.of(2015, 1, 6, 14, 0);
+        LocalDateTime end1 = LocalDateTime.of(2015, 1, 6, 15, 30);
+        Timespan timespan1 = new Timespan(start1, end1);
+        LocalDateTime start2 = LocalDateTime.of(2015, 1, 6, 15, 30);
+        LocalDateTime end2 = LocalDateTime.of(2015, 1, 6, 15, 40);
+        Timespan timespan2 = new Timespan(start2, end2);
+        
+        assertTrue(timespan1.endsBefore(timespan2));
+        // conversely
+        assertFalse(timespan2.endsBefore(timespan1));
+        
+        // a timespan also overlaps with itself
+        assertFalse(timespan1.endsBefore(timespan1));
+        
+        LocalDateTime start3 =LocalDateTime.of(2015, 1, 6, 15, 41);
+        LocalDateTime end3 = LocalDateTime.of(2015, 1, 6, 15, 52);
+        Timespan timespan3 = new Timespan(start3, end3);
+        
+        assertTrue(timespan2.endsBefore(timespan3));
+       
+        
+    }
+    
     
 }

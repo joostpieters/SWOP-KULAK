@@ -8,11 +8,9 @@ import java.time.LocalDateTime;
  * 
  * @author Frederic, Mathias, Pieter-Jan 
  */
-public class Timespan {
+public final class Timespan {
     
     private final LocalDateTime startTime, endTime;
-    
-    private final Duration duration;
     
     /**
      * Initialize this timespan with the given begin and end time.
@@ -23,13 +21,17 @@ public class Timespan {
      */
     public Timespan(LocalDateTime startTime, LocalDateTime endTime) throws IllegalArgumentException {
         
-        if(!isValidTimeInterval(startTime, endTime)){
+        if(!canHaveAsTimeInterval(startTime, endTime)){
             throw new IllegalArgumentException("The start time is later than the end time.");
+        }
+        
+        if(!canHaveAsTime(startTime) || !canHaveAsTime(endTime)){
+            throw new IllegalArgumentException("The start time is not valid.");
         }
         
         this.startTime = startTime;
         this.endTime = endTime;
-        duration = new Duration(startTime, endTime);
+        
     }
 
     /**
@@ -39,7 +41,7 @@ public class Timespan {
      * @param end The end time of the interval
      * @return True if and only if the start time is strictly before the end time
      */
-    private boolean isValidTimeInterval(LocalDateTime start, LocalDateTime end){
+    private boolean canHaveAsTimeInterval(LocalDateTime start, LocalDateTime end){
         return start.isBefore(end);
     }
     
@@ -77,7 +79,7 @@ public class Timespan {
      * exceeds the duration of this timespan. If the given duration is shorter 
      * than the duration of this timespan, a duration of 0 is returned.
      */
-    public Duration getDelay(Duration duration){
+    public Duration getExcess(Duration duration){
         if(getDuration().compareTo(duration) > 0){
             return new Duration(0);
         }
@@ -89,6 +91,28 @@ public class Timespan {
      * @return The duration of this timespan 
      */
     public Duration getDuration() {
-        return duration;
+        return new Duration(startTime, endTime);
+    }
+    
+    /**
+     * Check whether this timespan can have the given time as its time.
+     * 
+     * @param time The time to check
+     * @return True if and only if the given time is not null.
+     */
+    public boolean canHaveAsTime(LocalDateTime time){
+        return time != null;
+    }
+    
+    /**
+     * Check whether this timespan ends before the given timespan, not necessarily
+     * stritcly before
+     * 
+     * @param anotherTimespan The timespan to compare to
+     * @return True if and only if the end time of this timespan is before or 
+     * equals the start time of the given timespan.
+     */
+    public boolean endsBefore(Timespan anotherTimespan){
+        return getEndTime().compareTo(anotherTimespan.getStartTime()) <= 0;
     }
 }
