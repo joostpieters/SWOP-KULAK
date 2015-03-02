@@ -1,14 +1,12 @@
 package domaintest;
 
-import java.util.GregorianCalendar;
-
+import domain.Clock;
+import java.time.LocalDateTime;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import domain.Clock;
 import static org.junit.Assert.*;
 
 /**
@@ -42,8 +40,8 @@ public class ClockTest {
     @Test
     public void testAdvanceTime() {
         System.out.println("advanceTime");
-        Clock instance = new Clock(new GregorianCalendar(2015, 2, 26));
-        instance.advanceTime(new GregorianCalendar(2015, 2, 27));
+        Clock instance = new Clock(LocalDateTime.of(2015, 2, 26, 14, 30));
+        instance.advanceTime(LocalDateTime.of(2015, 2, 27, 14, 40));
         
     }
     
@@ -54,7 +52,7 @@ public class ClockTest {
     public void testAdvanceTimeWithPastTime() {
         System.out.println("advanceTime");
         Clock instance = new Clock();
-        instance.advanceTime(new GregorianCalendar(1994, 30, 11));
+        instance.advanceTime(LocalDateTime.of(1994, 11, 30, 10, 30));
     }
     
 }

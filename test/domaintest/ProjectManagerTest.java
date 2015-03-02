@@ -50,19 +50,4 @@ public class ProjectManagerTest {
         instance.getProject(12);
         
     }
-
-    /**
-     * Test of getAvailableTasks method, of class ProjectManager.
-     */
-    @Test
-    public void testGetAvailableTasks() {
-        System.out.println("getAvailableTasks");
-        ProjectManager instance = new ProjectManager();
-        ArrayList<Task> expResult = null;
-        ArrayList<Task> result = instance.getAvailableTasks();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-    
 }

@@ -74,8 +74,4 @@ public class ProjectManager {
     public int getNbProjects(){
         return projects.size();
     }
-    
-    public ArrayList<Task> getAvailableTasks(){
-        return null;
-    }
 }
