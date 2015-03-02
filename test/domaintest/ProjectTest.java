@@ -28,14 +28,10 @@ public class ProjectTest {
 	private String descr = "develop mobile app for counting steps using a specialized bracelet";
 	private LocalDateTime create = LocalDateTime.of(2015, 2, 9, 0, 0);
 	private LocalDateTime due = LocalDateTime.of(2015, 2, 13, 0, 0);
-	
-	private Project p = new Project(id, name, descr, create, due);
 
-	//TODO: easy constructors!!!
-	private Task t1 = new Task("bla1", 8, 0f, new ArrayList<Task>(), Status.AVAILABLE);
-	private Task t2 = new Task("bla2", 8, 0.1f, new ArrayList<Task>(), Status.AVAILABLE);
-	private Task t3;
-    private Task t4;
+	Project p;
+	private Task t1, t2, t3, t4;
+	
     public ProjectTest() {
     }
     
@@ -52,15 +48,10 @@ public class ProjectTest {
     	p = new Project(id, name, descr, create, due);
     	
     	//TODO: easy constructors!!!
-    	t1 = new Task("bla1", 8, 0f, new ArrayList<Task>(), Status.AVAILABLE);
-    	t2 = new Task("bla2", 8, 0.1f, new ArrayList<Task>(), Status.AVAILABLE);
-
-    	ArrayList<Task> prereq = new ArrayList<>();
-    	prereq.add(t1);
-    	prereq.add(t2);
-    	
-    	t3 = new Task("bla3", 7, 0.2f, prereq, Status.UNAVAILABLE);
-    	t4 = new Task("bla4", 9, 0.3f, new ArrayList<>(), Status.AVAILABLE);
+    	t1 = new Task("bla1", 8, 0);
+    	t2 = new Task("bla2", 8, 10);
+    	t3 = new Task("bla3", 7, 20, new Task[]{t1, t2});
+    	t4 = new Task("bla4", 9, 30);
     }
     
     @After
