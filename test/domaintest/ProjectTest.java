@@ -215,13 +215,11 @@ public class ProjectTest {
     	String descr = "design system";
     	int estDur = 8;
     	int accDev = 20;
-    	//TODO: how to indicate there are no alternatives?
-    	int alternative = -1;
     	//TODO: how to indicate there are no prereqs?
     	int[] prereq = new int[]{};
     	Status stat = Status.AVAILABLE;
     	
-    	p.createTask(descr, estDur, accDev, alternative, prereq, stat);
+    	p.createTask(descr, estDur, accDev, prereq, stat);
     	
     	SortedMap<Integer, Task> tasks = p.getTasks();
     	assertFalse(tasks.isEmpty());
@@ -232,33 +230,6 @@ public class ProjectTest {
     	assertEquals(added.getAcceptableDeviation(), (double) accDev / 100, EPS);
     	//TODO: is this the expected behaviour?
     	assertEquals(added.getAlternativeTask(), null);
-    	assertTrue(added.getPrerequisiteTasks().isEmpty());
-    }
-    
-    /**
-     * Test createTask method with valid parameters and alternative.
-     */
-    @Test
-    public void testCreateTaskAlternative() {
-    	p.addTask(t1);
-    	String descr = "design system";
-    	int estDur = 8;
-    	int accDev = 20;
-    	int alternative = t1.getId();
-    	//TODO: how to indicate there are no prereqs?
-    	int[] prereq = new int[]{};
-    	Status stat = Status.AVAILABLE;
-    	
-    	p.createTask(descr, estDur, accDev, alternative, prereq, stat);
-    	
-    	SortedMap<Integer, Task> tasks = p.getTasks();
-    	assertFalse(tasks.isEmpty());
-    	
-    	Task added = tasks.get(tasks.firstKey());
-    	assertEquals(added.getDescription(), descr);
-    	assertEquals(added.getEstimatedDuration(), estDur);
-    	assertEquals(added.getAcceptableDeviation(), (double) accDev / 100, EPS);
-    	assertEquals(added.getAlternativeTask(), t1);
     	assertTrue(added.getPrerequisiteTasks().isEmpty());
     }
     
@@ -272,12 +243,10 @@ public class ProjectTest {
     	String descr = "design system";
     	int estDur = 8;
     	int accDev = 20;
-    	//TODO: how to indicate there are no alternatives?
-    	int alternative = -1;
     	int[] prereq = new int[]{t1.getId(), t2.getId()};
     	Status stat = Status.AVAILABLE;
     	
-    	p.createTask(descr, estDur, accDev, alternative, prereq, stat);
+    	p.createTask(descr, estDur, accDev, prereq, stat);
     	
     	SortedMap<Integer, Task> tasks = p.getTasks();
     	assertFalse(tasks.isEmpty());
@@ -285,25 +254,10 @@ public class ProjectTest {
     	Task added = tasks.get(tasks.firstKey());
     	assertEquals(added.getDescription(), descr);
     	assertEquals(added.getEstimatedDuration(), estDur);
-    	assertEquals(added.getAcceptableDeviation(), (double) accDev / 100, EPS);
+    	assertEquals(added.getAcceptableDeviation(), accDev);
     	//TODO: is this the expected behaviour?
     	assertEquals(added.getAlternativeTask(), null);
     	assertTrue(added.getPrerequisiteTasks().isEmpty());
-    }
-    
-    /**
-     * Test createTask method with invalid alternative.
-     */
-    @Test (expected = IllegalArgumentException.class)
-    public void testCreateTaskInvalidAlternative() {
-    	String descr = "design system";
-    	int estDur = 8;
-    	int accDev = 20;
-    	int alternative = t1.getId();
-    	int[] prereq = new int[]{};
-    	Status stat = Status.AVAILABLE;
-    	
-    	p.createTask(descr, estDur, accDev, alternative, prereq, stat);
     }
     
     /**
@@ -314,12 +268,10 @@ public class ProjectTest {
     	String descr = "design system";
     	int estDur = 8;
     	int accDev = 20;
-    	//TODO: how to indicate there are no alternatives?
-    	int alternative = -1;
     	int[] prereq = new int[]{t1.getId(), t2.getId()};
     	Status stat = Status.AVAILABLE;
     	
-    	p.createTask(descr, estDur, accDev, alternative, prereq, stat);
+    	p.createTask(descr, estDur, accDev, prereq, stat);
     }
     
     /**
@@ -331,54 +283,10 @@ public class ProjectTest {
     	String descr = "design system";
     	int estDur = 8;
     	int accDev = 20;
-    	//TODO: how to indicate there are no alternatives?
-    	int alternative = -1;
     	int[] prereq = new int[]{t1.getId(), t2.getId()};
     	Status stat = Status.AVAILABLE;
     	
-    	p.createTask(descr, estDur, accDev, alternative, prereq, stat);
-    }
-    
-    //TODO: ook testen op parameters Task???
-    
-    /**
-     * Test updateTask method with valid parameters.
-     */
-    @Test
-    public void testUpdateTask() {
-    	p.addTask(t1);
-    	p.addTask(t2);
-    	
-    	p.updateTask(t1.getId(), LocalDateTime.of(2015, 2, 16, 12, 30), LocalDateTime.of(2015, 2, 20, 9, 30), Status.AVAILABLE);
-    	//TODO: How to test adaption of times?
-    	assertEquals(t1.getStatus(), Status.AVAILABLE);
-    }
-    
-    /**
-     * Test updateTask method when no tasks.
-     */
-    @Test (expected = IllegalArgumentException.class)
-    public void testUpdateTaskEmpty() {
-    	assertTrue(p.getTasks().isEmpty());
-    	p.updateTask(t1.getId(), LocalDateTime.of(2015, 2, 16, 12, 30), LocalDateTime.of(2015, 2, 20, 9, 30), Status.AVAILABLE);
-    }
-    
-    /**
-     * Test updateTask method with wrong tid.
-     */
-    @Test (expected = IllegalArgumentException.class)
-    public void testUpdateTaskInvalidId() {
-    	p.addTask(t1);
-    	p.updateTask(t2.getId(), LocalDateTime.of(2015, 2, 16, 12, 30), LocalDateTime.of(2015, 2, 20, 9, 30), Status.AVAILABLE);
-    }
-    
-    /**
-     * Test updateTask method with illegal time interval.
-     */
-    @Test (expected = IllegalArgumentException.class)
-    public void testUpdateTaskInvalidTimeInterval() {
-    	p.addTask(t1);
-    	p.updateTask(t1.getId(), LocalDateTime.of(2015, 2, 20, 12, 30), LocalDateTime.of(2015, 2, 16, 9, 30), Status.AVAILABLE);
+    	p.createTask(descr, estDur, accDev, prereq, stat);
     }
     
 }
