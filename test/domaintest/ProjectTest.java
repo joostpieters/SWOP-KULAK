@@ -60,7 +60,6 @@ public class ProjectTest {
     	prereq.add(t2);
     	
     	t3 = new Task("bla3", 7, 0.2f, prereq, Status.UNAVAILABLE);
-    	//TODO: add alternative!!!
     	t4 = new Task("bla4", 9, 0.3f, new ArrayList<>(), Status.AVAILABLE);
     }
     
@@ -230,7 +229,7 @@ public class ProjectTest {
     	assertEquals(added.getAcceptableDeviation(), (double) accDev / 100, EPS);
     	//TODO: is this the expected behaviour?
     	assertEquals(added.getAlternativeTask(), null);
-    	assertTrue(added.getPrerequisiteTasks().isEmpty());
+    	assertEquals(added.getPrerequisiteTasks().length, 0);
     }
     
     /**
@@ -257,7 +256,7 @@ public class ProjectTest {
     	assertEquals(added.getAcceptableDeviation(), accDev);
     	//TODO: is this the expected behaviour?
     	assertEquals(added.getAlternativeTask(), null);
-    	assertTrue(added.getPrerequisiteTasks().isEmpty());
+    	assertEquals(added.getPrerequisiteTasks().length, 0);
     }
     
     /**
