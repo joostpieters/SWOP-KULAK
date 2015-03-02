@@ -25,7 +25,7 @@ public class ProjectManager {
      * @return The list of projects contained by this projectmanager. 
      */
     public ArrayList<Project> getProjects(){
-        return (ArrayList<Project>) projects.clone();
+        return new ArrayList<>(projects);
     }
     
     /**

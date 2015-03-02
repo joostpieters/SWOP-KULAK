@@ -5,7 +5,7 @@ package exception;
  * 
  * @author Frederic, Mathias, Pieter-Jan
  */
-public class ObjectNotFoundException extends Exception{
+public class ObjectNotFoundException extends IllegalArgumentException{
     
     private int id;
     
