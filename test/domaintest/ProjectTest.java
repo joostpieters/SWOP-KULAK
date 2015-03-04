@@ -16,8 +16,9 @@ import domain.Task;
 import static org.junit.Assert.*;
 
 /**
+ * Unit tests for Project
  *
- * @author Mathias
+ * @author Frederic, Mathias, Pieter-Jan 
  */
 public class ProjectTest {
 	
@@ -118,43 +119,6 @@ public class ProjectTest {
     	String descr = null;
     	
     	new Project(id, name, descr, create, due);
-    }
-    
-    /**
-     * Test setFinished method valid case.
-     */
-    @Test 
-    public void testSetFinishedValid() {
-    	p.addTask(t1);
-    	t1.update(t1.getTimeSpan().getStartTime(), t1.getTimeSpan().getEndTime(), Status.FINISHED);
-    	p.finish();
-    	
-    	assertTrue(p.isFinished());
-    }
-    
-    /**
-     * Test setFinished method with only unfinished tasks.
-     */
-    @Test 
-    public void testSetFinishedUnfinished() {
-    	p.addTask(t1);
-    	p.addTask(t2);
-    	p.finish();
-    	
-    	assertFalse(p.isFinished());
-    }
-    
-    /**
-     * Test setFinished method with finished and unfinished tasks.
-     */
-    @Test 
-    public void testSetFinishedUnfinished2() {
-    	p.addTask(t1);
-    	p.addTask(t2);
-    	t1.update(t1.getTimeSpan().getStartTime(), t1.getTimeSpan().getEndTime(), Status.FINISHED);
-    	p.finish();
-    	
-    	assertFalse(p.isFinished());
     }
     
     /**
@@ -341,11 +305,75 @@ public class ProjectTest {
     }
     
     /**
+     * Test finish method, valid case.
+     */
+    @Test 
+    public void testFinishValid() {
+    	p.addTask(t1);
+    	t1.update(t1.getTimeSpan().getStartTime(), t1.getTimeSpan().getEndTime(), Status.FINISHED);
+    	p.finish();
+    	
+    	assertTrue(p.isFinished());
+    }
+    
+    /**
+     * Test finish method with only unfinished tasks.
+     */
+    @Test 
+    public void testFinishUnfinished() {
+    	p.addTask(t1);
+    	p.addTask(t2);
+    	p.finish();
+    	
+    	assertFalse(p.isFinished());
+    }
+    
+    /**
+     * Test finish method with finished and unfinished tasks.
+     */
+    @Test 
+    public void testFinishUnfinished2() {
+    	p.addTask(t1);
+    	p.addTask(t2);
+    	t1.update(t1.getTimeSpan().getStartTime(), t1.getTimeSpan().getEndTime(), Status.FINISHED);
+    	p.finish();
+    	
+    	assertFalse(p.isFinished());
+    }
+    
+    /**
+     * Test finish method when no tasks in the project yet.
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testFinishNoTasks() {
+    	p.finish();
+    }
+    
+    /**
+     * Test finish method when already finished
+     */
+    @Test
+    public void testFinishAlreadyFinished() {
+    	pFinished.finish();
+    	assertTrue(pFinished.isFinished());
+    }
+    
+    /**
      * Test getAvailableTasks method for finished project.
      */
     @Test
     public void testGetAvailableTasksFinished() {
     	assertTrue(pFinished.getAvailableTasks().isEmpty());
+    }
+    
+    /**
+     * Test isOnTime method when project not finished yet.
+     */
+    @Test
+    public void testIsOnTimeUnfinished() {
+    	p.addTask(t1);
+    	p.addTask(t2);
+    	p.isOnTime();
     }
     
 }

@@ -243,9 +243,30 @@ public class Project {
 	 * @see		setFinished
 	 */
 	public void finish() {
-		setFinished(true);
+		if(!isFinished())
+			setFinished(true);
 	}
 	
-	
+	/**
+	 * Get the time details for this project.
+	 * 
+	 * @return	true if this project finished on time or
+	 * 			if this project is estimated to finish on time,
+	 * 			false otherwise.
+	 */
+	public boolean isOnTime() {
+		if(isFinished()) {
+			for(Task t : getTasks())
+				if(t.getTimeSpan().getEndTime().isAfter(this.getDueTime()))
+					return false;
+			return true;
+		} else {
+			for(Task t : getAvailableTasks()) {
+				t.getEstimatedDuration();
+				//TODO: implement (depends on Task)
+			}
+			return true;
+		}
+	}
  
 }
