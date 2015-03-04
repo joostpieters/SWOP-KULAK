@@ -43,7 +43,7 @@ public class Task {
 	 */
 	public Task(String description, long estDur, int accDev, Task[] prereq)
 	{
-		this(description, estDur, accDev, prereq, null);
+		this(description, estDur, accDev, prereq, null, null);
 	}
 
 	/**
@@ -59,9 +59,21 @@ public class Task {
 	 */
 	public Task(String description, long estDur, int accDev)
 	{
-		this(description, estDur, accDev, null, Status.AVAILABLE);
+		this(description, estDur, accDev, null, null, null);
 	}
-
+	
+	/**
+	 * TODO commentaar
+	 * @param description
+	 * @param estDur
+	 * @param accDev
+	 * @param status
+	 * @param timeSpan
+	 */
+	public Task(String description, long estDur, int accDev, Status status, Timespan timeSpan)
+	{
+		this(description, estDur, accDev, null, status, timeSpan);
+	}
 	/**
 	 * Initializes this task based on the given description, estimated duration, acceptable deviation,
 	 * prerequisite tasks and status.
@@ -77,7 +89,7 @@ public class Task {
 	 * @param status
 	 *        The status of this task.
 	 */
-	public Task(String description, long estDur, int accDev, Task[] prereq, Status status){
+	public Task(String description, long estDur, int accDev, Task[] prereq, Status status, Timespan timeSpan){
 		this.id = generateId();
 		setDescription(description);
 		this.estimatedDuration = new Duration(estDur);
@@ -86,7 +98,15 @@ public class Task {
 			setPrerequisiteTasks(new Task[] {});
 		else
 			setPrerequisiteTasks(prereq);
-		setStatus(status);
+		
+		// first we set the status of this task to UNAVAILABLE or AVAILABLE
+		// to make sure the state of this task is valid.
+		updateStatus(); 
+		
+		if(status == Status.FINISHED || status == Status.FAILED)
+			update(timeSpan, status);
+		else if(status != null)
+			throw new IllegalArgumentException("Illegal status"); // TODO tekst uitschrijven + commentaar
 	}
 
 	/**
@@ -206,7 +226,7 @@ public class Task {
 	 */
 	public Task[] getPrerequisiteTasks()
 	{
-		return (Task[])getPrerequisiteTasks().clone();
+		return (Task[])this.prerequisiteTasks.clone();
 	}
 
 	/**
@@ -214,7 +234,7 @@ public class Task {
 	 */
 	public Status getStatus()
 	{
-		if(this.status.equals(Status.UNAVAILABLE))
+		if(this.status == Status.UNAVAILABLE)
 			updateStatus();
 		return this.status;
 	}
@@ -222,18 +242,17 @@ public class Task {
 
 	/**
 	 * Updates the status of this task to AVAILABLE if all the prerequisite tasks are
-	 * fulfilled and if the status of this task is currently equal to UNAVAILABLE.
+	 * fulfilled and if the status of this task is currently equal to UNAVAILABLE or not initialized.
 	 */
 	private void updateStatus()
 	{
-		if(this.status.equals(Status.UNAVAILABLE))
+		if(this.status == Status.UNAVAILABLE || this.status == null)
 		{
-			boolean allPrerequisitesFulfilled = true;
+			Status newStatus = Status.AVAILABLE;
 			for(Task t : getPrerequisiteTasks())
 				if(!t.isFulfilled())
-					allPrerequisitesFulfilled = false;
-			if(allPrerequisitesFulfilled)
-				setStatus(Status.AVAILABLE);
+					newStatus = Status.UNAVAILABLE;
+			setStatus(newStatus);
 		}
 	}
 	/**
@@ -256,7 +275,7 @@ public class Task {
 	 * 
 	 * @return The estimated duration of this task multiplied by (100 + (the acceptable deviation of this task))/100
 	 */
-	private Duration calculateMaxDuration()
+	public Duration calculateMaxDuration() // TODO zet terug op private!
 	{
 		return getEstimatedDuration().multiplyBy( (100d + getAcceptableDeviation())/100d );
 	}
@@ -288,8 +307,28 @@ public class Task {
 	{
 		return (0 <= accDev) && (accDev <= 100);
 	}
-
 	/**
+	 * Updates the status and the time span of this task.
+	 * 
+	 * @param timeSpan
+	 *        The new time span of this task.
+	 * @param status
+	 *        The new status of this task.
+	 * @throws IllegalArgumentException
+	 *         The given status is neither FAILED nor FINISHED and is therefore
+	 *         not a valid status that can be assigned to this task.
+	 */
+	public void update(Timespan timeSpan, Status status){
+		if( (!status.equals(Status.FINISHED)) && !status.equals(Status.FAILED) )
+			throw new IllegalArgumentException(
+					"The given status is neither FAILED nor FINISHED and is therefore not a valid status "
+							+ "that can be assigned to this task.");
+
+		setTimeSpan(timeSpan);
+		setStatus(status);
+
+	}
+	/** TODO deprecated!!!!!
 	 * Updates the status and the time span of this task.
 	 * 
 	 * @param start The beginning of the time span of this task.
@@ -342,13 +381,20 @@ public class Task {
 	/**
 	 * Sets the status of this task to the given status.
 	 * 
-	 * @param status The new status of this task.
-	 * @throws IllegalStateException If the given status is FINISHED while this task is not available.
+	 * @param status
+	 *        The new status of this task.
+	 * @throws IllegalStateException
+	 *         If the given status is FINISHED while this task is not available or
+	 *         if the given status is FAILED while this task is already finished.
 	 */
 	private void setStatus(Status status)
 	{
-		if((status.equals(Status.FINISHED) || status.equals(Status.FAILED)) )
-			throw new IllegalStateException("Attempted to set task status to FINISHED or FAILEDwhile the task is not available.");
+		if(status.equals(Status.FINISHED) && getStatus() != Status.AVAILABLE)
+			throw new IllegalStateException("Attempted to set task status to FINISHED "
+					+ " while the task is not available.");
+		if(status.equals(Status.FAILED) && getStatus() == Status.FINISHED)
+			throw new IllegalStateException("Attempted to set task status to FAILED "
+						+ " while the task is already finished.");
 		this.status = status;
 	}
 
@@ -370,18 +416,20 @@ public class Task {
 	}
 
 	/**
-	 * Checks whether this task ends before the given time.
+	 * Checks whether this task ends before the given time span.
 	 * 
-	 * @param startTime The time to check.
-	 * @return True if the time span of this task ends before the given time.
-	 * @throws IllegalStateException If this task does not have a time span.
+	 * @param timeSpan
+	 *        The time span to check.
+	 * @return True if the time span of this task ends before the start of the given time span.
+	 * @throws IllegalStateException
+	 *         If this task does not have a time span.
 	 */
-	public boolean endsBefore(LocalDateTime startTime)
+	public boolean endsBefore(Timespan timeSpan)
 	{
 		if(getTimeSpan() == null)
 			throw new IllegalStateException(
 					"Tried to check whether this task ends before the given time while this task doesn't have a time span.");
-		return getTimeSpan().getEndTime().isBefore(startTime); // TODO misschien beter in Timespan klasse?
+		return getTimeSpan().endsBefore(timeSpan);
 	}
 
 	/** TODO unfinished
@@ -397,7 +445,7 @@ public class Task {
 		if(getPrerequisiteTasks() != null)
 		{
 			for(Task t: getPrerequisiteTasks())
-				if(t.hasTimeSpan() && !t.endsBefore(timeSpan.getStartTime()))
+				if(t.hasTimeSpan() && !t.endsBefore(timeSpan))
 					return false;
 		}
 		/*TODO
@@ -464,11 +512,47 @@ public class Task {
 	/**
 	 * Sets the alternative task of this task to the given alternative task.
 	 * 
-	 * @param alternativeTask The new alternative task for this task.
+	 * @param alternativeTask
+	 *        The alternative task for this task.
+	 * @throws IllegalStateException
+	 *         If the state of this task is not FAILED.
+	 * @throws IllegalStateException
+	 *         If this task already has an alternative task.
+	 * @throws IllegalArgumentException
+	 *         If this task can't have the given task as its alternative task.
+	 * @see    canHaveAsAlternativeTask
 	 */
-	private void setAlternativeTask(Task alternativeTask)
+	public void setAlternativeTask(Task alternativeTask)
 	{
+		if(getStatus() != Status.FAILED)
+			throw new IllegalStateException(
+					"Can't set an alternative task for this "
+					+ "task because the status of this task is not equal to FAILED.");
+		
+		if(getAlternativeTask() != null)
+			throw new IllegalStateException(
+					"Can't set an alternative task for this task because "
+					+ "this task already has an alternative task.");
+		
+		if(!canHaveAsAlternativeTask(alternativeTask))
+			throw new IllegalArgumentException(
+					"This task can't have the given task as its alternative task.");
 		this.alternativeTask = alternativeTask;
+	}
+	
+	/**
+	 * Checks whether this task can have the given alternative task as its task.
+	 * 
+	 * @param alternativeTask
+	 *        The alternative task to check.
+	 * @return False if the alternativeTask is equal to null.
+	 *         TODO!!!!
+	 */
+	public boolean canHaveAsAlternativeTask(Task alternativeTask)
+	{
+		if(alternativeTask == null)
+			return false;
+		return true; // TODO!!!!
 	}
 	/**
 	 * Generates an id for a new task.

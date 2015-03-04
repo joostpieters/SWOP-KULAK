@@ -215,7 +215,7 @@ public class Project {
 			arr[i] = getTask(prereq[i]);
 		}
 
-		Task t = new Task(descr, estDur, accdev, arr, status);
+		Task t = new Task(descr, estDur, accdev, arr, status, null); // TODO Frederic: Ik heb zelf ", null" erbij gezet omdat de constructor van task veranderd is, ik weet niet of dit het gewenste resultaat is?
 		addTask(t);
 	}
 	
