@@ -480,4 +480,9 @@ public class Task {
 		return nextId++;
 	}
 
+	public boolean isFinished() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

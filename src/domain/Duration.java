@@ -130,7 +130,7 @@ public class Duration implements Comparable<Duration>{
      * @return True if and only is the given begin time is strictly before the 
      * given end time.
      */
-    private static boolean isValidInterval(LocalDateTime begin, LocalDateTime end){
+    public static boolean isValidInterval(LocalDateTime begin, LocalDateTime end){
         return begin.isBefore(end);
     }
     
@@ -142,7 +142,7 @@ public class Duration implements Comparable<Duration>{
      * and the end workday time, including the boundaries and the given times doaesn't
      * fall in a weekend.
      */
-    private static boolean isValidWorkTime(LocalDateTime time){
+    public static boolean isValidWorkTime(LocalDateTime time){
         return time.toLocalTime().compareTo(getBeginWorkDay()) >= 0 &&
                 time.toLocalTime().compareTo(getEndWorkDay()) <= 0 &&
                 !(time.getDayOfWeek().equals(DayOfWeek.SATURDAY) || time.getDayOfWeek().equals(DayOfWeek.SUNDAY));
@@ -158,7 +158,7 @@ public class Duration implements Comparable<Duration>{
      * @return The number of weekdays between the given moments, including the begin
      * excluding the end.
      */
-    private static long getWorDaysBetween(LocalDateTime begin, LocalDateTime end) {
+    public static long getWorDaysBetween(LocalDateTime begin, LocalDateTime end) {
         
         int w1 = begin.getDayOfWeek().getValue();
         begin = begin.minusDays(w1-1);

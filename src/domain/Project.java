@@ -17,6 +17,7 @@ public class Project {
 	public static final int[] NO_DEPENDENCIES = new int[]{};
     
     private final int id;
+    private boolean isFinished;
     private final String name;
     private final String description;
     private final Timespan creationDueTime;
@@ -48,6 +49,7 @@ public class Project {
     		throw new IllegalArgumentException("Both name and description are expected.");
     	
     	this.id = id;
+    	setFinished(false);
     	this.name = name;
     	this.description = descr;
     	this.creationDueTime = new Timespan(creation, due);
@@ -62,6 +64,41 @@ public class Project {
 	 */
 	public int getId() {
 		return id;
+	}
+
+	/**
+	 * @return 	The finished-flag indicating the state:
+	 * 			true if this project is finished, false otherwise.
+	 */
+	public boolean isFinished() {
+		return isFinished;
+	}
+
+	/**
+	 * Set the finished-flag of this project.
+	 * Flag will remain false if one of the tasks isn't finished yet.
+	 * 
+	 * @param 	isFinished 
+	 * 			The value to set the flag to.
+	 * @throws	IllegalStateException
+	 * 			if this project is already finished.
+	 * @throws 	IllegalArgumentException
+	 * 			if this project doesn't have any tasks yet.
+	 */
+	private void setFinished(boolean isFinished) {
+		if(isFinished())
+			throw new IllegalStateException("This project has already been finished.");
+		if(isFinished && getTasks().isEmpty())
+			throw new IllegalArgumentException("Project can only be finished when it has more than 1 task.");
+		
+		if(isFinished)
+			for(Task t : getTasks())
+				if(!t.isFinished()) {
+					isFinished = false;
+					break;
+				}
+		
+		this.isFinished = isFinished;
 	}
 
 	/**
@@ -96,8 +133,8 @@ public class Project {
 	 * 
 	 * @return	a list of tasks contained in this project.
 	 */
-	public SortedMap<Integer, Task> getTasks(){
-        return new TreeMap<>(tasks);
+	public List<Task> getTasks(){
+        return new LinkedList<Task>(tasks.values());
     }
 	
 	/**
@@ -120,6 +157,8 @@ public class Project {
 	 * 
 	 * @param 	t
 	 * 			The task to be added.
+	 * @throws	IllegalStateException
+	 * 			if this project is already finished.
 	 * @throws	NullPointerException
 	 * 			if t == null.
 	 * @throws	IllegalArgumentException
@@ -128,32 +167,20 @@ public class Project {
 	 * 			which doesn't exist in this project.
 	 */
 	public void addTask(Task t) {
+		if(isFinished())
+			throw new IllegalStateException("This project has already been finished.");
 		if(t == null)
-			throw new NullPointerException("You can't add null-tasks to a project.");
+			throw new IllegalArgumentException("You can't add null-tasks to a project.");
 		if(t.getAlternativeTask() != null && !tasks.containsKey(t.getAlternativeTask().getId()))
 			throw new IllegalArgumentException(
 					"The task this task should be an alternative for, doesn't exist in this project.");
+		
 		for(Task x : t.getPrerequisiteTasks())
 			if(!tasks.containsKey(x.getId()))
 				throw new IllegalArgumentException(
-						"One of the prerequisite tasks doesn't exist in this project.");
+						"One or more of the prerequisite tasks doesn't exist in this project.");
+		
 		this.tasks.put(t.getId(), t);
-	}
-
-    /****************************************
-     * Validation							*
-     ****************************************/
-	
-	/**
-	 * Check whether this time pair is correct.
-	 * 
-	 * @param start
-	 * @param end
-	 * @return
-	 */
-	//TODO: Information expert? Necessary?
-	public boolean checkTimeOrder(LocalDateTime start, LocalDateTime end) {
-		return start.isBefore(end);
 	}
     
     /****************************************
@@ -175,25 +202,34 @@ public class Project {
 	 * 			An array of id's of tasks that the new task will depend on.
 	 * @param 	status
 	 * 			The status for this new task.
+	 * @throws	IllegalStateException
+	 * 			if this project is already finished.
 	 */
 	public void createTask(String descr, int estDur, int accdev, int[] prereq, Status status) {
+		if(isFinished())
+			throw new IllegalStateException("This project has already been finished.");
+		
 		Task[] arr = new Task[prereq.length];
+		
 		for(int i : prereq) {
 			arr[i] = getTask(prereq[i]);
 		}
-		//TODO: Constructor for Task!!!!
+
 		Task t = new Task(descr, estDur, accdev, arr, status);
 		addTask(t);
-		throw new IllegalStateException("waiting for new task constructor.");
 	}
 	
 	/**
 	 * Return all tasks from this project which are available.
 	 * 
-	 * @return	all tasks t for which t.isAvailable() is true.
+	 * @return	all tasks t for which t.isAvailable() is true,
+	 * 			an empty list if this project is already finished.
 	 */
 	public List<Task> getAvailableTasks() {
 		List<Task> result = new LinkedList<Task>();
+		if(isFinished())
+			return result;
+		
 		for(Task t : tasks.values()) {
 			if(t.isAvailable())
 				result.add(t);
@@ -201,6 +237,36 @@ public class Project {
 		return result;
 	}
 	
+	/**
+	 * Set the finished-flag to true.
+	 * 
+	 * @see		setFinished
+	 */
+	public void finish() {
+		if(!isFinished())
+			setFinished(true);
+	}
 	
+	/**
+	 * Get the time details for this project.
+	 * 
+	 * @return	true if this project finished on time or
+	 * 			if this project is estimated to finish on time,
+	 * 			false otherwise.
+	 */
+	public boolean isOnTime() {
+		if(isFinished()) {
+			for(Task t : getTasks())
+				if(t.getTimeSpan().getEndTime().isAfter(this.getDueTime()))
+					return false;
+			return true;
+		} else {
+			for(Task t : getAvailableTasks()) {
+				t.getEstimatedDuration();
+				//TODO: implement (depends on Task)
+			}
+			return true;
+		}
+	}
  
 }
