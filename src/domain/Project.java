@@ -170,7 +170,7 @@ public class Project {
 		if(isFinished())
 			throw new IllegalStateException("This project has already been finished.");
 		if(t == null)
-			throw new NullPointerException("You can't add null-tasks to a project.");
+			throw new IllegalArgumentException("You can't add null-tasks to a project.");
 		if(t.getAlternativeTask() != null && !tasks.containsKey(t.getAlternativeTask().getId()))
 			throw new IllegalArgumentException(
 					"The task this task should be an alternative for, doesn't exist in this project.");
