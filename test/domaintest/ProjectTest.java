@@ -1,8 +1,8 @@
 package domaintest;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.SortedMap;
+import java.util.Collection;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -29,8 +29,8 @@ public class ProjectTest {
 	private LocalDateTime create = LocalDateTime.of(2015, 2, 9, 0, 0);
 	private LocalDateTime due = LocalDateTime.of(2015, 2, 13, 0, 0);
 
-	Project p;
-	private Task t1, t2, t3, t4;
+	Project p, pFinished;
+	private Task t1, t2, t3, t4, t5;
 	
     public ProjectTest() {
     }
@@ -47,11 +47,17 @@ public class ProjectTest {
     public void setUp() {
     	p = new Project(id, name, descr, create, due);
     	
-    	//TODO: easy constructors!!!
     	t1 = new Task("bla1", 8, 0);
     	t2 = new Task("bla2", 8, 10);
     	t3 = new Task("bla3", 7, 20, new Task[]{t1, t2});
+    	//TODO: alternative task!
     	t4 = new Task("bla4", 9, 30);
+    	t5 = new Task("bla5", 3, 10);
+    	
+    	pFinished = new Project(id, name, descr, create, due);
+    	pFinished.addTask(t5);
+    	t5.update(t5.getTimeSpan().getStartTime(), t5.getTimeSpan().getEndTime(), Status.FINISHED);
+    	pFinished.finish();
     }
     
     @After
@@ -115,6 +121,43 @@ public class ProjectTest {
     }
     
     /**
+     * Test setFinished method valid case.
+     */
+    @Test 
+    public void testSetFinishedValid() {
+    	p.addTask(t1);
+    	t1.update(t1.getTimeSpan().getStartTime(), t1.getTimeSpan().getEndTime(), Status.FINISHED);
+    	p.finish();
+    	
+    	assertTrue(p.isFinished());
+    }
+    
+    /**
+     * Test setFinished method with only unfinished tasks.
+     */
+    @Test 
+    public void testSetFinishedUnfinished() {
+    	p.addTask(t1);
+    	p.addTask(t2);
+    	p.finish();
+    	
+    	assertFalse(p.isFinished());
+    }
+    
+    /**
+     * Test setFinished method with finished and unfinished tasks.
+     */
+    @Test 
+    public void testSetFinishedUnfinished2() {
+    	p.addTask(t1);
+    	p.addTask(t2);
+    	t1.update(t1.getTimeSpan().getStartTime(), t1.getTimeSpan().getEndTime(), Status.FINISHED);
+    	p.finish();
+    	
+    	assertFalse(p.isFinished());
+    }
+    
+    /**
      * Test addTask method with simple independent tasks.
      */
     @Test
@@ -122,20 +165,14 @@ public class ProjectTest {
     	//TODO: wat met geclonede tasks? mogelijk? zelfde id?
     	
     	p.addTask(t1);
-    	assertTrue(p.getTasks().containsKey(t1.getId()));
-    	assertTrue(p.getTasks().containsValue(t1));
-    	assertFalse(p.getTasks().containsKey(t2.getId()));
-    	assertFalse(p.getTasks().containsValue(t2));
-    	assertFalse(p.getTasks().containsKey(-1));
-    	assertFalse(p.getTasks().containsValue(null));
+    	assertTrue(p.getTasks().contains(t1));
+    	assertFalse(p.getTasks().contains(t2));
+    	assertFalse(p.getTasks().contains(null));
     	
     	p.addTask(t2);
-    	assertTrue(p.getTasks().containsKey(t1.getId()));
-    	assertTrue(p.getTasks().containsValue(t1));
-    	assertTrue(p.getTasks().containsKey(t2.getId()));
-    	assertTrue(p.getTasks().containsValue(t2));
-    	assertFalse(p.getTasks().containsKey(-1));
-    	assertFalse(p.getTasks().containsValue(null));
+    	assertTrue(p.getTasks().contains(t1));
+    	assertTrue(p.getTasks().contains(t2));
+    	assertFalse(p.getTasks().contains(null));
     }
     
     /**
@@ -155,10 +192,8 @@ public class ProjectTest {
     	p.addTask(t2);
     	p.addTask(t3);
     	
-    	assertTrue(p.getTasks().containsKey(t3.getId()));
-    	assertTrue(p.getTasks().containsValue(t3));
-    	assertFalse(p.getTasks().containsKey(-1));
-    	assertFalse(p.getTasks().containsValue(null));
+    	assertTrue(p.getTasks().contains(t3));
+    	assertFalse(p.getTasks().contains(null));
     }
     
     /**
@@ -211,10 +246,11 @@ public class ProjectTest {
     	
     	p.createTask(descr, estDur, accDev, prereq, stat);
     	
-    	SortedMap<Integer, Task> tasks = p.getTasks();
+    	Collection<Task> tasks = p.getTasks();
     	assertFalse(tasks.isEmpty());
+    	assertEquals(tasks.size(), 1);
     	
-    	Task added = tasks.get(tasks.firstKey());
+    	Task added = (Task) tasks.toArray()[0];
     	assertEquals(added.getDescription(), descr);
     	assertEquals(added.getEstimatedDuration(), estDur);
     	assertEquals(added.getAcceptableDeviation(), (double) accDev / 100, EPS);
@@ -238,10 +274,11 @@ public class ProjectTest {
     	
     	p.createTask(descr, estDur, accDev, prereq, stat);
     	
-    	SortedMap<Integer, Task> tasks = p.getTasks();
+    	Collection<Task> tasks = p.getTasks();
     	assertFalse(tasks.isEmpty());
+    	assertEquals(tasks.size(), 3);
     	
-    	Task added = tasks.get(tasks.firstKey());
+    	Task added = (Task) tasks.toArray()[2];
     	assertEquals(added.getDescription(), descr);
     	assertEquals(added.getEstimatedDuration(), estDur);
     	assertEquals(added.getAcceptableDeviation(), accDev);
@@ -277,6 +314,38 @@ public class ProjectTest {
     	Status stat = Status.AVAILABLE;
     	
     	p.createTask(descr, estDur, accDev, prereq, stat);
+    }
+    
+    /**
+     * Test getAvailableTasks method.
+     */
+    @Test
+    public void testGetAvailableTasks() {
+    	p.addTask(t1);
+    	p.addTask(t2);
+    	p.addTask(t3);
+    	
+    	List<Task> l = p.getAvailableTasks();
+    	assertEquals(l.size(), 2);
+    	assertTrue(l.contains(t1));
+    	assertTrue(l.contains(t2));
+    	assertFalse(l.contains(t3));
+    	
+    	t1.update(t1.getTimeSpan().getStartTime(), t1.getTimeSpan().getEndTime(), Status.FINISHED);
+    	t2.update(t2.getTimeSpan().getStartTime(), t2.getTimeSpan().getEndTime(), Status.FINISHED);
+
+    	assertEquals(l.size(), 1);
+    	assertFalse(l.contains(t1));
+    	assertFalse(l.contains(t2));
+    	assertTrue(l.contains(t3));
+    }
+    
+    /**
+     * Test getAvailableTasks method for finished project.
+     */
+    @Test
+    public void testGetAvailableTasksFinished() {
+    	assertTrue(pFinished.getAvailableTasks().isEmpty());
     }
     
 }

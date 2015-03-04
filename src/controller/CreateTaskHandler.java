@@ -4,7 +4,8 @@ import domain.Project;
 import domain.ProjectManager;
 import domain.Status;
 import domain.Task;
-import java.util.Map;
+
+import java.util.List;
 
 /**
  * This handler, handles the create task use case
@@ -31,7 +32,7 @@ public class CreateTaskHandler {
      * @param Pid The id of the project to get the tasks from.
      * @return A list containing all the tasks of the project with the given id.
      */   
-    public Map<Integer, Task>  getTasksByProject(int Pid){
+    public List<Task>  getTasksByProject(int Pid){
         return manager.getProject(Pid).getTasks();
     }
     
