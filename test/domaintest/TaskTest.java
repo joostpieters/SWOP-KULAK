@@ -4,21 +4,26 @@ import domain.Duration;
 import domain.Status;
 import domain.Task;
 import domain.Timespan;
+
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
  *
- * @author Mathias
+ * @author Frederic, Mathias, Pieter-Jan
  */
 public class TaskTest {
     
+	private Task taskUpdate, t1, t2, t3, t4, t5;
     public TaskTest() {
     }
     
@@ -32,6 +37,10 @@ public class TaskTest {
     
     @Before
     public void setUp() {
+    	taskUpdate = new Task("description!", 10, 20);
+    	t1 = new Task("t1", 10, 10);
+    	t2 = new Task("t2", 20, 10);
+    	t2 = new Task("t2", 20, 10);
     }
     
     @After
@@ -44,42 +53,21 @@ public class TaskTest {
     @Test
     public void testGetId() {
         System.out.println("getId");
-        Task instance = null;
+        System.out.println("");
+        Task instance = new Task("description", 40, 20);
+        Task instance2 = new Task("Other description", 30, 10);
+        
         int expResult = 0;
         int result = instance.getId();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+        assertNotEquals(instance.getId(), instance2.getId());
+        assertTrue(instance.getId() >= 0);
+        assertTrue(instance2.getId() > instance.getId());
 
-    /**
-     * Test of getDescription method, of class Task.
-     */
-    @Test
-    public void testGetDescription() {
-        System.out.println("getDescription");
-        Task instance = null;
-        String expResult = "";
-        String result = instance.getDescription();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime start = LocalDateTime.parse("1994-10-30 10:40", formatter);
+        System.out.println(start.toString());
     }
-
-    /**
-     * Test of getEstimatedDuration method, of class Task.
-     */
-    @Test
-    public void testGetEstimatedDuration() {
-        System.out.println("getEstimatedDuration");
-        Task instance = null;
-        Duration expResult = null;
-        Duration result = instance.getEstimatedDuration();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
+    
     /**
      * Test of getTimeSpan method, of class Task.
      */
@@ -91,6 +79,7 @@ public class TaskTest {
         Timespan result = instance.getTimeSpan();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
+
         fail("The test case is a prototype.");
     }
 
@@ -129,8 +118,8 @@ public class TaskTest {
     public void testGetPrerequisiteTasks() {
         System.out.println("getPrerequisiteTasks");
         Task instance = null;
-        ArrayList<Task> expResult = null;
-        ArrayList<Task> result = instance.getPrerequisiteTasks();
+        Task[] expResult = null;
+        Task[] result = instance.getPrerequisiteTasks();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -152,7 +141,7 @@ public class TaskTest {
 
     /**
      * Test of getDelay method, of class Task.
-     */
+     
     @Test
     public void testGetDelay() {
         System.out.println("getDelay");
@@ -162,23 +151,28 @@ public class TaskTest {
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
+    }*/
+
+    /**
+     * Test of update method, of class Task, attempting to set status to UNAVAILABLE
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testUpdateInvalidStatus1() {
+    	LocalDateTime startTime = LocalDateTime.of(1994, 10, 30, 0, 0);
+    	LocalDateTime endTime = LocalDateTime.of(1994, 11, 30, 0, 0);
+    	taskUpdate.update(startTime, endTime, Status.UNAVAILABLE);
     }
 
     /**
-     * Test of update method, of class Task.
+     * Test of update method, of class Task, attempting to set status to AVAILABLE
      */
-    @Test
-    public void testUpdate() {
-        System.out.println("update");
-        LocalDateTime start = null;
-        LocalDateTime end = null;
-        Status status = null;
-        Task instance = null;
-        instance.update(start, end, status);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    @Test (expected = IllegalArgumentException.class)
+    public void testUpdateInvalidStatus2() {
+    	LocalDateTime startTime = LocalDateTime.of(1994, 10, 30, 0, 0);
+    	LocalDateTime endTime = LocalDateTime.of(1994, 11, 30, 0, 0);
+    	taskUpdate.update(startTime, endTime, Status.AVAILABLE);
     }
-
+    
     /**
      * Test of isAvailable method, of class Task.
      */
@@ -226,12 +220,13 @@ public class TaskTest {
      * Test of isValidTimeSpan method, of class Task.
      */
     @Test
-    public void testIsValidTimeSpan() {
-        System.out.println("isValidTimeSpan");
+    public void testCanHaveAsTimeSpan() {
+        System.out.println("canHaveAsTimeSpan");
+        
         Timespan timeSpan = null;
         Task instance = null;
         boolean expResult = false;
-        boolean result = instance.isValidTimeSpan(timeSpan);
+        boolean result = instance.canHaveAsTimeSpan(timeSpan);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");

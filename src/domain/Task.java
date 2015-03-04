@@ -47,7 +47,8 @@ public class Task {
 	}
 
 	/**
-	 * Initializes this task based on the given description, estimated duration and acceptable deviation.
+	 * Initializes this task based on the given description, estimated duration
+	 * and acceptable deviation with status AVAILABLE.
 	 *  
 	 * @param description
 	 *        The description of this task.
@@ -65,21 +66,55 @@ public class Task {
 	 * Initializes this task based on the given description, estimated duration, acceptable deviation,
 	 * prerequisite tasks and status.
 	 * 
-	 * @param description The description of this task.
-	 * @param estDur The estimated duration in minutes of this task.
-	 * @param accDev The acceptable deviation of this task expressed as an integer between 0 and 100.
-	 * @param prereq The list of prerequisite tasks which need to be finished before this task can be started.
-	 * @param status The status of this task.
+	 * @param description
+	 *        The description of this task.
+	 * @param estDur
+	 *        The estimated duration in minutes of this task.
+	 * @param accDev
+	 *        The acceptable deviation of this task expressed as an integer between 0 and 100.
+	 * @param prereq
+	 *        The list of prerequisite tasks which need to be finished before this task can be started.
+	 * @param status
+	 *        The status of this task.
 	 */
 	public Task(String description, long estDur, int accDev, Task[] prereq, Status status){
 		this.id = generateId();
-		this.description = description;
+		setDescription(description);
 		this.estimatedDuration = new Duration(estDur);
 		setAcceptableDeviation(accDev);
-		setPrerequisiteTasks(prereq);
+		if(prereq == null)
+			setPrerequisiteTasks(new Task[] {});
+		else
+			setPrerequisiteTasks(prereq);
 		setStatus(status);
 	}
 
+	/**
+	 * Sets the description of this task to the given description.
+	 * 
+	 * @param description
+	 *        The new description of this task.
+	 * @throws IllegalArgumentException
+	 *         If this task can't have the given description as its description.
+	 */
+	private void setDescription(String description)
+	{
+		if(!canHaveAsDescription(description))
+			throw new IllegalArgumentException("The given description is uninitialized.");
+		else
+			this.description = description;
+	}
+
+	/**
+	 * Checks whether this task can have the given description as its description.
+	 * 
+	 * @param description The description to check.
+	 * @return True if and only if the given description is not equal to null.
+	 */
+	public boolean canHaveAsDescription(String description)
+	{
+		return description != null;
+	}
 	/**
 	 * Sets the list of prerequisite tasks to the given list of prerequisite tasks.
 	 * 
@@ -213,7 +248,7 @@ public class Task {
 		if(getTimeSpan()==null)
 			return new Duration(0);
 
-		return getTimeSpan().getDelay(calculateMaxDuration());
+		return getTimeSpan().getExcess( calculateMaxDuration() );
 	}
 
 	/**
@@ -264,9 +299,10 @@ public class Task {
 	 *                                  not a valid status that can be assigned to this task.
 	 */
 	public void update(LocalDateTime start, LocalDateTime end, Status status){
-		if(status != Status.FINISHED && status != Status.FAILED)
+		if( (!status.equals(Status.FINISHED)) && !status.equals(Status.FAILED) )
 			throw new IllegalArgumentException(
-					"The given status is neither FAILED nor FINISHED and is therefore not a valid status.");
+					"The given status is neither FAILED nor FINISHED and is therefore not a valid status "
+							+ "that can be assigned to this task.");
 
 		setTimeSpan(new Timespan(start, end));
 		setStatus(status);
@@ -320,12 +356,15 @@ public class Task {
 	/**
 	 * Sets the time span of this task to the given time span.
 	 * 
-	 * @param timeSpan The new time span of this task.
-	 * @throws IllegalArgumentException If the given time span is not a valid time span for this task.
+	 * @param  timeSpan
+	 *         The new time span of this task.
+	 * @throws IllegalArgumentException
+	 *         If this task can't have the given time span as its time span.
+	 * @see    canHaveAsTimeSpan
 	 */
 	private void setTimeSpan(Timespan timeSpan)
 	{
-		if(!isValidTimeSpan(timeSpan))
+		if(!canHaveAsTimeSpan(timeSpan))
 			throw new IllegalArgumentException("The given time span is not a valid time span for this task");
 		this.timeSpan = timeSpan;
 	}
@@ -348,11 +387,12 @@ public class Task {
 	/** TODO unfinished
 	 * Checks whether the given time span is a valid time span for this task.
 	 * 
-	 * @param timeSpan The time span to check.
+	 * @param timeSpan
+	 *        The time span to check.
 	 * @return False if any of the prerequisite tasks has a time span that doesn't end before the given time span.
 	 *         True in every other case.
 	 */
-	public boolean isValidTimeSpan(Timespan timeSpan) // TODO nog niet af.
+	public boolean canHaveAsTimeSpan(Timespan timeSpan) // TODO nog niet af.
 	{
 		if(getPrerequisiteTasks() != null)
 		{
