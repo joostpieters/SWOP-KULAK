@@ -322,10 +322,8 @@ public class Task {
 	 *         not a valid status that can be assigned to this task.
 	 */
 	public void update(LocalDateTime start, LocalDateTime end, Status status){
-		if( (!status.equals(Status.FINISHED)) && !status.equals(Status.FAILED) )
-			throw new IllegalArgumentException(
-					"The given status is neither FAILED nor FINISHED and is therefore not a valid status "
-							+ "that can be assigned to this task.");
+		if(!canUpdateStatus(status))
+			throw new IllegalArgumentException("This task can't be updated to the given status.");
 		//TODO check of start, end == null?
 		setTimeSpan(new Timespan(start, end));
 		setStatus(status);
@@ -367,21 +365,32 @@ public class Task {
 	 * 
 	 * @param status
 	 *        The new status of this task.
-	 * @throws IllegalStateException
-	 *         If the given status is FINISHED while this task is not available or
-	 *         if the given status is FAILED while this task is already finished.
 	 */
 	private void setStatus(Status status)
 	{
-		if(status.equals(Status.FINISHED) && getStatus() != Status.AVAILABLE)
-			throw new IllegalStateException("Attempted to set task status to FINISHED "
-					+ " while the task is not available.");
-		if(status.equals(Status.FAILED) && getStatus() == Status.FINISHED)
-			throw new IllegalStateException("Attempted to set task status to FAILED "
-						+ " while the task is already finished.");
 		this.status = status;
 	}
-
+	
+	/**
+	 * Checks whether the given status can be assigned to this task.
+	 * 
+	 * @param status
+	 *        The status to check.
+	 * @return False if the status of this task is not equal to available.
+	 *         False if the given status is equal to unavailable.
+	 *         False if the given status is equal to available.
+	 *         True otherwise.
+	 */
+	public boolean canUpdateStatus(Status status) // TODO verplaatsen
+	{
+		if(getStatus() != Status.AVAILABLE)
+			return false;
+		if(status == Status.UNAVAILABLE)
+			return false;
+		if(status == Status.AVAILABLE)
+			return false;
+		return true;
+	}
 
 	/**
 	 * Sets the time span of this task to the given time span.

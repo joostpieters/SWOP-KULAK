@@ -53,7 +53,7 @@ public class TaskTest {
     			LocalDateTime.of(2015, 3, 4, 15, 33)
     			);
     	t6 = new Task("t6", 10, 3, Status.FAILED, t6ts.getStartTime(), t6ts.getEndTime());
-    	t7 = new Task("t7", 15, 4, new Task[] {t1, t2, t4}, Status.FAILED, t6ts.getStartTime(), t6ts.getEndTime());
+    	t7 = new Task("t7", 15, 4, Status.FAILED, t6ts.getStartTime(), t6ts.getEndTime());
     	t7alternative = new Task("alternative for t7!", 10, 2);
     	t7.setAlternativeTask(t7alternative);
     	t8 = new Task("depends on t7", 33, 3, new Task[] { t7} );
@@ -147,34 +147,6 @@ public class TaskTest {
     }
 
     /**
-     * Test of getPrerequisiteTasks method, of class Task.
-     */
-    @Test
-    public void testGetPrerequisiteTasks() {
-        System.out.println("getPrerequisiteTasks");
-        Task instance = null;
-        Task[] expResult = null;
-        Task[] result = instance.getPrerequisiteTasks();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getDelay method, of class Task.
-     
-    @Test
-    public void testGetDelay() {
-        System.out.println("getDelay");
-        Task instance = null;
-        Duration expResult = null;
-        Duration result = instance.getDelay();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }*/
-
-    /**
      * Test of update method, of class Task, attempting to set status to UNAVAILABLE
      */
     @Test (expected = IllegalArgumentException.class)
@@ -196,12 +168,20 @@ public class TaskTest {
     /**
      * Test of update method, of class Task, attempting to set status to FAILED from FINISHED
      */
-    @Test (expected = IllegalStateException.class)
+    @Test (expected = IllegalArgumentException.class)
     public void testUpdateInvalidStatus3() {
-
     	LocalDateTime startTime = LocalDateTime.of(1994, 10, 30, 0, 0);
     	LocalDateTime endTime = LocalDateTime.of(1994, 11, 30, 0, 0);
     	t3.update(startTime, endTime, Status.FAILED);
+    }
+    
+    /**
+     * Test of update method, of class Task, attempting to set status to FAILED from UNAVAILABLE
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testUpdateInvalidStatus4()
+    {
+    	t8.update(LocalDateTime.of(2016, 10, 30, 0, 0), LocalDateTime.of(2016, 11, 30, 0, 0), Status.FAILED);
     }
     /*
      * Test of update method, of class Task
@@ -220,11 +200,6 @@ public class TaskTest {
     	assertEquals(Status.AVAILABLE, t1.getStatus());
     	t1.update(startTime, endTime, Status.FAILED);
     	assertEquals(Status.FAILED, t1.getStatus());
-    	
-    	// UNAVAILABLE -> FAILED
-    	assertEquals(Status.UNAVAILABLE, t8.getStatus());
-    	t8.update(startTime, endTime, Status.FAILED);
-    	assertEquals(Status.FAILED, t8.getStatus());
     }
     /**
      * Test of isAvailable method, of class Task.
@@ -277,22 +252,6 @@ public class TaskTest {
     public void testEndsBeforeException() {
         System.out.println("endsBefore");
         fail("not implemented");
-    }
-
-    /**
-     * Test of isValidTimeSpan method, of class Task.
-     */
-    @Test
-    public void testCanHaveAsTimeSpan() {
-        System.out.println("canHaveAsTimeSpan");
-        
-        Timespan timeSpan = null;
-        Task instance = null;
-        boolean expResult = false;
-        boolean result = instance.canHaveAsTimeSpan(timeSpan);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
