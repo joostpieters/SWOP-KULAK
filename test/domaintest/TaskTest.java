@@ -45,15 +45,15 @@ public class TaskTest {
     			LocalDateTime.of(2015, 3, 4, 11, 48), 
     			LocalDateTime.of(2015, 3, 4, 15, 33)
     			);
-    	t3 = new Task("t3 finished", 30, 40, Status.FINISHED, t3ts);
+    	t3 = new Task("t3 finished", 30, 40, Status.FINISHED, t3ts.getStartTime(), t3ts.getEndTime());
     	t4 = new Task("t4", 30, 10, new Task[] {t3});
     	t5 = new Task("t5", 20, 5, new Task[] {t3, t2});
     	Timespan t6ts = new Timespan(
     			LocalDateTime.of(2015, 3, 4, 11, 48), 
     			LocalDateTime.of(2015, 3, 4, 15, 33)
     			);
-    	t6 = new Task("t6", 10, 3, Status.FAILED, t6ts);
-    	t7 = new Task("t7", 15, 4, new Task[] {t1, t2, t4}, Status.FAILED, t6ts);
+    	t6 = new Task("t6", 10, 3, Status.FAILED, t6ts.getStartTime(), t6ts.getEndTime());
+    	t7 = new Task("t7", 15, 4, new Task[] {t1, t2, t4}, Status.FAILED, t6ts.getStartTime(), t6ts.getEndTime());
     	t7alternative = new Task("alternative for t7!", 10, 2);
     	t7.setAlternativeTask(t7alternative);
     	t8 = new Task("depends on t7", 33, 3, new Task[] { t7} );
@@ -62,7 +62,73 @@ public class TaskTest {
     @After
     public void tearDown() {
     }
-
+    
+    /**
+     * Test of constructors of task
+     */
+    @Test
+    public void testConstructorValid()
+    {
+    	System.out.println("Task constructor");
+    	//Task(String description, long estDur, int accDev, Task[] prereq, Status status, Timespan timeSpan)
+    	String description = "task0 description";
+    	int estDur = 10;
+    	int accDev = 30;
+    	Task[] prereq = new Task[] {t3};
+    	Status status = Status.FINISHED;
+    	Timespan tspan = new Timespan(
+    			LocalDateTime.of(2015, 4, 4, 11, 48), 
+    			LocalDateTime.of(2015, 4, 4, 15, 33)
+    			);
+    	Task task0 = new Task(description, estDur, accDev, prereq, status, tspan.getStartTime(), tspan.getEndTime());
+    	assertEquals(description, task0.getDescription());
+    	assertEquals(estDur, task0.getEstimatedDuration().toMinutes());
+    	assertEquals(accDev, task0.getAcceptableDeviation());
+    	for(int i = 0; i < prereq.length; i++)
+    		assertEquals(prereq[i], task0.getPrerequisiteTasks()[i]);
+    	assertEquals(status, task0.getStatus());
+    	assertEquals(tspan.getStartTime(), task0.getTimeSpan().getStartTime());
+    	assertEquals(tspan.getEndTime(), task0.getTimeSpan().getEndTime());
+    	
+    	//Task(String description, long estDur, int accDev, Status status, Timespan timeSpan)
+    	String description1 = "task1 description";
+    	int estDur1 = 55;
+    	int accDev1 = 22;
+    	Status status1 = Status.FAILED;
+    	Timespan tspan1 = new Timespan(
+    			LocalDateTime.of(2013, 4, 3, 11, 28), 
+    			LocalDateTime.of(2013, 4, 4, 15, 33)
+    			);
+    	Task task1 = new Task(description1, estDur1, accDev1, status1, tspan1.getStartTime(), tspan1.getEndTime());
+    	assertEquals(description1, task1.getDescription());
+    	assertEquals(estDur1, task1.getEstimatedDuration().toMinutes());
+    	assertEquals(accDev1, task1.getAcceptableDeviation());
+    	assertEquals(status1, task1.getStatus());
+    	assertEquals(tspan1.getStartTime(), task1.getTimeSpan().getStartTime());
+    	assertEquals(tspan1.getEndTime(), task1.getTimeSpan().getEndTime());
+    	
+    	//Task(String description, long estDur, int accDev, Task[] prereq)
+    	String description2 = "task2 description";
+    	int estDur2 = 55;
+    	int accDev2 = 22;
+    	Task[] prereq2 = new Task[] {task0};
+    	Task task2 = new Task(description2, estDur2, accDev2, prereq2);
+    	assertEquals(description2, task2.getDescription());
+    	assertEquals(estDur2, task2.getEstimatedDuration().toMinutes());
+    	assertEquals(accDev2, task2.getAcceptableDeviation());
+    	for(int i = 0; i < prereq2.length; i++)
+    		assertEquals(prereq2[i], task2.getPrerequisiteTasks()[i]);
+    	
+    	//public Task(String description, long estDur, int accDev)
+    	String description3 = "task3 description!";
+    	int estDur3 = 120;
+    	int accDev3 = 55;
+    	Task task3 = new Task(description3, estDur3, accDev3);
+    	assertEquals(description3, task3.getDescription());
+    	assertEquals(estDur3, task3.getEstimatedDuration().toMinutes());
+    	assertEquals(accDev3, task3.getAcceptableDeviation());
+    }
+    
     /**
      * Test of getId method, of class Task.
      */
@@ -78,49 +144,6 @@ public class TaskTest {
         assertNotEquals(instance.getId(), instance2.getId());
         assertTrue(instance.getId() >= 0);
         assertTrue(instance2.getId() > instance.getId());
-    }
-    
-    /**
-     * Test of getTimeSpan method, of class Task.
-     */
-    @Test
-    public void testGetTimeSpan() {
-        System.out.println("getTimeSpan");
-        Task instance = null;
-        Timespan expResult = null;
-        Timespan result = instance.getTimeSpan();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getAcceptableDeviation method, of class Task.
-     */
-    @Test
-    public void testGetAcceptableDeviation() {
-        System.out.println("getAcceptableDeviation");
-        Task instance = null;
-        float expResult = 0.0F;
-        float result = instance.getAcceptableDeviation();
-        assertEquals(expResult, result, 0.0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getAlternativeTask method, of class Task.
-     */
-    @Test
-    public void testGetAlternativeTask() {
-        System.out.println("getAlternativeTask");
-        Task instance = null;
-        Task expResult = null;
-        Task result = instance.getAlternativeTask();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -172,7 +195,7 @@ public class TaskTest {
     public void testUpdateInvalidStatus1() {
     	LocalDateTime startTime = LocalDateTime.of(1994, 10, 30, 0, 0);
     	LocalDateTime endTime = LocalDateTime.of(1994, 11, 30, 0, 0);
-    	t0.update(new Timespan(startTime, endTime), Status.UNAVAILABLE);
+    	t0.update(startTime, endTime, Status.UNAVAILABLE);
     }
 
     /**
@@ -182,7 +205,7 @@ public class TaskTest {
     public void testUpdateInvalidStatus2() {
     	LocalDateTime startTime = LocalDateTime.of(1994, 10, 30, 0, 0);
     	LocalDateTime endTime = LocalDateTime.of(1994, 11, 30, 0, 0);
-    	t0.update(new Timespan(startTime, endTime), Status.AVAILABLE);
+    	t0.update(startTime, endTime, Status.AVAILABLE);
     }
     /**
      * Test of update method, of class Task, attempting to set status to FAILED from FINISHED
@@ -192,8 +215,7 @@ public class TaskTest {
 
     	LocalDateTime startTime = LocalDateTime.of(1994, 10, 30, 0, 0);
     	LocalDateTime endTime = LocalDateTime.of(1994, 11, 30, 0, 0);
-    	Timespan timeSpan = new Timespan(startTime, endTime);
-    	t3.update(timeSpan, Status.FAILED);
+    	t3.update(startTime, endTime, Status.FAILED);
     }
     /*
      * Test of update method, of class Task
@@ -205,18 +227,17 @@ public class TaskTest {
     	assertEquals(Status.AVAILABLE, t0.getStatus());
     	LocalDateTime startTime = LocalDateTime.of(2016, 10, 30, 0, 0);
     	LocalDateTime endTime = LocalDateTime.of(2016, 11, 30, 0, 0);
-    	Timespan timeSpan = new Timespan(startTime, endTime);
-    	t0.update(timeSpan, Status.FINISHED);
+    	t0.update(startTime, endTime, Status.FINISHED);
     	assertEquals(Status.FINISHED, t0.getStatus()); 
     	
     	// AVAILABLE -> FAILED
     	assertEquals(Status.AVAILABLE, t1.getStatus());
-    	t1.update(timeSpan, Status.FAILED);
+    	t1.update(startTime, endTime, Status.FAILED);
     	assertEquals(Status.FAILED, t1.getStatus());
     	
     	// UNAVAILABLE -> FAILED
     	assertEquals(Status.UNAVAILABLE, t8.getStatus());
-    	t8.update(timeSpan, Status.FAILED);
+    	t8.update(startTime, endTime, Status.FAILED);
     	assertEquals(Status.FAILED, t8.getStatus());
     }
     /**
@@ -236,9 +257,8 @@ public class TaskTest {
         assertEquals(Status.AVAILABLE, t7alternative.getStatus());
         assertEquals(Status.UNAVAILABLE, t8.getStatus());
         t7alternative.update(
-        		new Timespan(
         				LocalDateTime.of(2020, 10, 2, 14, 14), 
-        				LocalDateTime.of(2020, 10, 3, 14, 14)),
+        				LocalDateTime.of(2020, 10, 3, 14, 14),
         				Status.FINISHED);
         assertEquals(Status.FINISHED, t7alternative.getStatus());
         assertEquals(Status.FAILED, t7.getStatus());
@@ -262,7 +282,7 @@ public class TaskTest {
     @Test (expected = IllegalArgumentException.class)
     public void testEndsBeforeException() {
         System.out.println("endsBefore");
-        
+        fail("not implemented");
     }
 
     /**
@@ -296,20 +316,13 @@ public class TaskTest {
     }
 
     /**
-     * Test of isValidAlternativeTask method, of class Task.
+     * Test of canHaveAsAlternativeTask method, of class Task.
      */
     @Test
-    public void testIsValidAlternativeTask() {
-        System.out.println("isValidAlternativeTask");
-        Task altTask = null;
-        Task instance = null;
-        boolean expResult = false;
-        boolean result = instance.isValidAlternativeTask(altTask);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testCanHaveAsAlternativeTask()
+    {
+    	assertTrue(t0.canHaveAsAlternativeTask(t1));
     }
-    
     /**
      * Test of getDelay method, of class Task.
      */
@@ -322,7 +335,7 @@ public class TaskTest {
     	Timespan TS12 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 12, 54),
     			LocalDateTime.of(2015,  3, 4, 13, 6));
-    	someTask.update(TS12, Status.FINISHED);
+    	someTask.update(TS12.getStartTime(), TS12.getEndTime(), Status.FINISHED);
     	assertEquals(0, someTask.getDelay().getMinutes());
     	
     	// duration 20, acceptable deviation 20 => max duration 24 minutes
@@ -331,7 +344,7 @@ public class TaskTest {
     	Timespan TS20 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 12, 0),
     			LocalDateTime.of(2015,  3, 4, 13, 20));
-    	someTask2.update(TS20, Status.FINISHED);
+    	someTask2.update(TS20.getStartTime(), TS20.getEndTime(), Status.FINISHED);
     	assertEquals(0, someTask2.getDelay().getMinutes());
     	
     	// duration 10, acceptable deviation 30 => max duration 33 minutes
@@ -340,7 +353,7 @@ public class TaskTest {
     	Timespan TS35 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 13, 0),
     			LocalDateTime.of(2015,  3, 4, 15, 0));
-    	someTask3.update(TS35, Status.FINISHED);
+    	someTask3.update(TS35.getStartTime(), TS35.getEndTime(), Status.FINISHED);
     	assertEquals(87, someTask3.getDelay().getMinutes());
     	
     }

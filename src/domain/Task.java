@@ -1,8 +1,6 @@
 package domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
 
 /**
  * This class represents a task
@@ -29,6 +27,62 @@ public class Task {
 	private static int nextId=0;
 
 	/**
+	 * Initializes this task based on the given description, estimated duration, acceptable deviation,
+	 * prerequisite tasks, status and time span.
+	 * 
+	 * @param description
+	 *        The description of this task.
+	 * @param estDur
+	 *        The estimated duration in minutes of this task.
+	 * @param accDev
+	 *        The acceptable deviation of this task expressed as an integer between 0 and 100.
+	 * @param prereq
+	 *        The list of prerequisite tasks which need to be finished before this task can be started.
+	 * @param status
+	 *        The status of this task.
+	 * @param timeSpan
+	 *        The time span of this task.
+	 */
+	public Task(String description, long estDur, int accDev, Task[] prereq, Status status,
+			LocalDateTime startTime, LocalDateTime endTime){
+		this.id = generateId();
+		setDescription(description);
+		this.estimatedDuration = new Duration(estDur);
+		setAcceptableDeviation(accDev);
+		if(prereq == null)
+			setPrerequisiteTasks(new Task[] {});
+		else
+			setPrerequisiteTasks(prereq);
+		
+		// first we set the status of this task to UNAVAILABLE or AVAILABLE
+		// to make sure the state of this task is valid.
+		updateStatus(); 
+		
+		if(status!=null)
+			update(startTime, endTime, status);
+	}
+	/**
+	 * Initializes this task based on the given description, estimated duration,
+	 * acceptable deviation, status and time span.
+	 * 
+	 * @param description
+	 *        The description of this task.
+	 * @param estDur
+	 *        The estimated duration in minutes of this task.
+	 * @param accDev
+	 *        The acceptable deviation of this task expressed as an integer between 0 and 100.
+	 * @param status
+	 *        The status of this task.
+	 * @param timeSpan
+	 *        The time span of this task.
+	 */
+	public Task(String description, long estDur, int accDev, Status status,
+			LocalDateTime startTime, LocalDateTime endTime)
+	{
+		this(description, estDur, accDev, null, status, startTime, endTime);
+	}
+	
+	/**
 	 * Initializes this task based on the given description, estimated duration, acceptable deviation
 	 *  and prerequisite tasks.
 	 *  
@@ -43,12 +97,12 @@ public class Task {
 	 */
 	public Task(String description, long estDur, int accDev, Task[] prereq)
 	{
-		this(description, estDur, accDev, prereq, null, null);
+		this(description, estDur, accDev, prereq, null, null, null);
 	}
 
 	/**
 	 * Initializes this task based on the given description, estimated duration
-	 * and acceptable deviation with status AVAILABLE.
+	 * and acceptable deviation.
 	 *  
 	 * @param description
 	 *        The description of this task.
@@ -62,53 +116,6 @@ public class Task {
 		this(description, estDur, accDev, null, null, null);
 	}
 	
-	/**
-	 * TODO commentaar
-	 * @param description
-	 * @param estDur
-	 * @param accDev
-	 * @param status
-	 * @param timeSpan
-	 */
-	public Task(String description, long estDur, int accDev, Status status, Timespan timeSpan)
-	{
-		this(description, estDur, accDev, null, status, timeSpan);
-	}
-	/**
-	 * Initializes this task based on the given description, estimated duration, acceptable deviation,
-	 * prerequisite tasks and status.
-	 * 
-	 * @param description
-	 *        The description of this task.
-	 * @param estDur
-	 *        The estimated duration in minutes of this task.
-	 * @param accDev
-	 *        The acceptable deviation of this task expressed as an integer between 0 and 100.
-	 * @param prereq
-	 *        The list of prerequisite tasks which need to be finished before this task can be started.
-	 * @param status
-	 *        The status of this task.
-	 */
-	public Task(String description, long estDur, int accDev, Task[] prereq, Status status, Timespan timeSpan){
-		this.id = generateId();
-		setDescription(description);
-		this.estimatedDuration = new Duration(estDur);
-		setAcceptableDeviation(accDev);
-		if(prereq == null)
-			setPrerequisiteTasks(new Task[] {});
-		else
-			setPrerequisiteTasks(prereq);
-		
-		// first we set the status of this task to UNAVAILABLE or AVAILABLE
-		// to make sure the state of this task is valid.
-		updateStatus(); 
-		
-		if(status == Status.FINISHED || status == Status.FAILED)
-			update(timeSpan, status);
-		else if(status != null)
-			throw new IllegalArgumentException("Illegal status"); // TODO tekst uitschrijven + commentaar
-	}
-
 	/**
 	 * Sets the description of this task to the given description.
 	 * 
@@ -307,6 +314,7 @@ public class Task {
 	{
 		return (0 <= accDev) && (accDev <= 100);
 	}
+	
 	/**
 	 * Updates the status and the time span of this task.
 	 * 
@@ -318,7 +326,7 @@ public class Task {
 	 *         The given status is neither FAILED nor FINISHED and is therefore
 	 *         not a valid status that can be assigned to this task.
 	 */
-	public void update(Timespan timeSpan, Status status){
+	/*public void update(Timespan timeSpan, Status status){
 		if( (!status.equals(Status.FINISHED)) && !status.equals(Status.FAILED) )
 			throw new IllegalArgumentException(
 					"The given status is neither FAILED nor FINISHED and is therefore not a valid status "
@@ -327,22 +335,26 @@ public class Task {
 		setTimeSpan(timeSpan);
 		setStatus(status);
 
-	}
-	/** TODO deprecated!!!!!
+	}*/
+	/**
 	 * Updates the status and the time span of this task.
 	 * 
-	 * @param start The beginning of the time span of this task.
-	 * @param end The end of the time span of this task.
-	 * @param status The new status of this task.
-	 * @throws IllegalArgumentException The given status is neither FAILED nor FINISHED and is therefore
-	 *                                  not a valid status that can be assigned to this task.
+	 * @param start
+	 *        The beginning of the time span of this task.
+	 * @param end
+	 *        The end of the time span of this task.
+	 * @param status
+	 *        The new status of this task.
+	 * @throws IllegalArgumentException
+	 *         The given status is neither FAILED nor FINISHED and is therefore
+	 *         not a valid status that can be assigned to this task.
 	 */
 	public void update(LocalDateTime start, LocalDateTime end, Status status){
 		if( (!status.equals(Status.FINISHED)) && !status.equals(Status.FAILED) )
 			throw new IllegalArgumentException(
 					"The given status is neither FAILED nor FINISHED and is therefore not a valid status "
 							+ "that can be assigned to this task.");
-
+		//TODO check of start, end == null?
 		setTimeSpan(new Timespan(start, end));
 		setStatus(status);
 
@@ -463,26 +475,6 @@ public class Task {
 	}
 
 	/**
-	 * Checks whether the given task is a valid alternative task for this task.
-	 * 
-	 * @param altTask The alternative task to check.
-	 * @return False if the given alternative task is equal to this task.
-	 *         False if this task depends on the given alternative task.
-	 *         False if the given alternative task depends on this task.
-	 *         True otherwise.
-	 */
-	public boolean isValidAlternativeTask(Task altTask)
-	{
-		if(altTask.equals(this))
-			return false;
-		if(this.dependsOn(altTask))
-			return false;
-		if(altTask.dependsOn(this))
-			return false;
-		return true;
-	}
-
-	/**
 	 * Checks whether this task directly or indirectly depends on the given task.
 	 * 
 	 * @param task The task to check.
@@ -541,18 +533,24 @@ public class Task {
 	}
 	
 	/**
-	 * Checks whether this task can have the given alternative task as its task.
+	 * Checks whether this task can have the given alternative task as its alternative task.
 	 * 
-	 * @param alternativeTask
+	 * @param altTask
 	 *        The alternative task to check.
-	 * @return False if the alternativeTask is equal to null.
-	 *         TODO!!!!
+	 * @return False if the given alternative task is equal to null.
+	 *         False if the given alternative task is equal to this task.
+	 *         False if the given alternative task depends on this task.
+	 *         True otherwise.
 	 */
-	public boolean canHaveAsAlternativeTask(Task alternativeTask)
+	public boolean canHaveAsAlternativeTask(Task altTask)
 	{
-		if(alternativeTask == null)
+		if(altTask == null)
 			return false;
-		return true; // TODO!!!!
+		if(altTask.equals(this))
+			return false;
+		if(altTask.dependsOn(this))
+			return false;
+		return true;
 	}
 	/**
 	 * Generates an id for a new task.
