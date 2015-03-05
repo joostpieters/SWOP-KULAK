@@ -284,7 +284,7 @@ public class TaskTest {
     			LocalDateTime.of(2015,  3, 4, 12, 54),
     			LocalDateTime.of(2015,  3, 4, 13, 6));
     	someTask.update(TS12.getStartTime(), TS12.getEndTime(), Status.FINISHED);
-    	assertEquals(0, someTask.getDelay().getMinutes());
+    	assertEquals(0, someTask.getDelay().toMinutes());
     	
     	// duration 20, acceptable deviation 20 => max duration 24 minutes
     	// checking time span duration < max duration
@@ -293,16 +293,26 @@ public class TaskTest {
     			LocalDateTime.of(2015,  3, 4, 12, 0),
     			LocalDateTime.of(2015,  3, 4, 12, 20));
     	someTask2.update(TS20.getStartTime(), TS20.getEndTime(), Status.FINISHED);
-    	assertEquals(0, someTask2.getDelay().getMinutes());
+    	assertEquals(0, someTask2.getDelay().toMinutes());
     	
-    	// duration 10, acceptable deviation 30 => max duration 33 minutes
+    	// duration 30, acceptable deviation 10 => max duration 33 minutes
     	// checking time span duration > max duration
     	Task someTask3 = new Task("30, 10", 30, 10);
     	Timespan TS35 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 13, 0),
     			LocalDateTime.of(2015,  3, 4, 13, 35));
     	someTask3.update(TS35.getStartTime(), TS35.getEndTime(), Status.FINISHED);
-    	assertEquals(2, someTask3.getDelay().getMinutes());
+    	assertEquals(2, someTask3.getDelay().toMinutes());
+    	
+    	// duration 30, acceptable deviation 20 => max duration 36 minutes
+    	// checking time span duration > max duration
+    	Task someTask4 = new Task("30, 20", 30, 20);
+    	Timespan TS123 = new Timespan(
+    			LocalDateTime.of(2015,  3, 4, 13, 0),
+    			LocalDateTime.of(2015,  3, 4, 15, 3));
+    	someTask4.update(TS123.getStartTime(), TS123.getEndTime(), Status.FINISHED);
+    	
+    	assertEquals(87, someTask4.getDelay().toMinutes());
     	
     }
     /**
