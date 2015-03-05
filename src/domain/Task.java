@@ -404,26 +404,45 @@ public class Task {
 		return getTimeSpan().endsBefore(timeSpan);
 	}
 
-	/** TODO unfinished
+	/**
 	 * Checks whether the given time span is a valid time span for this task.
 	 * 
-	 * @param timeSpan
-	 *        The time span to check.
-	 * @return False if any of the prerequisite tasks has a time span that doesn't end before the given time span.
-	 *         True in every other case.
+	 * @param  timeSpan
+	 *         The time span to check.
+	 * @return False if any of the prerequisite tasks were fulfilled before the given time span.
+	 * @see    isFulfilledBefore
 	 */
 	public boolean canHaveAsTimeSpan(Timespan timeSpan) // TODO nog niet af.
 	{
 		if(getPrerequisiteTasks() != null)
 		{
 			for(Task t: getPrerequisiteTasks())
-				if(t.hasTimeSpan() && !t.endsBefore(timeSpan))
+				if(t.isFulfilled() && !t.isFulfilledBefore(timeSpan))
 					return false;
 		}
-		/*TODO
-		 * check whether every parent starts after the given time span
-		 */
 		return true;
+	}
+	
+	/**
+	 * Checks whether this task was fulfilled before the given time span.
+	 * 
+	 * @param timeSpan
+	 *        The time span to check.
+	 * @return True if this task is finished and this task ends before the given time span.
+	 *         Otherwise the result is equal to whether or not the alternative task of this task was fulfilled
+	 *         before the given time span.
+	 * @throws IllegalStateException
+	 *         If this task is not fulfilled.
+	 */
+	public boolean isFulfilledBefore(Timespan timeSpan) throws IllegalStateException
+	{
+		if(!isFulfilled())
+			throw new IllegalStateException("Tried to check whether this task was "
+					+ "fulfilled before the given time span while this task is not fulfilled.");
+		if(getStatus() == Status.FINISHED)
+			return endsBefore(timeSpan);
+		else
+			return getAlternativeTask().isFulfilledBefore(timeSpan);
 	}
 	/**
 	 * Checks whether this task has a time span.

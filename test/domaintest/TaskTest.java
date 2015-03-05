@@ -262,7 +262,89 @@ public class TaskTest {
         assertFalse(t0.hasTimeSpan());
         assertTrue(t3.hasTimeSpan());
     }
-
+    /**
+     * Test of canHaveAsTimeSpan method, of class Task.
+     */
+    @Test
+    public void testCanHaveAsTimeSpan()
+    {
+    	Timespan t0timeSpan = new Timespan(
+				LocalDateTime.of(2015, 3, 5, 14, 30),
+				LocalDateTime.of(2015, 3, 5, 15, 22));
+    	assertTrue(t0.canHaveAsTimeSpan(t0timeSpan));
+    	
+    	/*Time span of prerequisite of t4 is equal to:
+		LocalDateTime.of(2015, 3, 4, 11, 48), 
+		LocalDateTime.of(2015, 3, 4, 15, 33)
+		*/
+    	//edge case where the time spans touch (of prerequisite task t3 and t4)
+    	Timespan t4timeSpan_success = new Timespan(
+    			LocalDateTime.of(2015, 3, 4, 15, 33), 
+    			LocalDateTime.of(2015, 3, 4, 16, 0)
+    			);
+    	assertTrue(t4.canHaveAsTimeSpan(t4timeSpan_success));
+    	//time spans not touching, success
+    	Timespan t4timeSpan_success2 = new Timespan(
+    			LocalDateTime.of(2015, 3, 4, 15, 55), 
+    			LocalDateTime.of(2015, 3, 4, 16, 0)
+    			);
+    	assertTrue(t4.canHaveAsTimeSpan(t4timeSpan_success2));
+    	//time span of t4 overlapping time span of prerequisite
+    	Timespan t4timeSpan_fail = new Timespan(
+    			LocalDateTime.of(2015, 3, 4, 15, 30), 
+    			LocalDateTime.of(2015, 3, 4, 15, 35)
+    			);
+    	assertFalse(t4.canHaveAsTimeSpan(t4timeSpan_fail));
+    	//time span of t4 inside time span of prerequisite
+    	Timespan t4timeSpan_fail2 = new Timespan(
+    			LocalDateTime.of(2015, 3, 4, 11, 50), 
+    			LocalDateTime.of(2015, 3, 4, 15, 25)
+    			);
+    	assertFalse(t4.canHaveAsTimeSpan(t4timeSpan_fail2));
+    	//time span of t4 before time span of prerequisite, overlapping
+    	Timespan t4timeSpan_fail3 = new Timespan(
+    			LocalDateTime.of(2015, 3, 4, 10, 40), 
+    			LocalDateTime.of(2015, 3, 4, 15, 25)
+    			);
+    	assertFalse(t4.canHaveAsTimeSpan(t4timeSpan_fail3));
+    	//time span of t4 before time span of prerequisite, not overlapping
+    	Timespan t4timeSpan_fail4 = new Timespan(
+    			LocalDateTime.of(2015, 3, 4, 10, 40), 
+    			LocalDateTime.of(2015, 3, 4, 11, 49)
+    			);
+    	assertFalse(t4.canHaveAsTimeSpan(t4timeSpan_fail4));
+    	
+    	//checking validity of time span between a task and the alternative of a prerequisite of the task
+    	//Time span of alternative of failed prerequisite:
+    	t7alternative.update(
+    			LocalDateTime.of(2015, 3, 5, 11, 48),
+    			LocalDateTime.of(2015, 3, 5, 15, 33), Status.FINISHED);
+    	//succesful edge case:
+    	Timespan t8timeSpan_success = new Timespan(
+    			LocalDateTime.of(2015, 3, 5, 15, 33), 
+    			LocalDateTime.of(2015, 3, 5, 15, 45)
+    			);
+    	assertTrue(t8.canHaveAsTimeSpan(t8timeSpan_success));
+    	//succesful non edge case:
+    	Timespan t8timeSpan_success2 = new Timespan(
+    			LocalDateTime.of(2015, 3, 6, 15, 33), 
+    			LocalDateTime.of(2015, 3, 6, 15, 45)
+    			);
+    	assertTrue(t8.canHaveAsTimeSpan(t8timeSpan_success2));
+    	//non successful overlap:
+    	Timespan t8timeSpan_fail = new Timespan(
+    			LocalDateTime.of(2015, 3, 5, 11, 22), 
+    			LocalDateTime.of(2015, 3, 5, 15, 15)
+    			);
+    	assertFalse(t8.canHaveAsTimeSpan(t8timeSpan_fail));
+    	//non succesful non overlap:
+    	Timespan t8timeSpan_fail2 = new Timespan(
+    			LocalDateTime.of(2015, 3, 1, 11, 22), 
+    			LocalDateTime.of(2015, 3, 2, 15, 15)
+    			);
+    	assertFalse(t8.canHaveAsTimeSpan(t8timeSpan_fail2));
+    	
+    }
     /**
      * Test of canHaveAsAlternativeTask method, of class Task.
      */
