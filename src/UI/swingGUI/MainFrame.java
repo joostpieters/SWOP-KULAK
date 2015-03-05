@@ -1,24 +1,28 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package UI.swingGUI;
 
+import controller.FrontController;
+import domain.ProjectManager;
+import domain.Task;
+import java.time.LocalDateTime;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author Mathias
+ * This frame forms the entry point for the entire application.
+ * 
+ * @author Frederic, Mathias, Pieter-Jan
  */
 public class MainFrame extends javax.swing.JFrame {
 
 	private static final long serialVersionUID = -2541384231489389714L;
+        
+        private FrontController controller;
 	
 	/**
      * Creates new form MainFrame
+     * @param controller The controller to use to pass the requests to
      */
-    public MainFrame() {
+    public MainFrame(FrontController controller) {
+        this.controller = controller;
         initComponents();
     }
 
@@ -130,7 +134,7 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void listProjects(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listProjects
-        new ListProjectsFrame().setVisible(true);
+        new ShowProjectFrame(controller).setVisible(true);
     }//GEN-LAST:event_listProjects
 
     private void createNewProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createNewProject
@@ -146,8 +150,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_modifySystemTime
 
     private void updateTask(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateTask
-        // TODO add your handling code here:
-        new ListTasksFrame().setVisible(true);
+        new UpdateTasksStatusFrame(controller).setVisible(true);
     }//GEN-LAST:event_updateTask
 
     /**
@@ -176,12 +179,23 @@ public class MainFrame extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        ProjectManager manager = new ProjectManager();
+        String name = "Mobile Steps";
+	String descr = "develop mobile app for counting steps using a specialized bracelet";
+	LocalDateTime create = LocalDateTime.of(2015, 2, 9, 0, 0);
+	LocalDateTime due = LocalDateTime.of(2015, 2, 13, 0, 0);
+        manager.createProject(name, descr, create, due);
+        manager.createProject("Lol", descr, create, due);
+        Task t1 = new Task(descr, 100, 50);
+        Task t2 = new Task(descr, 1200, 50);
+        manager.getProject(0).addTask(t1);
+        manager.getProject(0).addTask(t2);
+        manager.getProject(0).addTask(t1);
+        manager.createProject("Lol 1.2", descr, create, due);
+        FrontController controller = new FrontController(manager);
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MainFrame().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new MainFrame(controller).setVisible(true);
         });
     }
 

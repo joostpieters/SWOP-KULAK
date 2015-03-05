@@ -38,7 +38,7 @@ public class ProjectManager {
      * @param dueTime The time by which the project should be ended.
      */
     public void createProject(String name, String description, LocalDateTime startTime, LocalDateTime dueTime){
-        addProject(new Project(projects.size(),name, name, dueTime, dueTime));
+        addProject(new Project(projects.size(),name, description, startTime, dueTime));
     }
     
     /**

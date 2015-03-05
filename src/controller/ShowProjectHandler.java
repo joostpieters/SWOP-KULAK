@@ -2,17 +2,16 @@ package controller;
 
 import domain.Project;
 import domain.ProjectManager;
-import domain.Status;
 import domain.Task;
 import java.util.List;
-import java.util.Map;
+
 
 /**
  * This handler, handles the show project use case
  * 
  * @author Frederic, Mathias, Pieter-Jan
  */
-public class showProjectHandler {
+public class ShowProjectHandler {
     
     private final ProjectManager manager;
     
@@ -23,7 +22,7 @@ public class showProjectHandler {
      * 
      * @param manager The projectmanager to use in this handler. 
      */   
-    public showProjectHandler(ProjectManager manager){
+    public ShowProjectHandler(ProjectManager manager){
         this.manager = manager;
     }
     

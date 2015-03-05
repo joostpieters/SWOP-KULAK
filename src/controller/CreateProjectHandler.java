@@ -34,7 +34,7 @@ public class CreateProjectHandler {
         
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime start = LocalDateTime.parse(startTime, formatter);
-        LocalDateTime due = LocalDateTime.parse(startTime, formatter);
+        LocalDateTime due = LocalDateTime.parse(dueTime, formatter);
         
         manager.createProject(name, description, start, due);
     } 
