@@ -311,27 +311,6 @@ public class Task {
 	/**
 	 * Updates the status and the time span of this task.
 	 * 
-	 * @param timeSpan
-	 *        The new time span of this task.
-	 * @param status
-	 *        The new status of this task.
-	 * @throws IllegalArgumentException
-	 *         The given status is neither FAILED nor FINISHED and is therefore
-	 *         not a valid status that can be assigned to this task.
-	 */
-	/*public void update(Timespan timeSpan, Status status){
-		if( (!status.equals(Status.FINISHED)) && !status.equals(Status.FAILED) )
-			throw new IllegalArgumentException(
-					"The given status is neither FAILED nor FINISHED and is therefore not a valid status "
-							+ "that can be assigned to this task.");
-
-		setTimeSpan(timeSpan);
-		setStatus(status);
-
-	}*/
-	/**
-	 * Updates the status and the time span of this task.
-	 * 
 	 * @param start
 	 *        The beginning of the time span of this task.
 	 * @param end
