@@ -71,20 +71,20 @@ public final class Timespan {
     }
     
     /**
-     * Returns the duration by which the given duration exceeds the duration
-     * of this timespan.
+     * Returns the duration by which the duration of this time span
+     * exceeds the given duration.
      * 
      * @param duration The duration to check the delay.
-     * @return A duration representing the amount of time the given duration 
-     * exceeds the duration of this timespan. If the given duration is shorter 
-     * than the duration of this timespan, a duration of 0 is returned.
+     * @return A duration representing the amount of time the duration of this time span
+     * exceeds the given duration. If the duration of this time span is shorter 
+     * than the given duration, a duration of 0 is returned.
      */
     public Duration getExcess(Duration duration){
-        if(getDuration().compareTo(duration) > 0){
+        if(getDuration().compareTo(duration) < 0){
             return new Duration(0);
         }
         
-        return duration.subtract(getDuration());
+        return getDuration().subtract(duration);
     }
     
     /** 

@@ -291,7 +291,7 @@ public class TaskTest {
     	Task someTask2 = new Task("20, 20", 20, 20);
     	Timespan TS20 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 12, 0),
-    			LocalDateTime.of(2015,  3, 4, 13, 20));
+    			LocalDateTime.of(2015,  3, 4, 12, 20));
     	someTask2.update(TS20.getStartTime(), TS20.getEndTime(), Status.FINISHED);
     	assertEquals(0, someTask2.getDelay().getMinutes());
     	
@@ -300,9 +300,9 @@ public class TaskTest {
     	Task someTask3 = new Task("30, 10", 30, 10);
     	Timespan TS35 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 13, 0),
-    			LocalDateTime.of(2015,  3, 4, 15, 0));
+    			LocalDateTime.of(2015,  3, 4, 13, 35));
     	someTask3.update(TS35.getStartTime(), TS35.getEndTime(), Status.FINISHED);
-    	assertEquals(87, someTask3.getDelay().getMinutes());
+    	assertEquals(2, someTask3.getDelay().getMinutes());
     	
     }
     /**
