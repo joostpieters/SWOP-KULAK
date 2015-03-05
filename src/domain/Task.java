@@ -159,6 +159,7 @@ public class Task {
 	 * @return False if the list is null.
 	 *         False if any of the tasks in the given list is null.
 	 *         False if any of the tasks in the given list is equal to this task.
+	 *         False if any of the tasks in the given list depends on this task.
 	 *         True otherwise.
 	 */
 	public boolean canHaveAsPrerequisiteTasks(Task[] prereq)
@@ -166,11 +167,9 @@ public class Task {
 		if(prereq==null)
 			return false;
 		for(Task t: prereq)
-			if(t==null || t==this)
+			if(t==null || t==this || t.dependsOn(this)) //TODO is t.dependsOn wel nodig? kan nooit voorkomen?
 				return false;
-		/**
-		 * TODO lus detectie
-		 */
+		
 		return true;
 	}
 
@@ -320,11 +319,15 @@ public class Task {
 	 * @throws IllegalArgumentException
 	 *         The given status is neither FAILED nor FINISHED and is therefore
 	 *         not a valid status that can be assigned to this task.
+	 * @throws IllegalArgumentException
+	 *         If the start and/or end time are not initialized.
 	 */
-	public void update(LocalDateTime start, LocalDateTime end, Status status){
+	public void update(LocalDateTime start, LocalDateTime end, Status status) throws IllegalArgumentException
+	{
 		if(!canUpdateStatus(status))
 			throw new IllegalArgumentException("This task can't be updated to the given status.");
-		//TODO check of start, end == null?
+		if(start == null || end == null)
+			throw new IllegalArgumentException("The given start and/or end time are not initialized.");
 		setTimeSpan(new Timespan(start, end));
 		setStatus(status);
 
