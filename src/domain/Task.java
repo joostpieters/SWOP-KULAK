@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 /**
  * This class represents a task
+ * 
  * @author Frederic, Mathias, Pieter-Jan
  */
 public class Task {
@@ -21,7 +22,7 @@ public class Task {
 
 	/**
 	 * Initializes this task based on the given description, estimated duration, acceptable deviation,
-	 * prerequisite tasks, status and time span.
+	 * prerequisite tasks, status, start time and end time.
 	 * 
 	 * @param description
 	 *        The description of this task.
@@ -33,8 +34,10 @@ public class Task {
 	 *        The list of prerequisite tasks which need to be finished before this task can be started.
 	 * @param status
 	 *        The status of this task.
-	 * @param timeSpan
-	 *        The time span of this task.
+	 * @param start
+	 *        The start time of the time span of this task.
+	 * @param end
+	 *        The end time of the time span of this task.
 	 */
 	public Task(String description, long estDur, int accDev, Task[] prereq, Status status,
 			LocalDateTime startTime, LocalDateTime endTime){
@@ -56,7 +59,7 @@ public class Task {
 	}
 	/**
 	 * Initializes this task based on the given description, estimated duration,
-	 * acceptable deviation, status and time span.
+	 * acceptable deviation, status, start time and end time.
 	 * 
 	 * @param description
 	 *        The description of this task.
@@ -66,8 +69,10 @@ public class Task {
 	 *        The acceptable deviation of this task expressed as an integer between 0 and 100.
 	 * @param status
 	 *        The status of this task.
-	 * @param timeSpan
-	 *        The time span of this task.
+	 * @param start
+	 *        The start time of the time span of this task.
+	 * @param end
+	 *        The end time of the time span of this task.
 	 */
 	public Task(String description, long estDur, int accDev, Status status,
 			LocalDateTime startTime, LocalDateTime endTime)
@@ -117,7 +122,7 @@ public class Task {
 	 * @throws IllegalArgumentException
 	 *         If this task can't have the given description as its description.
 	 */
-	private void setDescription(String description)
+	private void setDescription(String description) throws IllegalArgumentException
 	{
 		if(!canHaveAsDescription(description))
 			throw new IllegalArgumentException("The given description is uninitialized.");
@@ -128,7 +133,8 @@ public class Task {
 	/**
 	 * Checks whether this task can have the given description as its description.
 	 * 
-	 * @param description The description to check.
+	 * @param description
+	 *        The description to check.
 	 * @return True if and only if the given description is not equal to null.
 	 */
 	public boolean canHaveAsDescription(String description)
@@ -143,7 +149,7 @@ public class Task {
 	 * @throws IllegalArgumentException
 	 *         If this task can't have the given list of prerequisite tasks as its list of prerequisite tasks.
 	 */
-	private void setPrerequisiteTasks(Task[] prereq)
+	private void setPrerequisiteTasks(Task[] prereq) throws IllegalArgumentException
 	{
 		if(!canHaveAsPrerequisiteTasks(prereq))
 			throw new IllegalArgumentException(
@@ -161,6 +167,7 @@ public class Task {
 	 *         False if any of the tasks in the given list is equal to this task.
 	 *         False if any of the tasks in the given list depends on this task.
 	 *         True otherwise.
+	 * @see    dependsOn
 	 */
 	public boolean canHaveAsPrerequisiteTasks(Task[] prereq)
 	{
@@ -205,7 +212,7 @@ public class Task {
 		return this.timeSpan;
 	}
 	/**
-	 * @return The acceptable deviation of this task expressed as an int between 0 and 100.
+	 * @return The acceptable deviation of this task expressed as an integer between 0 and 100.
 	 */
 	public int getAcceptableDeviation()
 	{
@@ -241,7 +248,7 @@ public class Task {
 
 	/**
 	 * Updates the status of this task to AVAILABLE if all the prerequisite tasks are
-	 * fulfilled and if the status of this task is currently equal to UNAVAILABLE or not initialized.
+	 * fulfilled and to UNAVAILABLE if the current status is not initialized.
 	 */
 	private void updateStatus()
 	{
@@ -254,6 +261,7 @@ public class Task {
 			setStatus(newStatus);
 		}
 	}
+	
 	/**
 	 *  Calculates the duration by which this task been delayed.
 	 *  
@@ -283,7 +291,7 @@ public class Task {
 	 * Sets this task his acceptable deviation to the given acceptable deviation.
 	 * 
 	 * @param accDev
-	 *        
+	 *        The new acceptable deviation of this task.
 	 * @throws IllegalArgumentException
 	 *         If this task can't have the given acceptable deviation as its acceptable deviation.
 	 */
@@ -338,7 +346,8 @@ public class Task {
 	 * 
 	 * @return True if and only if every prerequisite task of this task has been fulfilled.
 	 */
-	public boolean isAvailable(){
+	public boolean isAvailable()
+	{
 		for(Task prereqTask : getPrerequisiteTasks())
 		{
 			if(!prereqTask.isFulfilled())
@@ -383,7 +392,7 @@ public class Task {
 	 *         If this task can't have the given time span as its time span.
 	 * @see    canHaveAsTimeSpan
 	 */
-	private void setTimeSpan(Timespan timeSpan)
+	private void setTimeSpan(Timespan timeSpan) throws IllegalArgumentException
 	{
 		if(!canHaveAsTimeSpan(timeSpan))
 			throw new IllegalArgumentException("The given time span is not a valid time span for this task");
@@ -399,7 +408,7 @@ public class Task {
 	 * @throws IllegalStateException
 	 *         If this task does not have a time span.
 	 */
-	public boolean endsBefore(Timespan timeSpan)
+	public boolean endsBefore(Timespan timeSpan) throws IllegalStateException
 	{
 		if(getTimeSpan() == null)
 			throw new IllegalStateException(
@@ -459,7 +468,8 @@ public class Task {
 	/**
 	 * Checks whether this task directly or indirectly depends on the given task.
 	 * 
-	 * @param task The task to check.
+	 * @param task
+	 *        The task to check.
 	 * @return True if this task has an alternative task and the alternative task is equal to the given task.
 	 *         True if a prerequisite task of this task is equal to the given task.
 	 *         True if a prerequisite task depends on the given task.
@@ -475,7 +485,7 @@ public class Task {
 			{
 				if(prereqTask.equals(task))
 					return true;
-
+				
 				if(prereqTask.dependsOn(task))
 					return true;
 			}
@@ -496,7 +506,7 @@ public class Task {
 	 *         If this task can't have the given task as its alternative task.
 	 * @see    canHaveAsAlternativeTask
 	 */
-	public void setAlternativeTask(Task alternativeTask)
+	public void setAlternativeTask(Task alternativeTask) throws IllegalStateException, IllegalArgumentException
 	{
 		if(getStatus() != Status.FAILED)
 			throw new IllegalStateException(
@@ -572,7 +582,7 @@ public class Task {
 	 * 
 	 * @return True if and only if the status of this task is equal to finished.
 	 */
-	public boolean isFinished() // TODO is dit nodig?
+	public boolean isFinished() // TODO is dit nodig? waarom niet gewoon Task.getStatus() == Status.Finished?
 	{
 		return getStatus()==Status.FINISHED;
 	}
