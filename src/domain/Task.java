@@ -282,7 +282,7 @@ public class Task {
 	 * 
 	 * @return The estimated duration of this task multiplied by (100 + (the acceptable deviation of this task))/100
 	 */
-	public Duration calculateMaxDuration() // TODO zet terug op private!
+	private Duration calculateMaxDuration()
 	{
 		return getEstimatedDuration().multiplyBy( (100d + getAcceptableDeviation())/100d );
 	}
@@ -562,9 +562,14 @@ public class Task {
 		return nextId++;
 	}
 
-	public boolean isFinished() {
-		// TODO Auto-generated method stub
-		return false;
+	/**
+	 * Checks whether the status of this task is equal to finished.
+	 * 
+	 * @return True if and only if the status of this task is equal to finished.
+	 */
+	public boolean isFinished() // TODO is dit nodig?
+	{
+		return getStatus()==Status.FINISHED;
 	}
 
 }

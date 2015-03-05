@@ -161,20 +161,6 @@ public class TaskTest {
     }
 
     /**
-     * Test of getStatus method, of class Task.
-     */
-    @Test
-    public void testGetStatus() {
-        System.out.println("getStatus");
-        Task instance = null;
-        Status expResult = null;
-        Status result = instance.getStatus();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
      * Test of getDelay method, of class Task.
      
     @Test
@@ -271,9 +257,17 @@ public class TaskTest {
     @Test
     public void testIsFulfilled() {
         System.out.println("isFulfilled");
-        assertTrue(t0.isFulfilled());
-        assertTrue(t1.isFulfilled());
+        assertFalse(t0.isFulfilled());
+        assertFalse(t1.isFulfilled());
         assertFalse(t2.isFulfilled());
+        assertTrue(t3.isFulfilled());
+        assertFalse(t8.isFulfilled());
+        assertFalse(t7.isFulfilled());
+        t7alternative.update(
+				LocalDateTime.of(2020, 10, 2, 14, 14), 
+				LocalDateTime.of(2020, 10, 3, 14, 14),
+				Status.FINISHED);
+        assertTrue(t7.isFulfilled());
     }
 
     /**
@@ -306,13 +300,8 @@ public class TaskTest {
      */
     @Test
     public void testHasTimeSpan() {
-        System.out.println("hasTimeSpan");
-        Task instance = null;
-        boolean expResult = false;
-        boolean result = instance.hasTimeSpan();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertFalse(t0.hasTimeSpan());
+        assertTrue(t3.hasTimeSpan());
     }
 
     /**
