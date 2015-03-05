@@ -370,27 +370,6 @@ public class Task {
 	{
 		this.status = status;
 	}
-	
-	/**
-	 * Checks whether the given status can be assigned to this task.
-	 * 
-	 * @param status
-	 *        The status to check.
-	 * @return False if the status of this task is not equal to available.
-	 *         False if the given status is equal to unavailable.
-	 *         False if the given status is equal to available.
-	 *         True otherwise.
-	 */
-	public boolean canUpdateStatus(Status status) // TODO verplaatsen
-	{
-		if(getStatus() != Status.AVAILABLE)
-			return false;
-		if(status == Status.UNAVAILABLE)
-			return false;
-		if(status == Status.AVAILABLE)
-			return false;
-		return true;
-	}
 
 	/**
 	 * Sets the time span of this task to the given time span.
@@ -533,6 +512,28 @@ public class Task {
 			return false;
 		return true;
 	}
+	
+	/**
+	 * Checks whether the given status can be assigned to this task.
+	 * 
+	 * @param status
+	 *        The status to check.
+	 * @return False if the status of this task is not equal to available.
+	 *         False if the given status is equal to unavailable.
+	 *         False if the given status is equal to available.
+	 *         True otherwise.
+	 */
+	public boolean canUpdateStatus(Status status) // TODO verplaatsen
+	{
+		if(getStatus() != Status.AVAILABLE)
+			return false;
+		if(status == Status.UNAVAILABLE)
+			return false;
+		if(status == Status.AVAILABLE)
+			return false;
+		return true;
+	}
+	
 	/**
 	 * Generates an id for a new task.
 	 * 
