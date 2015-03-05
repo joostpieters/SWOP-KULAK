@@ -412,7 +412,7 @@ public class Task {
 	 * @return False if any of the prerequisite tasks were fulfilled before the given time span.
 	 * @see    isFulfilledBefore
 	 */
-	public boolean canHaveAsTimeSpan(Timespan timeSpan) // TODO nog niet af.
+	public boolean canHaveAsTimeSpan(Timespan timeSpan)
 	{
 		if(getPrerequisiteTasks() != null)
 		{
@@ -434,7 +434,7 @@ public class Task {
 	 * @throws IllegalStateException
 	 *         If this task is not fulfilled.
 	 */
-	public boolean isFulfilledBefore(Timespan timeSpan) throws IllegalStateException
+	private boolean isFulfilledBefore(Timespan timeSpan) throws IllegalStateException
 	{
 		if(!isFulfilled())
 			throw new IllegalStateException("Tried to check whether this task was "
@@ -520,6 +520,7 @@ public class Task {
 	 *         False if the given alternative task is equal to this task.
 	 *         False if the given alternative task depends on this task.
 	 *         True otherwise.
+	 * @see    dependsOn
 	 */
 	public boolean canHaveAsAlternativeTask(Task altTask)
 	{
@@ -542,7 +543,7 @@ public class Task {
 	 *         False if the given status is equal to available.
 	 *         True otherwise.
 	 */
-	public boolean canUpdateStatus(Status status) // TODO verplaatsen
+	public boolean canUpdateStatus(Status status)
 	{
 		if(getStatus() != Status.AVAILABLE)
 			return false;
