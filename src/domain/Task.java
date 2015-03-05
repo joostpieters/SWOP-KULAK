@@ -8,23 +8,16 @@ import java.time.LocalDateTime;
  */
 public class Task {
 
-	private int id;
-
-	private String description;
-
-	private int acceptableDeviation;
-
-	private Timespan timeSpan;
-
-	private Duration estimatedDuration;
-
-	private Task alternativeTask;
-
-	private Task[] prerequisiteTasks;
-
-	private Status status;
-
 	private static int nextId=0;
+	
+	private int id;
+	private String description;
+	private int acceptableDeviation;
+	private Timespan timeSpan;
+	private Duration estimatedDuration;
+	private Task alternativeTask;
+	private Task[] prerequisiteTasks;
+	private Status status;
 
 	/**
 	 * Initializes this task based on the given description, estimated duration, acceptable deviation,

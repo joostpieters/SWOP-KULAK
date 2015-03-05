@@ -15,9 +15,10 @@ import java.util.TreeMap;
 public class Project {
 	
 	public static final int[] NO_DEPENDENCIES = new int[]{};
+	
+    private boolean isFinished;									//performance-variable
     
     private final int id;
-    private boolean isFinished;
     private final String name;
     private final String description;
     private final Timespan creationDueTime;
@@ -49,7 +50,6 @@ public class Project {
     		throw new IllegalArgumentException("Both name and description are expected.");
     	
     	this.id = id;
-    	setFinished(false);
     	this.name = name;
     	this.description = descr;
     	this.creationDueTime = new Timespan(creation, due);
@@ -64,41 +64,6 @@ public class Project {
 	 */
 	public int getId() {
 		return id;
-	}
-
-	/**
-	 * @return 	The finished-flag indicating the state:
-	 * 			true if this project is finished, false otherwise.
-	 */
-	public boolean isFinished() {
-		return isFinished;
-	}
-
-	/**
-	 * Set the finished-flag of this project.
-	 * Flag will remain false if one of the tasks isn't finished yet.
-	 * 
-	 * @param 	isFinished 
-	 * 			The value to set the flag to.
-	 * @throws	IllegalStateException
-	 * 			if this project is already finished.
-	 * @throws 	IllegalArgumentException
-	 * 			if this project doesn't have any tasks yet.
-	 */
-	private void setFinished(boolean isFinished) {
-		if(isFinished())
-			throw new IllegalStateException("This project has already been finished.");
-		if(isFinished && getTasks().isEmpty())
-			throw new IllegalArgumentException("Project can only be finished when it has more than 1 task.");
-		
-		if(isFinished)
-			for(Task t : getTasks())
-				if(!t.isFinished()) {
-					isFinished = false;
-					break;
-				}
-		
-		this.isFinished = isFinished;
 	}
 
 	/**
@@ -146,11 +111,15 @@ public class Project {
 	 * 			null otherwise.
 	 */
 	public Task getTask(int tid) {
-		Task t = tasks.get(id);
+		Task t = tasks.get(tid);
 		if(t == null)
 			throw new IllegalArgumentException("Task with tid " + tid + " doesn't exist.");
 		return t;
 	}
+    
+    /****************************************
+     * Task-management						*
+     ****************************************/
 	
 	/**
 	 * Add a task to the list of tasks for this project.
@@ -170,7 +139,7 @@ public class Project {
 		if(isFinished())
 			throw new IllegalStateException("This project has already been finished.");
 		if(t == null)
-			throw new IllegalArgumentException("You can't add null-tasks to a project.");
+			throw new NullPointerException("You can't add null-tasks to a project.");
 		if(t.getAlternativeTask() != null && !tasks.containsKey(t.getAlternativeTask().getId()))
 			throw new IllegalArgumentException(
 					"The task this task should be an alternative for, doesn't exist in this project.");
@@ -182,10 +151,6 @@ public class Project {
 		
 		this.tasks.put(t.getId(), t);
 	}
-    
-    /****************************************
-     * Task-management						*
-     ****************************************/
     
 	/**
 	 * Create a new task and add it to this project.
@@ -211,7 +176,7 @@ public class Project {
 		
 		Task[] arr = new Task[prereq.length];
 		
-		for(int i : prereq) {
+		for(int i = 0; i < prereq.length; i++) {
 			arr[i] = getTask(prereq[i]);
 		}
 
@@ -236,15 +201,27 @@ public class Project {
 		}
 		return result;
 	}
-	
+
 	/**
-	 * Set the finished-flag to true.
+	 * Check whether this project is finished or not.
 	 * 
-	 * @see		setFinished
+	 * @return	true if this all tasks in this project have been finished,
+	 * 			false otherwise.
+	 * @throws 	IllegalArgumentException
+	 * 			if this project doesn't have any tasks yet.
 	 */
-	public void finish() {
-		if(!isFinished())
-			setFinished(true);
+	public boolean isFinished() {
+		if(isFinished)
+			return true;
+		if(getTasks().isEmpty())
+			return false;
+		
+		for(Task t : getTasks())
+			if(!t.isFinished()) {
+				return false;
+			}
+		
+		return (isFinished = true);
 	}
 	
 	/**

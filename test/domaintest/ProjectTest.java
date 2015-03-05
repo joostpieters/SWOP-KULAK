@@ -22,8 +22,6 @@ import static org.junit.Assert.*;
  */
 public class ProjectTest {
 	
-	private static final double EPS = 1e-15;
-	
 	private int id = 0;
 	private String name = "Mobile Steps";
 	private String descr = "develop mobile app for counting steps using a specialized bracelet";
@@ -57,8 +55,7 @@ public class ProjectTest {
     	
     	pFinished = new Project(id, name, descr, create, due);
     	pFinished.addTask(t5);
-    	t5.update(t5.getTimeSpan().getStartTime(), t5.getTimeSpan().getEndTime(), Status.FINISHED);
-    	pFinished.finish();
+    	t5.update(LocalDateTime.of(2015, 2, 9, 9, 0), LocalDateTime.of(2015, 2, 9, 12, 0), Status.FINISHED);
     }
     
     @After
@@ -126,8 +123,6 @@ public class ProjectTest {
      */
     @Test
     public void testAddTaskSimple() {
-    	//TODO: wat met geclonede tasks? mogelijk? zelfde id?
-    	
     	p.addTask(t1);
     	assertTrue(p.getTasks().contains(t1));
     	assertFalse(p.getTasks().contains(t2));
@@ -204,8 +199,7 @@ public class ProjectTest {
     	String descr = "design system";
     	int estDur = 8;
     	int accDev = 20;
-    	//TODO: how to indicate there are no prereqs?
-    	int[] prereq = new int[]{};
+    	int[] prereq = Project.NO_DEPENDENCIES;
     	Status stat = Status.AVAILABLE;
     	
     	p.createTask(descr, estDur, accDev, prereq, stat);
@@ -217,7 +211,7 @@ public class ProjectTest {
     	Task added = (Task) tasks.toArray()[0];
     	assertEquals(added.getDescription(), descr);
     	assertEquals(added.getEstimatedDuration(), estDur);
-    	assertEquals(added.getAcceptableDeviation(), (double) accDev / 100, EPS);
+    	assertEquals(added.getAcceptableDeviation(), accDev);
     	//TODO: is this the expected behaviour?
     	assertEquals(added.getAlternativeTask(), null);
     	assertEquals(added.getPrerequisiteTasks().length, 0);
@@ -305,25 +299,39 @@ public class ProjectTest {
     }
     
     /**
+     * Test getAvailableTasks method for finished project.
+     */
+    @Test
+    public void testGetAvailableTasksFinished() {
+    	assertTrue(pFinished.getAvailableTasks().isEmpty());
+    }
+    
+    /**
      * Test finish method, valid case.
      */
     @Test 
-    public void testFinishValid() {
+    public void testIsFinishedValid() {
     	p.addTask(t1);
     	t1.update(t1.getTimeSpan().getStartTime(), t1.getTimeSpan().getEndTime(), Status.FINISHED);
-    	p.finish();
     	
     	assertTrue(p.isFinished());
+    }
+    
+    /**
+     * Test finish method when no tasks in the project yet.
+     */
+    @Test
+    public void testIsFinishedNoTasks() {
+    	assertFalse(p.isFinished());
     }
     
     /**
      * Test finish method with only unfinished tasks.
      */
     @Test 
-    public void testFinishUnfinished() {
+    public void testIsFinishedUnfinished() {
     	p.addTask(t1);
     	p.addTask(t2);
-    	p.finish();
     	
     	assertFalse(p.isFinished());
     }
@@ -332,38 +340,20 @@ public class ProjectTest {
      * Test finish method with finished and unfinished tasks.
      */
     @Test 
-    public void testFinishUnfinished2() {
+    public void testIsFinishedUnfinished2() {
     	p.addTask(t1);
     	p.addTask(t2);
     	t1.update(t1.getTimeSpan().getStartTime(), t1.getTimeSpan().getEndTime(), Status.FINISHED);
-    	p.finish();
     	
     	assertFalse(p.isFinished());
-    }
-    
-    /**
-     * Test finish method when no tasks in the project yet.
-     */
-    @Test (expected = IllegalArgumentException.class)
-    public void testFinishNoTasks() {
-    	p.finish();
     }
     
     /**
      * Test finish method when already finished
      */
     @Test
-    public void testFinishAlreadyFinished() {
-    	pFinished.finish();
+    public void testIsFinishedAlreadyFinished() {
     	assertTrue(pFinished.isFinished());
-    }
-    
-    /**
-     * Test getAvailableTasks method for finished project.
-     */
-    @Test
-    public void testGetAvailableTasksFinished() {
-    	assertTrue(pFinished.getAvailableTasks().isEmpty());
     }
     
     /**
@@ -373,6 +363,7 @@ public class ProjectTest {
     public void testIsOnTimeUnfinished() {
     	p.addTask(t1);
     	p.addTask(t2);
+    	
     	p.isOnTime();
     }
     
