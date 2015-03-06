@@ -15,7 +15,7 @@ public class MainFrame extends javax.swing.JFrame {
 
 	private static final long serialVersionUID = -2541384231489389714L;
         
-        private FrontController controller;
+        private final FrontController controller;
 	
 	/**
      * Creates new form MainFrame

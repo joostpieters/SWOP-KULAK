@@ -34,9 +34,9 @@ public class Task {
 	 *        The list of prerequisite tasks which need to be finished before this task can be started.
 	 * @param status
 	 *        The status of this task.
-	 * @param start
+	 * @param startTime
 	 *        The start time of the time span of this task.
-	 * @param end
+	 * @param endTime
 	 *        The end time of the time span of this task.
 	 */
 	public Task(String description, long estDur, int accDev, Task[] prereq, Status status,
@@ -69,9 +69,9 @@ public class Task {
 	 *        The acceptable deviation of this task expressed as an integer between 0 and 100.
 	 * @param status
 	 *        The status of this task.
-	 * @param start
+	 * @param startTime
 	 *        The start time of the time span of this task.
-	 * @param end
+	 * @param endTime
 	 *        The end time of the time span of this task.
 	 */
 	public Task(String description, long estDur, int accDev, Status status,
@@ -330,7 +330,7 @@ public class Task {
 	 * @throws IllegalArgumentException
 	 *         If the start and/or end time are not initialized.
 	 */
-	public void update(LocalDateTime start, LocalDateTime end, Status status) throws IllegalArgumentException
+	public final void update(LocalDateTime start, LocalDateTime end, Status status) throws IllegalArgumentException
 	{
 		if(!canUpdateStatus(status))
 			throw new IllegalArgumentException("This task can't be updated to the given status.");

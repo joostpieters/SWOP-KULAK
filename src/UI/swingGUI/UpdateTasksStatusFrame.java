@@ -43,17 +43,18 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
      */
     private void initAvailableTaskTable() {
         String[] columnNames = {"Id", "Description", "Estimated Duration", "Acceptable Deviation", "Project"};
-        List<Map.Entry<String, Task>> tasks = handler.getAvailableTasks();
+        Map<Task, Project> tasks = handler.getAvailableTasks();
         Object[][] data = new Object[tasks.size()][];
 
         int i = 0;
-            for (Entry<String, Task> pair : tasks) {
+            for (Entry<Task, Project> pair : tasks.entrySet()) {
                 data[i] = new Object[]{
+                    pair.getKey().getId(),
+                    pair.getKey().getDescription(),
+                    pair.getKey().getEstimatedDuration().getHours() + "h " + pair.getKey().getEstimatedDuration().getMinutes() + " min",
+                    pair.getKey().getAcceptableDeviation() + "%",
                     pair.getValue().getId(),
-                    pair.getValue().getDescription(),
-                    pair.getValue().getEstimatedDuration().getHours() + "h " + pair.getValue().getEstimatedDuration().getMinutes() + " min",
-                    pair.getValue().getAcceptableDeviation() + "%",
-                    pair.getKey()
+                    pair.getValue().getName()
                 };  i++;
             }
 
