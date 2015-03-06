@@ -3,6 +3,8 @@ package domain;
 import exception.ObjectNotFoundException;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class represents a manager to contain the projects in the system.
@@ -46,7 +48,7 @@ public class ProjectManager {
      * 
      * @param project The project to add. 
      */
-    public void addProject(Project project){
+    private void addProject(Project project){
         projects.add(project);
     }
     
@@ -73,5 +75,23 @@ public class ProjectManager {
      */
     public int getNbProjects(){
         return projects.size();
+    }
+    
+     /**
+     * Returns a map with all available tasks in this projectmanager ascociated 
+     * with their project.
+     * 
+     * @return A map wich has as keys, all available tasks and as value the
+     * project the task belongs to.
+     */   
+    public Map<Task, Project>  getAllAvailableTasks(){
+        
+        Map<Task, Project> availableTasks = new HashMap<>();
+        for (Project project : projects){
+            for(Task task : project.getAvailableTasks()){
+                availableTasks.put(task, project);
+            }           
+        }
+        return availableTasks;
     }
 }

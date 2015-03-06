@@ -37,20 +37,13 @@ public class UpdateTaskStatusHandler {
     
     /**
      * Returns a map with all available tasks in this projectmanager ascociated 
-     * with their project id.
+     * with their project.
      * 
-     * @return A map wich combines the id of the projects in this projectmanager,
-     * with their list of available tasks.
+     * @return All available tasks in the projectmanager of this handler.
      */   
-    public List<Entry<String, Task>>  getAvailableTasks(){
-        List<Project> projects = manager.getProjects();
-        List<Entry<String, Task>> availableTasks = new ArrayList<>();
-        for (Project project : projects){
-            for(Task task : project.getAvailableTasks()){
-                availableTasks.add(new AbstractMap.SimpleEntry<>(project.getName(), task));
-            }           
-        }
-        return availableTasks;
+    public Map<Task, Project>  getAvailableTasks(){
+        
+        return manager.getAllAvailableTasks();
     }
     
     /**
