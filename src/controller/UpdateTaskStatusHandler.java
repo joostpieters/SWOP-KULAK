@@ -1,5 +1,7 @@
 package controller;
 
+import domain.DetailedProject;
+import domain.DetailedTask;
 import domain.Project;
 import domain.ProjectManager;
 import domain.Status;
@@ -8,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -41,9 +44,9 @@ public class UpdateTaskStatusHandler {
      * 
      * @return All available tasks in the projectmanager of this handler.
      */   
-    public Map<Task, Project>  getAvailableTasks(){
+    public Map<DetailedTask, DetailedProject>  getAvailableTasks(){
         
-        return manager.getAllAvailableTasks();
+        return new HashMap<>(manager.getAllAvailableTasks());
     }
     
     /**

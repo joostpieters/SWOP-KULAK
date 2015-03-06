@@ -1,9 +1,11 @@
 package controller;
 
+import domain.DetailedProject;
+import domain.DetailedTask;
 import domain.Project;
 import domain.ProjectManager;
-import domain.Task;
-import java.util.List;
+import java.util.ArrayList;
+
 
 
 /**
@@ -30,8 +32,8 @@ public class ShowProjectHandler {
      * 
      * @return A list of projects of this projectmanager
      */
-    public List<Project> getProjects(){
-        return manager.getProjects();
+    public ArrayList<DetailedProject> getProjects(){
+        return new ArrayList<>(manager.getProjects());
     }
     
     /**
@@ -46,7 +48,7 @@ public class ShowProjectHandler {
     /**
      * @return The current project of this handler.
      */  
-    public Project  getProject(){
+    public DetailedProject  getProject(){
         return currentProject;
     }
     
@@ -57,7 +59,7 @@ public class ShowProjectHandler {
      * @return The task with the given id in the current project of this handler.
      * @throws IllegalStateException The current project is null.
      */
-    public Task getTask(int taskId) throws IllegalStateException{
+    public DetailedTask getTask(int taskId) throws IllegalStateException{
         if(currentProject == null){
             throw new IllegalStateException("No project is currently selected in this handler.");
         }

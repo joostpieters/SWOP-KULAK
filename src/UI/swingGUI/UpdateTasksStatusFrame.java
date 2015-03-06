@@ -7,6 +7,8 @@ package UI.swingGUI;
 
 import controller.FrontController;
 import controller.UpdateTaskStatusHandler;
+import domain.DetailedProject;
+import domain.DetailedTask;
 import domain.Project;
 import domain.Task;
 import java.awt.CardLayout;
@@ -43,11 +45,11 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
      */
     private void initAvailableTaskTable() {
         String[] columnNames = {"Id", "Description", "Estimated Duration", "Acceptable Deviation", "Project"};
-        Map<Task, Project> tasks = handler.getAvailableTasks();
+        Map<DetailedTask, DetailedProject> tasks = handler.getAvailableTasks();
         Object[][] data = new Object[tasks.size()][];
 
         int i = 0;
-            for (Entry<Task, Project> pair : tasks.entrySet()) {
+            for (Entry<DetailedTask, DetailedProject> pair : tasks.entrySet()) {
                 data[i] = new Object[]{
                     pair.getKey().getId(),
                     pair.getKey().getDescription(),

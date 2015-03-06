@@ -7,6 +7,8 @@ package UI.swingGUI;
 
 import controller.FrontController;
 import controller.ShowProjectHandler;
+import domain.DetailedProject;
+import domain.DetailedTask;
 import domain.Project;
 import domain.Task;
 import java.awt.CardLayout;
@@ -53,11 +55,11 @@ public class ShowProjectFrame extends javax.swing.JFrame {
     private void initProjectTable() {
         
         String[] columnNames = {"Id", "Name", "Creation Time", "Due Time"};
-        List<Project> projects = handler.getProjects();
+        List<DetailedProject> projects = handler.getProjects();
         Object[][] data = new Object[projects.size()][];
 
         int i = 0;
-        for (Project project : projects) {
+        for (DetailedProject project : projects) {
             data[i] = new Object[]{
                 project.getId(),
                 project.getName(),
@@ -74,7 +76,7 @@ public class ShowProjectFrame extends javax.swing.JFrame {
     /**
      * Fill the project details frame with the appropriate data
      */
-    private void initProjectDetails(Project project) {
+    private void initProjectDetails(DetailedProject project) {
         projectNameLabel.setText(project.getName());
         creationTimeLabel.setText(project.getCreationTime().format(formatter));
         dueTimeLabel.setText(project.getDueTime().format(formatter));
@@ -102,7 +104,7 @@ public class ShowProjectFrame extends javax.swing.JFrame {
     /**
      * Fill the task details frame with the appropriate data
      */
-    private void initTaskDetails(Task task) {
+    private void initTaskDetails(DetailedTask task) {
         taskHoursLabel.setText("" + task.getEstimatedDuration().getHours());
         taskHoursLabel.setText("" + task.getEstimatedDuration().getMinutes());
         taskStatusLabel.setText(task.getStatus().toString());
@@ -443,7 +445,7 @@ public class ShowProjectFrame extends javax.swing.JFrame {
         try {
             int pId = (int) projectModel.getValueAt(projectTable.convertRowIndexToModel(projectTable.getSelectedRow()), 0);
             handler.selectProject(pId);
-            Project project = handler.getProject();
+            DetailedProject project = handler.getProject();
             initProjectDetails(project);
             CardLayout card = (CardLayout) mainPanel.getLayout();
             card.show(mainPanel, "projectDetails");
@@ -456,7 +458,7 @@ public class ShowProjectFrame extends javax.swing.JFrame {
     private void selectTaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectTaskButtonActionPerformed
         try {
             int tId = (int) taskModel.getValueAt(taskTable.convertRowIndexToModel(taskTable.getSelectedRow()), 0);
-            Task task = handler.getTask(tId);
+            DetailedTask task = handler.getTask(tId);
             
             initTaskDetails(task);
             CardLayout card = (CardLayout) mainPanel.getLayout();

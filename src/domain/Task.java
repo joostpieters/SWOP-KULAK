@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
  * 
  * @author Frederic, Mathias, Pieter-Jan
  */
-public class Task {
+public class Task implements DetailedTask {
 
 	private static int nextId=0;
 	
@@ -183,6 +183,7 @@ public class Task {
 	/**
 	 * @return The identification number of this task.
 	 */
+    @Override
 	public int getId()
 	{
 		return this.id;
@@ -191,6 +192,7 @@ public class Task {
 	/**
 	 * @return The description of this task.
 	 */
+    @Override
 	public String getDescription()
 	{
 		return this.description;
@@ -199,6 +201,7 @@ public class Task {
 	/**
 	 * @return The estimated duration of this task.
 	 */
+    @Override
 	public Duration getEstimatedDuration()
 	{
 		return this.estimatedDuration;
@@ -207,6 +210,7 @@ public class Task {
 	/**
 	 * @return The timeSpan indicating the actual start and end time of this task.
 	 */
+    @Override
 	public Timespan getTimeSpan()
 	{
 		return this.timeSpan;
@@ -214,6 +218,7 @@ public class Task {
 	/**
 	 * @return The acceptable deviation of this task expressed as an integer between 0 and 100.
 	 */
+    @Override
 	public int getAcceptableDeviation()
 	{
 		return this.acceptableDeviation;
@@ -238,6 +243,7 @@ public class Task {
 	/**
 	 * @return The status of this task.
 	 */
+    @Override
 	public Status getStatus()
 	{
 		if(this.status == Status.UNAVAILABLE)
@@ -269,6 +275,7 @@ public class Task {
 	 *         based on the maximum duration of this task.
 	 *         If this task doesn't have a time span then the result is a duration of 0 minutes.
 	 */
+    @Override
 	public Duration getDelay()
 	{
 		if(getTimeSpan()==null)
