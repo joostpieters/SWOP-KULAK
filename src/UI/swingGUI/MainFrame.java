@@ -186,11 +186,8 @@ public class MainFrame extends javax.swing.JFrame {
 	LocalDateTime due = LocalDateTime.of(2015, 2, 13, 0, 0);
         manager.createProject(name, descr, create, due);
         manager.createProject("Lol", descr, create, due);
-        Task t1 = new Task(descr, 100, 50);
-        Task t2 = new Task(descr, 1200, 50);
-        manager.getProject(0).addTask(t1);
-        manager.getProject(0).addTask(t2);
-        manager.getProject(0).addTask(t1);
+        manager.getProject(0).createTask(descr, 100, 50, null, null);
+        manager.getProject(0).createTask(descr, 1200, 50, null, null);
         manager.createProject("Lol 1.2", descr, create, due);
         FrontController controller = new FrontController(manager);
         /* Create and display the form */

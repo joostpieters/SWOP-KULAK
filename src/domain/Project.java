@@ -140,7 +140,7 @@ public class Project implements DetailedProject {
 	 * 			or if there exists a task in t.getPrerequisiteTasks() 
 	 * 			which doesn't exist in this project.
 	 */
-	public void addTask(Task t) {
+	private void addTask(Task t) {
 		if(isFinished())
 			throw new IllegalStateException("This project has already been finished.");
 		if(t == null)
