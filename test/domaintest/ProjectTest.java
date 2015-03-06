@@ -54,7 +54,7 @@ public class ProjectTest {
     	t5 = new Task("bla5", 3, 10);
     	
     	pFinished = new Project(id, name, descr, create, due);
-    	pFinished.addTask(t5);
+    	pFinished.createTask("bla5", 3, 10, null, null);
     	t5.update(LocalDateTime.of(2015, 2, 9, 9, 0), LocalDateTime.of(2015, 2, 9, 12, 0), Status.FINISHED);
     }
     
@@ -123,12 +123,12 @@ public class ProjectTest {
      */
     @Test
     public void testAddTaskSimple() {
-    	p.addTask(t1);
+    	//TODO: p.addTask(t1);
     	assertTrue(p.getTasks().contains(t1));
     	assertFalse(p.getTasks().contains(t2));
     	assertFalse(p.getTasks().contains(null));
     	
-    	p.addTask(t2);
+    	//TODO: p.addTask(t2);
     	assertTrue(p.getTasks().contains(t1));
     	assertTrue(p.getTasks().contains(t2));
     	assertFalse(p.getTasks().contains(null));
@@ -139,7 +139,7 @@ public class ProjectTest {
      */
     @Test (expected = NullPointerException.class)
     public void testAddTaskNull() {
-    	p.addTask(null);
+    	//TODO: p.addTask(null);
     }
     
     /**
@@ -147,9 +147,9 @@ public class ProjectTest {
      */
     @Test
     public void testAddTaskPrereqs() {
-    	p.addTask(t1);
-    	p.addTask(t2);
-    	p.addTask(t3);
+    	//TODO: p.addTask(t1);
+    	//TODO: p.addTask(t2);
+    	//TODO: p.addTask(t3);
     	
     	assertTrue(p.getTasks().contains(t3));
     	assertFalse(p.getTasks().contains(null));
@@ -161,7 +161,7 @@ public class ProjectTest {
     @Test
     public void testAddTaskAlternative() {
     	//TODO: implement
-    	p.addTask(t4);
+    	//TODO: p.addTask(t4);
     	fail("not implemented yet");
     }
     
@@ -170,7 +170,7 @@ public class ProjectTest {
      */
     @Test (expected = IllegalArgumentException.class)
     public void testAddTaskInvalidPrereqs() {
-    	p.addTask(t3);
+    	//TODO: p.addTask(t3);
     }
     
     /**
@@ -178,8 +178,8 @@ public class ProjectTest {
      */
     @Test (expected = IllegalArgumentException.class)
     public void testAddTaskInvalidPrereqs2() {
-    	p.addTask(t1);
-    	p.addTask(t3);
+    	//TODO: p.addTask(t1);
+    	//TODO: p.addTask(t3);
     }
     
     /**
@@ -222,8 +222,8 @@ public class ProjectTest {
      */
     @Test
     public void testCreateTaskPrereqs() {
-    	p.addTask(t1);
-    	p.addTask(t2);
+    	//TODO: p.addTask(t1);
+    	//TODO: p.addTask(t2);
     	String descr = "design system";
     	int estDur = 8;
     	int accDev = 20;
@@ -264,7 +264,7 @@ public class ProjectTest {
      */
     @Test (expected = IllegalArgumentException.class)
     public void testCreateTaskInvalidPrereqs2() {
-    	p.addTask(t1);
+    	//TODO: p.addTask(t1);
     	String descr = "design system";
     	int estDur = 8;
     	int accDev = 20;
@@ -279,9 +279,9 @@ public class ProjectTest {
      */
     @Test
     public void testGetAvailableTasks() {
-    	p.addTask(t1);
-    	p.addTask(t2);
-    	p.addTask(t3);
+    	//TODO: p.addTask(t1);
+    	//TODO: p.addTask(t2);
+    	//TODO: p.addTask(t3);
     	
     	List<Task> l = p.getAvailableTasks();
     	assertEquals(l.size(), 2);
@@ -311,7 +311,7 @@ public class ProjectTest {
      */
     @Test 
     public void testIsFinishedValid() {
-    	p.addTask(t1);
+    	//TODO: p.addTask(t1);
     	t1.update(t1.getTimeSpan().getStartTime(), t1.getTimeSpan().getEndTime(), Status.FINISHED);
     	
     	assertTrue(p.isFinished());
@@ -330,8 +330,8 @@ public class ProjectTest {
      */
     @Test 
     public void testIsFinishedUnfinished() {
-    	p.addTask(t1);
-    	p.addTask(t2);
+    	//TODO: p.addTask(t1);
+    	//TODO: p.addTask(t2);
     	
     	assertFalse(p.isFinished());
     }
@@ -341,8 +341,8 @@ public class ProjectTest {
      */
     @Test 
     public void testIsFinishedUnfinished2() {
-    	p.addTask(t1);
-    	p.addTask(t2);
+    	//TODO: p.addTask(t1);
+    	//TODO: p.addTask(t2);
     	t1.update(t1.getTimeSpan().getStartTime(), t1.getTimeSpan().getEndTime(), Status.FINISHED);
     	
     	assertFalse(p.isFinished());
@@ -361,8 +361,8 @@ public class ProjectTest {
      */
     @Test
     public void testIsOnTimeUnfinished() {
-    	p.addTask(t1);
-    	p.addTask(t2);
+    	//TODO: p.addTask(t1);
+    	//TODO: p.addTask(t2);
     	
     	p.isOnTime();
     }
