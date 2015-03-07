@@ -135,11 +135,12 @@ public class Task implements DetailedTask {
 	 * 
 	 * @param description
 	 *        The description to check.
-	 * @return True if and only if the given description is not equal to null.
+	 * @return True if and only if the given description is not equal to null and the given 
+	 *         is not empty.
 	 */
 	public boolean canHaveAsDescription(String description)
 	{
-		return description != null;
+		return description != null && !description.isEmpty();
 	}
 	/**
 	 * Sets the list of prerequisite tasks to the given list of prerequisite tasks.
