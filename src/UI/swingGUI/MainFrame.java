@@ -134,15 +134,15 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void listProjects(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listProjects
-        new ShowProjectFrame(controller).setVisible(true);
+        new ShowProjectFrame(controller.getShowProjectHandler()).setVisible(true);
     }//GEN-LAST:event_listProjects
 
     private void createNewProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createNewProject
-        new CreateProjectFrame().setVisible(true);
+        new CreateProjectFrame(controller.getCreateProjectHandler()).setVisible(true);
     }//GEN-LAST:event_createNewProject
 
     private void createNewTask(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createNewTask
-        new CreateTaskFrame().setVisible(true);
+        new CreateTaskFrame(controller.getCreateTaskHandler()).setVisible(true);
     }//GEN-LAST:event_createNewTask
 
     private void modifySystemTime(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifySystemTime
@@ -150,7 +150,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_modifySystemTime
 
     private void updateTask(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateTask
-        new UpdateTasksStatusFrame(controller).setVisible(true);
+        new UpdateTasksStatusFrame(controller.getUpdateTaskHandler()).setVisible(true);
     }//GEN-LAST:event_updateTask
 
     /**
@@ -186,8 +186,8 @@ public class MainFrame extends javax.swing.JFrame {
 	LocalDateTime due = LocalDateTime.of(2015, 2, 13, 0, 0);
         manager.createProject(name, descr, create, due);
         manager.createProject("Lol", descr, create, due);
-        manager.getProject(0).createTask(descr, 100, 50, null, null);
-        manager.getProject(0).createTask(descr, 1200, 50, null, null);
+        //manager.getProject(0).createTask(descr, 100, 50, null, null);
+        //manager.getProject(0).createTask(descr, 1200, 50, null, null);
         manager.createProject("Lol 1.2", descr, create, due);
         FrontController controller = new FrontController(manager);
         /* Create and display the form */

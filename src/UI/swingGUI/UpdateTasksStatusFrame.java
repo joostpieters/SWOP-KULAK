@@ -5,14 +5,10 @@
  */
 package UI.swingGUI;
 
-import controller.FrontController;
 import controller.UpdateTaskStatusHandler;
 import domain.DetailedProject;
 import domain.DetailedTask;
-import domain.Project;
-import domain.Task;
 import java.awt.CardLayout;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.swing.JOptionPane;
@@ -26,16 +22,16 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
 	
 	private static final long serialVersionUID = -7570577954812578587L;
         
-        private UpdateTaskStatusHandler handler;
+    private final UpdateTaskStatusHandler handler;
     private DefaultTableModel taskModel;
 	
 	/**
      * Creates new form ListProjectsFrame
      * 
-     * @param controller The front controller to use, to pass the request to
+     * @param handler The use case handler to use to pass the requests to.
      */
-    public UpdateTasksStatusFrame(FrontController controller) {
-        handler = controller.getUpdateTaskHandler();
+    public UpdateTasksStatusFrame(UpdateTaskStatusHandler handler) {
+        this.handler = handler;
         initComponents();
         initAvailableTaskTable();
     }
@@ -44,7 +40,7 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
      * Fills the available task table with the appropriate data
      */
     private void initAvailableTaskTable() {
-        String[] columnNames = {"Id", "Description", "Estimated Duration", "Acceptable Deviation", "Project"};
+        String[] columnNames = {"Id", "Description", "Estimated Duration", "Acceptable Deviation", "Project id", "Project"};
         Map<DetailedTask, DetailedProject> tasks = handler.getAvailableTasks();
         Object[][] data = new Object[tasks.size()][];
 
@@ -60,8 +56,15 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
                 };  i++;
             }
 
-        taskModel = new DefaultTableModel(data, columnNames);
+        taskModel = new DefaultTableModel(data, columnNames){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                //all cells false
+                return false;
+            }
+        };
         availableTaskTable.setModel(taskModel);
+        availableTaskTable.getColumnModel().getColumn(0).setMaxWidth(50);
     }
 
     /**
@@ -80,13 +83,13 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
         availableTaskTable = new javax.swing.JTable();
         selectTaskButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jComboBox2 = new javax.swing.JComboBox();
+        updateTaskButton = new javax.swing.JButton();
+        statusComboBox = new javax.swing.JComboBox();
         jLabel8 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        dueTime2 = new javax.swing.JTextField();
-        dueTime1 = new javax.swing.JTextField();
+        startTimeTextField = new javax.swing.JTextField();
+        endTimeTextField = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
 
@@ -98,17 +101,6 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
         jLabel2.setFont(jLabel2.getFont().deriveFont(jLabel2.getFont().getSize()+15f));
         jLabel2.setText("Select Task");
 
-        availableTaskTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
         jScrollPane3.setViewportView(availableTaskTable);
 
         selectTaskButton.setText("Select Task");
@@ -143,25 +135,25 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                 .addComponent(selectTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
         mainPanel.add(jPanel1, "card3");
 
-        jButton1.setText("Update");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        updateTaskButton.setText("Update");
+        updateTaskButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1updateTask(evt);
+                updateTaskButtonupdateTask(evt);
             }
         });
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Finished", "Failed" }));
-        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+        statusComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Finished", "Failed" }));
+        statusComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox2ActionPerformed(evt);
+                statusComboBoxActionPerformed(evt);
             }
         });
 
@@ -174,26 +166,26 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         jLabel1.setText("Start Time");
 
-        dueTime2.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
-        dueTime2.setText("e.g. 2014-02-01 18:00");
-        dueTime2.setToolTipText("");
-        dueTime2.addActionListener(new java.awt.event.ActionListener() {
+        startTimeTextField.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        startTimeTextField.setText("e.g. 2014-02-01 18:00");
+        startTimeTextField.setToolTipText("");
+        startTimeTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dueTime2ActionPerformed(evt);
+                startTimeTextFieldActionPerformed(evt);
             }
         });
 
-        dueTime1.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
-        dueTime1.setText("e.g. 2014-02-01 18:00");
-        dueTime1.setToolTipText("");
-        dueTime1.addActionListener(new java.awt.event.ActionListener() {
+        endTimeTextField.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
+        endTimeTextField.setText("e.g. 2014-02-01 18:00");
+        endTimeTextField.setToolTipText("");
+        endTimeTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dueTime1ActionPerformed(evt);
+                endTimeTextFieldActionPerformed(evt);
             }
         });
 
         jLabel3.setFont(jLabel3.getFont().deriveFont(jLabel3.getFont().getSize()+15f));
-        jLabel3.setText("Update");
+        jLabel3.setText("Update Task");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -206,50 +198,53 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
                         .addComponent(jSeparator2)
                         .addContainerGap())
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox2, 0, 277, Short.MAX_VALUE)
-                        .addGap(321, 321, 321))
+                        .addGap(242, 242, 242)
+                        .addComponent(statusComboBox, 0, 277, Short.MAX_VALUE)
+                        .addGap(217, 217, 217))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGap(24, 24, 24))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(dueTime1, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(dueTime2, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(60, 60, 60)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(54, 54, 54)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(startTimeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(endTimeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(323, 323, 323)
+                                .addComponent(updateTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(217, Short.MAX_VALUE))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(297, 297, 297))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(23, 23, 23)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(dueTime2))
+                    .addComponent(startTimeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(41, 41, 41)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(dueTime1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(endTimeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
-                .addGap(44, 44, 44)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(60, 60, 60)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(212, 212, 212))
+                .addGap(54, 54, 54)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addGap(124, 124, 124)
+                        .addComponent(updateTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(statusComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(67, 67, 67))
         );
 
         mainPanel.add(jPanel2, "updateTask");
@@ -271,8 +266,8 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
     private void selectTaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectTaskButtonActionPerformed
         try {
             int tId = (int) taskModel.getValueAt(availableTaskTable.convertRowIndexToModel(availableTaskTable.getSelectedRow()), 0);
-            
-            //TODO handler
+            int pId = (int) taskModel.getValueAt(availableTaskTable.convertRowIndexToModel(availableTaskTable.getSelectedRow()), 4);
+            handler.selectTask(pId, tId);
             
             CardLayout card = (CardLayout) mainPanel.getLayout();
             card.show(mainPanel, "updateTask");
@@ -281,30 +276,34 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_selectTaskButtonActionPerformed
 
-    private void jButton1updateTask(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1updateTask
-        // TODO add your handling code here:
+    private void updateTaskButtonupdateTask(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateTaskButtonupdateTask
+        try{
+            String startTime = startTimeTextField.getText();
+            String endTime = endTimeTextField.getText();
+            String status = (String) statusComboBox.getSelectedItem();
+            handler.updateCurrentTask(startTime, endTime, status);
+        }catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, e.getMessage(), null, JOptionPane.ERROR_MESSAGE);
+        }
         dispose();
-    }//GEN-LAST:event_jButton1updateTask
+    }//GEN-LAST:event_updateTaskButtonupdateTask
 
-    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+    private void statusComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusComboBoxActionPerformed
        //TODO
-    }//GEN-LAST:event_jComboBox2ActionPerformed
+    }//GEN-LAST:event_statusComboBoxActionPerformed
 
-    private void dueTime2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dueTime2ActionPerformed
+    private void startTimeTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startTimeTextFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_dueTime2ActionPerformed
+    }//GEN-LAST:event_startTimeTextFieldActionPerformed
 
-    private void dueTime1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dueTime1ActionPerformed
+    private void endTimeTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endTimeTextFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_dueTime1ActionPerformed
+    }//GEN-LAST:event_endTimeTextFieldActionPerformed
 
  
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable availableTaskTable;
-    private javax.swing.JTextField dueTime1;
-    private javax.swing.JTextField dueTime2;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox jComboBox2;
+    private javax.swing.JTextField endTimeTextField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -317,5 +316,8 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JButton selectTaskButton;
+    private javax.swing.JTextField startTimeTextField;
+    private javax.swing.JComboBox statusComboBox;
+    private javax.swing.JButton updateTaskButton;
     // End of variables declaration//GEN-END:variables
 }

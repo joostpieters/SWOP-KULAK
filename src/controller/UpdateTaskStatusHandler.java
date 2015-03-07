@@ -2,20 +2,17 @@ package controller;
 
 import domain.DetailedProject;
 import domain.DetailedTask;
-import domain.Project;
 import domain.ProjectManager;
 import domain.Status;
 import domain.Task;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.AbstractMap;
-import java.util.ArrayList;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  * This handler, handles the update task use case
@@ -68,9 +65,33 @@ public class UpdateTaskStatusHandler {
      * @param status The status of the task @see domain.Status
      */
     public void updateCurrentTask(String startTime, String endTime, String status){
+        if(currentTask  == null){
+            throw new IllegalStateException("No task currently selected.");
+        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime start = LocalDateTime.parse(startTime, formatter);
-        LocalDateTime end = LocalDateTime.parse(endTime, formatter);
-        currentTask.update(start, end, Status.valueOf(status));
+        
+        
+        LocalDateTime start;
+        LocalDateTime end;
+        
+        try {
+            start = LocalDateTime.parse(startTime, formatter);
+            end = LocalDateTime.parse(endTime, formatter);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("The provided dates are not in the right format.");
+        }
+        
+        
+        try {
+            currentTask.update(start, end, Status.valueOf(status));
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            throw e;
+        }catch(Exception e){
+            // log for further review
+            Logger.getLogger(CreateProjectHandler.class.getName()).log(Level.SEVERE, null, e);
+            throw new RuntimeException("An unexpected error occured, please contact the system admin.");
+            
+        }
+        
     }
 }
