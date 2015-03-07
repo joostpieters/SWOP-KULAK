@@ -14,7 +14,7 @@ import java.util.TreeMap;
  */
 public class Project implements DetailedProject {
 	
-	public static final int[] NO_DEPENDENCIES = new int[]{};
+    public static final int[] NO_DEPENDENCIES = new int[]{};
 	
     private boolean isFinished;									//performance-variable
     
