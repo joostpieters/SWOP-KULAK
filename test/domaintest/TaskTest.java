@@ -42,15 +42,18 @@ public class TaskTest {
     			LocalDateTime.of(2015, 3, 4, 11, 48), 
     			LocalDateTime.of(2015, 3, 4, 15, 33)
     			);
-    	t3 = new Task("t3 finished", 30, 40, Status.FINISHED, t3ts.getStartTime(), t3ts.getEndTime());
+    	t3 = new Task("t3 finished", 30, 40);
+    	t3.update(t3ts.getStartTime(), t3ts.getEndTime(), Status.FINISHED);
     	t4 = new Task("t4", 30, 10, new Task[] {t3});
     	t5 = new Task("t5", 20, 5, new Task[] {t3, t2});
     	Timespan t6ts = new Timespan(
     			LocalDateTime.of(2015, 3, 4, 11, 48), 
     			LocalDateTime.of(2015, 3, 4, 15, 33)
     			);
-    	t6 = new Task("t6", 10, 3, Status.FAILED, t6ts.getStartTime(), t6ts.getEndTime());
-    	t7 = new Task("t7", 15, 4, Status.FAILED, t6ts.getStartTime(), t6ts.getEndTime());
+    	t6 = new Task("t6", 10, 3);
+    	t6.update(t6ts.getStartTime(), t6ts.getEndTime(), Status.FAILED);
+    	t7 = new Task("t7", 15, 4);
+    	t7.update(t6ts.getStartTime(), t6ts.getEndTime(), Status.FAILED);
     	t7alternative = new Task("alternative for t7!", 10, 2);
     	t7.setAlternativeTask(t7alternative);
     	t8 = new Task("depends on t7", 33, 3, new Task[] { t7} );
@@ -67,42 +70,34 @@ public class TaskTest {
     public void testConstructorValid()
     {
     	System.out.println("Task constructor");
-    	//Task(String description, long estDur, int accDev, Task[] prereq, Status status, Timespan timeSpan)
+    	
+    	
+    	//Task(String description, long estDur, int accDev, Task[] prereq)
     	String description = "task0 description";
     	int estDur = 10;
     	int accDev = 30;
     	Task[] prereq = new Task[] {t3};
-    	Status status = Status.FINISHED;
-    	Timespan tspan = new Timespan(
-    			LocalDateTime.of(2015, 4, 4, 11, 48), 
-    			LocalDateTime.of(2015, 4, 4, 15, 33)
-    			);
-    	Task task0 = new Task(description, estDur, accDev, prereq, status, tspan.getStartTime(), tspan.getEndTime());
+    	Task task0 = new Task(description, estDur, accDev, prereq);
     	assertEquals(description, task0.getDescription());
     	assertEquals(estDur, task0.getEstimatedDuration().toMinutes());
     	assertEquals(accDev, task0.getAcceptableDeviation());
     	for(int i = 0; i < prereq.length; i++)
     		assertEquals(prereq[i], task0.getPrerequisiteTasks()[i]);
-    	assertEquals(status, task0.getStatus());
-    	assertEquals(tspan.getStartTime(), task0.getTimeSpan().getStartTime());
-    	assertEquals(tspan.getEndTime(), task0.getTimeSpan().getEndTime());
-    	
+    	//Task(String description, long estDur, int accDev, Task[] prereq, altFor)
+    	Task task00 = new Task("task00", 10, 30, new Task[] {t0}, t6);
+    	assertEquals(task00, t6.getAlternativeTask());
     	//Task(String description, long estDur, int accDev, Status status, Timespan timeSpan)
     	String description1 = "task1 description";
     	int estDur1 = 55;
     	int accDev1 = 22;
-    	Status status1 = Status.FAILED;
-    	Timespan tspan1 = new Timespan(
-    			LocalDateTime.of(2013, 4, 3, 11, 28), 
-    			LocalDateTime.of(2013, 4, 4, 15, 33)
-    			);
-    	Task task1 = new Task(description1, estDur1, accDev1, status1, tspan1.getStartTime(), tspan1.getEndTime());
+    	Task task1 = new Task(description1, estDur1, accDev1);
+    	//task1.update(tspan1.getStartTime(), tspan1.getEndTime(), status1);
     	assertEquals(description1, task1.getDescription());
     	assertEquals(estDur1, task1.getEstimatedDuration().toMinutes());
     	assertEquals(accDev1, task1.getAcceptableDeviation());
-    	assertEquals(status1, task1.getStatus());
-    	assertEquals(tspan1.getStartTime(), task1.getTimeSpan().getStartTime());
-    	assertEquals(tspan1.getEndTime(), task1.getTimeSpan().getEndTime());
+    	//assertEquals(status1, task1.getStatus());
+    	//assertEquals(tspan1.getStartTime(), task1.getTimeSpan().getStartTime());
+    	//assertEquals(tspan1.getEndTime(), task1.getTimeSpan().getEndTime());
     	
     	//Task(String description, long estDur, int accDev, Task[] prereq)
     	String description2 = "task2 description";
@@ -136,8 +131,6 @@ public class TaskTest {
         Task instance = new Task("description", 40, 20);
         Task instance2 = new Task("Other description", 30, 10);
         
-//        int expResult = 0;
-//        int result = instance.getId();
         assertNotEquals(instance.getId(), instance2.getId());
         assertTrue(instance.getId() >= 0);
         assertTrue(instance2.getId() > instance.getId());
@@ -245,10 +238,12 @@ public class TaskTest {
     /**
      * Test of endsBefore method, of class Task.
      */
-    @Test (expected = IllegalArgumentException.class)
+    @Test (expected = IllegalStateException.class)
     public void testEndsBeforeException() {
-        System.out.println("endsBefore");
-        fail("not implemented");
+        Task availableTask = new Task("doesn't have a time span", 10, 30);
+        availableTask.endsBefore(new Timespan(
+        		LocalDateTime.of(2015, 5, 4, 10, 2),
+        		LocalDateTime.of(2015, 5, 4, 11, 2)));
     }
 
     /**

@@ -19,11 +19,11 @@ public class Task implements DetailedTask {
 	private Task alternativeTask;
 	private Task[] prerequisiteTasks;
 	private Status status;
-
+	
 	/**
-	 * Initializes this task based on the given description, estimated duration, acceptable deviation,
-	 * prerequisite tasks, status, start time and end time.
-	 * 
+	 * Initializes this task based on the given description, estimated duration,
+	 * acceptable deviation, prerequisite tasks and alternative task for.
+	 *  
 	 * @param 	description
 	 *        	The description of this task.
 	 * @param 	estDur
@@ -31,16 +31,12 @@ public class Task implements DetailedTask {
 	 * @param 	accDev
 	 *        	The acceptable deviation of this task expressed as an integer between 0 and 100.
 	 * @param 	prereq
-	 *        	The list of prerequisite tasks which need to be finished before this task can be started.
-	 * @param 	status
-	 *        	The status of this task.
-	 * @param 	startTime
-	 *        	The start time of the time span of this task.
-	 * @param 	endTime
-	 *        	The end time of the time span of this task.
+	 *        	The list of prerequisite tasks for this task.
+	 * @param   alternativeFor
+	 *          The task for which this task is an alternative for.
 	 */
-	public Task(String description, long estDur, int accDev, Task[] prereq, Status status,
-			LocalDateTime startTime, LocalDateTime endTime){
+	public Task(String description, long estDur, int accDev, Task[] prereq, Task alternativeFor)
+	{
 		this.id = generateId();
 		setDescription(description);
 		this.estimatedDuration = new Duration(estDur);
@@ -49,35 +45,9 @@ public class Task implements DetailedTask {
 			setPrerequisiteTasks(new Task[] {});
 		else
 			setPrerequisiteTasks(prereq);
-		
-		// first we set the status of this task to UNAVAILABLE or AVAILABLE
-		// to make sure the state of this task is valid.
-		updateStatus(); 
-		
-		if(status!=null)
-			update(startTime, endTime, status);
-	}
-	/**
-	 * Initializes this task based on the given description, estimated duration,
-	 * acceptable deviation, status, start time and end time.
-	 * 
-	 * @param 	description
-	 *        	The description of this task.
-	 * @param 	estDur
-	 *        	The estimated duration in minutes of this task.
-	 * @param 	accDev
-	 *        	The acceptable deviation of this task expressed as an integer between 0 and 100.
-	 * @param 	status
-	 *        	The status of this task.
-	 * @param 	startTime
-	 *        	The start time of the time span of this task.
-	 * @param 	endTime
-	 *        	The end time of the time span of this task.
-	 */
-	public Task(String description, long estDur, int accDev, Status status,
-			LocalDateTime startTime, LocalDateTime endTime)
-	{
-		this(description, estDur, accDev, null, status, startTime, endTime);
+		updateStatus();
+		if(alternativeFor != null)
+			alternativeFor.setAlternativeTask(this);
 	}
 	
 	/**
@@ -95,7 +65,7 @@ public class Task implements DetailedTask {
 	 */
 	public Task(String description, long estDur, int accDev, Task[] prereq)
 	{
-		this(description, estDur, accDev, prereq, null, null, null);
+		this(description, estDur, accDev, prereq, null);
 	}
 
 	/**
@@ -111,7 +81,7 @@ public class Task implements DetailedTask {
 	 */
 	public Task(String description, long estDur, int accDev)
 	{
-		this(description, estDur, accDev, null, null, null);
+		this(description, estDur, accDev, null, null);
 	}
 	
 	/**
