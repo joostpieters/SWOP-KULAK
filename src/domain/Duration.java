@@ -268,7 +268,7 @@ public class Duration implements Comparable<Duration>{
 		long totalMinutes = 0;
 		LocalTime beginLocalTime = begin.toLocalTime();
 		LocalDateTime nextBegin;
-		if(beginLocalTime.compareTo(BEGINLUNCH) <= 0 && beginLocalTime.compareTo(ENDLUNCH) < 0)
+		if(beginLocalTime.compareTo(ENDLUNCH) < 0)
 		{
 			long minutesTillLunch = ChronoUnit.MINUTES.between(beginLocalTime,BEGINLUNCH);
 			if(minutesTillEnd <= minutesTillLunch)
@@ -288,14 +288,9 @@ public class Duration implements Comparable<Duration>{
 				totalMinutes += minutesTillEndOfDay;
 			int weekDay = begin.getDayOfWeek().getValue();
 			if(weekDay == ENDWORKWEEK)
-			{
 				nextBegin = LocalDateTime.of(begin.toLocalDate().plusDays(8 - Duration.getDaysOfWorkWeek()), BEGINWORKDAY);
-
-			}
 			else
-			{
 				nextBegin = LocalDateTime.of(begin.toLocalDate().plusDays(1), BEGINWORKDAY);
-			}
 		}
 		return totalMinutes + getWorkTimeBetween(nextBegin, end);
 	}
@@ -326,7 +321,7 @@ public class Duration implements Comparable<Duration>{
 
 		LocalTime beginLocalTime = begin.toLocalTime();
 		LocalDateTime nextBegin;
-		if(beginLocalTime.compareTo(BEGINLUNCH) <= 0 && beginLocalTime.compareTo(ENDLUNCH) < 0)
+		if(beginLocalTime.compareTo(ENDLUNCH) < 0)
 		{
 			long minutesTillLunch = ChronoUnit.MINUTES.between(beginLocalTime,BEGINLUNCH);
 			if(minutesRemaining <= minutesTillLunch)
@@ -346,14 +341,9 @@ public class Duration implements Comparable<Duration>{
 				minutesRemaining -= minutesTillEndOfDay;
 			int weekDay = begin.getDayOfWeek().getValue();
 			if(weekDay == ENDWORKWEEK)
-			{
 				nextBegin = LocalDateTime.of(begin.toLocalDate().plusDays(8 - Duration.getDaysOfWorkWeek()), BEGINWORKDAY);
-
-			}
 			else
-			{
 				nextBegin = LocalDateTime.of(begin.toLocalDate().plusDays(1), BEGINWORKDAY);
-			}
 		}
 		return new Duration(minutesRemaining).getEndTimeFrom(nextBegin);
 	}
