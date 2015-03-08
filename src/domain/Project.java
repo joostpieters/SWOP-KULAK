@@ -222,10 +222,11 @@ public class Project implements DetailedProject {
 	 * 			The id this task is an alternative for.
 	 * @param 	prereq
 	 * 			An array of id's of tasks that the new task will depend on.
+	 * @return	The task that has been created.
 	 * @throws	IllegalStateException
 	 * 			if this project is already finished.
 	 */
-	public void createTask(String descr, int estDur, int accdev, int altFor, int[] prereq) {
+	public Task createTask(String descr, int estDur, int accdev, int altFor, int[] prereq) {
 		if(isFinished())
 			throw new IllegalStateException("This project has already been finished.");
 		
@@ -243,6 +244,7 @@ public class Project implements DetailedProject {
 		if(altFor != Project.NO_ALTERNATIVE)
 			getTask(altFor).setAlternativeTask(t);
 		addTask(t);
+		return t;
 	}
 	
 	/**

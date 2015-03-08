@@ -37,17 +37,25 @@ public class ProjectManager {
      * Creates a new project with the given details and add it to this projectmanager.
      * The new project gets an id that equals the number of projects in this projectmanager.
      * 
-     * @param name The name of the project
-     * @param description The description of the project
-     * @param startTime The start time of the project
-     * @param dueTime The time by which the project should be ended.
+     * @param 	name
+     * 			The name of the project
+     * @param 	description 
+     * 			The description of the project
+     * @param 	startTime 
+     * 			The start time of the project
+     * @param 	dueTime 
+     * 			The time by which the project should be ended.
+     * @return	The project that has been created.
      */
-    public void createProject(String name, String description, LocalDateTime startTime, LocalDateTime dueTime){
+    public Project createProject(String name, String description, LocalDateTime startTime, LocalDateTime dueTime){
         // init system clock
         if(getNbProjects() == 0){
             systemClock = new Clock(startTime);
         }
-        addProject(new Project(projects.size(),name, description, startTime, dueTime));
+        //TODO: goed idee om projects.size() te gebruiken? (gaan er nooit projecten weg?)
+        Project p = new Project(projects.size(),name, description, startTime, dueTime);
+        addProject(p);
+        return p;
     }
     
     /**
