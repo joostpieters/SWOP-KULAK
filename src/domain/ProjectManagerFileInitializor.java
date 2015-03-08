@@ -1,11 +1,10 @@
 package domain;
 
 /**
- *
- * @author Mathias
+ * This class reads input from a file to initialize a projectmanager
+ * 
+ * @author Frederic, Mathias, Pieter-Jan
  */
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StreamTokenizer;
@@ -14,27 +13,19 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-enum TaskStatus {
 
-    ONGOING, FINISHED, FAILED
-}
+public class ProjectManagerFileInitializor extends StreamTokenizer {
 
-public class TaskManInitFileChecker extends StreamTokenizer {
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private final ProjectManager manager;
+    
 
-    public static void main(String[] args) throws FileNotFoundException {
-        if (args.length < 1) {
-            System.err.println("Error: First command line argument must be filename.");
-        } else {
-            new TaskManInitFileChecker(new FileReader(args[0])).checkFile();
-        }
-    }
-
-    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
-    TaskManInitFileChecker(Reader r) {
+    public ProjectManagerFileInitializor(Reader r, ProjectManager manager) {
         super(r);
+        this.manager = manager;
     }
 
+    @Override
     public int nextToken() {
         try {
             return super.nextToken();
@@ -110,7 +101,7 @@ public class TaskManInitFileChecker extends StreamTokenizer {
         return list;
     }
 
-    void checkFile() {
+    public void processFile() {
         slashSlashComments(false);
         slashStarComments(false);
         ordinaryChar('/'); // otherwise "//" keeps treated as comments.
@@ -125,6 +116,7 @@ public class TaskManInitFileChecker extends StreamTokenizer {
             String description = expectStringField("description");
             LocalDateTime creationTime = expectDateField("creationTime");
             LocalDateTime dueTime = expectDateField("dueTime");
+            manager.createProject(name, description, creationTime, dueTime);
         }
         expectLabel("tasks");
         while (ttype == '-') {
@@ -133,7 +125,7 @@ public class TaskManInitFileChecker extends StreamTokenizer {
             String description = expectStringField("description");
             int estimatedDuration = expectIntField("estimatedDuration");
             int acceptableDeviation = expectIntField("acceptableDeviation");
-            Integer alternativeFor = null;
+            int alternativeFor = -1;
             expectLabel("alternativeFor");
             if (ttype == TT_NUMBER) {
                 alternativeFor = expectInt();
@@ -143,19 +135,28 @@ public class TaskManInitFileChecker extends StreamTokenizer {
             if (ttype == '[') {
                 prerequisiteTasks = expectIntList();
             }
+            int[] prereq = new int[prerequisiteTasks.size()];
+            int i = 0;
+            for (Integer e : prerequisiteTasks)  
+                prereq[i++] = e;
+            // TODO better create task and return task
+            manager.getProject(project).createTask(description, estimatedDuration, acceptableDeviation, prereq, null);
+            Task task = manager.getProject(project).getTask(0);
             expectLabel("status");
-            TaskStatus status = TaskStatus.ONGOING;
+            Status status = null;
             if (isWord("finished")) {
                 nextToken();
-                status = TaskStatus.FINISHED;
+                status = Status.FINISHED;
             } else if (isWord("failed")) {
                 nextToken();
-                status = TaskStatus.FAILED;
+                status = Status.FAILED;
             }
-            if (status != TaskStatus.ONGOING) {
+            if (status != null) {
                 LocalDateTime startTime = expectDateField("startTime");
                 LocalDateTime endTime = expectDateField("endTime");
+                task.update(startTime, endTime, status);
             }
+            
         }
         if (ttype != TT_EOF) {
             error("End of file or '-' expected");

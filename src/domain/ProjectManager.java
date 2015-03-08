@@ -4,6 +4,7 @@ import exception.ObjectNotFoundException;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,6 +15,8 @@ import java.util.Map;
 public class ProjectManager {
     
     private final ArrayList<Project> projects;
+    
+    private Clock systemClock ;
     
     /**
      * Initializes a new projectmanager.
@@ -40,6 +43,10 @@ public class ProjectManager {
      * @param dueTime The time by which the project should be ended.
      */
     public void createProject(String name, String description, LocalDateTime startTime, LocalDateTime dueTime){
+        // init system clock
+        if(getNbProjects() == 0){
+            systemClock = new Clock(startTime);
+        }
         addProject(new Project(projects.size(),name, description, startTime, dueTime));
     }
     
@@ -93,5 +100,21 @@ public class ProjectManager {
             }           
         }
         return availableTasks;
+    }
+    
+     /**
+     * Returns a list with all available tasks in this projectmanager ascociated 
+     * with their project.
+     * 
+     * @return A list with all tasks of all projects in this projectmanager.
+     */   
+    public List<Task>  getAllTasks(){
+        
+        List<Task> tasks = new ArrayList<>();
+        for (Project project : projects){
+            tasks.addAll(project.getTasks());
+                      
+        }
+        return tasks;
     }
 }

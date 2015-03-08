@@ -363,8 +363,8 @@ public class TaskTest {
     	// checking time span duration == max duration
     	Task someTask = new Task("10, 20", 10, 20);
     	Timespan TS12 = new Timespan(
-    			LocalDateTime.of(2015,  3, 4, 12, 54),
-    			LocalDateTime.of(2015,  3, 4, 13, 6));
+    			LocalDateTime.of(2015,  3, 4, 13, 54),
+    			LocalDateTime.of(2015,  3, 4, 14, 6));
     	someTask.update(TS12.getStartTime(), TS12.getEndTime(), Status.FINISHED);
     	assertEquals(0, someTask.getDelay().toMinutes());
     	
@@ -372,8 +372,8 @@ public class TaskTest {
     	// checking time span duration < max duration
     	Task someTask2 = new Task("20, 20", 20, 20);
     	Timespan TS20 = new Timespan(
-    			LocalDateTime.of(2015,  3, 4, 12, 0),
-    			LocalDateTime.of(2015,  3, 4, 12, 20));
+    			LocalDateTime.of(2015,  3, 4, 13, 0),
+    			LocalDateTime.of(2015,  3, 4, 13, 20));
     	someTask2.update(TS20.getStartTime(), TS20.getEndTime(), Status.FINISHED);
     	assertEquals(0, someTask2.getDelay().toMinutes());
     	

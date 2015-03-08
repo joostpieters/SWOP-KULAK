@@ -1,47 +1,40 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package UI.swingGUI;
 
-import controller.FrontController;
 import controller.ShowProjectHandler;
-import domain.Project;
+import domain.DetailedProject;
+import domain.DetailedTask;
 import domain.Task;
 import java.awt.CardLayout;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 /**
+ * This jframe is the user interface for the show project use case.
  *
- * @author Mathias
+ * @author Frederic, Mathias, Pieter-Jan
  */
 public class ShowProjectFrame extends javax.swing.JFrame {
 
     private static final long serialVersionUID = -5680750759308569805L;
 
     private TableModel projectModel;
-    
+
     private TableModel taskModel;
 
-    private ShowProjectHandler handler;
-    
+    private final ShowProjectHandler handler;
+
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
     /**
      * Creates new form ListProjectsFrame
      *
-     * @param controller
+     * @param handler The handler to pass the requests to.
      */
-    public ShowProjectFrame(FrontController controller) {
-        handler = controller.getShowProjectHandler();
+    public ShowProjectFrame(ShowProjectHandler handler) {
+        this.handler = handler;
         initComponents();
         initProjectTable();
 
@@ -51,13 +44,13 @@ public class ShowProjectFrame extends javax.swing.JFrame {
      * Initialize the list project table with the appropriate data
      */
     private void initProjectTable() {
-        
+
         String[] columnNames = {"Id", "Name", "Creation Time", "Due Time"};
-        List<Project> projects = handler.getProjects();
+        List<DetailedProject> projects = handler.getProjects();
         Object[][] data = new Object[projects.size()][];
 
         int i = 0;
-        for (Project project : projects) {
+        for (DetailedProject project : projects) {
             data[i] = new Object[]{
                 project.getId(),
                 project.getName(),
@@ -67,14 +60,24 @@ public class ShowProjectFrame extends javax.swing.JFrame {
             i++;
         }
 
-        projectModel = new DefaultTableModel(data, columnNames);
+        projectModel = new DefaultTableModel(data, columnNames) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                //all cells false
+                return false;
+            }
+        };
+        
+        
+
         projectTable.setModel(projectModel);
+        projectTable.getColumnModel().getColumn(0).setMaxWidth(50);
     }
 
     /**
      * Fill the project details frame with the appropriate data
      */
-    private void initProjectDetails(Project project) {
+    private void initDetailedProject(DetailedProject project) {
         projectNameLabel.setText(project.getName());
         creationTimeLabel.setText(project.getCreationTime().format(formatter));
         dueTimeLabel.setText(project.getDueTime().format(formatter));
@@ -90,26 +93,32 @@ public class ShowProjectFrame extends javax.swing.JFrame {
                 task.getDescription(),
                 task.getEstimatedDuration().getHours() + "h " + task.getEstimatedDuration().getMinutes() + " min",
                 task.getAcceptableDeviation() + "%"
-                
+
             };
             i++;
         }
 
-        taskModel = new DefaultTableModel(data, columnNames);
+        taskModel = new DefaultTableModel(data, columnNames){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                //all cells false
+                return false;
+            }
+        };
         taskTable.setModel(taskModel);
+        taskTable.getColumnModel().getColumn(0).setMaxWidth(50);
     }
-    
+
     /**
      * Fill the task details frame with the appropriate data
      */
-    private void initTaskDetails(Task task) {
+    private void initTaskDetails(DetailedTask task) {
         taskHoursLabel.setText("" + task.getEstimatedDuration().getHours());
         taskHoursLabel.setText("" + task.getEstimatedDuration().getMinutes());
         taskStatusLabel.setText(task.getStatus().toString());
         taskDescriptionLabel.setText(task.getDescription());
         taskAccDevLabel.setText(task.getAcceptableDeviation() + "%");
 
-        
     }
 
     /**
@@ -167,14 +176,6 @@ public class ShowProjectFrame extends javax.swing.JFrame {
         jLabel2.setText("Select Project");
 
         projectTable.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        projectTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
         jScrollPane1.setViewportView(projectTable);
 
         selectProjectButton.setText("Select Project");
@@ -227,17 +228,6 @@ public class ShowProjectFrame extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
         jLabel6.setText("Tasks");
 
-        taskTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
         jScrollPane2.setViewportView(taskTable);
 
         selectTaskButton.setText("Select Task");
@@ -257,38 +247,35 @@ public class ShowProjectFrame extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator2)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(selectTaskButton))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane2)
-                            .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(projectNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                                .addComponent(projectNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addComponent(dueTimeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(creationTimeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(73, 73, 73)))))
+                                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(dueTimeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(creationTimeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(selectTaskButton)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 673, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(73, 73, 73)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -443,12 +430,14 @@ public class ShowProjectFrame extends javax.swing.JFrame {
         try {
             int pId = (int) projectModel.getValueAt(projectTable.convertRowIndexToModel(projectTable.getSelectedRow()), 0);
             handler.selectProject(pId);
-            Project project = handler.getProject();
-            initProjectDetails(project);
+            DetailedProject project = handler.getProject();
+            initDetailedProject(project);
             CardLayout card = (CardLayout) mainPanel.getLayout();
             card.show(mainPanel, "projectDetails");
-        } catch (Exception e) {
+        } catch (IndexOutOfBoundsException e) {
             JOptionPane.showMessageDialog(rootPane, "Please select a project.", null, JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, e.getMessage(), null, JOptionPane.ERROR_MESSAGE);
         }
 
     }//GEN-LAST:event_selectProject
@@ -456,13 +445,15 @@ public class ShowProjectFrame extends javax.swing.JFrame {
     private void selectTaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectTaskButtonActionPerformed
         try {
             int tId = (int) taskModel.getValueAt(taskTable.convertRowIndexToModel(taskTable.getSelectedRow()), 0);
-            Task task = handler.getTask(tId);
-            
+            DetailedTask task = handler.getTask(tId);
+
             initTaskDetails(task);
             CardLayout card = (CardLayout) mainPanel.getLayout();
             card.show(mainPanel, "taskDetails");
-        } catch (Exception e) {
+        } catch (IndexOutOfBoundsException e) {
             JOptionPane.showMessageDialog(rootPane, "Please select a task.", null, JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, e.getMessage(), null, JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_selectTaskButtonActionPerformed
 

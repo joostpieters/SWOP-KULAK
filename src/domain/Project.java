@@ -12,7 +12,7 @@ import java.util.TreeMap;
  * 
  * @author Frederic, Mathias, Pieter-Jan 
  */
-public class Project {
+public class Project implements DetailedProject {
 	
 	public static final int[] NO_DEPENDENCIES = new int[]{};
 	public static final int NO_ALTERNATIVE = -1;
@@ -63,6 +63,7 @@ public class Project {
     /**
 	 * @return 	the id of this project.
 	 */
+    @Override
 	public int getId() {
 		return id;
 	}
@@ -70,6 +71,7 @@ public class Project {
 	/**
 	 * @return 	the name of this project.
 	 */
+    @Override
 	public String getName() {
 		return name;
 	}
@@ -77,6 +79,7 @@ public class Project {
 	/**
 	 * @return 	the description of this project.
 	 */
+    @Override
 	public String getDescription() {
 		return description;
 	}
@@ -84,6 +87,7 @@ public class Project {
 	/**
 	 * @return 	the creationTime of this project.
 	 */
+    @Override
 	public LocalDateTime getCreationTime() {
 		return creationDueTime.getStartTime();
 	}
@@ -91,6 +95,7 @@ public class Project {
 	/**
 	 * @return 	the dueTime of this project.
 	 */
+    @Override
 	public LocalDateTime getDueTime() {
 		return creationDueTime.getEndTime();
 	}
@@ -206,6 +211,7 @@ public class Project {
 	 * 			and if this project contains at least one task,
 	 * 			false otherwise.
 	 */
+    @Override
 	public boolean isFinished() {
 		if(isFinished)
 			return true;
@@ -227,6 +233,7 @@ public class Project {
 	 * 			if this project is estimated to finish on time,
 	 * 			false otherwise.
 	 */
+    @Override
 	public boolean isOnTime() {
 		if(isFinished()) {
 			for(Task t : getTasks())

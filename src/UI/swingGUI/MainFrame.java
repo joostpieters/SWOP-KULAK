@@ -2,23 +2,32 @@ package UI.swingGUI;
 
 import controller.FrontController;
 import domain.ProjectManager;
+import domain.ProjectManagerFileInitializor;
 import domain.Task;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * This frame forms the entry point for the entire application.
- * 
+ *
  * @author Frederic, Mathias, Pieter-Jan
  */
 public class MainFrame extends javax.swing.JFrame {
 
-	private static final long serialVersionUID = -2541384231489389714L;
-        
-        private final FrontController controller;
-	
-	/**
+    private static final long serialVersionUID = -2541384231489389714L;
+
+    private final FrontController controller;
+
+    /**
      * Creates new form MainFrame
+     *
      * @param controller The controller to use to pass the requests to
      */
     public MainFrame(FrontController controller) {
@@ -134,15 +143,15 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void listProjects(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listProjects
-        new ShowProjectFrame(controller).setVisible(true);
+        new ShowProjectFrame(controller.getShowProjectHandler()).setVisible(true);
     }//GEN-LAST:event_listProjects
 
     private void createNewProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createNewProject
-        new CreateProjectFrame().setVisible(true);
+        new CreateProjectFrame(controller.getCreateProjectHandler()).setVisible(true);
     }//GEN-LAST:event_createNewProject
 
     private void createNewTask(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createNewTask
-        new CreateTaskFrame().setVisible(true);
+        new CreateTaskFrame(controller.getCreateTaskHandler()).setVisible(true);
     }//GEN-LAST:event_createNewTask
 
     private void modifySystemTime(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifySystemTime
@@ -150,7 +159,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_modifySystemTime
 
     private void updateTask(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateTask
-        new UpdateTasksStatusFrame(controller).setVisible(true);
+        new UpdateTasksStatusFrame(controller.getUpdateTaskHandler()).setVisible(true);
     }//GEN-LAST:event_updateTask
 
     /**
@@ -169,26 +178,29 @@ public class MainFrame extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         ProjectManager manager = new ProjectManager();
-        String name = "Mobile Steps";
-	String descr = "develop mobile app for counting steps using a specialized bracelet";
-	LocalDateTime create = LocalDateTime.of(2015, 2, 9, 0, 0);
-	LocalDateTime due = LocalDateTime.of(2015, 2, 13, 0, 0);
-        manager.createProject(name, descr, create, due);
-        manager.createProject("Lol", descr, create, due);
-        manager.getProject(0).createTask(descr, 100, 50, null, null);
-        manager.getProject(0).createTask(descr, 1200, 50, null, null);
-        manager.createProject("Lol 1.2", descr, create, due);
+        int option = JOptionPane.showConfirmDialog(null, "Would you like to initialize the system with an input file?");
+        if (option == 0) {
+            JFileChooser chooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Task Man inputfile", "tman");
+            chooser.setFileFilter(filter);
+            int returnVal = chooser.showOpenDialog(null);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                
+                try(FileReader fileReader = new FileReader(chooser.getSelectedFile())) {
+                    
+                    ProjectManagerFileInitializor fileInitializor = new ProjectManagerFileInitializor(fileReader, manager);
+                    fileInitializor.processFile();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
         FrontController controller = new FrontController(manager);
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
