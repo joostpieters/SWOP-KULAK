@@ -125,7 +125,7 @@ public class ProjectManagerFileInitializor extends StreamTokenizer {
             String description = expectStringField("description");
             int estimatedDuration = expectIntField("estimatedDuration");
             int acceptableDeviation = expectIntField("acceptableDeviation");
-            int alternativeFor = -1;
+            int alternativeFor = Project.NO_ALTERNATIVE;
             expectLabel("alternativeFor");
             if (ttype == TT_NUMBER) {
                 alternativeFor = expectInt();
@@ -140,7 +140,7 @@ public class ProjectManagerFileInitializor extends StreamTokenizer {
             for (Integer e : prerequisiteTasks)  
                 prereq[i++] = e;
             // TODO better create task and return task
-            manager.getProject(project).createTask(description, estimatedDuration, acceptableDeviation, Project.NO_ALTERNATIVE, prereq);
+            manager.getProject(project).createTask(description, estimatedDuration, acceptableDeviation, alternativeFor, prereq);
             Task task = manager.getProject(project).getTask(0);
             expectLabel("status");
             Status status = null;
