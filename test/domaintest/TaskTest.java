@@ -5,6 +5,7 @@ import domain.Task;
 import domain.Timespan;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import org.junit.After;
 import org.junit.AfterClass;
