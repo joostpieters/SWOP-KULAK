@@ -569,5 +569,83 @@ public class Task implements DetailedTask {
 			return getAlternativeTask() != null && getAlternativeTask().isFinished();
 		return getStatus() == Status.FINISHED;
 	}
+	
+	/**
+	 * The estimated amount of time needed until this task can be set to finished.
+	 * 
+	 * @return If this task is already finished, a duration of 0 is returned.
+	 *         
+	 */
+	public Duration estimatedWorkTimeNeeded()
+	{
+		if(!canBeFulfilled())
+			throw new IllegalStateException("This task doesn't have an estimated work time needed because this task can't be fulfilled");
+		if(getStatus() == Status.AVAILABLE)
+			return getEstimatedDuration();
+		if(getStatus() == Status.FAILED)
+			return getEstimatedDuration().add(getAlternativeTask().estimatedWorkTimeNeeded());
+		if(getStatus() == Status.UNAVAILABLE)
+		{
+			Duration retDuration = getEstimatedDuration();
+			for(Task prereq : getPrerequisiteTasks())
+				retDuration = retDuration.add(prereq.estimatedWorkTimeNeeded());
+			return retDuration;
+		}
+		//if(getStatus() == Status.FINISHED)
+		return new Duration(0);
+		
+	}
+	
+	/**
+	 * Checks whether this task can be fulfilled or already is fulfilled.
+	 * 
+	 * @return True if this task is finished or available.
+	 *         False if this task is failed and doesn't have an alternative task.
+	 *         True if this task is failed and has an alternative task that can be fulfilled.
+	 *         False if this task is unavailable and any of the prerequisite tasks can't be fulfilled.
+	 *         True if this task is unavailable and all prerequisite tasks can be fulfilled.
+	 */
+	public boolean canBeFulfilled()
+	{
+		if(getStatus() == Status.FINISHED)
+			return true;
+		else if(getStatus() == Status.AVAILABLE )
+			return true;
+		else if(getStatus() == Status.UNAVAILABLE)
+		{
+			for(Task t : getPrerequisiteTasks())
+				if(!t.canBeFulfilled())
+					return false;
+			return true;
+		}
+		else //if(getStatus() == Status.FAILED)
+			if(!hasAlternativeTask())
+				return false;
+			else
+				return getAlternativeTask().canBeFulfilled();
+	}
+	
+	/**
+	 * Calculates the amount of time spent on this task.
+	 * 
+	 * @return If this task has a duration then the duration of the time span of this task is returned.
+	 *         Otherwise a duration of 0 minutes is returned.
+	 */
+	public Duration getTimeSpent()
+	{
+		if(hasTimeSpan())
+			return getTimeSpan().getDuration();
+		else 
+			return new Duration(0);
+	}
+	/**
+	 * Checks whether this task has an alternative task.
+	 * 
+	 * @return True if and only if this task has an alternative task.
+	 */
+	public boolean hasAlternativeTask()
+	{
+		return getAlternativeTask() != null;
+	}
 
 }

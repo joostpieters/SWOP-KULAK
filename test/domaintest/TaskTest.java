@@ -341,6 +341,31 @@ public class TaskTest {
     	assertFalse(t8.canHaveAsTimeSpan(t8timeSpan_fail2));
     	
     }
+    
+    /**
+     * Test of estimatedWorkTimeNeeded method, of class Task
+     */
+    public void testEstimatedWorkTimeNeeded()
+    {
+    	assertEquals(t0.getEstimatedDuration().toMinutes(), t0.estimatedWorkTimeNeeded().toMinutes());
+    	assertEquals(0, t3.getEstimatedDuration().toMinutes());
+    	assertEquals(40, t4.getEstimatedDuration().toMinutes());
+    	assertEquals(t7alternative.estimatedWorkTimeNeeded().toMinutes(), t7.estimatedWorkTimeNeeded().toMinutes());
+    	
+    }
+    /*
+     * test of canBeFulfilled method, of class Task
+     */
+    @Test
+    public void testCanBeFulfilled()
+    {
+    	assertTrue(t3.canBeFulfilled());
+    	assertTrue(t0.canBeFulfilled());
+    	assertFalse(t6.canBeFulfilled());
+    	assertTrue(t7.canBeFulfilled());
+    	assertTrue(t8.canBeFulfilled());
+    	assertFalse(new Task("description", 10, 30, new Task[] {t6}).canBeFulfilled());
+    }
     /**
      * Test of canHaveAsAlternativeTask method, of class Task.
      */
