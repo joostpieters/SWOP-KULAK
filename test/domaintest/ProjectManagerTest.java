@@ -1,11 +1,7 @@
 package domaintest;
 
 import domain.ProjectManager;
-import domain.Task;
 import exception.ObjectNotFoundException;
-
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -48,6 +44,5 @@ public class ProjectManagerTest {
         System.out.println("getProject");
         ProjectManager instance = new ProjectManager();
         instance.getProject(12);
-        
     }
 }

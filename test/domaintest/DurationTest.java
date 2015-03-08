@@ -1,7 +1,6 @@
 package domaintest;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -75,7 +74,7 @@ public class DurationTest {
     @Test (expected = IllegalArgumentException.class)
     public void testDurationBetweenConstructorInvalidInterval() {
         LocalDateTime begin = LocalDateTime.of(2015, 2, 16, 12, 30);        
-        Duration duration = new Duration(begin, begin);
+        new Duration(begin, begin);
     }
     
     /**
@@ -86,7 +85,7 @@ public class DurationTest {
     public void testDurationBetweenConstructorInvalidBeginTime() {
         LocalDateTime begin = LocalDateTime.of(2015, 2, 16, 6, 0);        
         LocalDateTime end = LocalDateTime.of(2015, 2, 20, 9, 30);
-        Duration duration = new Duration(begin, end);
+        new Duration(begin, end);
     }
     
     /**
@@ -97,7 +96,7 @@ public class DurationTest {
     public void testDurationBetweenConstructorInvalidEndTime() {
         LocalDateTime begin = LocalDateTime.of(2015, 2, 16, 8, 0);        
         LocalDateTime end = LocalDateTime.of(2015, 2, 20, 18, 30);
-        Duration duration = new Duration(begin, end);
+        new Duration(begin, end);
     }
     
 
@@ -179,7 +178,7 @@ public class DurationTest {
         
         // different days with lunchbreak in last day
         LocalDateTime begin3 = LocalDateTime.of(2015, 2, 16, 12, 0);
-        Duration instance3 = new Duration(1940);
+//        Duration instance3 = new Duration(1940);
         LocalDateTime result3 = instance.getEndTimeFrom(begin3);
         assertEquals(LocalDateTime.of(2015, 2, 20, 13, 20), result3);
         

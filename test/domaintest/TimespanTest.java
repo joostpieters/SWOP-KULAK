@@ -41,14 +41,14 @@ public class TimespanTest {
     public void testTimespanConstructorWithEndBeforeBegin() {
         LocalDateTime start = LocalDateTime.of(2015, 1, 6, 14, 30);
         LocalDateTime end = LocalDateTime.of(2015, 1, 6, 14, 29);
-        Timespan timespan = new Timespan(start, end);
+        new Timespan(start, end);
     }
     
     @Test (expected = IllegalArgumentException.class)
     public void testTimespanConstructorWithEqualEndAndBegin() {
         LocalDateTime start = LocalDateTime.of(2015, 1, 3, 14, 30);
         
-        Timespan timespan = new Timespan(start, start);
+        new Timespan(start, start);
     }
     
     @Test
@@ -56,7 +56,10 @@ public class TimespanTest {
         LocalDateTime start = LocalDateTime.of(2015, 1, 6, 14, 29);
         LocalDateTime end = LocalDateTime.of(2015, 1, 6, 14, 30);
         Timespan timespan = new Timespan(start, end);
-           assertTrue(true); 
+        
+        assertEquals(timespan.getStartTime(), start);
+        assertEquals(timespan.getEndTime(), end);
+        assertEquals(timespan.getDuration(), new Duration(start, end));
     }
     
     /**

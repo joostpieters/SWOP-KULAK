@@ -43,6 +43,7 @@ public class ClockTest {
         Clock instance = new Clock(LocalDateTime.of(2015, 2, 26, 14, 30));
         instance.advanceTime(LocalDateTime.of(2015, 2, 27, 14, 40));
         
+        assertEquals(instance.getTime(), LocalDateTime.of(2015, 2, 27, 14, 40));
     }
     
     /**

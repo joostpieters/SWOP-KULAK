@@ -1,13 +1,10 @@
 package domaintest;
 
-import domain.Duration;
 import domain.Status;
 import domain.Task;
 import domain.Timespan;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -139,8 +136,8 @@ public class TaskTest {
         Task instance = new Task("description", 40, 20);
         Task instance2 = new Task("Other description", 30, 10);
         
-        int expResult = 0;
-        int result = instance.getId();
+//        int expResult = 0;
+//        int result = instance.getId();
         assertNotEquals(instance.getId(), instance2.getId());
         assertTrue(instance.getId() >= 0);
         assertTrue(instance2.getId() > instance.getId());
