@@ -119,7 +119,7 @@ public class ShowProjectFrame extends javax.swing.JFrame {
         taskStatusLabel.setText(task.getStatus().toString());
         taskDescriptionLabel.setText(task.getDescription());
         taskAccDevLabel.setText(task.getAcceptableDeviation() + "%");
-        alternativeTaskLabel.setText(task.getAlternativeTask().getDescription());
+        alternativeTaskLabel.setText(task.getAlternativeTask() == null ? "n/a" : task.getAlternativeTask().getDescription());
          DetailedTask[] tasks = task.getPrerequisiteTasks();
         Object[][] data = new Object[tasks.length][];
 
@@ -465,11 +465,13 @@ public class ShowProjectFrame extends javax.swing.JFrame {
     private void selectTaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectTaskButtonActionPerformed
         try {
             int tId = (int) taskModel.getValueAt(taskTable.convertRowIndexToModel(taskTable.getSelectedRow()), 0);
+            
             DetailedTask task = handler.getTask(tId);
-
+            
             initTaskDetails(task);
             CardLayout card = (CardLayout) mainPanel.getLayout();
             card.show(mainPanel, "taskDetails");
+            System.out.println(tId);
         } catch (IndexOutOfBoundsException e) {
             JOptionPane.showMessageDialog(rootPane, "Please select a task.", null, JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
