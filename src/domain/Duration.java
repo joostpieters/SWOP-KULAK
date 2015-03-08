@@ -43,6 +43,18 @@ public class Duration implements Comparable<Duration>{
     }
     
     /**
+     * Initialize this duration with a given amount of hours and minutes.
+     * 
+     * @param 	hours
+     * 			The amount of hours this duration occupies.
+     * @param	minutes
+     * 			The amount of extra minutes this duration occupies.
+     */
+    public Duration(int hours, int minutes) {
+    	this((long) hours * 60 + minutes);
+    }
+    
+    /**
      * Initializes this duration with the given amount of minutes.
      * 
      * @param 	minutes 

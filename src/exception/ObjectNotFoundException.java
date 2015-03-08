@@ -7,7 +7,9 @@ package exception;
  */
 public class ObjectNotFoundException extends IllegalArgumentException{
     
-    private int id;
+	private static final long serialVersionUID = -6476237094197413847L;
+	
+	private int id;
     
     /**
      * @see Exception
