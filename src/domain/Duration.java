@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAmount;
 
 
 /**
@@ -12,17 +13,16 @@ import java.time.temporal.ChronoUnit;
  * @author Frederic, Mathias, Pieter-Jan
  */
 public class Duration implements Comparable<Duration>{
-    
-    public static final float WORKHOURSPERDAY = 8; 
-    public static final int BEGINWORKWEEK = 1;										//monday
-    public static final int ENDWORKWEEK = 5;										//friday
-    public static final LocalTime BEGINWORKDAY = LocalTime.of(9, 0);
-    public static final LocalTime ENDWORKDAY = LocalTime.of(18, 0);
-    public static final LocalTime BEGINLUNCH = LocalTime.of(12, 0);
-    public static final LocalTime ENDLUNCH = LocalTime.of(13, 0);
 
-    private final long minutes;
+	public static final float WORKHOURSPERDAY = 8; 
+	public static final int BEGINWORKWEEK = 1;										//monday
+	public static final int ENDWORKWEEK = 5;										//friday
+	public static final LocalTime BEGINWORKDAY = LocalTime.of(9, 0);
+	public static final LocalTime ENDWORKDAY = LocalTime.of(18, 0);
+	public static final LocalTime BEGINLUNCH = LocalTime.of(12, 0);
+	public static final LocalTime ENDLUNCH = LocalTime.of(13, 0);
 
+	private final long minutes;
     /****************************************
      * Constructors							*
      ****************************************/    
@@ -199,150 +199,157 @@ public class Duration implements Comparable<Duration>{
     private static long getDaysOfWorkWeek() {
         return ENDWORKWEEK - BEGINWORKWEEK + 1;
     }
-    
-    /**
-     * Get the number of work days between the given time moments.
-     * 
-     * @param 	begin 
-     * 			The begin time
-     * @param 	end 
-     * 			The end time
-     * @return 	The number of weekdays between the given moments, including the begin
-     * 			excluding the end.
-     */
-    public static long getWorkDaysBetween(LocalDateTime begin, LocalDateTime end) {
-        int w1 = begin.getDayOfWeek().getValue();
-        begin = begin.minusDays(w1-1);
 
-        int w2 = end.getDayOfWeek().getValue();
-        end = end.minusDays(w2-1);
+	/**
+	 * Get the number of work days between the given time moments.
+	 * 
+	 * @param 	begin 
+	 * 			The begin time
+	 * @param 	end 
+	 * 			The end time
+	 * @return 	The number of weekdays between the given moments, including the begin
+	 * 			excluding the end.
+	 */
+	public static long getWorkDaysBetween(LocalDateTime begin, LocalDateTime end) {
+		int w1 = begin.getDayOfWeek().getValue();
+		begin = begin.minusDays(w1-1);
 
-        //end Saturday to start Saturday 
-        long days = ChronoUnit.DAYS.between(begin, end);
-        long daysWithoutSunday = days / 7 * Duration.getDaysOfWorkWeek();
+		int w2 = end.getDayOfWeek().getValue();
+		end = end.minusDays(w2-1);
 
-        return daysWithoutSunday - w1 + w2;
-    }
-    
-    /**
-     * Check whether the given time falls within the business hours.
-     * 
-     * @param 	time 
-     * 			The time to check
-     * @return 	True is and only in the following cases:
-     * 			- The given time is between the beginworkday time and the endworkday time, 
-     * 			  including the boundaries and 
-     * 			- The given time doesn't fall in a weekend
-     * 			- The given time doesn't fall into a lunch break
-     */
-    public static boolean isValidWorkTime(LocalDateTime time){
-        boolean checkDays = time.toLocalTime().compareTo(BEGINWORKDAY) >= 0 && 
-        		time.toLocalTime().compareTo(ENDWORKDAY) <= 0;
+		//end Saturday to start Saturday 
+		long days = ChronoUnit.DAYS.between(begin, end);
+		long daysWithoutSunday = days / 7 * Duration.getDaysOfWorkWeek();
+
+		return daysWithoutSunday - w1 + w2;
+	}
+
+	/**
+	 * Check whether the given time falls within the business hours.
+	 * 
+	 * @param 	time 
+	 * 			The time to check
+	 * @return 	True is and only in the following cases:
+	 * 			- The given time is between the beginworkday time and the endworkday time, 
+	 * 			  including the boundaries and 
+	 * 			- The given time doesn't fall in a weekend
+	 * 			- The given time doesn't fall into a lunch break
+	 */
+	public static boolean isValidWorkTime(LocalDateTime time){
+		boolean checkDays = time.toLocalTime().compareTo(BEGINWORKDAY) >= 0 && 
+				time.toLocalTime().compareTo(ENDWORKDAY) <= 0;
 		boolean checkWeekends = !(time.getDayOfWeek().equals(DayOfWeek.SATURDAY) || 
 				time.getDayOfWeek().equals(DayOfWeek.SUNDAY));
-        boolean checkLunch = !(BEGINLUNCH.isBefore(time.toLocalTime()) && 
-        		time.toLocalTime().isBefore(ENDLUNCH));
+		boolean checkLunch = !(BEGINLUNCH.isBefore(time.toLocalTime()) && 
+				time.toLocalTime().isBefore(ENDLUNCH));
 		return checkDays && checkLunch && checkWeekends;
-    }
+	}
 
-    /**
-     * Calculates the time of work between the given begin and end time.
-     * 
-     * @param 	begin 
-     * 			The begin time
-     * @param 	end 
-     * 			The end time
-     * @return 	The work time between the 2 given moments in minutes based on the
-     * 			start and end of a work day and minus the weekends and lunchbreaks.
-     * @throws 	IllegalArgumentException 
-     * 			The given time interval is not valid or 
-     * 			the begin or end time is not valid
-     */
-    private static long getWorkTimeBetween(LocalDateTime begin, LocalDateTime end) throws IllegalArgumentException{
-        if(!isValidInterval(begin, end))
-            throw new IllegalArgumentException("The given begin time isn't before the given end time.");
-        if(!isValidWorkTime(begin) || !isValidWorkTime(end))
-            throw new IllegalArgumentException("Begin- as well as endtime should be during workhours.");
-        
-        long days = getWorkDaysBetween(begin, end);
-        
-        // same day
-        if(days == 0) {
-        	boolean test = begin.toLocalTime().compareTo(BEGINLUNCH) <= 0 &&
-                    end.toLocalTime().compareTo(ENDLUNCH) >= 0;
-        	return ChronoUnit.MINUTES.between(begin.toLocalTime(), end.toLocalTime()) - 
-        			((test) ? getMinutesOfLunchBreak() : 0);
-        }
-        
-        long fullWorkDays = days - 1;
-        long minutes = (long) (fullWorkDays * 60 * WORKHOURSPERDAY);
+	/**
+	 * Calculates the time of work between the given begin and end time.
+	 * 
+	 * @param 	begin 
+	 * 			The begin time
+	 * @param 	end 
+	 * 			The end time
+	 * @return 	The work time between the 2 given moments in minutes based on the
+	 * 			start and end of a work day and minus the weekends and lunchbreaks.
+	 * @throws 	IllegalArgumentException 
+	 * 			The given time interval is not valid or 
+	 * 			the begin or end time is not valid
+	 */
+	private static long getWorkTimeBetween(LocalDateTime begin, LocalDateTime end) throws IllegalArgumentException{
+		if(!isValidInterval(begin, end))
+			throw new IllegalArgumentException("The given begin time isn't before the given end time.");
+		if(!isValidWorkTime(begin) || !isValidWorkTime(end))
+			throw new IllegalArgumentException("Begin- as well as endtime should be during workhours.");
 
-        minutes += ChronoUnit.MINUTES.between(begin.toLocalTime(), ENDWORKDAY);
-        minutes += ChronoUnit.MINUTES.between(BEGINWORKDAY, end.toLocalTime()); 
-        
-        // The first workday timespan includes a lunch break
-        minutes -= (begin.toLocalTime().compareTo(BEGINLUNCH) <= 0) ? getMinutesOfLunchBreak() : 0;
-        //last workday timespan inclused a lunch break
-        //TODO: compareTo() > 0, niet???
-        minutes -= (end.toLocalTime().compareTo(BEGINLUNCH) <= 0) ? getMinutesOfLunchBreak() : 0;
-        
-        return minutes;
-    }
-    
-    /****************************************
-     * other methods						*
-     ****************************************/
-    
-    /**
-     * Calculates the time this duration would end, given a start time, while 
-     * taking into account the business hours.
-     * 
-     * @param 	begin 
-     * 			The time to start from
-     * @return 	A LocalDateTime marking the end of this duration that starts at
-     * 			the given start time.
-     * @throws 	IllegalArgumentException 
-     * 			if the given time doesn't lay in between the business hours.
-     */
-    public LocalDateTime getEndTimeFrom(LocalDateTime begin) throws IllegalArgumentException{
-        if(!isValidWorkTime(begin))
-            throw new IllegalArgumentException("The given time is not a valid working time.");
-        
-        // calculate full work days
-        long days = (long) (minutes / (WORKHOURSPERDAY * 60));
-        long remainingMinutes = (long) (minutes % (WORKHOURSPERDAY * 60));
-        LocalDateTime end  = begin.plusDays(days);
-        long minutesToEndWorkDay = ChronoUnit.MINUTES.between(end.toLocalTime(), ENDWORKDAY);
-        // check if we can do all the work on the last day, or if we have to add another day
-        minutesToEndWorkDay -= (end.toLocalTime().compareTo(BEGINLUNCH) <= 0) ? Duration.getMinutesOfLunchBreak() : 0;
-        
-        // there are enough minutes left
-        if(minutesToEndWorkDay >= remainingMinutes){
-            // don't forget to skip the lunch time, if present
-            if(end.toLocalTime().compareTo(BEGINLUNCH) >= 0) {
-                // The time falls after or in a lunch break, so skip the lunch break 
-                return end.plusMinutes(remainingMinutes + getMinutesOfLunchBreak());
-            }
-            return end.plusMinutes(remainingMinutes);  
-        }else{
-            remainingMinutes -= minutesToEndWorkDay;
-            //If last day of week, skip over the weekend.
-            end = (end.getDayOfWeek().getValue() == ENDWORKWEEK) ? end.plusDays(7 - Duration.getDaysOfWorkWeek()) : end;
-            // one day later at the beginning of the workday
-            end = LocalDateTime.of(end.toLocalDate().plusDays(1), BEGINWORKDAY);
-            // add the still remaining minutes
-            if(end.toLocalTime().compareTo(BEGINLUNCH) >= 0) {
-                // The time falls after of in a lunch break, so skip the lunch break 
-                return end.plusMinutes(remainingMinutes + Duration.getMinutesOfLunchBreak());
-            }
-            return end.plusMinutes(remainingMinutes);
-           
-        }    
-    }
-    
-    @Override
-    public boolean equals(Object o) {
-    	Duration other = (Duration) o;
-    	return this.getHours() == other.getHours() && this.getMinutes() == other.getMinutes();
-    }
+		long days = getWorkDaysBetween(begin, end);
+
+		// same day
+		if(days == 0) {
+			boolean test = begin.toLocalTime().compareTo(BEGINLUNCH) <= 0 &&
+					end.toLocalTime().compareTo(ENDLUNCH) >= 0;
+					return ChronoUnit.MINUTES.between(begin.toLocalTime(), end.toLocalTime()) - 
+							((test) ? getMinutesOfLunchBreak() : 0);
+		}
+
+		long fullWorkDays = days - 1;
+		long minutes = (long) (fullWorkDays * 60 * WORKHOURSPERDAY);
+
+		minutes += ChronoUnit.MINUTES.between(begin.toLocalTime(), ENDWORKDAY);
+		minutes += ChronoUnit.MINUTES.between(BEGINWORKDAY, end.toLocalTime()); 
+
+		// The first workday timespan includes a lunch break
+		minutes -= (begin.toLocalTime().compareTo(BEGINLUNCH) <= 0) ? getMinutesOfLunchBreak() : 0;
+		//last workday timespan inclused a lunch break
+		//TODO: compareTo() > 0, niet???
+		minutes -= (end.toLocalTime().compareTo(BEGINLUNCH) <= 0) ? getMinutesOfLunchBreak() : 0;
+
+		return minutes;
+	}
+
+	/****************************************
+	 * other methods						*
+	 ****************************************/
+
+	/**
+	 * Calculates the time this duration would end, given a start time, while 
+	 * taking into account the business hours.
+	 * 
+	 * @param 	begin 
+	 * 			The time to start from
+	 * @return 	A LocalDateTime marking the end of this duration that starts at
+	 * 			the given start time.
+	 * @throws 	IllegalArgumentException 
+	 * 			if the given time doesn't lay in between the business hours.
+	 */
+	public LocalDateTime getEndTimeFrom(LocalDateTime begin) throws IllegalArgumentException{
+		if(!isValidWorkTime(begin))
+			throw new IllegalArgumentException("The given time is not a valid working time.");
+
+		long minutesRemaining = minutes;
+
+		if(minutesRemaining == 0)
+			return begin;
+
+		LocalTime beginLocalTime = begin.toLocalTime();
+		LocalDateTime nextBegin;
+		if(beginLocalTime.compareTo(BEGINLUNCH) <= 0 && beginLocalTime.compareTo(ENDLUNCH) < 0)
+		{
+			long minutesTillLunch = ChronoUnit.MINUTES.between(beginLocalTime,BEGINLUNCH);
+			if(minutesRemaining <= minutesTillLunch)
+				return begin.plusMinutes(minutesRemaining);
+			else
+				minutesRemaining -= minutesTillLunch;
+
+			//nextBegin set to end of lunch break
+			nextBegin = LocalDateTime.of(begin.toLocalDate(), ENDLUNCH);
+		}
+		else //if(beginLocalTime.compareTo(ENDLUNCH) >= 0)
+		{
+			long minutesTillEndOfDay = ChronoUnit.MINUTES.between(beginLocalTime,ENDWORKDAY);
+			if(minutesRemaining <= minutesTillEndOfDay)
+				return begin.plusMinutes(minutesRemaining);
+			else
+				minutesRemaining -= minutesTillEndOfDay;
+			int weekDay = begin.getDayOfWeek().getValue();
+			if(weekDay == ENDWORKWEEK)
+			{
+				nextBegin = LocalDateTime.of(begin.toLocalDate().plusDays(8 - Duration.getDaysOfWorkWeek()), BEGINWORKDAY);
+
+			}
+			else
+			{
+				nextBegin = LocalDateTime.of(begin.toLocalDate().plusDays(1), BEGINWORKDAY);
+			}
+		}
+		return new Duration(minutesRemaining).getEndTimeFrom(nextBegin);
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		Duration other = (Duration) o;
+		return this.getHours() == other.getHours() && this.getMinutes() == other.getMinutes();
+	}
 }

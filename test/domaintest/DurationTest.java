@@ -55,7 +55,7 @@ public class DurationTest {
         LocalDateTime end2 = LocalDateTime.of(2015, 2, 25, 9, 35);
         Duration duration2 = new Duration(begin2, end2);
         
-        assertEquals(51, duration2.getHours());
+        assertEquals(52, duration2.getHours());
         assertEquals(5, duration2.getMinutes());
         
          // same day including lunchbreak
