@@ -35,11 +35,11 @@ public class Task implements DetailedTask {
 	 * @param   alternativeFor
 	 *          The task for which this task is an alternative for.
 	 */
-	public Task(String description, long estDur, int accDev, Task[] prereq, Task alternativeFor)
+	public Task(String description, int estDurHours, int estDurMinutes, int accDev, Task[] prereq, Task alternativeFor)
 	{
 		this.id = generateId();
 		setDescription(description);
-		this.estimatedDuration = new Duration(estDur);
+		this.estimatedDuration = new Duration(estDurHours, estDurMinutes);
 		setAcceptableDeviation(accDev);
 		if(prereq == null)
 			setPrerequisiteTasks(new Task[] {});
@@ -63,9 +63,9 @@ public class Task implements DetailedTask {
 	 * @param 	prereq
 	 *        	The list of prerequisite tasks for this task.
 	 */
-	public Task(String description, long estDur, int accDev, Task[] prereq)
+	public Task(String description, int estDurHours, int estDurMinutes, int accDev, Task[] prereq)
 	{
-		this(description, estDur, accDev, prereq, null);
+		this(description, estDurHours, estDurMinutes, accDev, prereq, null);
 	}
 
 	/**
@@ -79,9 +79,9 @@ public class Task implements DetailedTask {
 	 * @param 	accDev
 	 *        	The acceptable deviation of this task expressed as an integer between 0 and 100.
 	 */
-	public Task(String description, long estDur, int accDev)
+	public Task(String description, int estDurHours, int estDurMinutes, int accDev)
 	{
-		this(description, estDur, accDev, null, null);
+		this(description, estDurHours, estDurMinutes, accDev, null, null);
 	}
 	
 	/**
