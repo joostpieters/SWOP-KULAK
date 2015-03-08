@@ -45,4 +45,15 @@ public interface DetailedTask {
      */
     Timespan getTimeSpan();
     
+    
+	/**
+	 * @return 	The list of prerequisite tasks for this task.
+	 */
+    DetailedTask[] getPrerequisiteTasks();
+    
+    /**
+	 * @return 	The alternative task for this task.
+	 */
+	DetailedTask getAlternativeTask();
+    
 }
