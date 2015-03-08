@@ -260,19 +260,19 @@ public class Project implements DetailedProject {
 	 * @throws	IllegalStateException
 	 * 			if this project is already finished.
 	 */
-	public Task createTask(String descr, int estDur, int accdev, int altFor, int[] prereq) {
+	public Task createTask(String descr, int estDurHours, int estDurMinutes, int accdev, int altFor, int[] prereq) {
 		if(isFinished())
 			throw new IllegalStateException("This project has already been finished.");
 		
 		Task t;
 		if(prereq.equals(Project.NO_DEPENDENCIES)) {
-			t = new Task(descr, estDur, accdev);
+			t = new Task(descr, estDurHours, estDurMinutes, accdev);
 		} else {
 			Task[] arr = new Task[prereq.length];
 			for(int i = 0; i < prereq.length; i++) {
 				arr[i] = getTask(prereq[i]);
 			}
-			t = new Task(descr, estDur, accdev, arr);
+			t = new Task(descr, estDurHours, estDurMinutes, accdev, arr);
 		}
 		
 		if(altFor != Project.NO_ALTERNATIVE)

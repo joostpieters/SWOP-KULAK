@@ -44,13 +44,14 @@ public class CreateTaskHandler {
      * 
      * @param pId The id of the project to add the task to.
      * @param description The description of the task
-     * @param accDev The deviation by which the etimated duration can deviate
+     * @param accDev The deviation by which the estimated duration can deviate
      * @param prereq The id's of the task that have to be finished before this task.
-     * @param estDuration The estimated duration of the tast
+     * @param estDurHours The estimated duration of the test in hours.
+     * @param estDurMinutes The extra minutes to the estimated duration in hours.
      * @param altfor The id of the task, the task is an alternative for, is smaller
      * than 0, if no alternative. 
      */
-    public void createTask(int pId, String description, int accDev, int prereq[], int estDuration, int altfor){       
+    public void createTask(int pId, String description, int accDev, int prereq[], int estDurHours, int estDurMinutes, int altfor){       
         if(prereq == null){
             prereq = Project.NO_DEPENDENCIES;
         }
@@ -61,7 +62,7 @@ public class CreateTaskHandler {
         try {
             Project project = manager.getProject(pId);
         
-            project.createTask(description, estDuration, accDev, altfor, prereq);
+            project.createTask(description, estDurHours, estDurMinutes, accDev, altfor, prereq);
         } catch (IllegalArgumentException | IllegalStateException e) {
             throw e;
         }catch(Exception e){
