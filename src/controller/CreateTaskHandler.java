@@ -4,8 +4,6 @@ import domain.DetailedProject;
 import domain.DetailedTask;
 import domain.Project;
 import domain.ProjectManager;
-import domain.Status;
-import domain.Task;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -54,7 +52,7 @@ public class CreateTaskHandler {
         Project project = manager.getProject(pId);
         //TODO right constructor
         try {
-            project.createTask(description, estDuration, accDev, prereq, Status.AVAILABLE);
+            project.createTask(description, estDuration, accDev, Project.NO_ALTERNATIVE, prereq);
         } catch (IllegalArgumentException | IllegalStateException e) {
             throw e;
         }catch(Exception e){

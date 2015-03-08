@@ -140,7 +140,7 @@ public class ProjectManagerFileInitializor extends StreamTokenizer {
             for (Integer e : prerequisiteTasks)  
                 prereq[i++] = e;
             // TODO better create task and return task
-            manager.getProject(project).createTask(description, estimatedDuration, acceptableDeviation, prereq, null);
+            manager.getProject(project).createTask(description, estimatedDuration, acceptableDeviation, Project.NO_ALTERNATIVE, prereq);
             Task task = manager.getProject(project).getTask(0);
             expectLabel("status");
             Status status = null;

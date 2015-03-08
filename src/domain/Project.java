@@ -174,7 +174,7 @@ public class Project implements DetailedProject {
 	 * @throws	IllegalStateException
 	 * 			if this project is already finished.
 	 */
-	public void createTask(String descr, int estDur, int accdev, int[] prereq, int altFor) {
+	public void createTask(String descr, int estDur, int accdev, int altFor, int[] prereq) {
 		if(isFinished())
 			throw new IllegalStateException("This project has already been finished.");
 		
