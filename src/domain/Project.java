@@ -215,8 +215,9 @@ public class Project implements DetailedProject {
 	 */
 	public boolean canHaveAsTask(Task t) {
 		boolean taskCheck = t != null && !tasks.containsKey(t.getId());
-		boolean altTaskCheck = t.getAlternativeTask() != null && 
-				tasks.containsKey(t.getAlternativeTask().getId());
+		boolean altTaskCheck = true;
+		if(t.getAlternativeTask() != null && !tasks.containsKey(t.getAlternativeTask().getId()))
+				altTaskCheck = false;
 		boolean prereqTaskCheck = true;
 		for(Task x : t.getPrerequisiteTasks())
 			if(!tasks.containsKey(x.getId())) {
