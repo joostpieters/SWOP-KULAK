@@ -11,7 +11,7 @@ public class Task implements DetailedTask {
 
 	private static int nextId=0;
 	
-	private int id;
+	private final int id;
 	private String description;
 	private int acceptableDeviation;
 	private Timespan timeSpan;

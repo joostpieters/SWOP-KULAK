@@ -16,6 +16,7 @@ public class Project implements DetailedProject {
 	
 	public static final int[] NO_DEPENDENCIES = new int[]{};
 	public static final int NO_ALTERNATIVE = -1;
+	public static final int MIN_DESCR_LENGTH = 5;
 	
     private boolean isFinished;									//performance-variable
     
@@ -45,10 +46,11 @@ public class Project implements DetailedProject {
      * 			or if creation and due form an invalid time pair.
      */
     public Project(int id, String name, String descr, LocalDateTime creation, LocalDateTime due){
-    	if(id < 0)
+    	if(!canHaveAsId(id))
     		throw new IllegalArgumentException("id should be bigger than zero.");
-    	if(name == null || descr == null)
-    		throw new IllegalArgumentException("Both name and description are expected.");
+    	if(!canHaveAsName(name) || !canHaveAsDescription(descr))
+    		throw new IllegalArgumentException("Both name (at least one digit) and description "
+    				+ "(at least " + MIN_DESCR_LENGTH + " digits) are expected.");
     	
     	this.id = id;
     	this.name = name;
@@ -67,6 +69,17 @@ public class Project implements DetailedProject {
 	public int getId() {
 		return id;
 	}
+    
+    /**
+     * Check whether this project can have a given ID.
+     * 
+     * @param 	id
+     * 			The id to be checked.
+     * @return	id >= 0
+     */
+    public boolean canHaveAsId(int id) {
+    	return id >= 0;
+    }
 
 	/**
 	 * @return 	the name of this project.
@@ -75,6 +88,17 @@ public class Project implements DetailedProject {
 	public String getName() {
 		return name;
 	}
+    
+    /**
+     * Check whether this project can have a given name.
+     * 
+     * @param 	name
+     * 			The name to be checked.
+     * @return	name != null && name.length() > 0
+     */
+    public boolean canHaveAsName(String name) {
+    	return name != null && name.length() > 0;
+    }
 
 	/**
 	 * @return 	the description of this project.
@@ -83,6 +107,17 @@ public class Project implements DetailedProject {
 	public String getDescription() {
 		return description;
 	}
+    
+    /**
+     * Check whether this project can have a given description.
+     * 
+     * @param 	descr
+     * 			The description to be checked.
+     * @return	descr != null && descr.length() > MIN_DESCR_LENGTH
+     */
+    public boolean canHaveAsDescription(String descr) {
+    	return descr != null && descr.length() > MIN_DESCR_LENGTH;
+    }
 
 	/**
 	 * @return 	the creationTime of this project.
@@ -122,6 +157,30 @@ public class Project implements DetailedProject {
 			throw new IllegalArgumentException("Task with tid " + tid + " doesn't exist.");
 		return t;
 	}
+	
+	/**
+	 * Check whether this project can have a given task.
+	 * 
+	 * @param 	t
+	 * 			The task to be checked.
+	 * @return	true if t is not null and is not in this project already,
+				and if the alternative tasks for t are in this project,
+				and if the prerequisite tasks for t are in this project,
+				false otherwise.
+	 */
+	public boolean canHaveAsTask(Task t) {
+		boolean taskCheck = t != null && !tasks.containsKey(t.getId());
+		boolean altTaskCheck = t.getAlternativeTask() != null && 
+				tasks.containsKey(t.getAlternativeTask().getId());
+		boolean prereqTaskCheck = true;
+		for(Task x : t.getPrerequisiteTasks())
+			if(!tasks.containsKey(x.getId())) {
+				prereqTaskCheck = false;
+				break;
+			}
+		
+		return taskCheck && altTaskCheck && prereqTaskCheck;
+	}
     
     /****************************************
      * Task-management						*
@@ -144,16 +203,8 @@ public class Project implements DetailedProject {
 	private void addTask(Task t) {
 		if(isFinished())
 			throw new IllegalStateException("This project has already been finished.");
-		if(t == null)
-			throw new NullPointerException("You can't add null-tasks to a project.");
-		if(t.getAlternativeTask() != null && !tasks.containsKey(t.getAlternativeTask().getId()))
-			throw new IllegalArgumentException(
-					"The task this task should be an alternative for, doesn't exist in this project.");
-		
-		for(Task x : t.getPrerequisiteTasks())
-			if(!tasks.containsKey(x.getId()))
-				throw new IllegalArgumentException(
-						"One or more of the prerequisite tasks doesn't exist in this project.");
+		if(!canHaveAsTask(t))
+			throw new IllegalArgumentException("The given task can't be a part of this project.");
 		
 		this.tasks.put(t.getId(), t);
 	}
@@ -178,12 +229,17 @@ public class Project implements DetailedProject {
 		if(isFinished())
 			throw new IllegalStateException("This project has already been finished.");
 		
-		Task[] arr = new Task[prereq.length];
-		for(int i = 0; i < prereq.length; i++) {
-			arr[i] = getTask(prereq[i]);
+		Task t;
+		if(prereq.equals(Project.NO_DEPENDENCIES)) {
+			t = new Task(descr, estDur, accdev);
+		} else {
+			Task[] arr = new Task[prereq.length];
+			for(int i = 0; i < prereq.length; i++) {
+				arr[i] = getTask(prereq[i]);
+			}
+			t = new Task(descr, estDur, accdev, arr);
 		}
-
-		Task t = new Task(descr, estDur, accdev, arr);
+		
 		if(altFor != Project.NO_ALTERNATIVE)
 			getTask(altFor).setAlternativeTask(t);
 		addTask(t);
@@ -225,6 +281,10 @@ public class Project implements DetailedProject {
 		
 		return (isFinished = true);
 	}
+    
+    /****************************************
+     * Time-management						*
+     ****************************************/
 	
 	/**
 	 * Get the time details for this project.
