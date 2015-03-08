@@ -8,6 +8,9 @@ import java.time.LocalDateTime;
  * @author Frederic, Mathias, Pieter-Jan 
  */
 public class Clock {
+	
+	//TODO: beter dan initialiseren van now? (voorbeelden van februari etc...)
+	public static final LocalDateTime NEW_YEAR = LocalDateTime.of(2015, 1, 1, 0, 0);
     
     private LocalDateTime time;
     
@@ -18,21 +21,45 @@ public class Clock {
      * 			The intitial time to start the clock on
      */
     public Clock(LocalDateTime time) {
-        this.time = time;
+        setTime(time);
     }
     
     /**
-     * Initializes this clock with the current time as its inception moment.
+     * Initializes this clock with new year 2015 as its inception moment.
      */
     public Clock() {
-        this(LocalDateTime.now());
+        this(NEW_YEAR);
     }
+    
+    /**
+     * Initialize a copy of a given clock.
+     * 
+     * @param 	c
+     * 			The clock to be copied.
+     */
+    public Clock(Clock c) {
+    	this(c.getTime());
+    }
+    
+    /****************************************
+     * Getters & setters					*
+     ****************************************/
     
     /**
      * @return	the current time of this clock.
      */
     public LocalDateTime getTime() {
     	return this.time;
+    }
+    
+    /**
+     * Set the time of this clock.
+     * 
+     * @param 	time
+     * 			The new time for this clock.
+     */
+    private void setTime(LocalDateTime time) {
+    	this.time = time;
     }
     
     /**
@@ -48,6 +75,11 @@ public class Clock {
             throw new IllegalArgumentException("The given timestamp is strictly before the current system time.");
         }
         
-        this.time = time;
+        setTime(time);
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+    	return ((Clock) o).getTime() == getTime();
     }
 }

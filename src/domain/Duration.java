@@ -23,171 +23,182 @@ public class Duration implements Comparable<Duration>{
 	public static final LocalTime ENDLUNCH = LocalTime.of(13, 0);
 
 	private final long minutes;
-
-	/****************************************
-	 * Constructors							*
-	 ****************************************/    
-
-	/**
-	 * Initializes this duration based on the given begin and end time.
-	 * 
-	 * @param 	begin 
-	 * 			When this duration begins
-	 * @param 	end 
-	 * 			When this duration ends
-	 * @throws 	IllegalArgumentException The given begin or end time falls out of 
-	 * 			the bussiness hours or the given begin and end time don't form 
-	 * 			a strictly valid interval.
-	 */
-	public Duration(LocalDateTime begin, LocalDateTime end) {
-		this(getWorkTimeBetween(begin, end));
-	}
-
-	/**
-	 * Initializes this duration with the given amount of minutes.
-	 * 
-	 * @param 	minutes 
-	 * 			The amount of minutes this duration occupies
-	 * @throws 	IllegalArgumentException 
-	 * 			The given amount of minutes is negative.
-	 */
-	public Duration(long minutes) throws  IllegalArgumentException{
-		if(minutes < 0 ){
-			throw new IllegalArgumentException("The amount of minutes can't be negative.");
-		}
-		this.minutes = minutes;
-	}
-
-	/****************************************
-	 * Getters and setters					*
-	 ****************************************/
-
-	/**
-	 * @return 	The hour field of this duration.
-	 */
-	public long getHours(){
-		return minutes / 60;
-	}
-
-	/**
-	 * @return 	The minute field of this duration, value between 0 and 59 
-	 */
-	public int getMinutes(){
-		return (int) minutes % 60;
-	}
-
-	/**
-	 * @return 	The total number of minutes in this duration.
-	 */
-	public long toMinutes(){
-		return minutes;
-	}
-
-	/****************************************
-	 * arithmetics							*
-	 ****************************************/
-
-	/**
-	 * Returns a copy of this duration with the given amount of minutes added.
-	 * 
-	 * @param 	minutesToAdd 
-	 * 			The amount of minutes to add
-	 * @return 	A duration, based on this duration with the given amount of minutes added.
-	 * @throws 	IllegalArgumentException 
-	 * 			if the given amount of minutes causes the duration to be negative.
-	 */
-	public Duration add(long minutesToAdd) throws IllegalArgumentException{
-		return new Duration(minutes + minutesToAdd);
-	}
-
-	/**
-	 * Returns a copy of this duration with the given Duration added.
-	 * 
-	 * @param 	otherDuration 
-	 * 			The Duration to add to this duration
-	 * @return 	A Duration, based on this duration with the given amount of 
-	 * 			time the given duration represents added.
-	 */
-	public Duration add(Duration otherDuration){
-		return new Duration(minutes + otherDuration.toMinutes());
-	}
-
-	/**
-	 * Returns a copy of this duration with the given Duration subtracted.
-	 * 
-	 * @param 	otherDuration 
-	 * 			The Duration to subtract from this duration
-	 * @return 	A Duration, based on this duration with the given amount of 
-	 * 			time the given duration represents added.
-	 * @throws 	IllegalArgumentException 
-	 * 			if the given duration to subtract causes the duration to be negative.
-	 */
-	public Duration subtract(Duration otherDuration) throws IllegalArgumentException{
-		return new Duration(minutes - otherDuration.toMinutes());
-	}
-
-	/**
-	 * Returns a copy of this duration multiplied by the given mulitplicant
-	 * 
-	 * @param 	multiplicant 
-	 * 			The value to multiply this duration by
-	 * @return 	A duration, based on this duration, multiplied by the given multiplicant,
-	 * 			rounded to the nearest integer.
-	 */
-	public Duration multiplyBy(double multiplicant){
-		return new Duration(Math.round(multiplicant * toMinutes()));
-	}
-
-	/**
-	 * Compare the length of this duration with the given duration 
-	 * 
-	 * @param 	duration 
-	 * 			The duration to compare with
-	 * @return 	A negative number if this duration is shorter than the given duration,
-	 *			a positive value if this duration is longer, 0 if they are equal in length.
-	 */
-	@Override
-	public int compareTo(Duration duration) {
-		if(minutes < duration.toMinutes()){
-			return -1;
-		}else if (minutes > duration.toMinutes()){
-			return 1;
-		}else{
-			return 0;
-		}
-	}
-
-	/****************************************
-	 * static methods						*
-	 ****************************************/
-
-	/**
-	 * Checks whether the given end and begin time are valid, compared to each other.
-	 * 
-	 * @param 	begin 
-	 * 			The begin time to check
-	 * @param 	end 
-	 * 			The end time to check
-	 * @return 	True if and only is the given begin time is strictly before the 
-	 * 			given end time.
-	 */
-	public static boolean isValidInterval(LocalDateTime begin, LocalDateTime end){
-		return begin.isBefore(end);
-	}
-
-	/**
-	 * @return 	The number of minutes, the lunch break lasts
-	 */
-	private static long getMinutesOfLunchBreak() {
-		return ChronoUnit.MINUTES.between(BEGINLUNCH, ENDLUNCH);
-	}
-
-	/**
-	 * @return 	The number of days in a work week.
-	 */
-	private static long getDaysOfWorkWeek() {
-		return ENDWORKWEEK - BEGINWORKWEEK + 1;
-	}
+    /****************************************
+     * Constructors							*
+     ****************************************/    
+    
+    /**
+     * Initializes this duration based on the given begin and end time.
+     * 
+     * @param 	begin 
+     * 			When this duration begins
+     * @param 	end 
+     * 			When this duration ends
+     * @throws 	IllegalArgumentException The given begin or end time falls out of 
+     * 			the bussiness hours or the given begin and end time don't form 
+     * 			a strictly valid interval.
+     */
+    public Duration(LocalDateTime begin, LocalDateTime end) {
+        this(getWorkTimeBetween(begin, end));
+    }
+    
+    /**
+     * Initialize this duration with a given amount of hours and minutes.
+     * 
+     * @param 	hours
+     * 			The amount of hours this duration occupies.
+     * @param	minutes
+     * 			The amount of extra minutes this duration occupies.
+     */
+    public Duration(int hours, int minutes) {
+    	this((long) hours * 60 + minutes);
+    }
+    
+    /**
+     * Initializes this duration with the given amount of minutes.
+     * 
+     * @param 	minutes 
+     * 			The amount of minutes this duration occupies
+     * @throws 	IllegalArgumentException 
+     * 			The given amount of minutes is negative.
+     */
+    public Duration(long minutes) throws  IllegalArgumentException{
+        if(minutes < 0 ){
+            throw new IllegalArgumentException("The amount of minutes can't be negative.");
+        }
+        this.minutes = minutes;
+    }
+    
+    /****************************************
+     * Getters and setters					*
+     ****************************************/
+    
+    /**
+     * @return 	The hour field of this duration.
+     */
+    public long getHours(){
+        return minutes / 60;
+    }
+    
+    /**
+     * @return 	The minute field of this duration, value between 0 and 59 
+     */
+    public int getMinutes(){
+        return (int) minutes % 60;
+    }
+    
+    /**
+     * @return 	The total number of minutes in this duration.
+     */
+    public long toMinutes(){
+        return minutes;
+    }
+    
+    /****************************************
+     * arithmetics							*
+     ****************************************/
+    
+    /**
+     * Returns a copy of this duration with the given amount of minutes added.
+     * 
+     * @param 	minutesToAdd 
+     * 			The amount of minutes to add
+     * @return 	A duration, based on this duration with the given amount of minutes added.
+     * @throws 	IllegalArgumentException 
+     * 			if the given amount of minutes causes the duration to be negative.
+     */
+    public Duration add(long minutesToAdd) throws IllegalArgumentException{
+        return new Duration(minutes + minutesToAdd);
+    }
+    
+    /**
+     * Returns a copy of this duration with the given Duration added.
+     * 
+     * @param 	otherDuration 
+     * 			The Duration to add to this duration
+     * @return 	A Duration, based on this duration with the given amount of 
+     * 			time the given duration represents added.
+     */
+    public Duration add(Duration otherDuration){
+        return new Duration(minutes + otherDuration.toMinutes());
+    }
+    
+    /**
+     * Returns a copy of this duration with the given Duration subtracted.
+     * 
+     * @param 	otherDuration 
+     * 			The Duration to subtract from this duration
+     * @return 	A Duration, based on this duration with the given amount of 
+     * 			time the given duration represents added.
+     * @throws 	IllegalArgumentException 
+     * 			if the given duration to subtract causes the duration to be negative.
+     */
+    public Duration subtract(Duration otherDuration) throws IllegalArgumentException{
+        return new Duration(minutes - otherDuration.toMinutes());
+    }
+    
+    /**
+     * Returns a copy of this duration multiplied by the given mulitplicant
+     * 
+     * @param 	multiplicant 
+     * 			The value to multiply this duration by
+     * @return 	A duration, based on this duration, multiplied by the given multiplicant,
+     * 			rounded to the nearest integer.
+     */
+    public Duration multiplyBy(double multiplicant){
+        return new Duration(Math.round(multiplicant * toMinutes()));
+    }
+    
+    /**
+     * Compare the length of this duration with the given duration 
+     * 
+     * @param 	duration 
+     * 			The duration to compare with
+     * @return 	A negative number if this duration is shorter than the given duration,
+     *			a positive value if this duration is longer, 0 if they are equal in length.
+     */
+    @Override
+    public int compareTo(Duration duration) {
+        if(minutes < duration.toMinutes()){
+            return -1;
+        }else if (minutes > duration.toMinutes()){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+    
+    /****************************************
+     * static methods						*
+     ****************************************/
+    
+    /**
+     * Checks whether the given end and begin time are valid, compared to each other.
+     * 
+     * @param 	begin 
+     * 			The begin time to check
+     * @param 	end 
+     * 			The end time to check
+     * @return 	True if and only is the given begin time is strictly before the 
+     * 			given end time.
+     */
+    public static boolean isValidInterval(LocalDateTime begin, LocalDateTime end){
+        return begin.isBefore(end);
+    }
+    
+    /**
+     * @return 	The number of minutes, the lunch break lasts
+     */
+    private static long getMinutesOfLunchBreak() {
+        return ChronoUnit.MINUTES.between(BEGINLUNCH, ENDLUNCH);
+    }
+    
+    /**
+     * @return 	The number of days in a work week.
+     */
+    private static long getDaysOfWorkWeek() {
+        return ENDWORKWEEK - BEGINWORKWEEK + 1;
+    }
 
 	/**
 	 * Get the number of work days between the given time moments.

@@ -33,6 +33,7 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame(FrontController controller) {
         this.controller = controller;
         initComponents();
+        
     }
 
     /**

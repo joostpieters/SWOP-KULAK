@@ -326,6 +326,7 @@ public class Task implements DetailedTask {
 	 */
 	public boolean isAvailable()
 	{
+		//TODO: getAvailableTasks() failt met deze methode en niet met getStatus() == Status.Available
 		for(Task prereqTask : getPrerequisiteTasks())
 		{
 			if(!prereqTask.isFulfilled())

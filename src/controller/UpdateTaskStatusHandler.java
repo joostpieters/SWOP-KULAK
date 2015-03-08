@@ -73,6 +73,7 @@ public class UpdateTaskStatusHandler {
         
         LocalDateTime start;
         LocalDateTime end;
+        Status taskStatus;
         
         try {
             start = LocalDateTime.parse(startTime, formatter);
@@ -81,9 +82,17 @@ public class UpdateTaskStatusHandler {
             throw new IllegalArgumentException("The provided dates are not in the right format.");
         }
         
+        try {
+            taskStatus = Status.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("The given status doesn't exist.");
+            
+        }
+        
+        
         
         try {
-            currentTask.update(start, end, Status.valueOf(status));
+            currentTask.update(start, end, taskStatus);
         } catch (IllegalArgumentException | IllegalStateException e) {
             throw e;
         }catch(Exception e){
@@ -94,4 +103,5 @@ public class UpdateTaskStatusHandler {
         }
         
     }
+    
 }

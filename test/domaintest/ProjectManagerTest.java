@@ -41,7 +41,6 @@ public class ProjectManagerTest {
      */
     @Test (expected=ObjectNotFoundException.class)
     public void testGetProject() throws ObjectNotFoundException{
-        System.out.println("getProject");
         ProjectManager instance = new ProjectManager();
         instance.getProject(12);
     }

@@ -16,21 +16,41 @@ public class ProjectManager {
     
     private final ArrayList<Project> projects;
     
-    private Clock systemClock ;
+    private final Clock systemClock ;
     
     /**
-     * Initializes a new projectmanager.
+     * Initializes a new project manager and its systemClock.
      */
     public ProjectManager(){
         projects = new ArrayList<>();
+        systemClock = new Clock();
     }
     
     /**
-     * 
-     * @return The list of projects contained by this projectmanager. 
+     * @return the list of projects contained by this projectmanager. 
      */
     public ArrayList<Project> getProjects(){
         return new ArrayList<>(projects);
+    }
+    
+    /**
+	 * @return a copy of the systemClock
+	 */
+	public Clock getSystemClock() {
+		return new Clock(systemClock);
+	}
+
+	/**
+     * @return the list of unfinished projects contained by this projectmanager. 
+     */
+    public List<Project> getUnfinishedProjects(){
+        List<Project> unfinishedProjects = new ArrayList<>();
+        for(Project project : projects){
+            if(!project.isFinished()){
+                unfinishedProjects.add(project);
+            }
+        }
+        return unfinishedProjects;
     }
     
     /**
@@ -45,13 +65,9 @@ public class ProjectManager {
      * 			The start time of the project
      * @param 	dueTime 
      * 			The time by which the project should be ended.
-     * @return	The project that has been created.
+     * @return	the project that has been created.
      */
     public Project createProject(String name, String description, LocalDateTime startTime, LocalDateTime dueTime){
-        // init system clock
-        if(getNbProjects() == 0){
-            systemClock = new Clock(startTime);
-        }
         //TODO: goed idee om projects.size() te gebruiken? (gaan er nooit projecten weg?)
         Project p = new Project(projects.size(),name, description, startTime, dueTime);
         addProject(p);

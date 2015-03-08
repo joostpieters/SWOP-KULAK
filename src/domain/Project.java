@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import exception.ObjectNotFoundException;
 
 /**
  * This class represents a project
@@ -16,7 +17,6 @@ public class Project implements DetailedProject {
 	
 	public static final int[] NO_DEPENDENCIES = new int[]{};
 	public static final int NO_ALTERNATIVE = -1;
-	public static final int MIN_DESCR_LENGTH = 5;
 	
     private boolean isFinished;									//performance-variable
     
@@ -52,8 +52,8 @@ public class Project implements DetailedProject {
     	if(!canHaveAsId(id))
     		throw new IllegalArgumentException("id should be bigger than zero.");
     	if(!canHaveAsName(name) || !canHaveAsDescription(descr))
-    		throw new IllegalArgumentException("Both name (at least one digit) and description "
-    				+ "(at least " + MIN_DESCR_LENGTH + " digits) are expected.");
+    		throw new IllegalArgumentException("Both name (at least one character) and description "
+    				+ "(at least one character) are expected.");
     	
     	this.id = id;
     	this.name = name;
@@ -83,17 +83,7 @@ public class Project implements DetailedProject {
      * 			or if creation and due form an invalid time pair.
      */
     public Project(int id, String name, String descr, LocalDateTime creation, LocalDateTime due){
-    	if(!canHaveAsId(id))
-    		throw new IllegalArgumentException("id should be bigger than zero.");
-    	if(!canHaveAsName(name) || !canHaveAsDescription(descr))
-    		throw new IllegalArgumentException("Both name (at least one digit) and description "
-    				+ "(at least " + MIN_DESCR_LENGTH + " digits) are expected.");
-    	
-    	this.id = id;
-    	this.name = name;
-    	this.description = descr;
-    	this.creationDueTime = new Timespan(creation, due);
-    	this.clock = null;
+    	this(id, name, descr, creation, due, null);
     }
     
     /****************************************
@@ -151,10 +141,10 @@ public class Project implements DetailedProject {
      * 
      * @param 	descr
      * 			The description to be checked.
-     * @return	descr != null && descr.length() > MIN_DESCR_LENGTH
+     * @return	descr != null && descr.length() > 0
      */
     public boolean canHaveAsDescription(String descr) {
-    	return descr != null && descr.length() > MIN_DESCR_LENGTH;
+    	return descr != null && descr.length() > 0;
     }
 
 	/**
@@ -177,7 +167,7 @@ public class Project implements DetailedProject {
 	 * @return the clock used in this project.
 	 */
 	public Clock getClock() {
-		return clock;
+		return new Clock(clock);
 	}
 
 	/**
@@ -199,7 +189,7 @@ public class Project implements DetailedProject {
 	public Task getTask(int tid) {
 		Task t = tasks.get(tid);
 		if(t == null)
-			throw new IllegalArgumentException("Task with tid " + tid + " doesn't exist.");
+			throw new ObjectNotFoundException("Task with tid " + tid + " doesn't exist in this project (" + id + ").", tid);
 		return t;
 	}
 	
@@ -215,9 +205,7 @@ public class Project implements DetailedProject {
 	 */
 	public boolean canHaveAsTask(Task t) {
 		boolean taskCheck = t != null && !tasks.containsKey(t.getId());
-		boolean altTaskCheck = true;
-		if(t.getAlternativeTask() != null && !tasks.containsKey(t.getAlternativeTask().getId()))
-				altTaskCheck = false;
+		boolean altTaskCheck = t.getAlternativeTask() == null || tasks.containsKey(t.getAlternativeTask().getId());
 		boolean prereqTaskCheck = true;
 		for(Task x : t.getPrerequisiteTasks())
 			if(!tasks.containsKey(x.getId())) {
@@ -301,8 +289,8 @@ public class Project implements DetailedProject {
 	 */
 	public List<Task> getAvailableTasks() {
 		List<Task> result = new LinkedList<Task>();
-		for(Task t : tasks.values()) {
-			if(t.isAvailable())
+		for(Task t : getTasks()) {
+			if(t.getStatus() == Status.AVAILABLE)
 				result.add(t);
 		}
 		return result;
@@ -368,11 +356,13 @@ public class Project implements DetailedProject {
     /**
      * Gets the total delay of this project.
      * 
-     * @return The sum of the delays of the tasks within this project.
+     * @return 	the sum of the delays of the tasks within this project if isOnTime(),
+     * 			null otherwise.
      */
     @Override
-    public Duration getDelay()
-    {
+    public Duration getDelay() {
+    	if(isOnTime())
+    		return null;
     	Duration totalDuration = new Duration(0);
     	for(Task t : getTasks())
     		totalDuration = totalDuration.add(t.getDelay());
