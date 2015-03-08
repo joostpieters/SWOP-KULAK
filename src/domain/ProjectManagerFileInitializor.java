@@ -2,7 +2,7 @@ package domain;
 
 /**
  * This class reads input from a file to initialize a projectmanager
- * 
+ *
  * @author Frederic, Mathias, Pieter-Jan
  */
 import java.io.IOException;
@@ -13,12 +13,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class ProjectManagerFileInitializor extends StreamTokenizer {
 
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private final ProjectManager manager;
-    
 
     public ProjectManagerFileInitializor(Reader r, ProjectManager manager) {
         super(r);
@@ -123,6 +121,7 @@ public class ProjectManagerFileInitializor extends StreamTokenizer {
             expectChar('-');
             int project = expectIntField("project");
             String description = expectStringField("description");
+            
             int estimatedDuration = expectIntField("estimatedDuration");
             int acceptableDeviation = expectIntField("acceptableDeviation");
             int alternativeFor = Project.NO_ALTERNATIVE;
@@ -135,13 +134,20 @@ public class ProjectManagerFileInitializor extends StreamTokenizer {
             if (ttype == '[') {
                 prerequisiteTasks = expectIntList();
             }
-            int[] prereq = new int[prerequisiteTasks.size()];
-            int i = 0;
-            for (Integer e : prerequisiteTasks)  
-                prereq[i++] = e;
+            int[] prereq;
+            if (prerequisiteTasks.size() > 0) {
+                prereq = new int[prerequisiteTasks.size()];
+                int i = 0;
+                for (Integer e : prerequisiteTasks) {
+                    prereq[i++] = e;
+                }
+            } else {
+                prereq = Project.NO_DEPENDENCIES;
+            }
+
             // TODO better create task and return task
-            manager.getProject(project).createTask(description, estimatedDuration, acceptableDeviation, alternativeFor, prereq);
-            Task task = manager.getProject(project).getTask(0);
+            Task task = manager.getProject(project).createTask(description, estimatedDuration, acceptableDeviation, alternativeFor, prereq);
+
             expectLabel("status");
             Status status = null;
             if (isWord("finished")) {
@@ -156,7 +162,7 @@ public class ProjectManagerFileInitializor extends StreamTokenizer {
                 LocalDateTime endTime = expectDateField("endTime");
                 task.update(startTime, endTime, status);
             }
-            
+
         }
         if (ttype != TT_EOF) {
             error("End of file or '-' expected");

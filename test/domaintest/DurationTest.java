@@ -182,6 +182,12 @@ public class DurationTest {
         LocalDateTime result3 = instance.getEndTimeFrom(begin3);
         assertEquals(LocalDateTime.of(2015, 2, 20, 13, 20), result3);
         
+        // different with multiple weekends
+        LocalDateTime begin4 = LocalDateTime.of(2015, 2, 12, 12, 0);
+        Duration instance4 = new Duration(4800);
+        LocalDateTime result4 = instance4.getEndTimeFrom(begin4);
+        assertEquals(LocalDateTime.of(2015, 2, 26, 12, 0), result4);
+        
     }
 
     
