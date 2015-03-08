@@ -364,5 +364,17 @@ public class Project implements DetailedProject {
 			return end.isBefore(getDueTime());
 		}
 	}
- 
+    
+    /**
+     * Calculates the total delay of this project.
+     * 
+     * @return The sum of the delays of the tasks within this project.
+     */
+    public Duration getDelay()
+    {
+    	Duration totalDuration = new Duration(0);
+    	for(Task t : getTasks())
+    		totalDuration = totalDuration.add(t.getDelay());
+    	return totalDuration;
+    }
 }
