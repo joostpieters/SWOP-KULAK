@@ -15,6 +15,7 @@ import java.util.TreeMap;
 public class Project {
 	
 	public static final int[] NO_DEPENDENCIES = new int[]{};
+	public static final int NO_ALTERNATIVE = -1;
 	
     private boolean isFinished;									//performance-variable
     
@@ -165,22 +166,21 @@ public class Project {
 	 * 			The id this task is an alternative for.
 	 * @param 	prereq
 	 * 			An array of id's of tasks that the new task will depend on.
-	 * @param 	status
-	 * 			The status for this new task.
 	 * @throws	IllegalStateException
 	 * 			if this project is already finished.
 	 */
-	public void createTask(String descr, int estDur, int accdev, int[] prereq, Status status) {
+	public void createTask(String descr, int estDur, int accdev, int[] prereq, int altFor) {
 		if(isFinished())
 			throw new IllegalStateException("This project has already been finished.");
 		
 		Task[] arr = new Task[prereq.length];
-		
 		for(int i = 0; i < prereq.length; i++) {
 			arr[i] = getTask(prereq[i]);
 		}
 
-		Task t = new Task(descr, estDur, accdev, arr, status, null, null); // TODO Frederic: Ik heb zelf ", null, null" erbij gezet omdat de constructor van task veranderd is, ik weet niet of dit het gewenste resultaat is?
+		Task t = new Task(descr, estDur, accdev, arr);
+		if(altFor != Project.NO_ALTERNATIVE)
+			getTask(altFor).setAlternativeTask(t);
 		addTask(t);
 	}
 	
@@ -192,9 +192,6 @@ public class Project {
 	 */
 	public List<Task> getAvailableTasks() {
 		List<Task> result = new LinkedList<Task>();
-		if(isFinished())
-			return result;
-		
 		for(Task t : tasks.values()) {
 			if(t.isAvailable())
 				result.add(t);
@@ -205,10 +202,9 @@ public class Project {
 	/**
 	 * Check whether this project is finished or not.
 	 * 
-	 * @return	true if this all tasks in this project have been finished,
+	 * @return	true if this all tasks in this project have been finished
+	 * 			and if this project contains at least one task,
 	 * 			false otherwise.
-	 * @throws 	IllegalArgumentException
-	 * 			if this project doesn't have any tasks yet.
 	 */
 	public boolean isFinished() {
 		if(isFinished)
@@ -238,10 +234,16 @@ public class Project {
 					return false;
 			return true;
 		} else {
-			for(Task t : getAvailableTasks()) {
-				t.getEstimatedDuration();
-				//TODO: implement (depends on Task)
+			Duration sum, max = new Duration(0);
+			for(Task t : getTasks()) {
+				sum = t.getEstimatedDuration();
+				for(Task ta : t.getPrerequisiteTasks()) {
+					sum = sum.add(ta.getEstimatedDuration());
+				}
+				if(sum.compareTo(max) > 0)
+					max = sum;
 			}
+			//TODO: implement
 			return true;
 		}
 	}
