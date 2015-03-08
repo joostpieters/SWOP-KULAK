@@ -322,7 +322,7 @@ public class Task implements DetailedTask {
 	/**
 	 * Checks whether this task is available.
 	 * 
-	 * @return 	True if and only if every prerequisite task of this task has been fulfilled.
+	 * @return 	True if and only if the status of this task is available.
 	 */
 	public boolean isAvailable()
 	{
