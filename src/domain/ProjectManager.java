@@ -41,6 +41,19 @@ public class ProjectManager {
 	}
 
 	/**
+     * @return the list of unfinished projects contained by this projectmanager. 
+     */
+    public List<Project> getUnfinishedProjects(){
+        List<Project> unfinishedProjects = new ArrayList<>();
+        for(Project project : projects){
+            if(!project.isFinished()){
+                unfinishedProjects.add(project);
+            }
+        }
+        return unfinishedProjects;
+    }
+    
+    /**
      * Creates a new project with the given details and add it to this projectmanager.
      * The new project gets an id that equals the number of projects in this projectmanager.
      * 

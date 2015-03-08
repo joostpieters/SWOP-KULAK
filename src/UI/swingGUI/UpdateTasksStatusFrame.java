@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package UI.swingGUI;
 
 import controller.UpdateTaskStatusHandler;
@@ -15,8 +10,9 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
- * @author Mathias
+ * This jFrame handles the update task status use case
+ * 
+ * @author Frederic, Mathias, Pieter-Jan
  */
 public class UpdateTasksStatusFrame extends javax.swing.JFrame {
 	
@@ -146,16 +142,11 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
         updateTaskButton.setText("Update");
         updateTaskButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateTaskButtonupdateTask(evt);
+                updateTaskButtonActionPerformed(evt);
             }
         });
 
         statusComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Finished", "Failed" }));
-        statusComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                statusComboBoxActionPerformed(evt);
-            }
-        });
 
         jLabel8.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         jLabel8.setText("Status");
@@ -169,20 +160,10 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
         startTimeTextField.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         startTimeTextField.setText("e.g. 2014-02-01 18:00");
         startTimeTextField.setToolTipText("");
-        startTimeTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                startTimeTextFieldActionPerformed(evt);
-            }
-        });
 
         endTimeTextField.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         endTimeTextField.setText("e.g. 2014-02-01 18:00");
         endTimeTextField.setToolTipText("");
-        endTimeTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                endTimeTextFieldActionPerformed(evt);
-            }
-        });
 
         jLabel3.setFont(jLabel3.getFont().deriveFont(jLabel3.getFont().getSize()+15f));
         jLabel3.setText("Update Task");
@@ -219,8 +200,8 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
                         .addContainerGap(217, Short.MAX_VALUE))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(297, 297, 297))
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(218, 218, 218))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -276,29 +257,18 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_selectTaskButtonActionPerformed
 
-    private void updateTaskButtonupdateTask(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateTaskButtonupdateTask
+    private void updateTaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateTaskButtonActionPerformed
         try{
             String startTime = startTimeTextField.getText();
             String endTime = endTimeTextField.getText();
             String status = (String) statusComboBox.getSelectedItem();
             handler.updateCurrentTask(startTime, endTime, status);
+            dispose();
         }catch (Exception e) {
             JOptionPane.showMessageDialog(rootPane, e.getMessage(), null, JOptionPane.ERROR_MESSAGE);
         }
-        dispose();
-    }//GEN-LAST:event_updateTaskButtonupdateTask
-
-    private void statusComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusComboBoxActionPerformed
-       //TODO
-    }//GEN-LAST:event_statusComboBoxActionPerformed
-
-    private void startTimeTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startTimeTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_startTimeTextFieldActionPerformed
-
-    private void endTimeTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endTimeTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_endTimeTextFieldActionPerformed
+        
+    }//GEN-LAST:event_updateTaskButtonActionPerformed
 
  
     // Variables declaration - do not modify//GEN-BEGIN:variables

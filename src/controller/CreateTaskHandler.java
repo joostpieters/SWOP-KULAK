@@ -30,7 +30,7 @@ public class CreateTaskHandler {
     
     
     /**
-     * Get the list of projects that belongs to the project with the given id.
+     * Get the list of tasks that belongs to the project with the given id.
      * 
      * @param Pid The id of the project to get the tasks from.
      * @return A list containing all the tasks of the project with the given id.
@@ -47,12 +47,21 @@ public class CreateTaskHandler {
      * @param accDev The deviation by which the etimated duration can deviate
      * @param prereq The id's of the task that have to be finished before this task.
      * @param estDuration The estimated duration of the tast
+     * @param altfor The id of the task, the task is an alternative for, is smaller
+     * than 0, if no alternative. 
      */
-    public void createTask(int pId, String description, int accDev, int prereq[], int estDuration){       
-        Project project = manager.getProject(pId);
-        //TODO right constructor
+    public void createTask(int pId, String description, int accDev, int prereq[], int estDuration, int altfor){       
+        if(prereq == null){
+            prereq = Project.NO_DEPENDENCIES;
+        }
+        
+        if(altfor < 0){
+            altfor = Project.NO_ALTERNATIVE;
+        }
         try {
-            project.createTask(description, estDuration, accDev, Project.NO_ALTERNATIVE, prereq);
+            Project project = manager.getProject(pId);
+        
+            project.createTask(description, estDuration, accDev, altfor, prereq);
         } catch (IllegalArgumentException | IllegalStateException e) {
             throw e;
         }catch(Exception e){
@@ -67,8 +76,8 @@ public class CreateTaskHandler {
      * 
      * @return A list of all projects in this projectmanager.
      */
-    public List<DetailedProject> getProjects(){
-        return new ArrayList<>(manager.getProjects());
+    public List<DetailedProject> getUnfinishedProjects(){
+        return new ArrayList<>(manager.getUnfinishedProjects());
     }
     
     public List<DetailedTask> getAllTasks(){

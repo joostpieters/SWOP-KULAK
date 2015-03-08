@@ -1,19 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package UI.swingGUI;
 
 import controller.CreateTaskHandler;
 import domain.DetailedProject;
 import domain.DetailedTask;
 import java.util.List;
-import javax.swing.ComboBoxModel;
-import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListDataListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -36,7 +28,11 @@ public class CreateTaskFrame extends javax.swing.JFrame {
         initComponents();
         this.handler = handler;
         initProjectComboBox();
-        initTables();
+        if( projectComboBox.getSelectedItem() == null){
+            JOptionPane.showMessageDialog(rootPane, "Please create a project first.", null, JOptionPane.ERROR_MESSAGE);
+            dispose();
+        }
+        initTables(((DetailedProject) projectComboBox.getSelectedItem()).getId());
         
     }
 
@@ -44,7 +40,8 @@ public class CreateTaskFrame extends javax.swing.JFrame {
      * Initialize the project combobox with the projects.
      */
     private void initProjectComboBox() {
-        for (DetailedProject project : handler.getProjects()) {
+        
+        for (DetailedProject project : handler.getUnfinishedProjects()) {
             projectComboBox.addItem(project);
         }
 
@@ -53,10 +50,10 @@ public class CreateTaskFrame extends javax.swing.JFrame {
     /**
      * Initialize the list project table with the appropriate data
      */
-    private void initTables() {
+    private void initTables(int pId) {
 
         String[] columnNames = {"Id", "Description"};
-        List<DetailedTask> tasks = handler.getAllTasks();
+        List<DetailedTask> tasks = handler.getTasksByProject(pId);
         Object[][] data = new Object[tasks.size()][];
 
         int i = 0;
@@ -78,7 +75,7 @@ public class CreateTaskFrame extends javax.swing.JFrame {
         prereqTable.getColumnModel().getColumn(0).setMaxWidth(50);
         alternativeForTable.setModel(prereqModel);
         alternativeForTable.getColumnModel().getColumn(0).setMaxWidth(50);
-        alternativeForTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        prereqTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     }
 
     /**
@@ -153,6 +150,12 @@ public class CreateTaskFrame extends javax.swing.JFrame {
 
         jLabel7.setText("%");
 
+        projectComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                projectComboBoxActionPerformed(evt);
+            }
+        });
+
         jLabel8.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         jLabel8.setText("Project");
 
@@ -160,6 +163,7 @@ public class CreateTaskFrame extends javax.swing.JFrame {
         descriptionTextArea.setRows(5);
         jScrollPane2.setViewportView(descriptionTextArea);
 
+        prereqTable.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         jScrollPane1.setViewportView(prereqTable);
 
         jLabel5.setText("Prerequisites");
@@ -277,6 +281,10 @@ public class CreateTaskFrame extends javax.swing.JFrame {
 
 
     private void createTask(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createTask
+        if(projectComboBox.getSelectedItem() == null){
+            JOptionPane.showMessageDialog(rootPane, "Please select a project.", null, JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         int Pid = ((DetailedProject) projectComboBox.getSelectedItem()).getId();
         String description = descriptionTextArea.getText();
         int accDev = 0;
@@ -310,7 +318,7 @@ public class CreateTaskFrame extends javax.swing.JFrame {
         }
 
         try {
-            handler.createTask(Pid, description, accDev, prereqs, estDuration);
+            handler.createTask(Pid, description, accDev, prereqs, estDuration, altFor);
             dispose();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(rootPane, e.getMessage(), null, JOptionPane.ERROR_MESSAGE);
@@ -318,6 +326,11 @@ public class CreateTaskFrame extends javax.swing.JFrame {
 
 
     }//GEN-LAST:event_createTask
+
+    private void projectComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_projectComboBoxActionPerformed
+        int Pid = ((DetailedProject) projectComboBox.getSelectedItem()).getId();
+        initTables(Pid);
+    }//GEN-LAST:event_projectComboBoxActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
