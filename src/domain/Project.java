@@ -366,10 +366,11 @@ public class Project implements DetailedProject {
 	}
     
     /**
-     * Calculates the total delay of this project.
+     * Gets the total delay of this project.
      * 
      * @return The sum of the delays of the tasks within this project.
      */
+    @Override
     public Duration getDelay()
     {
     	Duration totalDuration = new Duration(0);

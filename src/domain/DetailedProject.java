@@ -23,7 +23,13 @@ public interface DetailedProject {
      * @return 	the dueTime of this project.
      */
     LocalDateTime getDueTime();
-
+    
+    /**
+     * Gets the total delay of this project.
+     * 
+     * @return The sum of the delays of the tasks within this project.
+     */
+    public Duration getDelay();
     /****************************************
      * Getters & setters					*
      ****************************************/
