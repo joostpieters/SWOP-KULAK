@@ -25,7 +25,44 @@ public class Project implements DetailedProject {
     private final String description;
     private final Timespan creationDueTime;
     private final SortedMap<Integer, Task> tasks = new TreeMap<>();
+    private final Clock clock;
     
+    /**
+     * Construct a new project, with given id, name, description, 
+     * creation time and due time.
+     * 
+     * @param 	id
+     * 			The id for this project.
+     * @param 	name
+     * 			The name for this project.
+     * @param 	descr
+     * 			The description for this project.
+     * @param 	creation
+     * 			The creation time for this project.
+     * @param 	due
+     * 			The due time for this project.
+     * @param	clock
+     * 			The system clock this project depends on.
+     * @throws	IllegalArgumentException
+     * 			if id < 0
+     * 			or if name or descr = null
+     * 			or if creation and due form an invalid time pair.
+     */
+    public Project(int id, String name, String descr, LocalDateTime creation, LocalDateTime due, Clock clock){
+    	if(!canHaveAsId(id))
+    		throw new IllegalArgumentException("id should be bigger than zero.");
+    	if(!canHaveAsName(name) || !canHaveAsDescription(descr))
+    		throw new IllegalArgumentException("Both name (at least one digit) and description "
+    				+ "(at least " + MIN_DESCR_LENGTH + " digits) are expected.");
+    	
+    	this.id = id;
+    	this.name = name;
+    	this.description = descr;
+    	this.creationDueTime = new Timespan(creation, due);
+    	this.clock = clock;
+    }
+    
+    //TODO: get rid of this constructor?
     /**
      * Construct a new project, with given id, name, description, 
      * creation time and due time.
@@ -56,6 +93,7 @@ public class Project implements DetailedProject {
     	this.name = name;
     	this.description = descr;
     	this.creationDueTime = new Timespan(creation, due);
+    	this.clock = null;
     }
     
     /****************************************
@@ -133,6 +171,13 @@ public class Project implements DetailedProject {
     @Override
 	public LocalDateTime getDueTime() {
 		return creationDueTime.getEndTime();
+	}
+
+	/**
+	 * @return the clock used in this project.
+	 */
+	public Clock getClock() {
+		return clock;
 	}
 
 	/**
@@ -312,8 +357,10 @@ public class Project implements DetailedProject {
 				if(sum.compareTo(max) > 0)
 					max = sum;
 			}
-			//TODO: implement
-			return true;
+			LocalDateTime end = max.getEndTimeFrom(getCreationTime());
+			if(end.isBefore(clock.getTime()))
+				end = clock.getTime();
+			return end.isBefore(getDueTime());
 		}
 	}
  

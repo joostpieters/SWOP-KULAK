@@ -14,7 +14,8 @@ public class Clock {
     /**
      * Initializes this clock with the given time.
      * 
-     * @param time The intitial time to start the clock on
+     * @param 	time 
+     * 			The intitial time to start the clock on
      */
     public Clock(LocalDateTime time) {
         this.time = time;
@@ -28,11 +29,19 @@ public class Clock {
     }
     
     /**
+     * @return	the current time of this clock.
+     */
+    public LocalDateTime getTime() {
+    	return this.time;
+    }
+    
+    /**
      * Advance the current system time to the given time.
      * 
-     * @param time The time in the future to which the system time must be advanced.
-     * @throws IllegalArgumentException The given time lays strictly in the past, 
-     * compared to this clocks time.
+     * @param 	time 
+     * 			The time in the future to which the system time must be advanced.
+     * @throws 	IllegalArgumentException 
+     * 			if the given time lays strictly in the past, compared to this clocks time.
      */
     public void advanceTime(LocalDateTime time) throws IllegalArgumentException{
         if(time.isBefore(this.time)){
