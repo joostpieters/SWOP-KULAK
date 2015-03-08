@@ -47,7 +47,7 @@ public class DurationTest {
         LocalDateTime end = LocalDateTime.of(2015, 2, 20, 16, 30);
         Duration duration = new Duration(begin, end);
         
-        assertEquals(38, duration.getHours());
+        assertEquals(37, duration.getHours());
         assertEquals(30, duration.getMinutes());
         
         // different days, different weeks

@@ -264,29 +264,40 @@ public class Duration implements Comparable<Duration>{
 		if(!isValidWorkTime(begin) || !isValidWorkTime(end))
 			throw new IllegalArgumentException("Begin- as well as endtime should be during workhours.");
 
-		long days = getWorkDaysBetween(begin, end);
+		long minutesTillEnd = ChronoUnit.MINUTES.between(begin,  end);
+		long totalMinutes = 0;
+		LocalTime beginLocalTime = begin.toLocalTime();
+		LocalDateTime nextBegin;
+		if(beginLocalTime.compareTo(BEGINLUNCH) <= 0 && beginLocalTime.compareTo(ENDLUNCH) < 0)
+		{
+			long minutesTillLunch = ChronoUnit.MINUTES.between(beginLocalTime,BEGINLUNCH);
+			if(minutesTillEnd <= minutesTillLunch)
+				return minutesTillEnd;
+			else
+				totalMinutes += minutesTillLunch;
+			//nextBegin set to end of lunch break
+			nextBegin = LocalDateTime.of(begin.toLocalDate(), ENDLUNCH);
 
-		// same day
-		if(days == 0) {
-			boolean test = begin.toLocalTime().compareTo(BEGINLUNCH) <= 0 &&
-					end.toLocalTime().compareTo(ENDLUNCH) >= 0;
-					return ChronoUnit.MINUTES.between(begin.toLocalTime(), end.toLocalTime()) - 
-							((test) ? getMinutesOfLunchBreak() : 0);
 		}
+		else //if(beginLocalTime.compareTo(ENDLUNCH) >= 0)
+		{
+			long minutesTillEndOfDay = ChronoUnit.MINUTES.between(beginLocalTime,ENDWORKDAY);
+			if(minutesTillEnd <= minutesTillEndOfDay)
+				return minutesTillEnd;
+			else
+				totalMinutes += minutesTillEndOfDay;
+			int weekDay = begin.getDayOfWeek().getValue();
+			if(weekDay == ENDWORKWEEK)
+			{
+				nextBegin = LocalDateTime.of(begin.toLocalDate().plusDays(8 - Duration.getDaysOfWorkWeek()), BEGINWORKDAY);
 
-		long fullWorkDays = days - 1;
-		long minutes = (long) (fullWorkDays * 60 * WORKHOURSPERDAY);
-
-		minutes += ChronoUnit.MINUTES.between(begin.toLocalTime(), ENDWORKDAY);
-		minutes += ChronoUnit.MINUTES.between(BEGINWORKDAY, end.toLocalTime()); 
-
-		// The first workday timespan includes a lunch break
-		minutes -= (begin.toLocalTime().compareTo(BEGINLUNCH) <= 0) ? getMinutesOfLunchBreak() : 0;
-		//last workday timespan inclused a lunch break
-		//TODO: compareTo() > 0, niet???
-		minutes -= (end.toLocalTime().compareTo(BEGINLUNCH) <= 0) ? getMinutesOfLunchBreak() : 0;
-
-		return minutes;
+			}
+			else
+			{
+				nextBegin = LocalDateTime.of(begin.toLocalDate().plusDays(1), BEGINWORKDAY);
+			}
+		}
+		return totalMinutes + getWorkTimeBetween(nextBegin, end);
 	}
 
 	/****************************************
