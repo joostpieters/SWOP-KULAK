@@ -168,11 +168,11 @@ public class TaskTest {
     /**
      * Test of update method, of class Task, attempting to set status to FAILED from UNAVAILABLE
      */
-    @Test (expected = IllegalArgumentException.class)
+    /*@Test (expected = IllegalArgumentException.class)
     public void testUpdateInvalidStatus4()
     {
     	t8.update(LocalDateTime.of(2016, 10, 30, 0, 0), LocalDateTime.of(2016, 11, 30, 0, 0), Status.FAILED);
-    }
+    }*/
     /*
      * Test of update method, of class Task
      */
@@ -190,6 +190,10 @@ public class TaskTest {
     	assertEquals(Status.AVAILABLE, t1.getStatus());
     	t1.update(startTime, endTime, Status.FAILED);
     	assertEquals(Status.FAILED, t1.getStatus());
+    	// UNAVAILABLE -> FAILED
+    	assertEquals(Status.UNAVAILABLE, t5.getStatus());
+    	t5.update(startTime, endTime, Status.FAILED);
+    	assertEquals(Status.FAILED, t5.getStatus());
     }
     /**
      * Test of isAvailable method, of class Task.

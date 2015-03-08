@@ -537,6 +537,8 @@ public class Task implements DetailedTask {
 	 */
 	public boolean canUpdateStatus(Status status)
 	{
+		if((getStatus() == Status.AVAILABLE || getStatus() == Status.UNAVAILABLE) && status == Status.FAILED)
+			return true;
 		if(getStatus() != Status.AVAILABLE)
 			return false;
 		if(status == Status.UNAVAILABLE)
