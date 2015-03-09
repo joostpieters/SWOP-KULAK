@@ -97,6 +97,7 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
         jLabel2.setFont(jLabel2.getFont().deriveFont(jLabel2.getFont().getSize()+15f));
         jLabel2.setText("Select Task");
 
+        availableTaskTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane3.setViewportView(availableTaskTable);
 
         selectTaskButton.setText("Select Task");

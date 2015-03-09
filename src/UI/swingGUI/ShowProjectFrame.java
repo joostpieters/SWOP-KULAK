@@ -204,6 +204,7 @@ public class ShowProjectFrame extends javax.swing.JFrame {
         jLabel2.setText("Select Project");
 
         projectTable.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        projectTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(projectTable);
 
         selectProjectButton.setText("Select Project");
@@ -256,6 +257,7 @@ public class ShowProjectFrame extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
         jLabel6.setText("Tasks");
 
+        taskTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(taskTable);
 
         selectTaskButton.setText("Select Task");
@@ -358,6 +360,7 @@ public class ShowProjectFrame extends javax.swing.JFrame {
 
         taskDescriptionLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
+        prereqTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane3.setViewportView(prereqTable);
 
         jLabel13.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N

@@ -152,7 +152,11 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_createNewProject
 
     private void createNewTask(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createNewTask
-        new CreateTaskFrame(controller.getCreateTaskHandler()).setVisible(true);
+        try {
+            new CreateTaskFrame(controller.getCreateTaskHandler()).setVisible(true);
+        } catch (IllegalStateException illegalStateException) {
+            JOptionPane.showMessageDialog(rootPane, illegalStateException.getMessage(), null, JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_createNewTask
 
     private void modifySystemTime(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifySystemTime
@@ -196,7 +200,8 @@ public class MainFrame extends javax.swing.JFrame {
                     
                     ProjectManagerFileInitializor fileInitializor = new ProjectManagerFileInitializor(fileReader, manager);
                     fileInitializor.processFile();
-                } catch (IOException ex) {
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "An error occured while reading/processing the file, please try again.", null, JOptionPane.ERROR_MESSAGE);
                     Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }

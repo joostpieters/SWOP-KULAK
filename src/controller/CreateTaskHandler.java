@@ -77,11 +77,20 @@ public class CreateTaskHandler {
     /**
      * 
      * @return A list of all projects in this projectmanager.
+     * @throws IllegalStateException No unfinished projects are available.
      */
-    public List<DetailedProject> getUnfinishedProjects(){
-        return new ArrayList<>(manager.getUnfinishedProjects());
+    public List<DetailedProject> getUnfinishedProjects() throws IllegalStateException{
+        ArrayList<DetailedProject> projects = new ArrayList<>(manager.getUnfinishedProjects());
+        if(projects.isEmpty()){
+            throw new IllegalStateException("No unfinished projects are available.");
+        }
+        return projects;
     }
     
+    /**
+     * 
+     * @return A list of all the tasks available in this manager. 
+     */
     public List<DetailedTask> getAllTasks(){
         return new ArrayList<>(manager.getAllTasks());
     }

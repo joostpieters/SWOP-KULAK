@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class ProjectManager {
     
-    private final ArrayList<Project> projects;
+    private final Map<Integer, Project> projects;
     
     private final Clock systemClock ;
     
@@ -22,15 +22,15 @@ public class ProjectManager {
      * Initializes a new project manager and its systemClock.
      */
     public ProjectManager(){
-        projects = new ArrayList<>();
+        projects = new HashMap<>();
         systemClock = new Clock();
     }
     
     /**
      * @return the list of projects contained by this projectmanager. 
      */
-    public ArrayList<Project> getProjects(){
-        return new ArrayList<>(projects);
+    public List<Project> getProjects(){
+        return new ArrayList<>(projects.values());
     }
     
     /**
@@ -45,7 +45,7 @@ public class ProjectManager {
      */
     public List<Project> getUnfinishedProjects(){
         List<Project> unfinishedProjects = new ArrayList<>();
-        for(Project project : projects){
+        for(Project project : projects.values()){
             if(!project.isFinished()){
                 unfinishedProjects.add(project);
             }
@@ -68,7 +68,7 @@ public class ProjectManager {
      * @return	the project that has been created.
      */
     public Project createProject(String name, String description, LocalDateTime startTime, LocalDateTime dueTime){
-        //TODO: goed idee om projects.size() te gebruiken? (gaan er nooit projecten weg?)
+        
         Project p = new Project(name,description, startTime, dueTime, systemClock);
         addProject(p);
         return p;
@@ -80,7 +80,7 @@ public class ProjectManager {
      * @param project The project to add. 
      */
     private void addProject(Project project){
-        projects.add(project);
+        projects.put(project.getId(), project);
     }
     
     /**
@@ -92,11 +92,9 @@ public class ProjectManager {
      * in this project manager.
      */
     public Project getProject(int pId) throws ObjectNotFoundException{
-        try{
-            return projects.get(pId);
-        }catch(IndexOutOfBoundsException e){
+        if(!projects.containsKey(pId))
             throw new ObjectNotFoundException("The project with the specified id doesn't exist.", pId);
-        }
+        return projects.get(pId);      
         
     }
     
@@ -118,7 +116,7 @@ public class ProjectManager {
     public Map<Task, Project>  getAllAvailableTasks(){
         
         Map<Task, Project> availableTasks = new HashMap<>();
-        for (Project project : projects){
+        for (Project project : projects.values()){
             for(Task task : project.getAvailableTasks()){
                 availableTasks.put(task, project);
             }           
@@ -135,7 +133,7 @@ public class ProjectManager {
     public List<Task>  getAllTasks(){
         
         List<Task> tasks = new ArrayList<>();
-        for (Project project : projects){
+        for (Project project : projects.values()){
             tasks.addAll(project.getTasks());
                       
         }
