@@ -335,4 +335,9 @@ public class Project implements DetailedProject {
     		totalDuration = totalDuration.add(t.getDelay());
     	return totalDuration;
     }
+    
+    @Override
+    public String toString() {
+    	return this.name;
+    }
 }
