@@ -16,6 +16,8 @@ import static org.junit.Assert.*;
  * @author Mathias
  */
 public class DurationTest {
+	
+	//TODO: tests failen bij verandering constanten...
     
     public DurationTest() {
     }

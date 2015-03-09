@@ -18,6 +18,8 @@ public class Project implements DetailedProject {
 	public static final int[] NO_DEPENDENCIES = new int[]{};
 	public static final int NO_ALTERNATIVE = -1;
 	
+	private static int nextId = 0;
+	
     private boolean isFinished;									//performance-variable
     
     private final int id;
@@ -30,9 +32,6 @@ public class Project implements DetailedProject {
     /**
      * Construct a new project, with given id, name, description, 
      * creation time and due time.
-     * 
-     * @param 	id
-     * 			The id for this project.
      * @param 	name
      * 			The name for this project.
      * @param 	descr
@@ -43,71 +42,39 @@ public class Project implements DetailedProject {
      * 			The due time for this project.
      * @param	clock
      * 			The system clock this project depends on.
+     * 
      * @throws	IllegalArgumentException
      * 			if id < 0
      * 			or if name or descr = null
      * 			or if creation and due form an invalid time pair.
      */
-    public Project(int id, String name, String descr, LocalDateTime creation, LocalDateTime due, Clock clock){
-    	if(!canHaveAsId(id))
-    		throw new IllegalArgumentException("id should be bigger than zero.");
+    public Project(String name, String descr, LocalDateTime creation, LocalDateTime due, Clock clock){
     	if(!canHaveAsName(name) || !canHaveAsDescription(descr))
     		throw new IllegalArgumentException("Both name (at least one character) and description "
     				+ "(at least one character) are expected.");
     	
-    	this.id = id;
+    	this.id = Project.generateId();
     	this.name = name;
     	this.description = descr;
     	this.creationDueTime = new Timespan(creation, due);
     	this.clock = clock;
     }
     
-    //TODO: get rid of this constructor?
-    /**
-     * Construct a new project, with given id, name, description, 
-     * creation time and due time.
-     * 
-     * @param 	id
-     * 			The id for this project.
-     * @param 	name
-     * 			The name for this project.
-     * @param 	descr
-     * 			The description for this project.
-     * @param 	creation
-     * 			The creation time for this project.
-     * @param 	due
-     * 			The due time for this project.
-     * @throws	IllegalArgumentException
-     * 			if id < 0
-     * 			or if name or descr = null
-     * 			or if creation and due form an invalid time pair.
-     */
-    public Project(int id, String name, String descr, LocalDateTime creation, LocalDateTime due){
-    	this(id, name, descr, creation, due, null);
-    }
-    
     /****************************************
      * Getters & setters					*
      ****************************************/
     
-    /**
+    private static int generateId() {
+		return Project.nextId++;
+	}
+
+	/**
 	 * @return 	the id of this project.
 	 */
     @Override
 	public int getId() {
 		return id;
 	}
-    
-    /**
-     * Check whether this project can have a given ID.
-     * 
-     * @param 	id
-     * 			The id to be checked.
-     * @return	id >= 0
-     */
-    public boolean canHaveAsId(int id) {
-    	return id >= 0;
-    }
 
 	/**
 	 * @return 	the name of this project.

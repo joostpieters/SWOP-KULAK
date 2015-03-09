@@ -1,10 +1,8 @@
 package domain;
 
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAmount;
 
 
 /**
@@ -159,13 +157,7 @@ public class Duration implements Comparable<Duration>{
      */
     @Override
     public int compareTo(Duration duration) {
-        if(minutes < duration.toMinutes()){
-            return -1;
-        }else if (minutes > duration.toMinutes()){
-            return 1;
-        }else{
-            return 0;
-        }
+    	return Long.signum(minutes - duration.toMinutes());
     }
     
     /****************************************
@@ -189,15 +181,22 @@ public class Duration implements Comparable<Duration>{
     /**
      * @return 	The number of minutes, the lunch break lasts
      */
-    private static long getMinutesOfLunchBreak() {
-        return ChronoUnit.MINUTES.between(BEGINLUNCH, ENDLUNCH);
+    public static long getMinutesOfLunchBreak() {
+        return ChronoUnit.MINUTES.between(Duration.BEGINLUNCH, Duration.ENDLUNCH);
+    }
+    
+    /**
+     * @return	the number of minutes, a work day lasts (taking into account lunch break).
+     */
+    public static long getMinutesOfWorkDay() {
+    	return ChronoUnit.MINUTES.between(Duration.BEGINWORKDAY, Duration.ENDWORKDAY) - getMinutesOfLunchBreak();
     }
     
     /**
      * @return 	The number of days in a work week.
      */
-    private static long getDaysOfWorkWeek() {
-        return ENDWORKWEEK - BEGINWORKWEEK + 1;
+    public static long getDaysOfWorkWeek() {
+        return Duration.ENDWORKWEEK - Duration.BEGINWORKWEEK + 1;
     }
 
 	/**
@@ -232,16 +231,17 @@ public class Duration implements Comparable<Duration>{
 	 * @return 	True is and only in the following cases:
 	 * 			- The given time is between the beginworkday time and the endworkday time, 
 	 * 			  including the boundaries and 
-	 * 			- The given time doesn't fall in a weekend
+	 * 			- The given time doesn't fall outside the work week
 	 * 			- The given time doesn't fall into a lunch break
 	 */
 	public static boolean isValidWorkTime(LocalDateTime time){
-		boolean checkDays = time.toLocalTime().compareTo(BEGINWORKDAY) >= 0 && 
-				time.toLocalTime().compareTo(ENDWORKDAY) <= 0;
-		boolean checkWeekends = !(time.getDayOfWeek().equals(DayOfWeek.SATURDAY) || 
-				time.getDayOfWeek().equals(DayOfWeek.SUNDAY));
-		boolean checkLunch = !(BEGINLUNCH.isBefore(time.toLocalTime()) && 
-				time.toLocalTime().isBefore(ENDLUNCH));
+		//too much inefficiency to handle, but clear
+		boolean checkDays = time.toLocalTime().compareTo(Duration.BEGINWORKDAY) >= 0 && 
+				time.toLocalTime().compareTo(Duration.ENDWORKDAY) <= 0;
+		boolean checkWeekends = time.getDayOfWeek().getValue() >= Duration.BEGINWORKWEEK && 
+				time.getDayOfWeek().getValue() <= Duration.ENDWORKWEEK;
+		boolean checkLunch = !(Duration.BEGINLUNCH.isBefore(time.toLocalTime()) && 
+				time.toLocalTime().isBefore(Duration.ENDLUNCH));
 		return checkDays && checkLunch && checkWeekends;
 	}
 

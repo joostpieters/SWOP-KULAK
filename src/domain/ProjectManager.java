@@ -69,7 +69,7 @@ public class ProjectManager {
      */
     public Project createProject(String name, String description, LocalDateTime startTime, LocalDateTime dueTime){
         //TODO: goed idee om projects.size() te gebruiken? (gaan er nooit projecten weg?)
-        Project p = new Project(projects.size(),name, description, startTime, dueTime);
+        Project p = new Project(name,description, startTime, dueTime, systemClock);
         addProject(p);
         return p;
     }

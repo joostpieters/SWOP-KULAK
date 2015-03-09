@@ -23,7 +23,6 @@ import static org.junit.Assert.*;
  */
 public class ProjectTest {
 	
-	private int id = 0;
 	private String name = "Mobile Steps";
 	private String descr = "develop mobile app for counting steps using a specialized bracelet";
 	private LocalDateTime create = LocalDateTime.of(2015, 2, 9, 0, 0);
@@ -81,9 +80,8 @@ public class ProjectTest {
      */
     @Test
     public void testConstructorValid() {
-    	Project x = new Project(id, name, descr, create, due, pm.getSystemClock());
+    	Project x = new Project(name, descr, create, due, pm.getSystemClock());
     	
-    	assertEquals(x.getId(), id);
     	assertEquals(x.getName(), name);
     	assertEquals(x.getDescription(), descr);
     	x.getCreationTime().minusHours(2);
@@ -104,17 +102,7 @@ public class ProjectTest {
     	LocalDateTime create = LocalDateTime.of(2015, 2, 13, 0, 0);
     	LocalDateTime due = LocalDateTime.of(2015, 2, 9, 0, 0);
     	
-    	new Project(id, name, descr, create, due, pm.getSystemClock());
-    }
-    
-    /**
-     * Test constructor with negative id.
-     */
-    @Test (expected = IllegalArgumentException.class)
-    public void testConstructorNegativeId() {
-    	int id = -1;
-    	
-    	new Project(id, name, descr, create, due, pm.getSystemClock());
+    	new Project(name, descr, create, due, pm.getSystemClock());
     }
     
     /**
@@ -124,7 +112,7 @@ public class ProjectTest {
     public void testConstructorNullName() {
     	String name = null;
     	
-    	new Project(id, name, descr, create, due, pm.getSystemClock());
+    	new Project(name, descr, create, due, pm.getSystemClock());
     }
     
     /**
@@ -134,7 +122,7 @@ public class ProjectTest {
     public void testConstructorEmptyName() {
     	String name = "";
     	
-    	new Project(id, name, descr, create, due, pm.getSystemClock());
+    	new Project(name, descr, create, due, pm.getSystemClock());
     }
     
     /**
@@ -144,7 +132,7 @@ public class ProjectTest {
     public void testConstructorNullDescr() {
     	String descr = null;
     	
-    	new Project(id, name, descr, create, due, pm.getSystemClock());
+    	new Project(name, descr, create, due, pm.getSystemClock());
     }
     
     /**
@@ -154,7 +142,7 @@ public class ProjectTest {
     public void testConstructorEmptyDescr() {
     	String descr = "";
     	
-    	new Project(id, name, descr, create, due, pm.getSystemClock());
+    	new Project(name, descr, create, due, pm.getSystemClock());
     }
     
     /**
@@ -349,6 +337,51 @@ public class ProjectTest {
     	assertFalse(p2.isFinished());
     	t.update(end, end.plusDays(5), Status.FINISHED);
     	assertTrue(p2.isFinished());
+    }
+    
+    /**
+     * Test isOnTime method in trivial cases when simple project is finished (no alternatives or prereqs).
+     */
+    @Test
+    public void testIsOnTimeFinishedSimple() {
+    	assertTrue(pFinished.isOnTime());
+    	
+    	t1.update(start, due.plusDays(1), Status.FINISHED);
+    	assertFalse(p1.isOnTime());
+    }
+    
+    /**
+     * Test isOnTime method in trivial cases when project is finished (no prereqs).
+     */
+    @Test
+    public void testIsOnTimeFinishedAlternative() {
+    	t1.update(start, end, Status.FAILED);
+    	Task t = p1.createTask(taskdescr, estdurH, estdurM, accdev, t1.getId(), prereqs);
+    	t.update(start, due, Status.FINISHED);
+    	assertTrue(p1.isOnTime());
+    }
+    
+    /**
+     * Test isOnTime method in trivial cases when project is finished (no prereqs).
+     */
+    @Test
+    public void testIsOnTimeFinishedAlternative2() {
+    	t1.update(start, due.plusHours(1), Status.FAILED);
+    	Task t = p1.createTask(taskdescr, estdurH, estdurM, accdev, t1.getId(), prereqs);
+    	t.update(start, due, Status.FINISHED);
+    	assertFalse(p1.isOnTime());
+    }
+    
+    /**
+     * Test isOnTime method in trivial cases when project is finished (no alternative).
+     */
+    @Test
+    public void testIsOnTimeFinishedPrereqs() {
+    	Task t = p2.createTask(taskdescr, estdurH, estdurM, accdev, altFor, new int[]{t2.getId(), t3.getId()});
+    	t2.update(start, due, Status.FINISHED);
+    	t3.update(start, end, Status.FINISHED);
+    	t.update(due, due.plusHours(1), Status.FINISHED);
+    	assertFalse(p2.isOnTime());
     }
     
 }
