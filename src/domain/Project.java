@@ -1,12 +1,14 @@
 package domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import exception.ObjectNotFoundException;
+
 import java.util.Arrays;
 
 /**
@@ -238,11 +240,11 @@ public class Project implements DetailedProject {
 		if(Arrays.equals(prereq, Project.NO_DEPENDENCIES)) {
 			t = new Task(descr, duration, accdev);
 		} else {
-			Task[] arr = new Task[prereq.length];
+			List<Task> taskList = new ArrayList<Task>();
 			for(int i = 0; i < prereq.length; i++) {
-				arr[i] = getTask(prereq[i]);
+				taskList.add(getTask(prereq[i]));
 			}
-			t = new Task(descr, duration, accdev, arr);
+			t = new Task(descr, duration, accdev, taskList);
 		}
 		
 		if(altFor != Project.NO_ALTERNATIVE)

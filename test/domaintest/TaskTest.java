@@ -5,8 +5,11 @@ import domain.Status;
 import domain.Task;
 import domain.Timespan;
 
+import java.awt.List;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -38,7 +41,7 @@ public class TaskTest {
     public void setUp() {
     	t0 = new Task("description!", new Duration(10), 20);
     	t1 = new Task("t1", new Duration(10), 10);
-    	t2 = new Task("t2", new Duration(20), 10, new Task[] {t0, t1});
+    	t2 = new Task("t2", new Duration(20), 10, Arrays.asList(t0, t1));
     	
     	Timespan t3ts = new Timespan(
     			LocalDateTime.of(2015, 3, 4, 11, 48), 
@@ -46,8 +49,8 @@ public class TaskTest {
     			);
     	t3 = new Task("t3 finished", new Duration(30), 40);
     	t3.update(t3ts.getStartTime(), t3ts.getEndTime(), Status.FINISHED);
-    	t4 = new Task("t4", new Duration(30), 10, new Task[] {t3});
-    	t5 = new Task("t5", new Duration(20), 5, new Task[] {t3, t2});
+    	t4 = new Task("t4", new Duration(30), 10, Arrays.asList(t3));
+    	t5 = new Task("t5", new Duration(20), 5, Arrays.asList(t3, t2));
     	Timespan t6ts = new Timespan(
     			LocalDateTime.of(2015, 3, 4, 11, 48), 
     			LocalDateTime.of(2015, 3, 4, 15, 33)
@@ -58,7 +61,7 @@ public class TaskTest {
     	t7.update(t6ts.getStartTime(), t6ts.getEndTime(), Status.FAILED);
     	t7alternative = new Task("alternative for t7!", new Duration(10), 2);
     	t7.setAlternativeTask(t7alternative);
-    	t8 = new Task("depends on t7", new Duration(33), 3, new Task[] { t7} );
+    	t8 = new Task("depends on t7", new Duration(33), 3, Arrays.asList(t7) );
     }
     
     @After
@@ -78,15 +81,15 @@ public class TaskTest {
     	String description = "task0 description";
     	int estDur = 10;
     	int accDev = 30;
-    	Task[] prereq = new Task[] {t3};
+    	ArrayList<Task> prereq = new ArrayList<Task>(Arrays.asList(t3));
     	Task task0 = new Task(description, new Duration(estDur), accDev, prereq);
     	assertEquals(description, task0.getDescription());
     	assertEquals(estDur, task0.getEstimatedDuration().toMinutes());
     	assertEquals(accDev, task0.getAcceptableDeviation());
-    	for(int i = 0; i < prereq.length; i++)
-    		assertEquals(prereq[i], task0.getPrerequisiteTasks()[i]);
+    	for(int i = 0; i < prereq.size(); i++)
+    		assertEquals(prereq.get(i), task0.getPrerequisiteTasks().get(i));
     	//Task(String description, long estDur, int accDev, Task[] prereq, altFor)
-    	Task task00 = new Task("task00", new Duration(10), 30, new Task[] {t0}, t6);
+    	Task task00 = new Task("task00", new Duration(10), 30, Arrays.asList(t0), t6);
     	assertEquals(task00, t6.getAlternativeTask());
     	//Task(String description, long estDur, int accDev, Status status, Timespan timeSpan)
     	String description1 = "task1 description";
@@ -105,13 +108,13 @@ public class TaskTest {
     	String description2 = "task2 description";
     	int estDur2 = 55;
     	int accDev2 = 22;
-    	Task[] prereq2 = new Task[] {task0};
+    	ArrayList<Task> prereq2 = new ArrayList<Task>(Arrays.asList(task0));
     	Task task2 = new Task(description2, new Duration(estDur2), accDev2, prereq2);
     	assertEquals(description2, task2.getDescription());
     	assertEquals(estDur2, task2.getEstimatedDuration().toMinutes());
     	assertEquals(accDev2, task2.getAcceptableDeviation());
-    	for(int i = 0; i < prereq2.length; i++)
-    		assertEquals(prereq2[i], task2.getPrerequisiteTasks()[i]);
+    	for(int i = 0; i < prereq2.size(); i++)
+    		assertEquals(prereq2.get(i), task2.getPrerequisiteTasks().get(i));
     	
     	//public Task(String description, long estDur, int accDev)
     	String description3 = "task3 description!";
@@ -366,7 +369,7 @@ public class TaskTest {
     	assertFalse(t6.canBeFulfilled());
     	assertTrue(t7.canBeFulfilled());
     	assertTrue(t8.canBeFulfilled());
-    	assertFalse(new Task("description", new Duration(10), 30, new Task[] {t6}).canBeFulfilled());
+    	assertFalse(new Task("description", new Duration(10), 30, Arrays.asList(t6)).canBeFulfilled());
     }
     /**
      * Test of canHaveAsAlternativeTask method, of class Task.

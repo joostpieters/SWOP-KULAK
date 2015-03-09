@@ -120,8 +120,8 @@ public class ShowProjectFrame extends javax.swing.JFrame {
         taskDescriptionLabel.setText(task.getDescription());
         taskAccDevLabel.setText(task.getAcceptableDeviation() + "%");
         alternativeTaskLabel.setText(task.getAlternativeTask() == null ? "n/a" : task.getAlternativeTask().getDescription());
-         DetailedTask[] tasks = task.getPrerequisiteTasks();
-        Object[][] data = new Object[tasks.length][];
+         List<DetailedTask> tasks = (List<DetailedTask>) task.getPrerequisiteTasks();
+        Object[][] data = new Object[tasks.size()][];
 
         int i = 0;
         for (DetailedTask detailTask : tasks) {
