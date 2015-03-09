@@ -1,5 +1,7 @@
 package domain;
 
+import java.util.List;
+
 /**
  *
  * @author Mathias
@@ -49,7 +51,7 @@ public interface DetailedTask {
 	/**
 	 * @return 	The list of prerequisite tasks for this task.
 	 */
-    DetailedTask[] getPrerequisiteTasks();
+    List<? extends DetailedTask> getPrerequisiteTasks();
     
     /**
 	 * @return 	The alternative task for this task.

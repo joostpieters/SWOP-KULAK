@@ -1,6 +1,8 @@
 package domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents a task
@@ -17,7 +19,7 @@ public class Task implements DetailedTask {
 	private Timespan timeSpan;
 	private Duration estimatedDuration;
 	private Task alternativeTask;
-	private Task[] prerequisiteTasks;
+	private List<Task> prerequisiteTasks;
 	private Status status;
 	
 	/**
@@ -26,8 +28,8 @@ public class Task implements DetailedTask {
 	 *  
 	 * @param 	description
 	 *        	The description of this task.
-	 * @param 	estDur
-	 *        	The estimated duration in minutes of this task.
+     * @param   duration
+     *          The estimated duration of this task
 	 * @param 	accDev
 	 *        	The acceptable deviation of this task expressed as an integer between 0 and 100.
 	 * @param 	prereq
@@ -35,19 +37,36 @@ public class Task implements DetailedTask {
 	 * @param   alternativeFor
 	 *          The task for which this task is an alternative for.
 	 */
-	public Task(String description, int estDurHours, int estDurMinutes, int accDev, Task[] prereq, Task alternativeFor)
+	public Task(String description, Duration duration, int accDev, List<Task> prereq, Task alternativeFor)
 	{
 		this.id = generateId();
 		setDescription(description);
-		this.estimatedDuration = new Duration(estDurHours, estDurMinutes);
+		this.estimatedDuration = duration;
 		setAcceptableDeviation(accDev);
 		if(prereq == null)
-			setPrerequisiteTasks(new Task[] {});
+			setPrerequisiteTasks(new ArrayList<Task>());
 		else
 			setPrerequisiteTasks(prereq);
 		updateStatus();
 		if(alternativeFor != null)
 			alternativeFor.setAlternativeTask(this);
+	}
+	/**
+	 * Initializes this task based on the given description, estimated duration,
+	 * acceptable deviation and alternative task for.
+	 *  
+	 * @param 	description
+	 *        	The description of this task.
+     * @param   duration
+     *          The estimated duration of this task
+	 * @param 	accDev
+	 *        	The acceptable deviation of this task expressed as an integer between 0 and 100.
+	 * @param   alternativeFor
+	 *          The task for which this task is an alternative for.
+	 */
+	public Task(String description, Duration duration, int accDev, Task alternativeFor)
+	{
+		this(description, duration, accDev, null, null);
 	}
 	
 	/**
@@ -56,16 +75,16 @@ public class Task implements DetailedTask {
 	 *  
 	 * @param 	description
 	 *        	The description of this task.
-	 * @param 	estDur
-	 *        	The estimated duration in minutes of this task.
+	  * @param       duration
+         *              The estimated duration of this task
 	 * @param 	accDev
 	 *        	The acceptable deviation of this task expressed as an integer between 0 and 100.
 	 * @param 	prereq
 	 *        	The list of prerequisite tasks for this task.
 	 */
-	public Task(String description, int estDurHours, int estDurMinutes, int accDev, Task[] prereq)
+	public Task(String description, Duration duration, int accDev, List<Task> prereq)
 	{
-		this(description, estDurHours, estDurMinutes, accDev, prereq, null);
+		this(description, duration, accDev, prereq, null);
 	}
 
 	/**
@@ -74,14 +93,14 @@ public class Task implements DetailedTask {
 	 *  
 	 * @param 	description
 	 *        	The description of this task.
-	 * @param 	estDur
-	 *        	The estimated duration in minutes of this task.
+	  * @param       duration
+         *              The estimated duration of this task
 	 * @param 	accDev
 	 *        	The acceptable deviation of this task expressed as an integer between 0 and 100.
 	 */
-	public Task(String description, int estDurHours, int estDurMinutes, int accDev)
+	public Task(String description, Duration duration, int accDev)
 	{
-		this(description, estDurHours, estDurMinutes, accDev, null, null);
+		this(description, duration, accDev, null, null);
 	}
 	
 	/**
@@ -120,7 +139,7 @@ public class Task implements DetailedTask {
 	 * @throws 	IllegalArgumentException
 	 *         	If this task can't have the given list of prerequisite tasks as its list of prerequisite tasks.
 	 */
-	private void setPrerequisiteTasks(Task[] prereq) throws IllegalArgumentException
+	private void setPrerequisiteTasks(List<Task> prereq) throws IllegalArgumentException
 	{
 		if(!canHaveAsPrerequisiteTasks(prereq))
 			throw new IllegalArgumentException(
@@ -140,7 +159,7 @@ public class Task implements DetailedTask {
 	 *         	True otherwise.
 	 * @see    	dependsOn
 	 */
-	public boolean canHaveAsPrerequisiteTasks(Task[] prereq)
+	public boolean canHaveAsPrerequisiteTasks(List<Task> prereq)
 	{
 		if(prereq==null)
 			return false;
@@ -198,6 +217,7 @@ public class Task implements DetailedTask {
 	/**
 	 * @return 	The alternative task for this task.
 	 */
+        @Override
 	public Task getAlternativeTask()
 	{
 		return this.alternativeTask;
@@ -206,9 +226,10 @@ public class Task implements DetailedTask {
 	/**
 	 * @return 	The list of prerequisite tasks for this task.
 	 */
-	public Task[] getPrerequisiteTasks()
+    @Override
+	public List<Task> getPrerequisiteTasks()
 	{
-		return (Task[])this.prerequisiteTasks.clone();
+		return new ArrayList<Task>(this.prerequisiteTasks);
 	}
 
 	/**

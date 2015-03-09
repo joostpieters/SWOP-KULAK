@@ -158,7 +158,7 @@ public class ProjectTest {
     	assertEquals(t.getEstimatedDuration().getMinutes(), estdurM);
     	assertEquals(t.getAcceptableDeviation(), accdev);
     	assertEquals(t.getAlternativeTask(), null);
-    	assertEquals(t.getPrerequisiteTasks().length, 0);
+    	assertEquals(t.getPrerequisiteTasks().size(), 0);
     }
     
     /**
@@ -178,7 +178,7 @@ public class ProjectTest {
     	assertEquals(t.getAcceptableDeviation(), accdev);
     	assertEquals(t1.getAlternativeTask(), t);
     	assertEquals(t.getAlternativeTask(), null);
-    	assertEquals(t.getPrerequisiteTasks().length, 0);
+    	assertEquals(t.getPrerequisiteTasks().size(), 0);
     }
     
     /**
@@ -195,7 +195,7 @@ public class ProjectTest {
     	assertEquals(t.getEstimatedDuration().getMinutes(), estdurM);
     	assertEquals(t.getAcceptableDeviation(), accdev);
     	assertEquals(t.getAlternativeTask(), null);
-    	assertArrayEquals(t.getPrerequisiteTasks(), new Task[]{t2, t3});
+    	assertArrayEquals(t.getPrerequisiteTasks().toArray(), new Task[]{t2, t3});
     }
     
     /**
@@ -287,6 +287,14 @@ public class ProjectTest {
     @Test
     public void testGetAvailableTasksFinished() {
     	assertTrue(pFinished.getAvailableTasks().isEmpty());
+    }
+    
+    /**
+     * Test getAvailableTasks method when project is already finished.
+     */
+    @Test
+    public void testCanhaveAsTask() {
+    	assertFalse(p0.canHaveAsTask(null));
     }
     
     /**
