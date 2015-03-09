@@ -1,5 +1,6 @@
 package domaintest;
 
+import domain.Duration;
 import domain.Status;
 import domain.Task;
 import domain.Timespan;
@@ -35,29 +36,29 @@ public class TaskTest {
     
     @Before
     public void setUp() {
-    	t0 = new Task("description!", 0, 10, 20);
-    	t1 = new Task("t1", 0, 10, 10);
-    	t2 = new Task("t2", 0, 20, 10, new Task[] {t0, t1});
+    	t0 = new Task("description!", new Duration(10), 20);
+    	t1 = new Task("t1", new Duration(10), 10);
+    	t2 = new Task("t2", new Duration(20), 10, new Task[] {t0, t1});
     	
     	Timespan t3ts = new Timespan(
     			LocalDateTime.of(2015, 3, 4, 11, 48), 
     			LocalDateTime.of(2015, 3, 4, 15, 33)
     			);
-    	t3 = new Task("t3 finished", 0, 30, 40);
+    	t3 = new Task("t3 finished", new Duration(30), 40);
     	t3.update(t3ts.getStartTime(), t3ts.getEndTime(), Status.FINISHED);
-    	t4 = new Task("t4", 0, 30, 10, new Task[] {t3});
-    	t5 = new Task("t5", 0, 20, 5, new Task[] {t3, t2});
+    	t4 = new Task("t4", new Duration(30), 10, new Task[] {t3});
+    	t5 = new Task("t5", new Duration(20), 5, new Task[] {t3, t2});
     	Timespan t6ts = new Timespan(
     			LocalDateTime.of(2015, 3, 4, 11, 48), 
     			LocalDateTime.of(2015, 3, 4, 15, 33)
     			);
-    	t6 = new Task("t6", 0, 10, 3);
+    	t6 = new Task("t6", new Duration(10), 3);
     	t6.update(t6ts.getStartTime(), t6ts.getEndTime(), Status.FAILED);
-    	t7 = new Task("t7", 0, 15, 4);
+    	t7 = new Task("t7", new Duration(15), 4);
     	t7.update(t6ts.getStartTime(), t6ts.getEndTime(), Status.FAILED);
-    	t7alternative = new Task("alternative for t7!", 0, 10, 2);
+    	t7alternative = new Task("alternative for t7!", new Duration(10), 2);
     	t7.setAlternativeTask(t7alternative);
-    	t8 = new Task("depends on t7", 0, 33, 3, new Task[] { t7} );
+    	t8 = new Task("depends on t7", new Duration(33), 3, new Task[] { t7} );
     }
     
     @After
@@ -78,20 +79,20 @@ public class TaskTest {
     	int estDur = 10;
     	int accDev = 30;
     	Task[] prereq = new Task[] {t3};
-    	Task task0 = new Task(description, 0, estDur, accDev, prereq);
+    	Task task0 = new Task(description, new Duration(estDur), accDev, prereq);
     	assertEquals(description, task0.getDescription());
     	assertEquals(estDur, task0.getEstimatedDuration().toMinutes());
     	assertEquals(accDev, task0.getAcceptableDeviation());
     	for(int i = 0; i < prereq.length; i++)
     		assertEquals(prereq[i], task0.getPrerequisiteTasks()[i]);
     	//Task(String description, long estDur, int accDev, Task[] prereq, altFor)
-    	Task task00 = new Task("task00", 0, 10, 30, new Task[] {t0}, t6);
+    	Task task00 = new Task("task00", new Duration(10), 30, new Task[] {t0}, t6);
     	assertEquals(task00, t6.getAlternativeTask());
     	//Task(String description, long estDur, int accDev, Status status, Timespan timeSpan)
     	String description1 = "task1 description";
     	int estDur1 = 55;
     	int accDev1 = 22;
-    	Task task1 = new Task(description1, 0, estDur1, accDev1);
+    	Task task1 = new Task(description1, new Duration(estDur1), accDev1);
     	//task1.update(tspan1.getStartTime(), tspan1.getEndTime(), status1);
     	assertEquals(description1, task1.getDescription());
     	assertEquals(estDur1, task1.getEstimatedDuration().toMinutes());
@@ -105,7 +106,7 @@ public class TaskTest {
     	int estDur2 = 55;
     	int accDev2 = 22;
     	Task[] prereq2 = new Task[] {task0};
-    	Task task2 = new Task(description2, 0, estDur2, accDev2, prereq2);
+    	Task task2 = new Task(description2, new Duration(estDur2), accDev2, prereq2);
     	assertEquals(description2, task2.getDescription());
     	assertEquals(estDur2, task2.getEstimatedDuration().toMinutes());
     	assertEquals(accDev2, task2.getAcceptableDeviation());
@@ -116,7 +117,7 @@ public class TaskTest {
     	String description3 = "task3 description!";
     	int estDur3 = 120;
     	int accDev3 = 55;
-    	Task task3 = new Task(description3, 0, estDur3, accDev3);
+    	Task task3 = new Task(description3, new Duration(estDur3), accDev3);
     	assertEquals(description3, task3.getDescription());
     	assertEquals(estDur3, task3.getEstimatedDuration().toMinutes());
     	assertEquals(accDev3, task3.getAcceptableDeviation());
@@ -129,8 +130,8 @@ public class TaskTest {
     public void testGetId() {
         System.out.println("getId");
         System.out.println("");
-        Task instance = new Task("description", 0, 40, 20);
-        Task instance2 = new Task("Other description", 0, 30, 10);
+        Task instance = new Task("description", new Duration(40), 20);
+        Task instance2 = new Task("Other description", new Duration(30), 10);
         
         assertNotEquals(instance.getId(), instance2.getId());
         assertTrue(instance.getId() >= 0);
@@ -245,7 +246,7 @@ public class TaskTest {
      */
     @Test (expected = IllegalStateException.class)
     public void testEndsBeforeException() {
-        Task availableTask = new Task("doesn't have a time span", 0, 10, 30);
+        Task availableTask = new Task("doesn't have a time span", new Duration(10), 30);
         availableTask.endsBefore(new Timespan(
         		LocalDateTime.of(2015, 5, 4, 10, 2),
         		LocalDateTime.of(2015, 5, 4, 11, 2)));
@@ -365,7 +366,7 @@ public class TaskTest {
     	assertFalse(t6.canBeFulfilled());
     	assertTrue(t7.canBeFulfilled());
     	assertTrue(t8.canBeFulfilled());
-    	assertFalse(new Task("description", 0, 10, 30, new Task[] {t6}).canBeFulfilled());
+    	assertFalse(new Task("description", new Duration(10), 30, new Task[] {t6}).canBeFulfilled());
     }
     /**
      * Test of canHaveAsAlternativeTask method, of class Task.
@@ -383,7 +384,7 @@ public class TaskTest {
     {
     	// duration 10, acceptable deviation 20 => max duration 12 minutes
     	// checking time span duration == max duration
-    	Task someTask = new Task("10, 20", 0, 10, 20);
+    	Task someTask = new Task("10, 20", new Duration(10), 20);
     	Timespan TS12 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 13, 54),
     			LocalDateTime.of(2015,  3, 4, 14, 6));
@@ -392,7 +393,7 @@ public class TaskTest {
     	
     	// duration 20, acceptable deviation 20 => max duration 24 minutes
     	// checking time span duration < max duration
-    	Task someTask2 = new Task("20, 20", 0, 20, 20);
+    	Task someTask2 = new Task("20, 20", new Duration(20), 20);
     	Timespan TS20 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 13, 0),
     			LocalDateTime.of(2015,  3, 4, 13, 20));
@@ -401,7 +402,7 @@ public class TaskTest {
     	
     	// duration 30, acceptable deviation 10 => max duration 33 minutes
     	// checking time span duration > max duration
-    	Task someTask3 = new Task("30, 10", 0, 30, 10);
+    	Task someTask3 = new Task("30, 10", new Duration(30), 10);
     	Timespan TS35 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 13, 0),
     			LocalDateTime.of(2015,  3, 4, 13, 35));
@@ -410,7 +411,7 @@ public class TaskTest {
     	
     	// duration 30, acceptable deviation 20 => max duration 36 minutes
     	// checking time span duration > max duration
-    	Task someTask4 = new Task("30, 20", 0, 30, 20);
+    	Task someTask4 = new Task("30, 20", new Duration(30), 20);
     	Timespan TS123 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 13, 0),
     			LocalDateTime.of(2015,  3, 4, 15, 3));
