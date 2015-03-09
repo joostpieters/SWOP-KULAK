@@ -384,4 +384,12 @@ public class ProjectTest {
     	assertFalse(p2.isOnTime());
     }
     
+    /**
+     * Test isOnTime method in trivial cases when simple project is ongoing (no alternatives or prereqs).
+     */
+    @Test
+    public void testIsOnTimeUnFinishedSimple() {
+    	assertTrue(p0.isOnTime());
+    }
+    
 }
