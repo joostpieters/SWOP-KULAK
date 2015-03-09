@@ -39,7 +39,7 @@ public class Duration implements Comparable<Duration>{
     public Duration(LocalDateTime begin, LocalDateTime end) {
         this(getWorkTimeBetween(begin, end));
     }
-    
+     
     /**
      * Initialize this duration with a given amount of hours and minutes.
      * 
@@ -353,4 +353,11 @@ public class Duration implements Comparable<Duration>{
 		Duration other = (Duration) o;
 		return this.getHours() == other.getHours() && this.getMinutes() == other.getMinutes();
 	}
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + (int) (this.minutes ^ (this.minutes >>> 32));
+        return hash;
+    }
 }

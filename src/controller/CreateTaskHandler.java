@@ -2,6 +2,7 @@ package controller;
 
 import domain.DetailedProject;
 import domain.DetailedTask;
+import domain.Duration;
 import domain.Project;
 import domain.ProjectManager;
 import java.util.ArrayList;
@@ -61,8 +62,8 @@ public class CreateTaskHandler {
         }
         try {
             Project project = manager.getProject(pId);
-        
-            project.createTask(description, estDurHours, estDurMinutes, accDev, altfor, prereq);
+            Duration duration = new Duration(estDurHours, estDurMinutes);
+            project.createTask(description, duration, accDev, altfor, prereq);
         } catch (IllegalArgumentException | IllegalStateException e) {
             throw e;
         }catch(Exception e){

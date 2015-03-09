@@ -7,6 +7,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import exception.ObjectNotFoundException;
+import java.util.Arrays;
 
 /**
  * This class represents a project
@@ -91,7 +92,7 @@ public class Project implements DetailedProject {
      * 			The name to be checked.
      * @return	name != null && name.length() > 0
      */
-    public boolean canHaveAsName(String name) {
+    public final boolean canHaveAsName(String name) {
     	return name != null && name.length() > 0;
     }
 
@@ -110,7 +111,7 @@ public class Project implements DetailedProject {
      * 			The description to be checked.
      * @return	descr != null && descr.length() > 0
      */
-    public boolean canHaveAsDescription(String descr) {
+    public final boolean canHaveAsDescription(String descr) {
     	return descr != null && descr.length() > 0;
     }
 
@@ -141,8 +142,9 @@ public class Project implements DetailedProject {
 	 * 
 	 * @return	a list of tasks contained in this project.
 	 */
+        @Override
 	public List<Task> getTasks(){
-        return new LinkedList<Task>(tasks.values());
+        return new LinkedList<>(tasks.values());
     }
 	
 	/**
@@ -172,6 +174,8 @@ public class Project implements DetailedProject {
 	 */
 	public boolean canHaveAsTask(Task t) {
 		boolean taskCheck = t != null && !tasks.containsKey(t.getId());
+                if(!taskCheck) 
+                    return false;
 		boolean altTaskCheck = t.getAlternativeTask() == null || tasks.containsKey(t.getAlternativeTask().getId());
 		boolean prereqTaskCheck = true;
 		for(Task x : t.getPrerequisiteTasks())
@@ -215,8 +219,7 @@ public class Project implements DetailedProject {
 	 * 
 	 * @param 	descr
 	 * 			The description for the new task.
-	 * @param 	estDur
-	 * 			The estimated duration for the new task in hours.
+         * @param       duration The estimated duration of the new task.
 	 * @param 	accdev
 	 * 			The acceptable deviation for the new task in %.
 	 * @param 	altFor
@@ -227,19 +230,19 @@ public class Project implements DetailedProject {
 	 * @throws	IllegalStateException
 	 * 			if this project is already finished.
 	 */
-	public Task createTask(String descr, int estDurHours, int estDurMinutes, int accdev, int altFor, int[] prereq) {
+	public Task createTask(String descr, Duration duration, int accdev, int altFor, int[] prereq) {
 		if(isFinished())
 			throw new IllegalStateException("This project has already been finished.");
 		
 		Task t;
-		if(prereq.equals(Project.NO_DEPENDENCIES)) {
-			t = new Task(descr, estDurHours, estDurMinutes, accdev);
+		if(Arrays.equals(prereq, Project.NO_DEPENDENCIES)) {
+			t = new Task(descr, duration, accdev);
 		} else {
 			Task[] arr = new Task[prereq.length];
 			for(int i = 0; i < prereq.length; i++) {
 				arr[i] = getTask(prereq[i]);
 			}
-			t = new Task(descr, estDurHours, estDurMinutes, accdev, arr);
+			t = new Task(descr, duration, accdev, arr);
 		}
 		
 		if(altFor != Project.NO_ALTERNATIVE)
@@ -255,7 +258,7 @@ public class Project implements DetailedProject {
 	 * 			an empty list if this project is already finished.
 	 */
 	public List<Task> getAvailableTasks() {
-		List<Task> result = new LinkedList<Task>();
+		List<Task> result = new LinkedList<>();
 		for(Task t : getTasks()) {
 			if(t.getStatus() == Status.AVAILABLE)
 				result.add(t);

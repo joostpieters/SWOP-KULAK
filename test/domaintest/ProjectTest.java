@@ -290,6 +290,14 @@ public class ProjectTest {
     }
     
     /**
+     * Test getAvailableTasks method when project is already finished.
+     */
+    @Test
+    public void testCanhaveAsTask() {
+    	assertFalse(p0.canHaveAsTask(null));
+    }
+    
+    /**
      * Test isFinished method in trivial cases.
      */
     @Test

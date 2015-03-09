@@ -26,8 +26,8 @@ public class Task implements DetailedTask {
 	 *  
 	 * @param 	description
 	 *        	The description of this task.
-	 * @param 	estDur
-	 *        	The estimated duration in minutes of this task.
+         * @param       duration
+         *              The estimated duration of this task
 	 * @param 	accDev
 	 *        	The acceptable deviation of this task expressed as an integer between 0 and 100.
 	 * @param 	prereq
@@ -35,11 +35,11 @@ public class Task implements DetailedTask {
 	 * @param   alternativeFor
 	 *          The task for which this task is an alternative for.
 	 */
-	public Task(String description, int estDurHours, int estDurMinutes, int accDev, Task[] prereq, Task alternativeFor)
+	public Task(String description, Duration duration, int accDev, Task[] prereq, Task alternativeFor)
 	{
 		this.id = generateId();
 		setDescription(description);
-		this.estimatedDuration = new Duration(estDurHours, estDurMinutes);
+		this.estimatedDuration = duration;
 		setAcceptableDeviation(accDev);
 		if(prereq == null)
 			setPrerequisiteTasks(new Task[] {});
@@ -56,16 +56,16 @@ public class Task implements DetailedTask {
 	 *  
 	 * @param 	description
 	 *        	The description of this task.
-	 * @param 	estDur
-	 *        	The estimated duration in minutes of this task.
+	  * @param       duration
+         *              The estimated duration of this task
 	 * @param 	accDev
 	 *        	The acceptable deviation of this task expressed as an integer between 0 and 100.
 	 * @param 	prereq
 	 *        	The list of prerequisite tasks for this task.
 	 */
-	public Task(String description, int estDurHours, int estDurMinutes, int accDev, Task[] prereq)
+	public Task(String description, Duration duration, int accDev, Task[] prereq)
 	{
-		this(description, estDurHours, estDurMinutes, accDev, prereq, null);
+		this(description, duration, accDev, prereq, null);
 	}
 
 	/**
@@ -74,14 +74,14 @@ public class Task implements DetailedTask {
 	 *  
 	 * @param 	description
 	 *        	The description of this task.
-	 * @param 	estDur
-	 *        	The estimated duration in minutes of this task.
+	  * @param       duration
+         *              The estimated duration of this task
 	 * @param 	accDev
 	 *        	The acceptable deviation of this task expressed as an integer between 0 and 100.
 	 */
-	public Task(String description, int estDurHours, int estDurMinutes, int accDev)
+	public Task(String description, Duration duration, int accDev)
 	{
-		this(description, estDurHours, estDurMinutes, accDev, null, null);
+		this(description, duration, accDev, null, null);
 	}
 	
 	/**
@@ -198,6 +198,7 @@ public class Task implements DetailedTask {
 	/**
 	 * @return 	The alternative task for this task.
 	 */
+        @Override
 	public Task getAlternativeTask()
 	{
 		return this.alternativeTask;
@@ -206,6 +207,7 @@ public class Task implements DetailedTask {
 	/**
 	 * @return 	The list of prerequisite tasks for this task.
 	 */
+        @Override
 	public Task[] getPrerequisiteTasks()
 	{
 		return (Task[])this.prerequisiteTasks.clone();
