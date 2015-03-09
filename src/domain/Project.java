@@ -311,10 +311,7 @@ public class Project implements DetailedProject {
 		} else {
 			Duration sum, max = new Duration(0);
 			for(Task t : getTasks()) {
-				sum = t.getEstimatedDuration();
-				for(Task ta : t.getPrerequisiteTasks()) {
-					sum = sum.add(ta.getEstimatedDuration());
-				}
+				sum = t.estimatedWorkTimeNeeded();
 				if(sum.compareTo(max) > 0)
 					max = sum;
 			}
