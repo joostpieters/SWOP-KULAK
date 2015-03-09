@@ -26,8 +26,8 @@ public class Task implements DetailedTask {
 	 *  
 	 * @param 	description
 	 *        	The description of this task.
-         * @param       duration
-         *              The estimated duration of this task
+     * @param   duration
+     *          The estimated duration of this task
 	 * @param 	accDev
 	 *        	The acceptable deviation of this task expressed as an integer between 0 and 100.
 	 * @param 	prereq
@@ -48,6 +48,23 @@ public class Task implements DetailedTask {
 		updateStatus();
 		if(alternativeFor != null)
 			alternativeFor.setAlternativeTask(this);
+	}
+	/**
+	 * Initializes this task based on the given description, estimated duration,
+	 * acceptable deviation and alternative task for.
+	 *  
+	 * @param 	description
+	 *        	The description of this task.
+     * @param   duration
+     *          The estimated duration of this task
+	 * @param 	accDev
+	 *        	The acceptable deviation of this task expressed as an integer between 0 and 100.
+	 * @param   alternativeFor
+	 *          The task for which this task is an alternative for.
+	 */
+	public Task(String description, Duration duration, int accDev, Task alternativeFor)
+	{
+		this(description, duration, accDev, null, null);
 	}
 	
 	/**
