@@ -5,9 +5,7 @@ import domain.Status;
 import domain.Task;
 import domain.Timespan;
 
-import java.awt.List;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -59,8 +57,7 @@ public class TaskTest {
     	t6.update(t6ts.getStartTime(), t6ts.getEndTime(), Status.FAILED);
     	t7 = new Task("t7", new Duration(15), 4);
     	t7.update(t6ts.getStartTime(), t6ts.getEndTime(), Status.FAILED);
-    	t7alternative = new Task("alternative for t7!", new Duration(10), 2);
-    	t7.setAlternativeTask(t7alternative);
+    	t7alternative = new Task("alternative for t7!", new Duration(10), 2, t7);
     	t8 = new Task("depends on t7", new Duration(33), 3, Arrays.asList(t7) );
     }
     
@@ -76,8 +73,7 @@ public class TaskTest {
     {
     	System.out.println("Task constructor");
     	
-    	
-    	//Task(String description, long estDur, int accDev, Task[] prereq)
+    	//Task(String description, Duration estDur, int accDev, List<Task> prereq)
     	String description = "task0 description";
     	int estDur = 10;
     	int accDev = 30;
@@ -88,23 +84,19 @@ public class TaskTest {
     	assertEquals(accDev, task0.getAcceptableDeviation());
     	for(int i = 0; i < prereq.size(); i++)
     		assertEquals(prereq.get(i), task0.getPrerequisiteTasks().get(i));
-    	//Task(String description, long estDur, int accDev, Task[] prereq, altFor)
+    	//Task(String description, Duration estDur, int accDev, List<Task> prereq, altFor)
     	Task task00 = new Task("task00", new Duration(10), 30, Arrays.asList(t0), t6);
     	assertEquals(task00, t6.getAlternativeTask());
-    	//Task(String description, long estDur, int accDev, Status status, Timespan timeSpan)
+    	
     	String description1 = "task1 description";
     	int estDur1 = 55;
     	int accDev1 = 22;
     	Task task1 = new Task(description1, new Duration(estDur1), accDev1);
-    	//task1.update(tspan1.getStartTime(), tspan1.getEndTime(), status1);
     	assertEquals(description1, task1.getDescription());
     	assertEquals(estDur1, task1.getEstimatedDuration().toMinutes());
     	assertEquals(accDev1, task1.getAcceptableDeviation());
-    	//assertEquals(status1, task1.getStatus());
-    	//assertEquals(tspan1.getStartTime(), task1.getTimeSpan().getStartTime());
-    	//assertEquals(tspan1.getEndTime(), task1.getTimeSpan().getEndTime());
     	
-    	//Task(String description, long estDur, int accDev, Task[] prereq)
+    	//Task(String description, Duration estDur, int accDev, List<Task> prereq)
     	String description2 = "task2 description";
     	int estDur2 = 55;
     	int accDev2 = 22;
@@ -116,7 +108,7 @@ public class TaskTest {
     	for(int i = 0; i < prereq2.size(); i++)
     		assertEquals(prereq2.get(i), task2.getPrerequisiteTasks().get(i));
     	
-    	//public Task(String description, long estDur, int accDev)
+    	//Task(String description, Duration estDur, int accDev)
     	String description3 = "task3 description!";
     	int estDur3 = 120;
     	int accDev3 = 55;
@@ -124,6 +116,18 @@ public class TaskTest {
     	assertEquals(description3, task3.getDescription());
     	assertEquals(estDur3, task3.getEstimatedDuration().toMinutes());
     	assertEquals(accDev3, task3.getAcceptableDeviation());
+    	
+    	//Task(String description, Duration duration, int accDev, Task alternativeFor)
+    	task3.update(LocalDateTime.of(2015, 3, 9, 15, 4), LocalDateTime.of(2015, 3, 9, 16, 4), Status.FAILED);
+    	
+    	String description4 = "descr4";
+    	Duration estDur4 = new Duration(222);
+    	int accDev4 = 44;
+    	Task task4 = new Task(description4, estDur4, accDev4, task3);
+    	assertEquals(description4, task4.getDescription());
+    	assertEquals(estDur4.toMinutes(), task4.getEstimatedDuration().toMinutes());
+    	assertEquals(accDev4, task4.getAcceptableDeviation());
+    	assertEquals(task4, task3.getAlternativeTask());
     }
     
     /**
@@ -132,7 +136,7 @@ public class TaskTest {
     @Test
     public void testGetId() {
         System.out.println("getId");
-        System.out.println("");
+        
         Task instance = new Task("description", new Duration(40), 20);
         Task instance2 = new Task("Other description", new Duration(30), 10);
         
@@ -170,20 +174,13 @@ public class TaskTest {
     	t3.update(startTime, endTime, Status.FAILED);
     }
     
-    /**
-     * Test of update method, of class Task, attempting to set status to FAILED from UNAVAILABLE
-     */
-    /*@Test (expected = IllegalArgumentException.class)
-    public void testUpdateInvalidStatus4()
-    {
-    	t8.update(LocalDateTime.of(2016, 10, 30, 0, 0), LocalDateTime.of(2016, 11, 30, 0, 0), Status.FAILED);
-    }*/
     /*
      * Test of update method, of class Task
      */
     @Test
     public void testUpdate()
     {
+    	System.out.println("Update");
     	// AVAILABLE -> FINISHED
     	assertEquals(Status.AVAILABLE, t0.getStatus());
     	LocalDateTime startTime = LocalDateTime.of(2016, 10, 30, 0, 0);
@@ -200,12 +197,14 @@ public class TaskTest {
     	t5.update(startTime, endTime, Status.FAILED);
     	assertEquals(Status.FAILED, t5.getStatus());
     }
+    
     /**
      * Test of isAvailable method, of class Task.
      */
     @Test
     public void testStatus() {
         System.out.println("Status");
+        
         assertEquals(Status.AVAILABLE, t0.getStatus());
         assertEquals(Status.AVAILABLE, t1.getStatus());
         assertEquals(Status.UNAVAILABLE, t2.getStatus());
@@ -231,6 +230,7 @@ public class TaskTest {
     @Test
     public void testIsFulfilled() {
         System.out.println("isFulfilled");
+        
         assertFalse(t0.isFulfilled());
         assertFalse(t1.isFulfilled());
         assertFalse(t2.isFulfilled());
@@ -249,6 +249,8 @@ public class TaskTest {
      */
     @Test (expected = IllegalStateException.class)
     public void testEndsBeforeException() {
+    	System.out.println("EndsBeforeException");
+    	
         Task availableTask = new Task("doesn't have a time span", new Duration(10), 30);
         availableTask.endsBefore(new Timespan(
         		LocalDateTime.of(2015, 5, 4, 10, 2),
@@ -260,6 +262,8 @@ public class TaskTest {
      */
     @Test
     public void testHasTimeSpan() {
+    	System.out.println("hasTimeSpan");
+    	
         assertFalse(t0.hasTimeSpan());
         assertTrue(t3.hasTimeSpan());
     }
@@ -269,45 +273,48 @@ public class TaskTest {
     @Test
     public void testCanHaveAsTimeSpan()
     {
+    	System.out.println("canHaveAsTimeSpan");
+    	
     	Timespan t0timeSpan = new Timespan(
 				LocalDateTime.of(2015, 3, 5, 14, 30),
 				LocalDateTime.of(2015, 3, 5, 15, 22));
     	assertTrue(t0.canHaveAsTimeSpan(t0timeSpan));
     	
-    	/*Time span of prerequisite of t4 is equal to:
-		LocalDateTime.of(2015, 3, 4, 11, 48), 
-		LocalDateTime.of(2015, 3, 4, 15, 33)
-		*/
     	//edge case where the time spans touch (of prerequisite task t3 and t4)
     	Timespan t4timeSpan_success = new Timespan(
     			LocalDateTime.of(2015, 3, 4, 15, 33), 
     			LocalDateTime.of(2015, 3, 4, 16, 0)
     			);
     	assertTrue(t4.canHaveAsTimeSpan(t4timeSpan_success));
+    	
     	//time spans not touching, success
     	Timespan t4timeSpan_success2 = new Timespan(
     			LocalDateTime.of(2015, 3, 4, 15, 55), 
     			LocalDateTime.of(2015, 3, 4, 16, 0)
     			);
     	assertTrue(t4.canHaveAsTimeSpan(t4timeSpan_success2));
+    	
     	//time span of t4 overlapping time span of prerequisite
     	Timespan t4timeSpan_fail = new Timespan(
     			LocalDateTime.of(2015, 3, 4, 15, 30), 
     			LocalDateTime.of(2015, 3, 4, 15, 35)
     			);
     	assertFalse(t4.canHaveAsTimeSpan(t4timeSpan_fail));
+    	
     	//time span of t4 inside time span of prerequisite
     	Timespan t4timeSpan_fail2 = new Timespan(
     			LocalDateTime.of(2015, 3, 4, 11, 50), 
     			LocalDateTime.of(2015, 3, 4, 15, 25)
     			);
     	assertFalse(t4.canHaveAsTimeSpan(t4timeSpan_fail2));
+    	
     	//time span of t4 before time span of prerequisite, overlapping
     	Timespan t4timeSpan_fail3 = new Timespan(
     			LocalDateTime.of(2015, 3, 4, 10, 40), 
     			LocalDateTime.of(2015, 3, 4, 15, 25)
     			);
     	assertFalse(t4.canHaveAsTimeSpan(t4timeSpan_fail3));
+    	
     	//time span of t4 before time span of prerequisite, not overlapping
     	Timespan t4timeSpan_fail4 = new Timespan(
     			LocalDateTime.of(2015, 3, 4, 10, 40), 
@@ -320,24 +327,28 @@ public class TaskTest {
     	t7alternative.update(
     			LocalDateTime.of(2015, 3, 5, 11, 48),
     			LocalDateTime.of(2015, 3, 5, 15, 33), Status.FINISHED);
+    	
     	//succesful edge case:
     	Timespan t8timeSpan_success = new Timespan(
     			LocalDateTime.of(2015, 3, 5, 15, 33), 
     			LocalDateTime.of(2015, 3, 5, 15, 45)
     			);
     	assertTrue(t8.canHaveAsTimeSpan(t8timeSpan_success));
+    	
     	//succesful non edge case:
     	Timespan t8timeSpan_success2 = new Timespan(
     			LocalDateTime.of(2015, 3, 6, 15, 33), 
     			LocalDateTime.of(2015, 3, 6, 15, 45)
     			);
     	assertTrue(t8.canHaveAsTimeSpan(t8timeSpan_success2));
+    	
     	//non successful overlap:
     	Timespan t8timeSpan_fail = new Timespan(
     			LocalDateTime.of(2015, 3, 5, 11, 22), 
     			LocalDateTime.of(2015, 3, 5, 15, 15)
     			);
     	assertFalse(t8.canHaveAsTimeSpan(t8timeSpan_fail));
+    	
     	//non succesful non overlap:
     	Timespan t8timeSpan_fail2 = new Timespan(
     			LocalDateTime.of(2015, 3, 1, 11, 22), 
@@ -352,6 +363,8 @@ public class TaskTest {
      */
     public void testEstimatedWorkTimeNeeded()
     {
+    	System.out.println("estimatedWorkTimeNeeded");
+    	
     	assertEquals(t0.getEstimatedDuration().toMinutes(), t0.estimatedWorkTimeNeeded().toMinutes());
     	assertEquals(0, t3.getEstimatedDuration().toMinutes());
     	assertEquals(40, t4.getEstimatedDuration().toMinutes());
@@ -364,6 +377,8 @@ public class TaskTest {
     @Test
     public void testCanBeFulfilled()
     {
+    	System.out.println("canBeFulfilled");
+    	
     	assertTrue(t3.canBeFulfilled());
     	assertTrue(t0.canBeFulfilled());
     	assertFalse(t6.canBeFulfilled());
@@ -375,8 +390,20 @@ public class TaskTest {
      * Test of canHaveAsAlternativeTask method, of class Task.
      */
     @Test
-    public void testCanHaveAsAlternativeTask()
+    public void testCanHaveAsAlternativeTask() // TODO uitgebreider
     {
+    	System.out.println("canHaveAsAlternativeTask");
+    	
+    	// null
+    	assertFalse(t0.canHaveAsAlternativeTask(null));
+    	// this
+    	assertFalse(t0.canHaveAsAlternativeTask(t0));
+    	// depends on
+    	assertFalse(t0.canHaveAsAlternativeTask(t0)); 
+    	assertTrue(t5.canHaveAsAlternativeTask(t2));
+    	assertTrue(t5.canHaveAsAlternativeTask(t3));
+    	assertTrue(t5.canHaveAsAlternativeTask(t0));
+    	// success
     	assertTrue(t0.canHaveAsAlternativeTask(t1));
     }
     /**
@@ -385,6 +412,8 @@ public class TaskTest {
     @Test
     public void testGetDelay()
     {
+    	System.out.println("getDelay");
+    	
     	// duration 10, acceptable deviation 20 => max duration 12 minutes
     	// checking time span duration == max duration
     	Task someTask = new Task("10, 20", new Duration(10), 20);
@@ -419,7 +448,6 @@ public class TaskTest {
     			LocalDateTime.of(2015,  3, 4, 13, 0),
     			LocalDateTime.of(2015,  3, 4, 15, 3));
     	someTask4.update(TS123.getStartTime(), TS123.getEndTime(), Status.FINISHED);
-    	
     	assertEquals(87, someTask4.getDelay().toMinutes());
     	
     }
@@ -429,6 +457,7 @@ public class TaskTest {
     @Test
     public void testDependsOn() {
         System.out.println("dependsOn");
+        
         assertFalse(t0.dependsOn(t1));
         assertFalse(t0.dependsOn(t6));
         

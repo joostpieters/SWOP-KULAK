@@ -66,7 +66,7 @@ public class Task implements DetailedTask {
 	 */
 	public Task(String description, Duration duration, int accDev, Task alternativeFor)
 	{
-		this(description, duration, accDev, null, null);
+		this(description, duration, accDev, null, alternativeFor);
 	}
 	
 	/**
