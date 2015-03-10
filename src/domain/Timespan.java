@@ -124,4 +124,5 @@ public final class Timespan {
     public boolean endsBefore(Timespan anotherTimespan){
         return getEndTime().compareTo(anotherTimespan.getStartTime()) <= 0;
     }
+    
 }

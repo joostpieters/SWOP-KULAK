@@ -657,8 +657,10 @@ public class Task implements DetailedTask {
 	 */
 	public Duration getTimeSpent()
 	{
+		// TODO vervangen door werkelijke time spent ipv duration
+		// nood aan getTimeSpan().getWorkTime()
 		if(hasTimeSpan())
-			return getTimeSpan().getDuration(); // TODO vervangen door werkelijke time spent ipv duration
+			return getTimeSpan().getDuration(); 
 		else 
 			return new Duration(0);
 	}
