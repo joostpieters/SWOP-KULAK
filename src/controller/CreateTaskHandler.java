@@ -52,7 +52,7 @@ public class CreateTaskHandler {
      * @param altfor The id of the task, the task is an alternative for, is smaller
      * than 0, if no alternative. 
      */
-    public void createTask(int pId, String description, int accDev, int prereq[], int estDurHours, int estDurMinutes, int altfor){       
+    public void createTask(int pId, String description, int accDev, List<Integer> prereq, int estDurHours, int estDurMinutes, int altfor){       
         if(prereq == null){
             prereq = Project.NO_DEPENDENCIES;
         }

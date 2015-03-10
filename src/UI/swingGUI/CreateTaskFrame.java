@@ -3,6 +3,7 @@ package UI.swingGUI;
 import controller.CreateTaskHandler;
 import domain.DetailedProject;
 import domain.DetailedTask;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
@@ -283,7 +284,7 @@ public class CreateTaskFrame extends javax.swing.JFrame {
         } catch (NumberFormatException numberFormatException) {
             JOptionPane.showMessageDialog(rootPane, "Some parameters are not numbers, when they should be.", null, JOptionPane.ERROR_MESSAGE);
         }
-        int[] prereqs = null;
+        List<Integer> prereqs = null;
         int altFor;
         
         // check if alternative for is selected
@@ -296,11 +297,11 @@ public class CreateTaskFrame extends javax.swing.JFrame {
         // check if prereqs are selected
         if (prereqTable.getSelectedRow() != -1) {
             int[] selectedRows = prereqTable.getSelectedRows();
-            prereqs = new int[prereqTable.getSelectedRowCount()];
+            prereqs = new ArrayList<>();
             int i = 0;
             for (int rowId : selectedRows) {
 
-                prereqs[i] = (int) prereqTable.getValueAt(prereqTable.convertRowIndexToModel(rowId), 0);
+                prereqs.add((int) prereqTable.getValueAt(prereqTable.convertRowIndexToModel(rowId), 0));
                 i++;
             }
         }

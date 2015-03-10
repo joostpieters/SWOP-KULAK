@@ -18,7 +18,13 @@ import java.util.Arrays;
  */
 public class Project implements DetailedProject {
 	
-	public static final int[] NO_DEPENDENCIES = new int[]{};
+    /**
+     * Constant to use to create a task with no dependencies
+     */
+	public static final List<Integer> NO_DEPENDENCIES = null;
+        /**
+         * Constant to use when a project has no alternative
+         */
 	public static final int NO_ALTERNATIVE = -1;
 	
 	private static int nextId = 0;
@@ -232,17 +238,17 @@ public class Project implements DetailedProject {
 	 * @throws	IllegalStateException
 	 * 			if this project is already finished.
 	 */
-	public Task createTask(String descr, Duration duration, int accdev, int altFor, int[] prereq) {
+	public Task createTask(String descr, Duration duration, int accdev, int altFor, List<Integer> prereq) {
 		if(isFinished())
 			throw new IllegalStateException("This project has already been finished.");
 		
 		Task t;
-		if(Arrays.equals(prereq, Project.NO_DEPENDENCIES)) {
+		if(prereq.equals(Project.NO_DEPENDENCIES)) {
 			t = new Task(descr, duration, accdev);
 		} else {
-			List<Task> taskList = new ArrayList<Task>();
-			for(int i = 0; i < prereq.length; i++) {
-				taskList.add(getTask(prereq[i]));
+			List<Task> taskList = new ArrayList<>();
+			for(Integer tId : prereq) {
+				taskList.add(getTask(tId));
 			}
 			t = new Task(descr, duration, accdev, taskList);
 		}

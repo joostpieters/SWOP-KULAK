@@ -134,19 +134,13 @@ public class ProjectManagerFileInitializor extends StreamTokenizer {
             if (ttype == '[') {
                 prerequisiteTasks = expectIntList();
             }
-            int[] prereq;
-            if (prerequisiteTasks.size() > 0) {
-                prereq = new int[prerequisiteTasks.size()];
-                int i = 0;
-                for (Integer e : prerequisiteTasks) {
-                    prereq[i++] = e;
-                }
-            } else {
-                prereq = Project.NO_DEPENDENCIES;
+            
+            if (prerequisiteTasks.isEmpty()) {
+                prerequisiteTasks = Project.NO_DEPENDENCIES;
             }
             
             Duration duration = new Duration(estimatedDuration);
-            Task task = manager.getProject(project).createTask(description, duration, acceptableDeviation, alternativeFor, prereq);
+            Task task = manager.getProject(project).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks);
 
             expectLabel("status");
             Status status = null;
