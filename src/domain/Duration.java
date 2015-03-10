@@ -12,46 +12,20 @@ import java.time.temporal.ChronoUnit;
  */
 public class Duration implements Comparable<Duration>{
         
-        /**
-         * Constant to indicate the ammount of hours each workday counts
-         */
-	public static final float WORKHOURSPERDAY = 8; 
-        
-        /**
-         * Constant to indicate the first day of the workweek, monday is 1
-         */
+    /** Constant to indicate the first day of the work week, Monday is 1. */
 	public static final int BEGINWORKWEEK = 1;
-        
-        
-        /**
-         * Constant to indicate the last day of the workweek, monday is 1
-         */
+    /** Constant to indicate the last day of the work week, Friday is 5. */
 	public static final int ENDWORKWEEK = 5;	
-        
-        /**
-         * Constant to indicate the begin time of a workday
-         */
+    /** Constant to indicate the begin time of a work day. */
 	public static final LocalTime BEGINWORKDAY = LocalTime.of(9, 0);
-        
-        /**
-         * Constant to indicate the end time of a workday
-         */
+	/** Constant to indicate the end time of a work day. */
 	public static final LocalTime ENDWORKDAY = LocalTime.of(18, 0);
-        
-        /**
-         * Constant to indicate the begin time of the lunch
-         */
+    /** Constant to indicate the begin time of the lunch. */
 	public static final LocalTime BEGINLUNCH = LocalTime.of(12, 0);
-        
-        /**
-         * Constant to indicate the end time of the lunch
-         */
+    /** Constant to indicate the end time of the lunch. */
 	public static final LocalTime ENDLUNCH = LocalTime.of(13, 0);
-        
-        /**
-         * Constant for a duration of zero
-         */
-        public static final Duration ZERO = new Duration(0);
+    /** Constant for a duration of zero. */
+    public static final Duration ZERO = new Duration(0);
 
 	private final long minutes;
     /****************************************
@@ -208,7 +182,8 @@ public class Duration implements Comparable<Duration>{
      * 			given end time.
      */
     public static boolean isValidInterval(LocalDateTime begin, LocalDateTime end){
-        return begin.isBefore(end);
+    	//TODO: nodig voor getWorkTimeBetween, maar goed zo?
+        return !begin.isAfter(end);
     }
     
     /**
@@ -216,6 +191,13 @@ public class Duration implements Comparable<Duration>{
      */
     public static long getMinutesOfLunchBreak() {
         return ChronoUnit.MINUTES.between(Duration.BEGINLUNCH, Duration.ENDLUNCH);
+    }
+    
+    /**
+     * @return	the number of hours, a work day lasts (not taking into account any lunch break).
+     */
+    public static long getHoursOfWorkDay() {
+    	return ChronoUnit.HOURS.between(Duration.BEGINWORKDAY, Duration.ENDWORKDAY);
     }
     
     /**
@@ -331,6 +313,18 @@ public class Duration implements Comparable<Duration>{
 		return totalMinutes + getWorkTimeBetween(nextBegin, end);
 	}
 	
+	/**
+	 * Get the first valid working hour past a given time.
+	 * 
+	 * @param 	time
+	 * 			The time to get the next valid working hour for.
+	 * 
+	 * @return	the time if it is already a valid working time,
+	 * 			the next Monday morning if it was in the weekend,
+	 * 			right after lunch break if it was during lunch,
+	 * 			as soon as the working day starts if time was before working hours,
+	 * 			the start of the next working day if time was after working hours.
+	 */
 	public static LocalDateTime nextValidWorkTime(LocalDateTime time) {
 		if(Duration.isValidWorkTime(time))
 			return time;
@@ -407,8 +401,8 @@ public class Duration implements Comparable<Duration>{
         
         /**
          * 
-         * @return A textual representation of this duration in the form of: 
-         * **hours **minutes
+         * @return 	a textual representation of this duration in the form of: 
+         * 			**hours **minutes
          */
         @Override
         public String toString(){
@@ -418,9 +412,10 @@ public class Duration implements Comparable<Duration>{
         /**
          * Checks whether the given duration is equal to the given duration.
          * 
-         * @param o The other duration to check
-         * @return True if and only if the given object is a duration and represents the same 
-         * ammount of time like this duration.
+         * @param 	o 
+		 *			The other duration to check
+         * @return 	true if and only if the given object is a duration and represents the same 
+         * 			amount of time like this duration.
          */
 	@Override
 	public boolean equals(Object o) {
@@ -432,9 +427,8 @@ public class Duration implements Comparable<Duration>{
 		return this.getHours() == other.getHours() && this.getMinutes() == other.getMinutes();
 	}
         /**
-         * 
-         * @return The hashcode of this duration, durations that represent the same
-         * ammount of time, 
+         * @return 	the hashcode of this duration, durations that represent the same
+         * 			ammount of time, 
          */
     @Override
     public int hashCode() {
