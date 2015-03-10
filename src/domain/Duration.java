@@ -12,37 +12,20 @@ import java.time.temporal.ChronoUnit;
  */
 public class Duration implements Comparable<Duration>{
         
-        /** Constant to indicate the first day of the workweek, monday is 1. */
+    /** Constant to indicate the first day of the work week, Monday is 1. */
 	public static final int BEGINWORKWEEK = 1;
-        
-        
-        /** Constant to indicate the last day of the workweek, friday is 5. */
+    /** Constant to indicate the last day of the work week, Friday is 5. */
 	public static final int ENDWORKWEEK = 5;	
-        
-        /**
-         * Constant to indicate the begin time of a workday
-         */
+    /** Constant to indicate the begin time of a work day. */
 	public static final LocalTime BEGINWORKDAY = LocalTime.of(9, 0);
-        
-        /**
-         * Constant to indicate the end time of a workday
-         */
+	/** Constant to indicate the end time of a work day. */
 	public static final LocalTime ENDWORKDAY = LocalTime.of(18, 0);
-        
-        /**
-         * Constant to indicate the begin time of the lunch
-         */
+    /** Constant to indicate the begin time of the lunch. */
 	public static final LocalTime BEGINLUNCH = LocalTime.of(12, 0);
-        
-        /**
-         * Constant to indicate the end time of the lunch
-         */
+    /** Constant to indicate the end time of the lunch. */
 	public static final LocalTime ENDLUNCH = LocalTime.of(13, 0);
-        
-        /**
-         * Constant for a duration of zero
-         */
-        public static final Duration ZERO = new Duration(0);
+    /** Constant for a duration of zero. */
+    public static final Duration ZERO = new Duration(0);
 
 	private final long minutes;
     /****************************************
