@@ -12,7 +12,6 @@ import java.time.temporal.ChronoUnit;
  */
 public class Duration implements Comparable<Duration>{
 
-	public static final float WORKHOURSPERDAY = 8; 
 	public static final int BEGINWORKWEEK = 1;										//monday
 	public static final int ENDWORKWEEK = 5;										//friday
 	public static final LocalTime BEGINWORKDAY = LocalTime.of(9, 0);
@@ -175,7 +174,8 @@ public class Duration implements Comparable<Duration>{
      * 			given end time.
      */
     public static boolean isValidInterval(LocalDateTime begin, LocalDateTime end){
-        return begin.isBefore(end);
+    	//TODO: nodig voor getWorkTimeBetween, maar goed zo?
+        return !begin.isAfter(end);
     }
     
     /**
@@ -183,6 +183,13 @@ public class Duration implements Comparable<Duration>{
      */
     public static long getMinutesOfLunchBreak() {
         return ChronoUnit.MINUTES.between(Duration.BEGINLUNCH, Duration.ENDLUNCH);
+    }
+    
+    /**
+     * @return	the number of hours, a work day lasts (not taking into account any lunch break).
+     */
+    public static long getHoursOfWorkDay() {
+    	return ChronoUnit.HOURS.between(Duration.BEGINWORKDAY, Duration.ENDWORKDAY);
     }
     
     /**
@@ -298,6 +305,18 @@ public class Duration implements Comparable<Duration>{
 		return totalMinutes + getWorkTimeBetween(nextBegin, end);
 	}
 	
+	/**
+	 * Get the first valid working hour past a given time.
+	 * 
+	 * @param 	time
+	 * 			The time to get the next valid working hour for.
+	 * 
+	 * @return	the time if it is already a valid working time,
+	 * 			the next Monday morning if it was in the weekend,
+	 * 			right after lunch break if it was during lunch,
+	 * 			as soon as the working day starts if time was before working hours,
+	 * 			the start of the next working day if time was after working hours.
+	 */
 	public static LocalDateTime nextValidWorkTime(LocalDateTime time) {
 		if(Duration.isValidWorkTime(time))
 			return time;

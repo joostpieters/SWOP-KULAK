@@ -34,10 +34,11 @@ public class ProjectManager {
     }
     
     /**
-	 * @return a copy of the systemClock
+	 * @return the systemClock
 	 */
 	public Clock getSystemClock() {
-		return new Clock(systemClock);
+		//TODO: encapsulation???
+		return systemClock;
 	}
 
 	/**

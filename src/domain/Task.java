@@ -458,7 +458,6 @@ public class Task implements DetailedTask {
 			throw new IllegalArgumentException("The given start and/or end time are not initialized.");
 		setTimeSpan(new Timespan(start, end));
 		setStatus(status);
-
 	}
 
 	/**
@@ -617,7 +616,6 @@ public class Task implements DetailedTask {
 		}
 		//if(getStatus() == Status.FINISHED)
 		return new Duration(0);
-		
 	}
 	
 	/**
@@ -664,6 +662,7 @@ public class Task implements DetailedTask {
 		else 
 			return new Duration(0);
 	}
+	
 	/**
 	 * Checks whether this task has an alternative task.
 	 * 

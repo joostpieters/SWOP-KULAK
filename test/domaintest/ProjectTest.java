@@ -55,6 +55,11 @@ public class ProjectTest {
     
     @Before
     public void setUp() {
+    	assertTrue(create.isBefore(due));
+    	assertTrue(start.isBefore(due));
+    	assertTrue(!create.isAfter(start));
+    	assertTrue(!end.isAfter(due));
+    	
     	pm = new ProjectManager();
     	
     	p0 = pm.createProject(name, descr, create, due);
@@ -399,6 +404,32 @@ public class ProjectTest {
     public void testIsOnTimeUnFinishedSimple() {
     	assertTrue(p0.isOnTime());
     	assertTrue(p1.isOnTime());
+    	assertTrue(p2.isOnTime());
+    	
+    	p1.createTask(taskdescr, 
+    			new Duration(Duration.nextValidWorkTime(create), Duration.nextValidWorkTime(due).plusDays(5)), 
+    			accdev, altFor, prereqs);
+    	assertFalse(p1.isOnTime());
+    	
+    	pm.getSystemClock().advanceTime(due);
+    	assertTrue(p0.isOnTime());
+    	assertFalse(p1.isOnTime());
+    	assertTrue(p2.isOnTime());
+    	
+    	pm.getSystemClock().advanceTime(due.plusHours(1));
+    	assertFalse(p0.isOnTime());
+    	assertFalse(p1.isOnTime());
+    	assertFalse(p2.isOnTime());
+    }
+    
+    /**
+     * Test isOnTime method when project contains failed task.
+     */
+    @Test
+    public void testIsOnTimeUnFinishedFailedTask() {
+    	t1.update(start, end, Status.FAILED);
+    	assertTrue(p1.isOnTime());
+    	
     }
     
 }

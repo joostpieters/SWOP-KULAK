@@ -96,7 +96,7 @@ public class TimespanTest {
      */
      @Test
     public void testGetExcess() {
-        LocalDateTime start = LocalDateTime.of(2015, 1, 6, 12, 23);
+        LocalDateTime start = LocalDateTime.of(2015, 1, 6, 11, 23);
         LocalDateTime end = LocalDateTime.of(2015, 1, 6, 14, 30);
         Timespan timespan = new Timespan(start, end); // 127 minutes
         Duration dur = new Duration(130);
