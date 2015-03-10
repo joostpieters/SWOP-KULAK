@@ -9,6 +9,7 @@ import domain.ProjectManager;
 import domain.Status;
 import domain.Task;
 import exception.ObjectNotFoundException;
+import java.util.Arrays;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -473,7 +474,7 @@ public class ProjectTest {
     	prereqs.add(t3.getId());
     	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, prereqs);
     	assertTrue(p2.isOnTime());
-    	p2.createTask(taskdescr, new Duration(ProjectTest.DAYDIF*Duration.getMinutesOfWorkDay()), accdev, altFor, new int[]{t.getId()});
+    	p2.createTask(taskdescr, new Duration(ProjectTest.DAYDIF*Duration.getMinutesOfWorkDay()), accdev, altFor, Arrays.asList(t.getId()));
     	assertFalse(p2.isOnTime());
     }
     
@@ -484,9 +485,9 @@ public class ProjectTest {
     public void testIsOnTimeExample() {
     	Project p = pm.createProject(name, descr, LocalDateTime.of(2015, 2, 9, 8, 0), LocalDateTime.of(2015, 2, 13, 19, 0));
     	Task t1 = p.createTask("design system", new Duration(8,0), 0, altFor, prereqs);
-    	Task t2 = p.createTask("implement system in native code", new Duration(16,0), 50, altFor, new int[]{t1.getId()});
-    	p.createTask("test system", new Duration(8,0), 0, altFor, new int[]{t2.getId()});
-    	p.createTask("write documentation", new Duration(8,0), 0, altFor, new int[]{t2.getId()});
+    	Task t2 = p.createTask("implement system in native code", new Duration(16,0), 50, altFor, Arrays.asList(t1.getId()));
+    	p.createTask("test system", new Duration(8,0), 0, altFor, Arrays.asList(t2.getId()));
+    	p.createTask("write documentation", new Duration(8,0), 0, altFor, Arrays.asList(t2.getId()));
     	
     	pm.getSystemClock().advanceTime(create);
     	assertTrue(p.isOnTime());
@@ -495,7 +496,7 @@ public class ProjectTest {
     	assertTrue(p.isOnTime());
     	t2.update(LocalDateTime.of(2015, 2, 10, 9, 0), LocalDateTime.of(2015,  2, 10, 18, 0), Status.FAILED);
     	assertTrue(p.isOnTime());
-    	p.createTask("implement system with phonegap", new Duration(8,0), 100, t2.getId(), new int[]{t1.getId()});
+    	p.createTask("implement system with phonegap", new Duration(8,0), 100, t2.getId(), Arrays.asList(t1.getId()));
     	pm.getSystemClock().advanceTime(create.plusDays(4));
     	assertFalse(p.isOnTime());
     }
