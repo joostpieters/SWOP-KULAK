@@ -238,11 +238,14 @@ public class Duration implements Comparable<Duration>{
 		//too much inefficiency to handle, but clear
 		boolean checkDays = time.toLocalTime().compareTo(Duration.BEGINWORKDAY) >= 0 && 
 				time.toLocalTime().compareTo(Duration.ENDWORKDAY) <= 0;
-		boolean checkWeekends = time.getDayOfWeek().getValue() >= Duration.BEGINWORKWEEK && 
-				time.getDayOfWeek().getValue() <= Duration.ENDWORKWEEK;
 		boolean checkLunch = !(Duration.BEGINLUNCH.isBefore(time.toLocalTime()) && 
 				time.toLocalTime().isBefore(Duration.ENDLUNCH));
-		return checkDays && checkLunch && checkWeekends;
+		return isValidWorkDay(time) && checkDays && checkLunch;
+	}
+	
+	public static boolean isValidWorkDay(LocalDateTime date) {
+		return date.getDayOfWeek().getValue() >= Duration.BEGINWORKWEEK && 
+				date.getDayOfWeek().getValue() <= Duration.ENDWORKWEEK;
 	}
 
 	/**
@@ -294,6 +297,26 @@ public class Duration implements Comparable<Duration>{
 		}
 		return totalMinutes + getWorkTimeBetween(nextBegin, end);
 	}
+	
+	public static LocalDateTime nextValidWorkTime(LocalDateTime time) {
+		if(Duration.isValidWorkTime(time))
+			return time;
+		
+		if(Duration.isValidWorkDay(time)) {
+			LocalTime beginTime = time.toLocalTime();
+			if(beginTime.compareTo(Duration.ENDWORKDAY) > 0) {
+				if(time.getDayOfWeek().getValue() == Duration.ENDWORKWEEK)
+					time = time.plusDays(7 - Duration.getDaysOfWorkWeek());
+				return LocalDateTime.of(time.toLocalDate().plusDays(1), Duration.BEGINWORKDAY);
+			} else if(beginTime.compareTo(Duration.BEGINWORKDAY) < 0) {
+				return LocalDateTime.of(time.toLocalDate(), Duration.BEGINWORKDAY);
+			} else {
+				return LocalDateTime.of(time.toLocalDate(), Duration.ENDLUNCH);
+			}
+		} else {
+			return Duration.nextValidWorkTime(time.plusDays(1).toLocalDate().atTime(Duration.BEGINWORKDAY));
+		}
+	}
 
 	/****************************************
 	 * other methods						*
@@ -305,49 +328,50 @@ public class Duration implements Comparable<Duration>{
 	 * 
 	 * @param 	begin 
 	 * 			The time to start from
-	 * @return 	A LocalDateTime marking the end of this duration that starts at
+	 * @return 	a LocalDateTime marking the end of this duration that starts at
 	 * 			the given start time.
 	 * @throws 	IllegalArgumentException 
 	 * 			if the given time doesn't lay in between the business hours.
 	 */
 	public LocalDateTime getEndTimeFrom(LocalDateTime begin) throws IllegalArgumentException{
+		LocalDateTime start = begin;
 		if(!isValidWorkTime(begin))
-			throw new IllegalArgumentException("The given time is not a valid working time.");
+			start = nextValidWorkTime(begin);
 
 		long minutesRemaining = minutes;
 
 		if(minutesRemaining == 0)
-			return begin;
+			return start;
 
-		LocalTime beginLocalTime = begin.toLocalTime();
+		LocalTime beginLocalTime = start.toLocalTime();
 		LocalDateTime nextBegin;
 		if(beginLocalTime.compareTo(ENDLUNCH) < 0)
 		{
 			long minutesTillLunch = ChronoUnit.MINUTES.between(beginLocalTime,BEGINLUNCH);
 			if(minutesRemaining <= minutesTillLunch)
-				return begin.plusMinutes(minutesRemaining);
+				return start.plusMinutes(minutesRemaining);
 			else
 				minutesRemaining -= minutesTillLunch;
 
 			//nextBegin set to end of lunch break
-			nextBegin = LocalDateTime.of(begin.toLocalDate(), ENDLUNCH);
+			nextBegin = LocalDateTime.of(start.toLocalDate(), ENDLUNCH);
 		}
 		else //if(beginLocalTime.compareTo(ENDLUNCH) >= 0)
 		{
 			long minutesTillEndOfDay = ChronoUnit.MINUTES.between(beginLocalTime,ENDWORKDAY);
 			if(minutesRemaining <= minutesTillEndOfDay)
-				return begin.plusMinutes(minutesRemaining);
+				return start.plusMinutes(minutesRemaining);
 			else
 				minutesRemaining -= minutesTillEndOfDay;
-			int weekDay = begin.getDayOfWeek().getValue();
+			int weekDay = start.getDayOfWeek().getValue();
 			if(weekDay == ENDWORKWEEK)
-				nextBegin = LocalDateTime.of(begin.toLocalDate().plusDays(8 - Duration.getDaysOfWorkWeek()), BEGINWORKDAY);
+				nextBegin = LocalDateTime.of(start.toLocalDate().plusDays(8 - Duration.getDaysOfWorkWeek()), BEGINWORKDAY);
 			else
-				nextBegin = LocalDateTime.of(begin.toLocalDate().plusDays(1), BEGINWORKDAY);
+				nextBegin = LocalDateTime.of(start.toLocalDate().plusDays(1), BEGINWORKDAY);
 		}
 		return new Duration(minutesRemaining).getEndTimeFrom(nextBegin);
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		Duration other = (Duration) o;

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.SortedMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 import exception.ObjectNotFoundException;
@@ -29,7 +29,7 @@ public class Project implements DetailedProject {
     private final String name;
     private final String description;
     private final Timespan creationDueTime;
-    private final SortedMap<Integer, Task> tasks = new TreeMap<>();
+    private final Map<Integer, Task> tasks = new TreeMap<>();
     private final Clock clock;
     
     /**
@@ -175,9 +175,9 @@ public class Project implements DetailedProject {
 				false otherwise.
 	 */
 	public boolean canHaveAsTask(Task t) {
-		boolean taskCheck = t != null && !tasks.containsKey(t.getId());
-                if(!taskCheck) 
-                    return false;
+		if(t == null)
+			return false;
+		boolean taskCheck = !tasks.containsKey(t.getId());
 		boolean altTaskCheck = t.getAlternativeTask() == null || tasks.containsKey(t.getAlternativeTask().getId());
 		boolean prereqTaskCheck = true;
 		for(Task x : t.getPrerequisiteTasks())
@@ -309,11 +309,11 @@ public class Project implements DetailedProject {
 					return false;
 			return true;
 		} else {
-			Duration sum, max = new Duration(0);
+			Duration temp, max = new Duration(0);
 			for(Task t : getTasks()) {
-				sum = t.estimatedWorkTimeNeeded();
-				if(sum.compareTo(max) > 0)
-					max = sum;
+				temp = t.estimatedWorkTimeNeeded();
+				if(temp.compareTo(max) > 0)
+					max = temp;
 			}
 			LocalDateTime end = max.getEndTimeFrom(getCreationTime());
 			if(end.isBefore(clock.getTime()))

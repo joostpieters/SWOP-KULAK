@@ -21,7 +21,8 @@ import org.junit.runners.Suite;
                      ProjectManagerTest.class,
                     ProjectTest.class,
                     TaskTest.class,
-                    TimespanTest.class})
+                    TimespanTest.class, 
+                    DurationTest.class})
 public class TaskManTestSuite {
 
     @BeforeClass

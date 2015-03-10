@@ -2,6 +2,7 @@ package domaintest;
 
 import java.time.LocalDateTime;
 
+import domain.Duration;
 import domain.Project;
 import domain.ProjectManager;
 import domain.Status;
@@ -29,8 +30,7 @@ public class ProjectTest {
 	private LocalDateTime due = LocalDateTime.of(2015, 2, 13, 0, 0);
 
 	String taskdescr = "act cool";
-	int estdurH = 8;
-	int estdurM = 0;
+	Duration estdur = new Duration(8,0);
 	int accdev = 10;
 	int altFor = Project.NO_ALTERNATIVE;
 	int[] prereqs = Project.NO_DEPENDENCIES;
@@ -60,14 +60,14 @@ public class ProjectTest {
     	p0 = pm.createProject(name, descr, create, due);
     	
     	p1 = pm.createProject(name, descr, create, due);
-    	t1 = p1.createTask("design system", 8, 0, 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
+    	t1 = p1.createTask("design system", new Duration(8), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
     	
     	p2 = pm.createProject(name, descr, create, due);
-    	t2 = p2.createTask("design system", 8, 0, 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-    	t3 = p2.createTask("implement system in native code", 16, 0, 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
+    	t2 = p2.createTask("design system", new Duration(8), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
+    	t3 = p2.createTask("implement system in native code", new Duration(16), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
     	
     	pFinished = pm.createProject(name, descr, create, due);
-    	tFin = pFinished.createTask("design system", 8, 0, 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
+    	tFin = pFinished.createTask("design system", new Duration(8), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
     	tFin.update(start, end, Status.FINISHED);
     }
     
@@ -82,14 +82,14 @@ public class ProjectTest {
     public void testConstructorValid() {
     	Project x = new Project(name, descr, create, due, pm.getSystemClock());
     	
-    	assertEquals(x.getName(), name);
-    	assertEquals(x.getDescription(), descr);
+    	assertEquals(name, x.getName());
+    	assertEquals(descr, x.getDescription());
     	x.getCreationTime().minusHours(2);
-    	assertEquals(x.getCreationTime(), create);
+    	assertEquals(create, x.getCreationTime());
     	x.getDueTime().minusHours(2);
-    	assertEquals(x.getDueTime(), due);
+    	assertEquals(due, x.getDueTime());
     	x.getClock().advanceTime(LocalDateTime.of(2015, 12, 31, 23, 59));
-    	assertEquals(x.getClock(), pm.getSystemClock());
+    	assertEquals(pm.getSystemClock(), x.getClock());
     	x.getTasks().add(null);
     	assertTrue(x.getTasks().isEmpty());
     }
@@ -150,15 +150,15 @@ public class ProjectTest {
      */
     @Test
     public void testCreateTaskSimple() {
-    	Task t = p0.createTask(taskdescr, estdurH, estdurM, accdev, altFor, prereqs);
+    	Task t = p0.createTask(taskdescr, estdur, accdev, altFor, prereqs);
     	
     	assertTrue(p0.getTasks().contains(t));
-    	assertEquals(t.getDescription(), taskdescr);
-    	assertEquals(t.getEstimatedDuration().getHours(), estdurH);
-    	assertEquals(t.getEstimatedDuration().getMinutes(), estdurM);
-    	assertEquals(t.getAcceptableDeviation(), accdev);
-    	assertEquals(t.getAlternativeTask(), null);
-    	assertEquals(t.getPrerequisiteTasks().size(), 0);
+    	assertEquals(taskdescr, t.getDescription());
+    	assertEquals(estdur.getHours(), t.getEstimatedDuration().getHours());
+    	assertEquals(estdur.getMinutes(), t.getEstimatedDuration().getMinutes());
+    	assertEquals(accdev, t.getAcceptableDeviation());
+    	assertEquals(null, t.getAlternativeTask());
+    	assertEquals(0, t.getPrerequisiteTasks().size());
     }
     
     /**
@@ -169,16 +169,16 @@ public class ProjectTest {
     	t1.update(start, end, Status.FAILED);
     	
     	int altFor = t1.getId();
-    	Task t = p1.createTask(taskdescr, estdurH, estdurM, accdev, altFor, prereqs);
+    	Task t = p1.createTask(taskdescr, estdur, accdev, altFor, prereqs);
     	
     	assertTrue(p1.getTasks().contains(t));
-    	assertEquals(t.getDescription(), taskdescr);
-    	assertEquals(t.getEstimatedDuration().getHours(), estdurH);
-    	assertEquals(t.getEstimatedDuration().getMinutes(), estdurM);
-    	assertEquals(t.getAcceptableDeviation(), accdev);
-    	assertEquals(t1.getAlternativeTask(), t);
-    	assertEquals(t.getAlternativeTask(), null);
-    	assertEquals(t.getPrerequisiteTasks().size(), 0);
+    	assertEquals(taskdescr, t.getDescription());
+    	assertEquals(estdur.getHours(), t.getEstimatedDuration().getHours());
+    	assertEquals(estdur.getMinutes(), t.getEstimatedDuration().getMinutes());
+    	assertEquals(accdev, t.getAcceptableDeviation());
+    	assertEquals(t, t1.getAlternativeTask());
+    	assertEquals(null, t.getAlternativeTask());
+    	assertEquals(0, t.getPrerequisiteTasks().size());
     }
     
     /**
@@ -187,15 +187,15 @@ public class ProjectTest {
     @Test
     public void testCreateTaskPrereqs() {
     	int[] prereqs = new int[]{t2.getId(), t3.getId()};
-    	Task t = p2.createTask(taskdescr, estdurH, estdurM, accdev, altFor, prereqs);
+    	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, prereqs);
     	
     	assertTrue(p2.getTasks().contains(t));
-    	assertEquals(t.getDescription(), taskdescr);
-    	assertEquals(t.getEstimatedDuration().getHours(), estdurH);
-    	assertEquals(t.getEstimatedDuration().getMinutes(), estdurM);
-    	assertEquals(t.getAcceptableDeviation(), accdev);
-    	assertEquals(t.getAlternativeTask(), null);
-    	assertArrayEquals(t.getPrerequisiteTasks().toArray(), new Task[]{t2, t3});
+    	assertEquals(taskdescr, t.getDescription());
+    	assertEquals(estdur.getHours(), t.getEstimatedDuration().getHours());
+    	assertEquals(estdur.getMinutes(), t.getEstimatedDuration().getMinutes());
+    	assertEquals(accdev, t.getAcceptableDeviation());
+    	assertEquals(null, t.getAlternativeTask());
+    	assertArrayEquals(new Task[]{t2, t3}, t.getPrerequisiteTasks().toArray());
     }
     
     /**
@@ -206,7 +206,7 @@ public class ProjectTest {
     	t1.update(start, end, Status.FAILED);
     	
     	int altFor = t1.getId();
-    	p2.createTask(taskdescr, estdurH, estdurM, accdev, altFor, prereqs);
+    	p2.createTask(taskdescr, estdur, accdev, altFor, prereqs);
     }
     
     /**
@@ -215,7 +215,7 @@ public class ProjectTest {
     @Test (expected = ObjectNotFoundException.class)
     public void testCreateTaskInvalidPrereqs() {
     	int[] prereqs = new int[]{t2.getId(), t3.getId()};
-    	p1.createTask(taskdescr, estdurH, estdurM, accdev, altFor, prereqs);
+    	p1.createTask(taskdescr, estdur, accdev, altFor, prereqs);
     }
     
     /**
@@ -224,7 +224,7 @@ public class ProjectTest {
     @Test (expected = ObjectNotFoundException.class)
     public void testCreateTaskInvalidPrereqs2() {
     	int[] prereqs = new int[]{t1.getId(), t2.getId()};
-    	p2.createTask(taskdescr, estdurH, estdurM, accdev, altFor, prereqs);
+    	p2.createTask(taskdescr, estdur, accdev, altFor, prereqs);
     }
     
     /**
@@ -232,7 +232,7 @@ public class ProjectTest {
      */
     @Test (expected = IllegalStateException.class)
     public void testCreateTaskFinished() {
-    	pFinished.createTask(taskdescr, estdurH, estdurM, accdev, altFor, prereqs);
+    	pFinished.createTask(taskdescr, estdur, accdev, altFor, prereqs);
     }
     
     /**
@@ -242,10 +242,10 @@ public class ProjectTest {
     public void testGetAvailableTasksSimple() {
     	assertTrue(p0.getAvailableTasks().isEmpty());
     	
-    	assertEquals(p1.getAvailableTasks().size(), 1);
+    	assertEquals(1, p1.getAvailableTasks().size());
     	assertTrue(p1.getAvailableTasks().contains(t1));
     	
-    	assertEquals(p2.getAvailableTasks().size(), 2);
+    	assertEquals(2, p2.getAvailableTasks().size());
     	assertTrue(p2.getAvailableTasks().contains(t2));
     	assertTrue(p2.getAvailableTasks().contains(t3));
     }
@@ -256,8 +256,8 @@ public class ProjectTest {
     @Test
     public void testGetAvailableTasksAlternative() {
     	t1.update(start, end, Status.FAILED);
-    	Task alt = p1.createTask(taskdescr, estdurH, estdurM, accdev, t1.getId(), prereqs);
-    	assertEquals(p1.getAvailableTasks().size(), 1);
+    	Task alt = p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs);
+    	assertEquals(1, p1.getAvailableTasks().size());
     	assertFalse(p1.getAvailableTasks().contains(t1));
     	assertTrue(p1.getAvailableTasks().contains(alt));
     }
@@ -267,15 +267,15 @@ public class ProjectTest {
      */
     @Test
     public void testGetAvailableTasksPrereqs() {
-    	Task prereq = p2.createTask(taskdescr, estdurH, estdurM, accdev, altFor, new int[]{t2.getId(), t3.getId()});
-    	assertEquals(p2.getAvailableTasks().size(), 2);
+    	Task prereq = p2.createTask(taskdescr, estdur, accdev, altFor, new int[]{t2.getId(), t3.getId()});
+    	assertEquals(2, p2.getAvailableTasks().size());
     	assertTrue(p2.getAvailableTasks().contains(t2));
     	assertTrue(p2.getAvailableTasks().contains(t3));
     	assertFalse(p2.getAvailableTasks().contains(prereq));
     	
     	t2.update(start, end, Status.FINISHED);
     	t3.update(start, end, Status.FINISHED);
-    	assertEquals(p2.getAvailableTasks().size(), 1);
+    	assertEquals(1, p2.getAvailableTasks().size());
     	assertFalse(p2.getAvailableTasks().contains(t2));
     	assertFalse(p2.getAvailableTasks().contains(t3));
     	assertTrue(p2.getAvailableTasks().contains(prereq));
@@ -326,7 +326,7 @@ public class ProjectTest {
     	assertFalse(p1.isFinished());
     	t1.update(start, end, Status.FAILED);
     	assertFalse(p1.isFinished());
-    	Task t = p1.createTask(taskdescr, estdurH, estdurM, accdev, t1.getId(), prereqs);
+    	Task t = p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs);
     	assertFalse(p1.isFinished());
     	t.update(start, end, Status.FINISHED);
     	assertTrue(p1.isFinished());
@@ -337,7 +337,7 @@ public class ProjectTest {
      */
     @Test
     public void testIsFinishedPrereqs() {
-    	Task t = p2.createTask(taskdescr, estdurH, estdurM, accdev, altFor, new int[]{t2.getId(), t3.getId()});
+    	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, new int[]{t2.getId(), t3.getId()});
     	assertFalse(p2.isFinished());
     	t2.update(start, end, Status.FINISHED);
     	assertFalse(p2.isFinished());
@@ -364,7 +364,7 @@ public class ProjectTest {
     @Test
     public void testIsOnTimeFinishedAlternative() {
     	t1.update(start, end, Status.FAILED);
-    	Task t = p1.createTask(taskdescr, estdurH, estdurM, accdev, t1.getId(), prereqs);
+    	Task t = p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs);
     	t.update(start, due, Status.FINISHED);
     	assertTrue(p1.isOnTime());
     }
@@ -375,7 +375,7 @@ public class ProjectTest {
     @Test
     public void testIsOnTimeFinishedAlternative2() {
     	t1.update(start, due.plusHours(1), Status.FAILED);
-    	Task t = p1.createTask(taskdescr, estdurH, estdurM, accdev, t1.getId(), prereqs);
+    	Task t = p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs);
     	t.update(start, due, Status.FINISHED);
     	assertFalse(p1.isOnTime());
     }
@@ -385,7 +385,7 @@ public class ProjectTest {
      */
     @Test
     public void testIsOnTimeFinishedPrereqs() {
-    	Task t = p2.createTask(taskdescr, estdurH, estdurM, accdev, altFor, new int[]{t2.getId(), t3.getId()});
+    	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, new int[]{t2.getId(), t3.getId()});
     	t2.update(start, due, Status.FINISHED);
     	t3.update(start, end, Status.FINISHED);
     	t.update(due, due.plusHours(1), Status.FINISHED);
@@ -398,6 +398,7 @@ public class ProjectTest {
     @Test
     public void testIsOnTimeUnFinishedSimple() {
     	assertTrue(p0.isOnTime());
+    	assertTrue(p1.isOnTime());
     }
     
 }
