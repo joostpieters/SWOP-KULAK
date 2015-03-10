@@ -254,7 +254,7 @@
                   <Font name="Calibri" size="14" style="0"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="e.g. 2014-02-01 18:00"/>
-                <Property name="toolTipText" type="java.lang.String" value=""/>
+                <Property name="toolTipText" type="java.lang.String" value="Start time of the project"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="endTimeTextField">
@@ -263,7 +263,7 @@
                   <Font name="Calibri" size="14" style="0"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="e.g. 2014-02-01 18:00"/>
-                <Property name="toolTipText" type="java.lang.String" value=""/>
+                <Property name="toolTipText" type="java.lang.String" value="End time of the task"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel3">

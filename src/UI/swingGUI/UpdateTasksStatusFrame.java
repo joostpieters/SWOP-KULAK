@@ -160,11 +160,11 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
 
         startTimeTextField.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         startTimeTextField.setText("e.g. 2014-02-01 18:00");
-        startTimeTextField.setToolTipText("");
+        startTimeTextField.setToolTipText("Start time of the project");
 
         endTimeTextField.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         endTimeTextField.setText("e.g. 2014-02-01 18:00");
-        endTimeTextField.setToolTipText("");
+        endTimeTextField.setToolTipText("End time of the task");
 
         jLabel3.setFont(jLabel3.getFont().deriveFont(jLabel3.getFont().getSize()+15f));
         jLabel3.setText("Update Task");

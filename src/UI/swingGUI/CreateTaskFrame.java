@@ -119,7 +119,7 @@ public class CreateTaskFrame extends javax.swing.JFrame {
         jLabel2.setText("New Task");
 
         accDevTextField.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
-        accDevTextField.setToolTipText("");
+        accDevTextField.setToolTipText("Acceptable deviation");
 
         jLabel3.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         jLabel3.setText("Description");
@@ -135,7 +135,7 @@ public class CreateTaskFrame extends javax.swing.JFrame {
         });
 
         estDurationHoursTextField.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
-        estDurationHoursTextField.setToolTipText("");
+        estDurationHoursTextField.setToolTipText("Estimated duration hours");
 
         jLabel6.setText("Minutes");
 
@@ -166,7 +166,7 @@ public class CreateTaskFrame extends javax.swing.JFrame {
         jLabel9.setText("Alternative for");
 
         estDurationMinutesTextField.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
-        estDurationMinutesTextField.setToolTipText("");
+        estDurationMinutesTextField.setToolTipText("Estimated duration minutes");
 
         jLabel10.setText("Hours");
 

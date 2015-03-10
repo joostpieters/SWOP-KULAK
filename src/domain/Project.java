@@ -17,7 +17,7 @@ import exception.ObjectNotFoundException;
 public class Project implements DetailedProject {
 	
     /**Constant to use to create a task with no dependencies. */
-	public static final List<Integer> NO_DEPENDENCIES = null;
+	public static final List<Integer> NO_DEPENDENCIES = new ArrayList<>(0);
     /** Constant to use when a project has no alternative. */
 	public static final int NO_ALTERNATIVE = -1;
 	

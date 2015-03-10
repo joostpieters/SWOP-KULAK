@@ -58,11 +58,11 @@ public class CreateProjectFrame extends javax.swing.JFrame {
         jLabel2.setText("New Project");
 
         nameTextField.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
-        nameTextField.setToolTipText("");
+        nameTextField.setToolTipText("Name of the project");
 
         dueTimeTextField.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         dueTimeTextField.setText("e.g. 2014-02-01 18:00");
-        dueTimeTextField.setToolTipText("");
+        dueTimeTextField.setToolTipText("The due time of the project");
         dueTimeTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 dueTimeTextFieldActionPerformed(evt);
@@ -87,7 +87,7 @@ public class CreateProjectFrame extends javax.swing.JFrame {
 
         creationTimeTextField.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         creationTimeTextField.setText("e.g. 2014-02-01 18:00");
-        creationTimeTextField.setToolTipText("");
+        creationTimeTextField.setToolTipText("The creation time of the project");
         creationTimeTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 creationTimeTextFieldActionPerformed(evt);
