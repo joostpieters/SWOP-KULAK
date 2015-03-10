@@ -26,6 +26,7 @@ public class Task implements DetailedTask {
     /****************************************
      * Constructors							*
      ****************************************/
+	//TODO public modifier verwijderen?
 	
 	/**
 	 * Initializes this task based on the given description, estimated duration,
@@ -56,6 +57,7 @@ public class Task implements DetailedTask {
 		if(alternativeFor != null)
 			alternativeFor.setAlternativeTask(this);
 	}
+	
 	/**
 	 * Initializes this task based on the given description, estimated duration,
 	 * acceptable deviation and alternative task for.
@@ -278,7 +280,7 @@ public class Task implements DetailedTask {
 	 *         	If this task can't have the given task as its alternative task.
 	 * @see    	canHaveAsAlternativeTask
 	 */
-	public void setAlternativeTask(Task alternativeTask) throws IllegalStateException, IllegalArgumentException
+	void setAlternativeTask(Task alternativeTask) throws IllegalStateException, IllegalArgumentException
 	{
 		if(getStatus() != Status.FAILED)
 			throw new IllegalStateException(
@@ -430,7 +432,7 @@ public class Task implements DetailedTask {
 	 * 
 	 * @return 	The estimated duration of this task multiplied by (100 + (the acceptable deviation of this task))/100
 	 */
-	private Duration calculateMaxDuration()
+	Duration calculateMaxDuration()
 	{
 		return getEstimatedDuration().multiplyBy( (100d + getAcceptableDeviation())/100d );
 	}
@@ -458,7 +460,6 @@ public class Task implements DetailedTask {
 			throw new IllegalArgumentException("The given start and/or end time are not initialized.");
 		setTimeSpan(new Timespan(start, end));
 		setStatus(status);
-
 	}
 
 	/**
@@ -617,7 +618,6 @@ public class Task implements DetailedTask {
 		}
 		//if(getStatus() == Status.FINISHED)
 		return new Duration(0);
-		
 	}
 	
 	/**
@@ -664,6 +664,7 @@ public class Task implements DetailedTask {
 		else 
 			return new Duration(0);
 	}
+	
 	/**
 	 * Checks whether this task has an alternative task.
 	 * 

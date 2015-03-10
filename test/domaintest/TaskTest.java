@@ -452,32 +452,32 @@ public class TaskTest {
      * test of setAlternativeTask method, of class Task.
      * Attempt to set alternative task of t0 which is not failed
      */
-    @Test (expected = IllegalStateException.class)
+    /*@Test (expected = IllegalStateException.class)
     public void testSetAlternativeTaskException1()
     {
     	t0.setAlternativeTask(t1);
-    }
+    }*/
     
     /*
      * test of setAlternativeTask method, of class Task.
      * Attempt to set alternative task of t7 which already has an alternative task
      */
-    @Test (expected = IllegalStateException.class)
+    /*@Test (expected = IllegalStateException.class)
     public void testSetAlternativeTaskException2()
     {
     	t7.setAlternativeTask(t1);
-    }
+    }*/
     
     /*
      * test of setAlternativeTask method, of class Task.
      * Attempt to set alternative task of t7 which already has an alternative task
      */
-    @Test (expected = IllegalArgumentException.class)
+    /*@Test (expected = IllegalArgumentException.class)
     public void testSetAlternativeTaskException3()
     {
     	t0.update(LocalDateTime.of(2015, 3, 10, 10, 10), LocalDateTime.of(2015, 3, 10, 20, 10), Status.FAILED);
     	t0.setAlternativeTask(t5);
-    }
+    }*/
     
     /*
      * test of canHaveAsPrerequisiteTasks method, of class Task.
