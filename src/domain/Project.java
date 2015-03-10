@@ -9,8 +9,6 @@ import java.util.TreeMap;
 
 import exception.ObjectNotFoundException;
 
-import java.util.Arrays;
-
 /**
  * This class represents a project
  * 
@@ -18,13 +16,9 @@ import java.util.Arrays;
  */
 public class Project implements DetailedProject {
 	
-    /**
-     * Constant to use to create a task with no dependencies
-     */
+    /**Constant to use to create a task with no dependencies. */
 	public static final List<Integer> NO_DEPENDENCIES = null;
-        /**
-         * Constant to use when a project has no alternative
-         */
+    /** Constant to use when a project has no alternative. */
 	public static final int NO_ALTERNATIVE = -1;
 	
 	private static int nextId = 0;
@@ -255,13 +249,13 @@ public class Project implements DetailedProject {
 	 * 
 	 * @see		Task#Task(String, Duration, int, List, Task)
 	 */
-	public Task createTask(String descr, Duration duration, int accdev, int altFor, List<Integer> prereq) {
+	public Task createTask(String descr, Duration estdur, int accdev, int altFor, List<Integer> prereq) {
 		if(isFinished())
 			throw new IllegalStateException("This project has already been finished.");
 		
 		Task t;
 		if(prereq.equals(Project.NO_DEPENDENCIES)) {
-			t = new Task(descr, duration, accdev);
+			t = new Task(descr, estdur, accdev);
 		} else {
 			List<Task> taskList = new ArrayList<>();
 			for(Integer tId : prereq) {
