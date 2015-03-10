@@ -2,7 +2,7 @@ package UI.swingGUI;
 
 import controller.FrontController;
 import domain.ProjectManager;
-import domain.ProjectManagerFileInitializor;
+import init.ProjectManagerFileInitializor;
 import domain.Task;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -167,54 +167,7 @@ public class MainFrame extends javax.swing.JFrame {
         new UpdateTasksStatusFrame(controller.getUpdateTaskHandler()).setVisible(true);
     }//GEN-LAST:event_updateTask
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Windows".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        ProjectManager manager = new ProjectManager();
-        int option = JOptionPane.showConfirmDialog(null, "Would you like to initialize the system with an input file?");
-        if (option == 0) {
-            JFileChooser chooser = new JFileChooser();
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("Task Man inputfile", "tman");
-            chooser.setFileFilter(filter);
-            int returnVal = chooser.showOpenDialog(null);
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                
-                try(FileReader fileReader = new FileReader(chooser.getSelectedFile())) {
-                    
-                    ProjectManagerFileInitializor fileInitializor = new ProjectManagerFileInitializor(fileReader, manager);
-                    fileInitializor.processFile();
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "An error occured while reading/processing the file, please try again.", null, JOptionPane.ERROR_MESSAGE);
-                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        } else if(option == 2) {
-            return;
-        }
-
-        FrontController controller = new FrontController(manager);
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> {
-            new MainFrame(controller).setVisible(true);
-        });
-    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

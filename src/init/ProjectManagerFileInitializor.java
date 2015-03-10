@@ -1,10 +1,16 @@
-package domain;
+package init;
 
 /**
- * This class reads input from a file to initialize a projectmanager
+ * This class reads input from a filereader to initialize a projectmanager with 
+ * the appropriate data.
  *
  * @author Frederic, Mathias, Pieter-Jan
  */
+import domain.Duration;
+import domain.Project;
+import domain.ProjectManager;
+import domain.Status;
+import domain.Task;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StreamTokenizer;
@@ -17,12 +23,24 @@ public class ProjectManagerFileInitializor extends StreamTokenizer {
 
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private final ProjectManager manager;
-
+    
+    /**
+     * Initialize this ProjectManagerFileInitializor with the given reader and
+     * projectmanager
+     * 
+     * @param r The reader to use to read in the file
+     * @param manager The projectmanager to initialize
+     */
     public ProjectManagerFileInitializor(Reader r, ProjectManager manager) {
         super(r);
         this.manager = manager;
     }
-
+    
+    /**
+     * 
+     * @return The next token
+     * @see StreamTokenizer.nextToken()
+     */
     @Override
     public int nextToken() {
         try {
@@ -31,7 +49,8 @@ public class ProjectManagerFileInitializor extends StreamTokenizer {
             throw new RuntimeException(e);
         }
     }
-
+    
+    
     void error(String msg) {
         throw new RuntimeException("Line " + lineno() + ": " + msg);
     }
@@ -98,7 +117,10 @@ public class ProjectManagerFileInitializor extends StreamTokenizer {
         expectChar(']');
         return list;
     }
-
+    
+    /**
+     * Parse the file and populate this manager with the appropriate data.
+     */
     public void processFile() {
         slashSlashComments(false);
         slashStarComments(false);
