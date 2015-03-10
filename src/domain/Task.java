@@ -21,6 +21,11 @@ public class Task implements DetailedTask {
 	private Task alternativeTask;
 	private List<Task> prerequisiteTasks;
 	private Status status;
+
+    
+    /****************************************
+     * Constructors							*
+     ****************************************/
 	
 	/**
 	 * Initializes this task based on the given description, estimated duration,
@@ -102,7 +107,39 @@ public class Task implements DetailedTask {
 	{
 		this(description, duration, accDev, null, null);
 	}
+
+    /****************************************
+     * Getters & Setters & Checkers			*
+     ****************************************/
 	
+	/**
+	 * Generates an id for a new task.
+	 * 
+	 * @return 	The id to be used for a newly created task.
+	 */
+	private static int generateId()
+	{
+		return nextId++;
+	}
+
+	/**
+	 * @return 	The identification number of this task.
+	 */
+    @Override
+	public int getId()
+	{
+		return this.id;
+	}
+
+	/**
+	 * @return 	The description of this task.
+	 */
+    @Override
+	public String getDescription()
+	{
+		return this.description;
+	}
+    
 	/**
 	 * Sets the description of this task to the given description.
 	 * 
@@ -118,7 +155,7 @@ public class Task implements DetailedTask {
 		else
 			this.description = description;
 	}
-
+	
 	/**
 	 * Checks whether this task can have the given description as its description.
 	 * 
@@ -131,6 +168,168 @@ public class Task implements DetailedTask {
 	{
 		return description != null && !description.isEmpty();
 	}
+
+	/**
+	 * @return 	The estimated duration of this task.
+	 */
+    @Override
+	public Duration getEstimatedDuration()
+	{
+		return this.estimatedDuration;
+	}
+
+	/**
+	 * @return 	The timeSpan indicating the actual start and end time of this task.
+	 */
+    @Override
+	public Timespan getTimeSpan()
+	{
+		return this.timeSpan;
+	}
+
+	/**
+	 * Sets the time span of this task to the given time span.
+	 * 
+	 * @param  	timeSpan
+	 *         	The new time span of this task.
+	 * @throws 	IllegalArgumentException
+	 *         	If this task can't have the given time span as its time span.
+	 * @see    	canHaveAsTimeSpan
+	 */
+	private void setTimeSpan(Timespan timeSpan) throws IllegalArgumentException
+	{
+		if(!canHaveAsTimeSpan(timeSpan))
+			throw new IllegalArgumentException("The given time span is not a valid time span for this task");
+		this.timeSpan = timeSpan;
+	}
+
+	/**
+	 * Checks whether the given time span is a valid time span for this task.
+	 * 
+	 * @param  	timeSpan
+	 *         	The time span to check.
+	 * @return 	False if any of the prerequisite tasks were fulfilled before the given time span.
+	 * @see    	isFulfilledBefore
+	 */
+	public boolean canHaveAsTimeSpan(Timespan timeSpan)
+	{
+		if(getPrerequisiteTasks() != null)
+		{
+			for(Task t: getPrerequisiteTasks())
+				if(t.isFulfilled() && !t.isFulfilledBefore(timeSpan))
+					return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * @return 	The acceptable deviation of this task expressed as an integer between 0 and 100.
+	 */
+    @Override
+	public int getAcceptableDeviation()
+	{
+		return this.acceptableDeviation;
+	}
+
+	/**
+	 * Sets this task his acceptable deviation to the given acceptable deviation.
+	 * 
+	 * @param 	accDev
+	 *        	The new acceptable deviation of this task.
+	 * @throws 	IllegalArgumentException
+	 *         	If this task can't have the given acceptable deviation as its acceptable deviation.
+	 */
+	private void setAcceptableDeviation(int accDev) throws IllegalArgumentException
+	{
+		if(!canHaveAsAcceptableDeviation(accDev))
+			throw new IllegalArgumentException(
+					"This task can't have the given acceptable deviation as its acceptable deviation.");
+		this.acceptableDeviation = accDev;
+	}
+
+	/**
+	 * Checks whether this task can have the given acceptable deviation as its acceptable deviation.
+	 * 
+	 * @param  	accDev
+	 *         	The acceptable deviation.
+	 * @return 	True if and only if the given acceptable deviation is between 0 and 100.
+	 */
+	public boolean canHaveAsAcceptableDeviation(int accDev)
+	{
+		return (0 <= accDev) && (accDev <= 100);
+	}
+
+	/**
+	 * @return 	The alternative task for this task.
+	 */
+        @Override
+	public Task getAlternativeTask()
+	{
+		return this.alternativeTask;
+	}
+
+	/**
+	 * Sets the alternative task of this task to the given alternative task.
+	 * 
+	 * @param 	alternativeTask
+	 *        	The alternative task for this task.
+	 * @throws 	IllegalStateException
+	 *         	If the state of this task is not FAILED.
+	 * @throws 	IllegalStateException
+	 *         	If this task already has an alternative task.
+	 * @throws 	IllegalArgumentException
+	 *         	If this task can't have the given task as its alternative task.
+	 * @see    	canHaveAsAlternativeTask
+	 */
+	public void setAlternativeTask(Task alternativeTask) throws IllegalStateException, IllegalArgumentException
+	{
+		if(getStatus() != Status.FAILED)
+			throw new IllegalStateException(
+					"Can't set an alternative task for this "
+					+ "task because the status of this task is not equal to FAILED.");
+		
+		if(getAlternativeTask() != null)
+			throw new IllegalStateException(
+					"Can't set an alternative task for this task because "
+					+ "this task already has an alternative task.");
+		
+		if(!canHaveAsAlternativeTask(alternativeTask))
+			throw new IllegalArgumentException(
+					"This task can't have the given task as its alternative task.");
+		this.alternativeTask = alternativeTask;
+	}
+	
+	/**
+	 * Checks whether this task can have the given alternative task as its alternative task.
+	 * 
+	 * @param 	altTask
+	 *        	The alternative task to check.
+	 * @return 	False if the given alternative task is equal to null.
+	 *         	False if the given alternative task is equal to this task.
+	 *         	False if the given alternative task depends on this task.
+	 *         	True otherwise.
+	 * @see    	dependsOn
+	 */
+	public boolean canHaveAsAlternativeTask(Task altTask)
+	{
+		if(altTask == null)
+			return false;
+		if(altTask.equals(this))
+			return false;
+		if(altTask.dependsOn(this))
+			return false;
+		return true;
+	}
+
+	/**
+	 * @return 	The list of prerequisite tasks for this task.
+	 */
+    @Override
+	public List<Task> getPrerequisiteTasks()
+	{
+		return new ArrayList<Task>(this.prerequisiteTasks);
+	}
+
 	/**
 	 * Sets the list of prerequisite tasks to the given list of prerequisite tasks.
 	 * 
@@ -171,68 +370,6 @@ public class Task implements DetailedTask {
 	}
 
 	/**
-	 * @return 	The identification number of this task.
-	 */
-    @Override
-	public int getId()
-	{
-		return this.id;
-	}
-
-	/**
-	 * @return 	The description of this task.
-	 */
-    @Override
-	public String getDescription()
-	{
-		return this.description;
-	}
-
-	/**
-	 * @return 	The estimated duration of this task.
-	 */
-    @Override
-	public Duration getEstimatedDuration()
-	{
-		return this.estimatedDuration;
-	}
-
-	/**
-	 * @return 	The timeSpan indicating the actual start and end time of this task.
-	 */
-    @Override
-	public Timespan getTimeSpan()
-	{
-		return this.timeSpan;
-	}
-	/**
-	 * @return 	The acceptable deviation of this task expressed as an integer between 0 and 100.
-	 */
-    @Override
-	public int getAcceptableDeviation()
-	{
-		return this.acceptableDeviation;
-	}
-
-	/**
-	 * @return 	The alternative task for this task.
-	 */
-        @Override
-	public Task getAlternativeTask()
-	{
-		return this.alternativeTask;
-	}
-
-	/**
-	 * @return 	The list of prerequisite tasks for this task.
-	 */
-    @Override
-	public List<Task> getPrerequisiteTasks()
-	{
-		return new ArrayList<Task>(this.prerequisiteTasks);
-	}
-
-	/**
 	 * @return 	The status of this task.
 	 */
     @Override
@@ -259,6 +396,21 @@ public class Task implements DetailedTask {
 			setStatus(newStatus);
 		}
 	}
+
+	/**
+	 * Sets the status of this task to the given status.
+	 * 
+	 * @param 	status
+	 *        	The new status of this task.
+	 */
+	private void setStatus(Status status)
+	{
+		this.status = status;
+	}
+
+    /****************************************
+     * Other methods						*
+     ****************************************/
 	
 	/**
 	 *  Calculates the duration by which this task been delayed.
@@ -284,34 +436,6 @@ public class Task implements DetailedTask {
 	private Duration calculateMaxDuration()
 	{
 		return getEstimatedDuration().multiplyBy( (100d + getAcceptableDeviation())/100d );
-	}
-
-	/**
-	 * Sets this task his acceptable deviation to the given acceptable deviation.
-	 * 
-	 * @param 	accDev
-	 *        	The new acceptable deviation of this task.
-	 * @throws 	IllegalArgumentException
-	 *         	If this task can't have the given acceptable deviation as its acceptable deviation.
-	 */
-	private void setAcceptableDeviation(int accDev) throws IllegalArgumentException
-	{
-		if(!canHaveAsAcceptableDeviation(accDev))
-			throw new IllegalArgumentException(
-					"This task can't have the given acceptable deviation as its acceptable deviation.");
-		this.acceptableDeviation = accDev;
-	}
-
-	/**
-	 * Checks whether this task can have the given acceptable deviation as its acceptable deviation.
-	 * 
-	 * @param  	accDev
-	 *         	The acceptable deviation.
-	 * @return 	True if and only if the given acceptable deviation is between 0 and 100.
-	 */
-	public boolean canHaveAsAcceptableDeviation(int accDev)
-	{
-		return (0 <= accDev) && (accDev <= 100);
 	}
 	
 	/**
@@ -366,33 +490,6 @@ public class Task implements DetailedTask {
 	}
 
 	/**
-	 * Sets the status of this task to the given status.
-	 * 
-	 * @param 	status
-	 *        	The new status of this task.
-	 */
-	private void setStatus(Status status)
-	{
-		this.status = status;
-	}
-
-	/**
-	 * Sets the time span of this task to the given time span.
-	 * 
-	 * @param  	timeSpan
-	 *         	The new time span of this task.
-	 * @throws 	IllegalArgumentException
-	 *         	If this task can't have the given time span as its time span.
-	 * @see    	canHaveAsTimeSpan
-	 */
-	private void setTimeSpan(Timespan timeSpan) throws IllegalArgumentException
-	{
-		if(!canHaveAsTimeSpan(timeSpan))
-			throw new IllegalArgumentException("The given time span is not a valid time span for this task");
-		this.timeSpan = timeSpan;
-	}
-
-	/**
 	 * Checks whether this task ends before the given time span.
 	 * 
 	 * @param 	timeSpan
@@ -407,25 +504,6 @@ public class Task implements DetailedTask {
 			throw new IllegalStateException(
 					"Tried to check whether this task ends before the given time while this task doesn't have a time span.");
 		return getTimeSpan().endsBefore(timeSpan);
-	}
-
-	/**
-	 * Checks whether the given time span is a valid time span for this task.
-	 * 
-	 * @param  	timeSpan
-	 *         	The time span to check.
-	 * @return 	False if any of the prerequisite tasks were fulfilled before the given time span.
-	 * @see    	isFulfilledBefore
-	 */
-	public boolean canHaveAsTimeSpan(Timespan timeSpan)
-	{
-		if(getPrerequisiteTasks() != null)
-		{
-			for(Task t: getPrerequisiteTasks())
-				if(t.isFulfilled() && !t.isFulfilledBefore(timeSpan))
-					return false;
-		}
-		return true;
 	}
 	
 	/**
@@ -486,59 +564,6 @@ public class Task implements DetailedTask {
 		}
 		return false;
 	}
-
-	/**
-	 * Sets the alternative task of this task to the given alternative task.
-	 * 
-	 * @param 	alternativeTask
-	 *        	The alternative task for this task.
-	 * @throws 	IllegalStateException
-	 *         	If the state of this task is not FAILED.
-	 * @throws 	IllegalStateException
-	 *         	If this task already has an alternative task.
-	 * @throws 	IllegalArgumentException
-	 *         	If this task can't have the given task as its alternative task.
-	 * @see    	canHaveAsAlternativeTask
-	 */
-	public void setAlternativeTask(Task alternativeTask) throws IllegalStateException, IllegalArgumentException
-	{
-		if(getStatus() != Status.FAILED)
-			throw new IllegalStateException(
-					"Can't set an alternative task for this "
-					+ "task because the status of this task is not equal to FAILED.");
-		
-		if(getAlternativeTask() != null)
-			throw new IllegalStateException(
-					"Can't set an alternative task for this task because "
-					+ "this task already has an alternative task.");
-		
-		if(!canHaveAsAlternativeTask(alternativeTask))
-			throw new IllegalArgumentException(
-					"This task can't have the given task as its alternative task.");
-		this.alternativeTask = alternativeTask;
-	}
-	
-	/**
-	 * Checks whether this task can have the given alternative task as its alternative task.
-	 * 
-	 * @param 	altTask
-	 *        	The alternative task to check.
-	 * @return 	False if the given alternative task is equal to null.
-	 *         	False if the given alternative task is equal to this task.
-	 *         	False if the given alternative task depends on this task.
-	 *         	True otherwise.
-	 * @see    	dependsOn
-	 */
-	public boolean canHaveAsAlternativeTask(Task altTask)
-	{
-		if(altTask == null)
-			return false;
-		if(altTask.equals(this))
-			return false;
-		if(altTask.dependsOn(this))
-			return false;
-		return true;
-	}
 	
 	/**
 	 * Checks whether the given status can be assigned to this task.
@@ -561,16 +586,6 @@ public class Task implements DetailedTask {
 		if(status == Status.AVAILABLE)
 			return false;
 		return true;
-	}
-	
-	/**
-	 * Generates an id for a new task.
-	 * 
-	 * @return 	The id to be used for a newly created task.
-	 */
-	private static int generateId()
-	{
-		return nextId++;
 	}
 
 	/**

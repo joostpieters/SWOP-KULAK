@@ -157,7 +157,7 @@ public class ProjectTest {
     	assertEquals(estdur.getHours(), t.getEstimatedDuration().getHours());
     	assertEquals(estdur.getMinutes(), t.getEstimatedDuration().getMinutes());
     	assertEquals(accdev, t.getAcceptableDeviation());
-    	assertEquals(null, t.getAlternativeTask());
+    	assertFalse(t.hasAlternativeTask());
     	assertEquals(0, t.getPrerequisiteTasks().size());
     }
     
@@ -177,7 +177,7 @@ public class ProjectTest {
     	assertEquals(estdur.getMinutes(), t.getEstimatedDuration().getMinutes());
     	assertEquals(accdev, t.getAcceptableDeviation());
     	assertEquals(t, t1.getAlternativeTask());
-    	assertEquals(null, t.getAlternativeTask());
+    	assertFalse(t.hasAlternativeTask());
     	assertEquals(0, t.getPrerequisiteTasks().size());
     }
     
@@ -194,7 +194,7 @@ public class ProjectTest {
     	assertEquals(estdur.getHours(), t.getEstimatedDuration().getHours());
     	assertEquals(estdur.getMinutes(), t.getEstimatedDuration().getMinutes());
     	assertEquals(accdev, t.getAcceptableDeviation());
-    	assertEquals(null, t.getAlternativeTask());
+    	assertFalse(t.hasAlternativeTask());
     	assertArrayEquals(new Task[]{t2, t3}, t.getPrerequisiteTasks().toArray());
     }
     
