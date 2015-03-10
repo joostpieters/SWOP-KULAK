@@ -1,18 +1,8 @@
 package UI.swingGUI;
 
 import controller.FrontController;
-import domain.ProjectManager;
-import init.ProjectManagerFileInitializor;
-import domain.Task;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileNameExtensionFilter;
+
 
 /**
  * This frame forms the entry point for the entire application.
@@ -160,7 +150,15 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_createNewTask
 
     private void modifySystemTime(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifySystemTime
-        JOptionPane.showInputDialog("Advance System Time to:");
+        try {
+            String timestamp = JOptionPane.showInputDialog(rootPane, "Advance System Time to:", "dd-MM-yyyy HH:mm");
+            if(timestamp == null){
+                return;
+            }
+            controller.getAdvanceSystemTimeHandler().advanceTime(timestamp);
+        } catch (Exception exception) {
+            JOptionPane.showMessageDialog(rootPane, exception.getMessage(), null, JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_modifySystemTime
 
     private void updateTask(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateTask

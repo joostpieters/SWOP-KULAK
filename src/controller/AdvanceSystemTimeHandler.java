@@ -1,7 +1,11 @@
 package controller;
 
+import domain.ProjectManager;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This handler, handles the create task use case
@@ -10,13 +14,15 @@ import java.time.format.DateTimeFormatter;
  */
 public class AdvanceSystemTimeHandler {
     
+    private ProjectManager manager;
         
     /**
      * Initialize a new advance system time handler with the given projectmanager.
      * 
+     * @param manager The manager to use in this handler
      */   
-    public AdvanceSystemTimeHandler(){
-        
+    public AdvanceSystemTimeHandler(ProjectManager manager){
+        this.manager = manager;
     }
     
     
@@ -26,8 +32,20 @@ public class AdvanceSystemTimeHandler {
      * @param timestamp The timestamp to advance the systemclock to (yyyy-MM-dd HH:mm).
      */   
     public void  advanceTime(String timestamp){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime time = LocalDateTime.parse(timestamp, formatter);
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+            LocalDateTime time = LocalDateTime.parse(timestamp, formatter);
+            manager.getSystemClock().advanceTime(time);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("The provided timestamp is in the wrong format.");
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            throw e;
+        }catch(Exception e){
+            // log for further review
+            Logger.getLogger(CreateProjectHandler.class.getName()).log(Level.SEVERE, null, e);
+            throw new RuntimeException("An unexpected error occured, please contact the system admin.");
+            
+        }
         
     }    
 }

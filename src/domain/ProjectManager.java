@@ -37,7 +37,6 @@ public class ProjectManager {
 	 * @return the systemClock
 	 */
 	public Clock getSystemClock() {
-		//TODO: encapsulation???
 		return systemClock;
 	}
 

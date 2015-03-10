@@ -50,4 +50,11 @@ public class FrontController {
     public UpdateTaskStatusHandler getUpdateTaskHandler(){
         return new UpdateTaskStatusHandler(manager);
     }
+    
+     /** 
+     * @return A new advance system time handler, initialized with this manager.
+     */
+    public AdvanceSystemTimeHandler getAdvanceSystemTimeHandler(){
+        return new AdvanceSystemTimeHandler(manager);
+    }
 }
