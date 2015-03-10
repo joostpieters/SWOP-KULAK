@@ -99,18 +99,6 @@ public class CreateProjectScenarioTest { // TODO is dit genoeg?
     }
     
     /**
-     * Tests extension 4a. "The entered data is invalid" with an end time that comes before the start time
-     */
-    @Test (expected = IllegalArgumentException.class)
-    public void testInvalidDataStartTimeEndTime()
-    {
-    	String project6Name = "project 6 :)";
-    	String project6Description = "1+2+3=6";
-    	String project6StartTime = "2015-03-12 17:30";
-    	String project6EndTime = "2015-03-12 14:44";
-    	handler.createProject(project6Name, project6Description, project6StartTime, project6EndTime);
-    }
-    /**
      * Tests extension 4a. "The entered data is invalid" with an invalid end time
      */
     @Test (expected = IllegalArgumentException.class)
@@ -121,6 +109,19 @@ public class CreateProjectScenarioTest { // TODO is dit genoeg?
     	String project3StartTime = "2015-03-12 17:30";
     	String project3InvalidEndTime = "2015-03-13 oops 14:44";
     	handler.createProject(project3Name, project3Description, project3StartTime, project3InvalidEndTime);
+    }
+    
+    /**
+     * Tests extension 4a. "The entered data is invalid" with an end time that comes before the start time
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testInvalidDataStartTimeEndTime()
+    {
+    	String project6Name = "project 6 :)";
+    	String project6Description = "1+2+3=6";
+    	String project6StartTime = "2015-03-12 17:30";
+    	String project6EndTime = "2015-03-12 14:44";
+    	handler.createProject(project6Name, project6Description, project6StartTime, project6EndTime);
     }
     
 }
