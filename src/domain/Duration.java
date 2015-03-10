@@ -11,13 +11,38 @@ import java.time.temporal.ChronoUnit;
  * @author Frederic, Mathias, Pieter-Jan
  */
 public class Duration implements Comparable<Duration>{
-
-	public static final int BEGINWORKWEEK = 1;										//monday
-	public static final int ENDWORKWEEK = 5;										//friday
+        
+        /** Constant to indicate the first day of the workweek, monday is 1. */
+	public static final int BEGINWORKWEEK = 1;
+        
+        
+        /** Constant to indicate the last day of the workweek, friday is 5. */
+	public static final int ENDWORKWEEK = 5;	
+        
+        /**
+         * Constant to indicate the begin time of a workday
+         */
 	public static final LocalTime BEGINWORKDAY = LocalTime.of(9, 0);
+        
+        /**
+         * Constant to indicate the end time of a workday
+         */
 	public static final LocalTime ENDWORKDAY = LocalTime.of(18, 0);
+        
+        /**
+         * Constant to indicate the begin time of the lunch
+         */
 	public static final LocalTime BEGINLUNCH = LocalTime.of(12, 0);
+        
+        /**
+         * Constant to indicate the end time of the lunch
+         */
 	public static final LocalTime ENDLUNCH = LocalTime.of(13, 0);
+        
+        /**
+         * Constant for a duration of zero
+         */
+        public static final Duration ZERO = new Duration(0);
 
 	private final long minutes;
     /****************************************
@@ -390,13 +415,38 @@ public class Duration implements Comparable<Duration>{
 		}
 		return new Duration(minutesRemaining).getEndTimeFrom(nextBegin);
 	}
-
+        
+        /**
+         * 
+         * @return 	a textual representation of this duration in the form of: 
+         * 			**hours **minutes
+         */
+        @Override
+        public String toString(){
+            return getHours() + "hours " + getMinutes() + "minutes";
+        }
+        
+        /**
+         * Checks whether the given duration is equal to the given duration.
+         * 
+         * @param 	o 
+		 *			The other duration to check
+         * @return 	true if and only if the given object is a duration and represents the same 
+         * 			amount of time like this duration.
+         */
 	@Override
 	public boolean equals(Object o) {
+            if(!(o instanceof Duration)){
+        
+                return false;
+            }
 		Duration other = (Duration) o;
 		return this.getHours() == other.getHours() && this.getMinutes() == other.getMinutes();
 	}
-
+        /**
+         * @return 	the hashcode of this duration, durations that represent the same
+         * 			ammount of time, 
+         */
     @Override
     public int hashCode() {
         int hash = 7;

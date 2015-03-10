@@ -388,13 +388,17 @@ public class Project implements DetailedProject {
     @Override
     public Duration getDelay() {
     	if(isOnTime())
-    		return null;
-    	Duration totalDuration = new Duration(0);
+    		return Duration.ZERO;
+    	Duration totalDuration = Duration.ZERO;
     	for(Task t : getTasks())
     		totalDuration = totalDuration.add(t.getDelay());
     	return totalDuration;
     }
     
+    /**
+     * 
+     * @return a string, representing the name of this project
+     */
     @Override
     public String toString() {
     	return this.name;
