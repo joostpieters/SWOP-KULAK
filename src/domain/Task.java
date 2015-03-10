@@ -213,12 +213,9 @@ public class Task implements DetailedTask {
 	 */
 	public boolean canHaveAsTimeSpan(Timespan timeSpan)
 	{
-		if(getPrerequisiteTasks() != null)
-		{
-			for(Task t: getPrerequisiteTasks())
-				if(t.isFulfilled() && !t.isFulfilledBefore(timeSpan))
-					return false;
-		}
+		for(Task t: getPrerequisiteTasks())
+			if(t.isFulfilled() && !t.isFulfilledBefore(timeSpan))
+				return false;
 		return true;
 	}
 	
@@ -551,16 +548,13 @@ public class Task implements DetailedTask {
 	{
 		if(getAlternativeTask() != null && getAlternativeTask().equals(task))
 			return true;
-		if(getPrerequisiteTasks() != null)
+		for(Task prereqTask : getPrerequisiteTasks())
 		{
-			for(Task prereqTask : getPrerequisiteTasks())
-			{
-				if(prereqTask.equals(task))
-					return true;
-				
-				if(prereqTask.dependsOn(task))
-					return true;
-			}
+			if(prereqTask.equals(task))
+				return true;
+			
+			if(prereqTask.dependsOn(task))
+				return true;
 		}
 		return false;
 	}
@@ -593,7 +587,7 @@ public class Task implements DetailedTask {
 	 * 
 	 * @return 	True if and only if the status of this task is equal to finished.
 	 */
-	public boolean isFinished() // TODO daarom is dit nodig.
+	public boolean isFinished() // TODO daarom is dit nodig. TODO duplicate code see isFulfilled
 	{
 		if(getStatus() == Status.FAILED)
 			return getAlternativeTask() != null && getAlternativeTask().isFinished();
@@ -664,7 +658,7 @@ public class Task implements DetailedTask {
 	public Duration getTimeSpent()
 	{
 		if(hasTimeSpan())
-			return getTimeSpan().getDuration();
+			return getTimeSpan().getDuration(); // TODO vervangen door werkelijke time spent ipv duration
 		else 
 			return new Duration(0);
 	}

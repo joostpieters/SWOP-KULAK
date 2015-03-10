@@ -144,7 +144,19 @@ public class TaskTest {
         assertTrue(instance.getId() >= 0);
         assertTrue(instance2.getId() > instance.getId());
     }
-
+    
+    /**
+     * Test of canHaveAsDescription method, of class Task.
+     */
+    @Test
+    public void testCanHaveAsDescription()
+    {
+    	System.out.println("canHaveAsDescription");
+    	
+    	assertTrue(t0.canHaveAsDescription("tekst"));
+    	assertFalse(t0.canHaveAsDescription(null));
+    	assertFalse(t0.canHaveAsDescription(""));
+    }
     /**
      * Test of update method, of class Task, attempting to set status to UNAVAILABLE
      */
@@ -164,6 +176,7 @@ public class TaskTest {
     	LocalDateTime endTime = LocalDateTime.of(1994, 11, 30, 0, 0);
     	t0.update(startTime, endTime, Status.AVAILABLE);
     }
+    
     /**
      * Test of update method, of class Task, attempting to set status to FAILED from FINISHED
      */
@@ -174,6 +187,47 @@ public class TaskTest {
     	t3.update(startTime, endTime, Status.FAILED);
     }
     
+    /**
+     * Test of update method, of class Task, attempting to update with start time uninitialized
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testUpdateInvalidStart()
+    {
+    	LocalDateTime endTime = LocalDateTime.of(1994, 11, 30, 0, 0);
+    	t0.update(null, endTime, Status.FAILED);
+    }
+
+    /**
+     * Test of update method, of class Task, attempting to update with end time uninitialized
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testUpdateInvalidEnd()
+    {
+    	LocalDateTime startTime = LocalDateTime.of(1994, 10, 30, 0, 0);
+    	t0.update(startTime, null, Status.FAILED);
+    }
+    
+    /**
+     * Test of getTimeSpent method, of class Task
+     */
+    @Test
+    public void testGetTimeSpent()
+    {
+    	System.out.println("getTimeSpent");
+    	
+    	LocalDateTime startA = LocalDateTime.of(2014, 10, 30, 10, 10);
+    	LocalDateTime endA = LocalDateTime.of(2014, 10, 30, 10, 20);
+
+    	Task taskA = new Task("finished, time spent = 10 minutes", new Duration(33), 0);
+    	assertEquals(0, taskA.getTimeSpent().toMinutes());
+    	taskA.update(startA, endA, Status.FINISHED);
+    	assertEquals(10, taskA.getTimeSpent().toMinutes());
+
+    	Task taskB = new Task("failed, time spent = 10 minutes", new Duration(33), 0);
+    	taskB.update(startA, endA, Status.FAILED);
+    	assertEquals(10, taskA.getTimeSpent().toMinutes());
+    	
+    }
     /*
      * Test of update method, of class Task
      */
@@ -267,6 +321,8 @@ public class TaskTest {
         assertFalse(t0.hasTimeSpan());
         assertTrue(t3.hasTimeSpan());
     }
+    
+    
     /**
      * Test of canHaveAsTimeSpan method, of class Task.
      */
@@ -328,14 +384,14 @@ public class TaskTest {
     			LocalDateTime.of(2015, 3, 5, 11, 48),
     			LocalDateTime.of(2015, 3, 5, 15, 33), Status.FINISHED);
     	
-    	//succesful edge case:
+    	//successful edge case:
     	Timespan t8timeSpan_success = new Timespan(
     			LocalDateTime.of(2015, 3, 5, 15, 33), 
     			LocalDateTime.of(2015, 3, 5, 15, 45)
     			);
     	assertTrue(t8.canHaveAsTimeSpan(t8timeSpan_success));
     	
-    	//succesful non edge case:
+    	//successful non edge case:
     	Timespan t8timeSpan_success2 = new Timespan(
     			LocalDateTime.of(2015, 3, 6, 15, 33), 
     			LocalDateTime.of(2015, 3, 6, 15, 45)
@@ -349,13 +405,33 @@ public class TaskTest {
     			);
     	assertFalse(t8.canHaveAsTimeSpan(t8timeSpan_fail));
     	
-    	//non succesful non overlap:
+    	//non successful non overlap:
     	Timespan t8timeSpan_fail2 = new Timespan(
     			LocalDateTime.of(2015, 3, 1, 11, 22), 
     			LocalDateTime.of(2015, 3, 2, 15, 15)
     			);
     	assertFalse(t8.canHaveAsTimeSpan(t8timeSpan_fail2));
     	
+    	//successful no prerequisites
+    	assertTrue(new Task("descr", new Duration(10), 20).canHaveAsTimeSpan(t0timeSpan));
+    	
+    }
+    
+    /**
+     * Test of canHaveAsAcceptableDeviation method, of class Task
+     */
+    @Test
+    public void testCanHaveAsAcceptableDeviation()
+    {
+    	System.out.println("canHaveAsAcceptableDeviation");
+    	
+    	assertTrue(t0.canHaveAsAcceptableDeviation(0));
+    	assertTrue(t0.canHaveAsAcceptableDeviation(15));
+    	assertTrue(t0.canHaveAsAcceptableDeviation(67));
+    	assertTrue(t0.canHaveAsAcceptableDeviation(100));
+    	assertFalse(t0.canHaveAsAcceptableDeviation(-1));
+    	assertFalse(t0.canHaveAsAcceptableDeviation(-120));
+    	assertFalse(t0.canHaveAsAcceptableDeviation(101456));
     }
     
     /**
@@ -371,6 +447,53 @@ public class TaskTest {
     	assertEquals(t7alternative.estimatedWorkTimeNeeded().toMinutes(), t7.estimatedWorkTimeNeeded().toMinutes());
     	
     }
+    
+    /*
+     * test of setAlternativeTask method, of class Task.
+     * Attempt to set alternative task of t0 which is not failed
+     */
+    @Test (expected = IllegalStateException.class)
+    public void testSetAlternativeTaskException1()
+    {
+    	t0.setAlternativeTask(t1);
+    }
+    
+    /*
+     * test of setAlternativeTask method, of class Task.
+     * Attempt to set alternative task of t7 which already has an alternative task
+     */
+    @Test (expected = IllegalStateException.class)
+    public void testSetAlternativeTaskException2()
+    {
+    	t7.setAlternativeTask(t1);
+    }
+    
+    /*
+     * test of setAlternativeTask method, of class Task.
+     * Attempt to set alternative task of t7 which already has an alternative task
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testSetAlternativeTaskException3()
+    {
+    	t0.update(LocalDateTime.of(2015, 3, 10, 10, 10), LocalDateTime.of(2015, 3, 10, 20, 10), Status.FAILED);
+    	t0.setAlternativeTask(t5);
+    }
+    
+    /*
+     * test of canHaveAsPrerequisiteTasks method, of class Task.
+     */
+    @Test
+    public void testCanHaveAsPrerequisiteTasks()
+    {
+    	assertFalse(t0.canHaveAsPrerequisiteTasks(null));
+    	ArrayList<Task> containsNull = new ArrayList<Task>();
+    	containsNull.add(null);
+    	assertFalse(t0.canHaveAsPrerequisiteTasks(containsNull));
+    	assertFalse(t0.canHaveAsPrerequisiteTasks(Arrays.asList(t0)));
+    	assertTrue(t0.canHaveAsPrerequisiteTasks(Arrays.asList(t1)));
+    	assertFalse(t0.canHaveAsPrerequisiteTasks(Arrays.asList(t5)));
+    }
+    
     /*
      * test of canBeFulfilled method, of class Task
      */
@@ -413,6 +536,9 @@ public class TaskTest {
     public void testGetDelay()
     {
     	System.out.println("getDelay");
+    	
+    	// Task with no time span t0
+    	assertEquals(0, t0.getDelay().toMinutes());
     	
     	// duration 10, acceptable deviation 20 => max duration 12 minutes
     	// checking time span duration == max duration
