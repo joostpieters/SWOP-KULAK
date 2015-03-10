@@ -6,6 +6,7 @@ import domain.DetailedTask;
 import domain.Project;
 import domain.ProjectManager;
 import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -33,7 +34,7 @@ public class ShowProjectHandler {
      * 
      * @return A list of projects of this projectmanager
      */
-    public ArrayList<DetailedProject> getProjects(){
+    public List<DetailedProject> getProjects(){
         return new ArrayList<>(manager.getProjects());
     }
     

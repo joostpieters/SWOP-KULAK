@@ -240,7 +240,7 @@ public class Project implements DetailedProject {
 	 * 
 	 * @param 	descr
 	 * 			The description for the new task.
-     * @param   estdur 
+     * @param   duration 
      * 			The estimated duration of the new task.
 	 * @param 	accdev
 	 * 			The acceptable deviation for the new task in %.
@@ -267,7 +267,7 @@ public class Project implements DetailedProject {
 			for(Integer tId : prereq) {
 				taskList.add(getTask(tId));
 			}
-			t = new Task(descr, estdur, accdev, taskList);
+			t = new Task(descr, duration, accdev, taskList);
 		}
 		
 		if(altFor != Project.NO_ALTERNATIVE)

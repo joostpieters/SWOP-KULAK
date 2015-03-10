@@ -61,7 +61,11 @@ public interface DetailedProject {
      * 			false otherwise.
      */
     boolean isOnTime();
-
-    public List<Task> getTasks();
+    
+    /**
+     * 
+     * @return A list containing all projects ascociated with this project.
+     */
+    public List<? extends DetailedTask> getTasks();
     
 }

@@ -3,7 +3,6 @@ package UI.swingGUI;
 import controller.ShowProjectHandler;
 import domain.DetailedProject;
 import domain.DetailedTask;
-import domain.Task;
 import java.awt.CardLayout;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -91,15 +90,15 @@ public class ShowProjectFrame extends javax.swing.JFrame {
         }
         statusLabel.setText(status);
         String[] columnNames = {"Id", "Description", "Estimated Duration", "Acceptable Deviation"};
-        List<Task> tasks = handler.getProject().getTasks();
+        List<DetailedTask> tasks = (List<DetailedTask>) project.getTasks();
         Object[][] data = new Object[tasks.size()][];
 
         int i = 0;
-        for (Task task : tasks) {
+        for (DetailedTask task : tasks) {
             data[i] = new Object[]{
                 task.getId(),
                 task.getDescription(),
-                task.getEstimatedDuration().getHours() + "h " + task.getEstimatedDuration().getMinutes() + " min",
+                task.getEstimatedDuration(),
                 task.getAcceptableDeviation() + "%"
 
             };
@@ -121,14 +120,13 @@ public class ShowProjectFrame extends javax.swing.JFrame {
      * Fill the task details frame with the appropriate data
      */
     private void initTaskDetails(DetailedTask task) {
-        taskEstDurLabel.setText(task.getEstimatedDuration().getHours() + "h "+
-                 task.getEstimatedDuration().getMinutes() + "min");
+        taskEstDurLabel.setText(task.getEstimatedDuration().toString());
         
         taskStatusLabel.setText(task.getStatus().toString());
         taskDescriptionLabel.setText(task.getDescription());
         taskAccDevLabel.setText(task.getAcceptableDeviation() + "%");
         alternativeTaskLabel.setText(task.getAlternativeTask() == null ? "n/a" : task.getAlternativeTask().getDescription());
-         List<DetailedTask> tasks = (List<DetailedTask>) task.getPrerequisiteTasks();
+        List<DetailedTask> tasks = (List<DetailedTask>) task.getPrerequisiteTasks();
         Object[][] data = new Object[tasks.size()][];
 
         int i = 0;
