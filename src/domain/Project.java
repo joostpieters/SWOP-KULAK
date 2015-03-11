@@ -166,8 +166,9 @@ public class Project implements DetailedProject {
 	 * 
 	 * @param 	tid
 	 * 			The id of the task to be returned.
-	 * @return	The task with the given id if it is contained in this,
-	 * 			null otherwise.
+	 * @return	The task with the given id if it is contained in this project.
+	 * @throws  ObjectNotFoundException
+	 *          if this project doesn't contain the task with the given id.
 	 */
 	public Task getTask(int tid) {
 		Task t = tasks.get(tid);
@@ -199,6 +200,18 @@ public class Project implements DetailedProject {
 			}
 		
 		return taskCheck && altTaskCheck && prereqTaskCheck;
+	}
+	
+	/** TODO kan misschien gebruikt worden in andere methodes?
+	 * Checks whether this project contains the task with the given task id.
+	 * 
+	 * @param tid
+	 *        The task id to check.
+	 * @return True if and only if this project contains a task with the given task id.
+	 */
+	public boolean hasTask(int tid)
+	{
+		return tasks.containsKey(tid);
 	}
     
     /****************************************
@@ -268,9 +281,11 @@ public class Project implements DetailedProject {
 			t = new Task(descr, estdur, accdev, taskList);
 		}
 		
-		if(altFor != Project.NO_ALTERNATIVE)
-			getTask(altFor).setAlternativeTask(t);
 		addTask(t);
+		
+		if(altFor != Project.NO_ALTERNATIVE)
+			getTask(altFor).setAlternativeTask(t, this);
+		
 		return t;
 	}
 	

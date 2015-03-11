@@ -43,28 +43,19 @@ public class TaskTest {
     			LocalDateTime.of(2015, 3, 4, 15, 33)
     			);
     	t3 = p.createTask("t3 finished", new Duration(30), 40, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-    			//new Task("t3 finished", new Duration(30), 40);
     	p.updateTask(t3.getId(), t3ts.getStartTime(), t3ts.getEndTime(), Status.FINISHED);
     	t4 = p.createTask("t4", new Duration(30), 10, Project.NO_ALTERNATIVE, Arrays.asList(t3.getId()));
-    			//new Task("t4", new Duration(30), 10, Arrays.asList(t3));
     	t5 = p.createTask("t5", new Duration(20), 5, Project.NO_ALTERNATIVE, Arrays.asList(t3.getId(), t2.getId()));
-    			//new Task("t5", new Duration(20), 5, Arrays.asList(t3, t2));
     	Timespan t6ts = new Timespan(
     			LocalDateTime.of(2015, 3, 4, 11, 48), 
     			LocalDateTime.of(2015, 3, 4, 15, 33)
     			);
     	t6 = p.createTask("t6", new Duration(10), 3, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-    	//new Task("t6", new Duration(10), 3);
     	p.updateTask(t6.getId(), t6ts.getStartTime(), t6ts.getEndTime(), Status.FAILED);
-    	//t6.update(t6ts.getStartTime(), t6ts.getEndTime(), Status.FAILED);
     	t7 = p.createTask("t7", new Duration(15), 4, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-    	//new Task("t7", new Duration(15), 4);
     	p.updateTask(t7.getId(), t6ts.getStartTime(), t6ts.getEndTime(), Status.FAILED);
-    	//t7.update(t6ts.getStartTime(), t6ts.getEndTime(), Status.FAILED);
     	t7alternative = p.createTask("alternative for t7", new Duration(10), 2, t7.getId(), Project.NO_DEPENDENCIES);
-    			//new Task("alternative for t7!", new Duration(10), 2, t7);
     	t8 = p.createTask("depends on t7", new Duration(33), 3, Project.NO_ALTERNATIVE, Arrays.asList(t7.getId()));
-    			//new Task("depends on t7", new Duration(33), 3, Arrays.asList(t7) );
     }
     
     /**
@@ -408,20 +399,6 @@ public class TaskTest {
     	assertFalse(t0.canHaveAsAcceptableDeviation(101456));
     }
     
-    /**
-     * Test of estimatedWorkTimeNeeded method, of class Task
-     */
-    public void testEstimatedWorkTimeNeeded()
-    {
-    	System.out.println("estimatedWorkTimeNeeded");
-    	
-    	assertEquals(t0.getEstimatedDuration().toMinutes(), t0.estimatedWorkTimeNeeded().toMinutes());
-    	assertEquals(0, t3.getEstimatedDuration().toMinutes());
-    	assertEquals(40, t4.getEstimatedDuration().toMinutes());
-    	assertEquals(t7alternative.estimatedWorkTimeNeeded().toMinutes(), t7.estimatedWorkTimeNeeded().toMinutes());
-    	
-    }
-    
     /*
      * test of setAlternativeTask method, of class Task.
      * Attempt to set alternative task of t0 which is not failed
@@ -429,7 +406,7 @@ public class TaskTest {
     @Test (expected = IllegalStateException.class)
     public void testSetAlternativeTaskException1()
     {
-    	t0.setAlternativeTask(t1);
+    	t0.setAlternativeTask(t1, p);
     }
     
     /*
@@ -439,7 +416,7 @@ public class TaskTest {
     @Test (expected = IllegalStateException.class)
     public void testSetAlternativeTaskException2()
     {
-    	t7.setAlternativeTask(t1);
+    	t7.setAlternativeTask(t1, p);
     }
     
     /*
@@ -450,7 +427,52 @@ public class TaskTest {
     public void testSetAlternativeTaskException3()
     {
     	t0.update(LocalDateTime.of(2015, 3, 10, 10, 10), LocalDateTime.of(2015, 3, 10, 20, 10), Status.FAILED, p);
-    	t0.setAlternativeTask(t5);
+    	t0.setAlternativeTask(t5, p);
+    }
+    
+    /*
+     * test of setAlternativeTask method, of class Task.
+     * Attempt to set alternative task of t6 to t3 with illegal wrong project argument
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testSetAlternativeTaskException4()
+    {
+    	Project p1 = pm.createProject("p1", "not p0", LocalDateTime.of(2000, 11, 12, 13, 14), LocalDateTime.of(2030, 11, 12, 13, 14));
+    	t6.setAlternativeTask(t0, p1);
+    }
+    
+    /*
+     * test of setAlternativeTask method, of class Task.
+     * Attempt to set alternative task of t6 to a task belonging to a different project
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testSetAlternativeTaskException5()
+    {
+    	Project p1 = pm.createProject("p1", "not p", LocalDateTime.of(2000, 11, 12, 13, 14), LocalDateTime.of(2030, 11, 12, 13, 14));
+    	Task p1t0 = p1.createTask("task belonging to p1", new Duration(120), 33, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
+    	t6.setAlternativeTask(p1t0, p1);
+    }
+    
+    /*
+     * test of setAlternativeTask method, of class Task.
+     * Attempt to set alternative task of t6 to a task belonging to a different project
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testSetAlternativeTaskException6()
+    {
+    	Project p1 = pm.createProject("p1", "not p", LocalDateTime.of(2000, 11, 12, 13, 14), LocalDateTime.of(2030, 11, 12, 13, 14));
+    	Task p1t0 = p1.createTask("task belonging to p1", new Duration(120), 33, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
+    	t6.setAlternativeTask(p1t0, p);
+    }
+    
+    /**
+     * Test of setAlternative method, of class Task
+     */
+    @Test
+    public void testSetAlternativeTask()
+    {
+    	t6.setAlternativeTask(t0, p);
+    	assertEquals(t0, t6.getAlternativeTask());
     }
     
     /*
@@ -526,7 +548,6 @@ public class TaskTest {
     	// duration 20, acceptable deviation 20 => max duration 24 minutes
     	// checking time span duration < max duration
     	Task someTask2 = p.createTask("20, 20", new Duration(20), 20, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-    			//new Task("20, 20", new Duration(20), 20);
     	Timespan TS20 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 13, 0),
     			LocalDateTime.of(2015,  3, 4, 13, 20));
@@ -536,7 +557,6 @@ public class TaskTest {
     	// duration 30, acceptable deviation 10 => max duration 33 minutes
     	// checking time span duration > max duration
     	Task someTask3 = p.createTask("30, 10", new Duration(30), 10, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-//new Task("30, 10", new Duration(30), 10);
     	Timespan TS35 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 13, 0),
     			LocalDateTime.of(2015,  3, 4, 13, 35));
@@ -554,6 +574,58 @@ public class TaskTest {
     	assertEquals(87, someTask4.getDelay().toMinutes());
     	
     }
+    
+    /**
+     * Test of method canUpdateStatus, of class Task
+     */
+    @Test
+    public void testCanUpdateStatus()
+    {
+    	assertEquals(Status.FINISHED, t3.getStatus());       // t3 is finished
+    	assertFalse(t3.canUpdateStatus(Status.FAILED));      // finished  -> failed
+    	assertFalse(t3.canUpdateStatus(Status.AVAILABLE));   // finished  -> available
+    	assertFalse(t3.canUpdateStatus(Status.UNAVAILABLE)); // finished  -> unavailable
+
+    	assertEquals(Status.FAILED, t6.getStatus());         // t6 is failed
+    	assertFalse(t6.canUpdateStatus(Status.FINISHED));    // failed  -> finished
+    	assertFalse(t6.canUpdateStatus(Status.AVAILABLE));   // failed  -> available
+    	assertFalse(t6.canUpdateStatus(Status.UNAVAILABLE)); // failed  -> unavailable
+    	
+    	assertEquals(Status.AVAILABLE, t0.getStatus());      // t0 is available
+    	assertTrue(t0.canUpdateStatus(Status.FINISHED));     // available    -> finished
+    	assertTrue(t0.canUpdateStatus(Status.FAILED));       // available    -> failed
+    	assertFalse(t0.canUpdateStatus(Status.UNAVAILABLE)); // available    -> unavailable
+
+    	assertEquals(Status.UNAVAILABLE, t2.getStatus());    // t2 is unavailable
+    	assertFalse(t2.canUpdateStatus(Status.FINISHED));    // unavailable  -> finished
+    	assertTrue(t2.canUpdateStatus(Status.FAILED));       // unavailable  -> failed
+    	assertFalse(t2.canUpdateStatus(Status.FINISHED));    // unavailable  -> available
+    }
+
+    /**
+     * Test of estimatedWorkTimeNeeded method, of class Task
+     */
+    @Test
+    public void testEstimatedWorkTimeNeeded()
+    {
+    	System.out.println("estimatedWorkTimeNeeded");
+
+    	assertEquals(Status.FINISHED, t3.getStatus());
+    	assertEquals(Duration.ZERO.toMinutes(), t3.estimatedWorkTimeNeeded().toMinutes());
+
+    	assertEquals(Status.FAILED, t6.getStatus());
+    	assertEquals(Duration.ZERO.toMinutes(), t6.estimatedWorkTimeNeeded().toMinutes());
+    	
+    	assertEquals(Status.AVAILABLE, t0.getStatus());
+    	assertEquals(t0.getEstimatedDuration().toMinutes(), t0.estimatedWorkTimeNeeded().toMinutes());
+    	
+    	Task unavailableTask = p.createTask("unavailable", new Duration(33), 22, Project.NO_ALTERNATIVE, Arrays.asList(t0.getId()));
+    	assertEquals(Status.UNAVAILABLE, unavailableTask.getStatus());
+    	long estimatedWorkTimeExpected = t0.estimatedWorkTimeNeeded().toMinutes() + unavailableTask.getEstimatedDuration().toMinutes();
+    	assertEquals(estimatedWorkTimeExpected, unavailableTask.estimatedWorkTimeNeeded().toMinutes());
+    	
+    }
+    
     /**
      * Test of dependsOn method, of class Task.
      */
@@ -578,9 +650,6 @@ public class TaskTest {
         
         assertTrue(t8.dependsOn(t7));
         assertTrue(t8.dependsOn(t7alternative)); // indirectly depends on the alternative task of t7
-        
-        
-        
     }
     
 }

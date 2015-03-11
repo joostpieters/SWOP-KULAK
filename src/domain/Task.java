@@ -231,15 +231,19 @@ public class Task implements DetailedTask {
 	 * 
 	 * @param 	alternativeTask
 	 *        	The alternative task for this task.
+	 * @param   project
+	 *          The project to which this task and the given alternative task belong to.
 	 * @throws 	IllegalStateException
 	 *         	If the state of this task is not FAILED.
 	 * @throws 	IllegalStateException
 	 *         	If this task already has an alternative task.
 	 * @throws 	IllegalArgumentException
 	 *         	If this task can't have the given task as its alternative task.
+	 * @throws  IllegalArgumentException
+	 *          If this task and the given alternative task don't both belong to the given project
 	 * @see    	canHaveAsAlternativeTask
 	 */
-	void setAlternativeTask(Task alternativeTask) throws IllegalStateException, IllegalArgumentException
+	void setAlternativeTask(Task alternativeTask, Project project) throws IllegalStateException, IllegalArgumentException
 	{
 		if(getStatus() != Status.FAILED)
 			throw new IllegalStateException(
@@ -254,6 +258,10 @@ public class Task implements DetailedTask {
 		if(!canHaveAsAlternativeTask(alternativeTask))
 			throw new IllegalArgumentException(
 					"This task can't have the given task as its alternative task.");
+		
+		if( !( project.hasTask(getId()) && project.hasTask(alternativeTask.getId()) ) )
+			throw new IllegalArgumentException("This task and/or the given alternative task don't belong to the given project");
+		
 		this.alternativeTask = alternativeTask;
 	}
 	
@@ -565,7 +573,11 @@ public class Task implements DetailedTask {
 	/**
 	 * The estimated amount of time needed until this task can be set to finished. TODO commentaar
 	 * 
-	 * @return If this task is already finished, a duration of 0 is returned.
+	 * @return If this task is finished or failed, a duration of 0.
+	 *         If this task is unavailable, the sum of the amounts of work time
+	 *         needed of the prerequisite tasks of this task + the estimated
+	 *         duration of this task.
+	 *         If this task is available, the estimated duration of this task.
 	 *         
 	 */
 	public Duration estimatedWorkTimeNeeded()
