@@ -47,7 +47,7 @@ public class ShowProjectScenarioTest {
         p1 = manager.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
         
-        t2 = p1.createTask("A difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Arrays.asList(2));
+        t2 = p1.createTask("A difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Arrays.asList(0));
         
         p2 = manager.createProject("Test 2", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         p3 = manager.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
@@ -86,7 +86,7 @@ public class ShowProjectScenarioTest {
         //step 4, show details of p1
         DetailedProject p1Details = handler.getProject();
         assertEquals("Mobile Steps", p1Details.getName());
-        assertEquals("A description", p1Details.getDescription());
+        assertEquals("A description.", p1Details.getDescription());
         assertEquals(LocalDateTime.of(2015, 3, 12, 17, 30), p1Details.getCreationTime());
         assertEquals(LocalDateTime.of(2015, 3, 22, 17, 50), p1Details.getDueTime());
         // TODO more details

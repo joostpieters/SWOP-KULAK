@@ -63,11 +63,6 @@ public class CreateProjectFrame extends javax.swing.JFrame {
         dueTimeTextField.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         dueTimeTextField.setText("e.g. 2014-02-01 18:00");
         dueTimeTextField.setToolTipText("The due time of the project");
-        dueTimeTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dueTimeTextFieldActionPerformed(evt);
-            }
-        });
 
         jLabel3.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         jLabel3.setText("Description");
@@ -88,11 +83,6 @@ public class CreateProjectFrame extends javax.swing.JFrame {
         creationTimeTextField.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         creationTimeTextField.setText("e.g. 2014-02-01 18:00");
         creationTimeTextField.setToolTipText("The creation time of the project");
-        creationTimeTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                creationTimeTextFieldActionPerformed(evt);
-            }
-        });
 
         descriptionTextArea.setColumns(20);
         descriptionTextArea.setRows(5);
@@ -172,10 +162,6 @@ public class CreateProjectFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void dueTimeTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dueTimeTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_dueTimeTextFieldActionPerformed
-
     private void createProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createProject
         String name = nameTextField.getText();
         String description = descriptionTextArea.getText();
@@ -189,10 +175,6 @@ public class CreateProjectFrame extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_createProject
-
-    private void creationTimeTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_creationTimeTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_creationTimeTextFieldActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
