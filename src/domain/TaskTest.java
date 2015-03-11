@@ -43,28 +43,19 @@ public class TaskTest {
     			LocalDateTime.of(2015, 3, 4, 15, 33)
     			);
     	t3 = p.createTask("t3 finished", new Duration(30), 40, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-    			//new Task("t3 finished", new Duration(30), 40);
     	p.updateTask(t3.getId(), t3ts.getStartTime(), t3ts.getEndTime(), Status.FINISHED);
     	t4 = p.createTask("t4", new Duration(30), 10, Project.NO_ALTERNATIVE, Arrays.asList(t3.getId()));
-    			//new Task("t4", new Duration(30), 10, Arrays.asList(t3));
     	t5 = p.createTask("t5", new Duration(20), 5, Project.NO_ALTERNATIVE, Arrays.asList(t3.getId(), t2.getId()));
-    			//new Task("t5", new Duration(20), 5, Arrays.asList(t3, t2));
     	Timespan t6ts = new Timespan(
     			LocalDateTime.of(2015, 3, 4, 11, 48), 
     			LocalDateTime.of(2015, 3, 4, 15, 33)
     			);
     	t6 = p.createTask("t6", new Duration(10), 3, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-    	//new Task("t6", new Duration(10), 3);
     	p.updateTask(t6.getId(), t6ts.getStartTime(), t6ts.getEndTime(), Status.FAILED);
-    	//t6.update(t6ts.getStartTime(), t6ts.getEndTime(), Status.FAILED);
     	t7 = p.createTask("t7", new Duration(15), 4, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-    	//new Task("t7", new Duration(15), 4);
     	p.updateTask(t7.getId(), t6ts.getStartTime(), t6ts.getEndTime(), Status.FAILED);
-    	//t7.update(t6ts.getStartTime(), t6ts.getEndTime(), Status.FAILED);
     	t7alternative = p.createTask("alternative for t7", new Duration(10), 2, t7.getId(), Project.NO_DEPENDENCIES);
-    			//new Task("alternative for t7!", new Duration(10), 2, t7);
     	t8 = p.createTask("depends on t7", new Duration(33), 3, Project.NO_ALTERNATIVE, Arrays.asList(t7.getId()));
-    			//new Task("depends on t7", new Duration(33), 3, Arrays.asList(t7) );
     }
     
     /**
@@ -429,7 +420,7 @@ public class TaskTest {
     @Test (expected = IllegalStateException.class)
     public void testSetAlternativeTaskException1()
     {
-    	t0.setAlternativeTask(t1);
+    	t0.setAlternativeTask(t1, p);
     }
     
     /*
@@ -439,7 +430,7 @@ public class TaskTest {
     @Test (expected = IllegalStateException.class)
     public void testSetAlternativeTaskException2()
     {
-    	t7.setAlternativeTask(t1);
+    	t7.setAlternativeTask(t1, p);
     }
     
     /*
@@ -450,7 +441,7 @@ public class TaskTest {
     public void testSetAlternativeTaskException3()
     {
     	t0.update(LocalDateTime.of(2015, 3, 10, 10, 10), LocalDateTime.of(2015, 3, 10, 20, 10), Status.FAILED, p);
-    	t0.setAlternativeTask(t5);
+    	t0.setAlternativeTask(t5, p);
     }
     
     /*

@@ -161,7 +161,7 @@ public class Project implements DetailedProject {
         return new LinkedList<>(tasks.values());
     }
 	
-	/**
+	/** TODO commentaar updaten
 	 * Get a task with given id contained in this project.
 	 * 
 	 * @param 	tid
@@ -199,6 +199,18 @@ public class Project implements DetailedProject {
 			}
 		
 		return taskCheck && altTaskCheck && prereqTaskCheck;
+	}
+	
+	/** TODO kan misschien gebruikt worden in andere methodes?
+	 * Checks whether this project contains the task with the given task id.
+	 * 
+	 * @param tid
+	 *        The task id to check.
+	 * @return True if and only if this project contains a task with the given task id.
+	 */
+	public boolean hasTask(int tid)
+	{
+		return tasks.containsKey(tid);
 	}
     
     /****************************************
@@ -268,9 +280,11 @@ public class Project implements DetailedProject {
 			t = new Task(descr, estdur, accdev, taskList);
 		}
 		
-		if(altFor != Project.NO_ALTERNATIVE)
-			getTask(altFor).setAlternativeTask(t);
 		addTask(t);
+		
+		if(altFor != Project.NO_ALTERNATIVE)
+			getTask(altFor).setAlternativeTask(t, this);
+		
 		return t;
 	}
 	
