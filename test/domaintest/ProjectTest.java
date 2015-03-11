@@ -196,9 +196,7 @@ public class ProjectTest {
      */
     @Test
     public void testCreateTaskPrereqs() {
-    	prereqs.add(t2.getId());
-    	prereqs.add(t3.getId());
-    	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, prereqs);
+    	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()));
     	
     	assertTrue(p2.getTasks().contains(t));
     	assertEquals(taskdescr, t.getDescription());
@@ -225,9 +223,7 @@ public class ProjectTest {
      */
     @Test (expected = ObjectNotFoundException.class)
     public void testCreateTaskInvalidPrereqs() {
-    	prereqs.add(t2.getId());
-    	prereqs.add(t3.getId());
-    	p1.createTask(taskdescr, estdur, accdev, altFor, prereqs);
+    	p1.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()));
     }
     
     /**
@@ -235,9 +231,7 @@ public class ProjectTest {
      */
     @Test (expected = ObjectNotFoundException.class)
     public void testCreateTaskInvalidPrereqs2() {
-    	prereqs.add(t2.getId());
-    	prereqs.add(t3.getId());
-    	p2.createTask(taskdescr, estdur, accdev, altFor, prereqs);
+    	p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t1.getId(), t2.getId()));
     }
     
     /**
@@ -280,9 +274,7 @@ public class ProjectTest {
      */
     @Test
     public void testGetAvailableTasksPrereqs() {
-    	prereqs.add(t2.getId());
-    	prereqs.add(t3.getId());
-    	Task prereq = p2.createTask(taskdescr, estdur, accdev, altFor, prereqs);
+    	Task prereq = p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()));
     	assertEquals(2, p2.getAvailableTasks().size());
     	assertTrue(p2.getAvailableTasks().contains(t2));
     	assertTrue(p2.getAvailableTasks().contains(t3));
@@ -352,9 +344,7 @@ public class ProjectTest {
      */
     @Test
     public void testIsFinishedPrereqs() {
-    	prereqs.add(t2.getId());
-    	prereqs.add(t3.getId());
-    	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, prereqs);
+    	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()));
     	assertFalse(p2.isFinished());
     	t2.update(start, end, Status.FINISHED);
     	assertFalse(p2.isFinished());
@@ -402,9 +392,7 @@ public class ProjectTest {
      */
     @Test
     public void testIsOnTimeFinishedPrereqs() {
-    	prereqs.add(t2.getId());
-    	prereqs.add(t3.getId());
-    	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, prereqs);
+    	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()));
     	t2.update(start, due, Status.FINISHED);
     	t3.update(start, end, Status.FINISHED);
     	t.update(due, due.plusHours(1), Status.FINISHED);
@@ -470,9 +458,7 @@ public class ProjectTest {
      */
     @Test
     public void testIsOnTimeUnFinishedPrereqs() {
-    	prereqs.add(t2.getId());
-    	prereqs.add(t3.getId());
-    	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, prereqs);
+    	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()));
     	assertTrue(p2.isOnTime());
     	p2.createTask(taskdescr, new Duration(ProjectTest.DAYDIF*Duration.getMinutesOfWorkDay()), accdev, altFor, Arrays.asList(t.getId()));
     	assertFalse(p2.isOnTime());
