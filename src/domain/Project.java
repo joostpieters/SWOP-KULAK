@@ -161,13 +161,14 @@ public class Project implements DetailedProject {
         return new LinkedList<>(tasks.values());
     }
 	
-	/** TODO commentaar updaten
+	/**
 	 * Get a task with given id contained in this project.
 	 * 
 	 * @param 	tid
 	 * 			The id of the task to be returned.
-	 * @return	The task with the given id if it is contained in this,
-	 * 			null otherwise.
+	 * @return	The task with the given id if it is contained in this project.
+	 * @throws  ObjectNotFoundException
+	 *          if this project doesn't contain the task with the given id.
 	 */
 	public Task getTask(int tid) {
 		Task t = tasks.get(tid);
