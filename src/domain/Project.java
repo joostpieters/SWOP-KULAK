@@ -291,7 +291,7 @@ public class Project implements DetailedProject {
 		if(start.isBefore(getCreationTime()))
 			throw new IllegalArgumentException("A task can't have started before its project.");
 		
-		getTask(tid).update(start, end, status);
+		getTask(tid).update(start, end, status, this);
 	}
 	
 	/**
