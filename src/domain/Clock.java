@@ -9,9 +9,6 @@ import java.time.LocalDateTime;
  */
 public class Clock {
 	
-	/**
-         * Time used to initialize clock: 1 january 2000
-         */
 	public static final LocalDateTime NEW_YEAR = LocalDateTime.of(2000, 1, 1, 0, 0);
     
     private LocalDateTime time;

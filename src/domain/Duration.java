@@ -181,8 +181,8 @@ public class Duration implements Comparable<Duration>{
      * @return 	True if and only is the given begin time is strictly before the 
      * 			given end time.
      */
-    public static boolean isValidInterval(LocalDateTime begin, LocalDateTime end){
-    	return !begin.isAfter(end);
+    public static boolean isValidInterval(LocalDateTime begin, LocalDateTime end) {
+        return !begin.isAfter(end);
     }
     
     /**
@@ -405,7 +405,7 @@ public class Duration implements Comparable<Duration>{
          */
         @Override
         public String toString(){
-            return (getHours() > 0 ? getHours() + " hours  " : "") + getMinutes() + " minutes";
+            return getHours() + "hours " + getMinutes() + "minutes";
         }
         
         /**

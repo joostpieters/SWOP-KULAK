@@ -240,7 +240,7 @@ public class Project implements DetailedProject {
 	 * 			The acceptable deviation for the new task in %.
 	 * @param 	altFor
 	 * 			The id this task is an alternative for.
-	 * @param 	prereq
+	 * @param 	prereqs
 	 * 			An array of id's of tasks that the new task will depend on.
 	 * 
 	 * @return	The task that has been created.
@@ -249,16 +249,20 @@ public class Project implements DetailedProject {
 	 * 
 	 * @see		Task#Task(String, Duration, int, List, Task)
 	 */
-	public Task createTask(String descr, Duration estdur, int accdev, int altFor, List<Integer> prereq) {
+	public Task createTask(String descr, Duration estdur, int accdev, int altFor, List<Integer> prereqs) {
 		if(isFinished())
 			throw new IllegalStateException("This project has already been finished.");
+		if(altFor < 0)
+			altFor = Project.NO_ALTERNATIVE;
+		if(prereqs == null)
+			prereqs = Project.NO_DEPENDENCIES;
 		
 		Task t;
-		if(prereq.equals(Project.NO_DEPENDENCIES)) {
+		if(prereqs.equals(Project.NO_DEPENDENCIES)) {
 			t = new Task(descr, estdur, accdev);
 		} else {
 			List<Task> taskList = new ArrayList<>();
-			for(Integer tId : prereq) {
+			for(Integer tId : prereqs) {
 				taskList.add(getTask(tId));
 			}
 			t = new Task(descr, estdur, accdev, taskList);
@@ -291,7 +295,7 @@ public class Project implements DetailedProject {
 		if(start.isBefore(getCreationTime()))
 			throw new IllegalArgumentException("A task can't have started before its project.");
 		
-		getTask(tid).update(start, end, status);
+		getTask(tid).update(start, end, status, this);
 	}
 	
 	/**
@@ -313,7 +317,6 @@ public class Project implements DetailedProject {
 		List<Task> result = new LinkedList<>();
 		
 		for(Task t : getAvailableTasks()) {
-			//TODO: doet estimatedWorkTimeNeeded() het juiste?
 			LocalDateTime estFinTime = t.estimatedWorkTimeNeeded().getEndTimeFrom(getTime());
 			if(estFinTime.isAfter(getDueTime()))
 				result.add(t);
@@ -337,7 +340,7 @@ public class Project implements DetailedProject {
 			return false;
 		
 		for(Task t : getTasks())
-			if(!t.isFinished()) {
+			if(!t.isFulfilled()) {
 				return false;
 			}
 		
@@ -363,16 +366,19 @@ public class Project implements DetailedProject {
 					return false;
 			return true;
 		} else {
-			Duration temp, max = new Duration(0);
+			Duration temp, max = Duration.ZERO;
+			Duration temp2, max2 = Duration.ZERO;
 			for(Task t : getTasks()) {
-				//TODO: estimatedWorkTime doet niet wat verwacht wordt
 				temp = t.estimatedWorkTimeNeeded();
+				temp2 = t.getTimeSpent();
 				if(temp.compareTo(max) > 0)
 					max = temp;
+				if(temp2.compareTo(max2) > 0)
+					max2 = temp2;
 			}
-			LocalDateTime end = max.getEndTimeFrom(getCreationTime());
-			if(end.isBefore(clock.getTime()))
-				end = clock.getTime();
+			LocalDateTime end = max.getEndTimeFrom(max2.getEndTimeFrom(getCreationTime()));
+			if(end.isBefore(getTime()))
+				end = getTime();
 			return !end.isAfter(getDueTime());
 		}
 	}

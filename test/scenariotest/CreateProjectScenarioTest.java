@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
  * 
  * @author Frederic, Mathias, Pieter-Jan
  */
-public class CreateProjectScenarioTest { // TODO is dit genoeg?
+public class CreateProjectScenarioTest {
 	
 	private static ProjectManager manager;
 	private static CreateProjectHandler handler;
@@ -45,7 +45,6 @@ public class CreateProjectScenarioTest { // TODO is dit genoeg?
     	String project1EndTime = "2015-03-13 14:44";
     	handler.createProject(project1Name, project1Description, project1StartTime, project1EndTime);
     	List<Project> projects = manager.getProjects();
-        //TODO kan niet gwn contains gebruikt worden?
     	boolean foundProject = false;
     	for(DetailedProject p : projects)
     	{
