@@ -26,7 +26,6 @@ public class Task implements DetailedTask {
     /****************************************
      * Constructors							*
      ****************************************/
-	//TODO public modifier verwijderen?
 	
 	/**
 	 * Initializes this task based on the given description, estimated duration,
@@ -362,7 +361,7 @@ public class Task implements DetailedTask {
 		if(prereq==null)
 			return false;
 		for(Task t: prereq)
-			if(t==null || t==this || t.dependsOn(this)) //TODO is t.dependsOn wel nodig? kan nooit voorkomen?
+			if(t==null || t==this || t.dependsOn(this))
 				return false;
 		
 		return true;
@@ -446,22 +445,32 @@ public class Task implements DetailedTask {
 	 *        	The end of the time span of this task.
 	 * @param 	status
 	 *        	The new status of this task.
+	 * @param   project
+	 *          The project this task belongs to.
 	 * @throws 	IllegalArgumentException
 	 *         	The given status is neither FAILED nor FINISHED and is therefore
 	 *         	not a valid status that can be assigned to this task.
 	 * @throws 	IllegalArgumentException
 	 *         	If the start and/or end time are not initialized.
-	 */ // TODO package visible maken
-	final void update(LocalDateTime start, LocalDateTime end, Status status) throws IllegalArgumentException
+	 * @throws  IllegalArgumentException
+	 *          If the given project doesn't contain this task.
+	 * @throws  IllegalArgumentException
+	 *          If The given project's creation time is before the given start time.
+	 */
+	final void update(LocalDateTime start, LocalDateTime end, Status status, Project project) throws IllegalArgumentException
 	{
-		if(!canUpdateStatus(status))
-			throw new IllegalArgumentException("This task can't be updated to the given status.");
 		if(start == null || end == null)
 			throw new IllegalArgumentException("The given start and/or end time are not initialized.");
+		if(project.getTask(getId()) == null)
+			throw new IllegalArgumentException("The given project doesn't contain this task.");
+		if(project.getCreationTime().compareTo(start) > 0)
+			throw new IllegalArgumentException("A task can't have started before its project.");
+		if(!canUpdateStatus(status))
+			throw new IllegalArgumentException("This task can't be updated to the given status.");
 		setTimeSpan(new Timespan(start, end));
 		setStatus(status);
 	}
-
+	
 	/**
 	 * Checks whether this task is available.
 	 * 
@@ -588,10 +597,8 @@ public class Task implements DetailedTask {
 	 * 
 	 * @return 	True if and only if the status of this task is equal to finished.
 	 */
-	public boolean isFinished() // TODO daarom is dit nodig. TODO duplicate code see isFulfilled
+	public boolean isFinished()
 	{
-		if(getStatus() == Status.FAILED)
-			return getAlternativeTask() != null && getAlternativeTask().isFinished();
 		return getStatus() == Status.FINISHED;
 	}
 	
