@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
  */
 public class Clock {
 	
-	public static final LocalDateTime NEW_YEAR = LocalDateTime.of(2015, 1, 1, 0, 0);
+	public static final LocalDateTime NEW_YEAR = LocalDateTime.of(2000, 1, 1, 0, 0);
     
     private LocalDateTime time;
     

@@ -32,7 +32,7 @@
                       <EmptySpace min="-2" pref="235" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
-                      <Component id="createButton" min="-2" pref="90" max="-2" attributes="0"/>
+                      <Component id="createProjectButton" min="-2" pref="90" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="236" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -108,7 +108,7 @@
                   <Component id="jScrollPane2" min="-2" pref="165" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
-              <Component id="createButton" min="-2" pref="37" max="-2" attributes="0"/>
+              <Component id="createProjectButton" min="-2" pref="37" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -168,7 +168,7 @@
         <Property name="text" type="java.lang.String" value="Due Time"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="createButton">
+    <Component class="javax.swing.JButton" name="createProjectButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Create"/>
       </Properties>

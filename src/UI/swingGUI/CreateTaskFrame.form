@@ -81,7 +81,7 @@
           </Group>
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="32767" attributes="0"/>
-              <Component id="jButton1" min="-2" pref="90" max="-2" attributes="0"/>
+              <Component id="createTaskButton" min="-2" pref="90" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="465" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -134,7 +134,7 @@
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
-              <Component id="jButton1" min="-2" pref="37" max="-2" attributes="0"/>
+              <Component id="createTaskButton" min="-2" pref="37" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -185,7 +185,7 @@
         <Property name="text" type="java.lang.String" value="Acceptable Deviation"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton1">
+    <Component class="javax.swing.JButton" name="createTaskButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Create"/>
       </Properties>

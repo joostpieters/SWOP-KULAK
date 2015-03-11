@@ -43,7 +43,7 @@ public class Task implements DetailedTask {
 	 * @param   alternativeFor
 	 *          The task for which this task is an alternative for.
 	 */
-	public Task(String description, Duration duration, int accDev, List<Task> prereq, Task alternativeFor)
+	Task(String description, Duration duration, int accDev, List<Task> prereq, Task alternativeFor)
 	{
 		this.id = generateId();
 		setDescription(description);
@@ -71,7 +71,7 @@ public class Task implements DetailedTask {
 	 * @param   alternativeFor
 	 *          The task for which this task is an alternative for.
 	 */
-	public Task(String description, Duration duration, int accDev, Task alternativeFor)
+	Task(String description, Duration duration, int accDev, Task alternativeFor)
 	{
 		this(description, duration, accDev, null, alternativeFor);
 	}
@@ -89,7 +89,7 @@ public class Task implements DetailedTask {
 	 * @param 	prereq
 	 *        	The list of prerequisite tasks for this task.
 	 */
-	public Task(String description, Duration duration, int accDev, List<Task> prereq)
+	Task(String description, Duration duration, int accDev, List<Task> prereq)
 	{
 		this(description, duration, accDev, prereq, null);
 	}
@@ -105,7 +105,7 @@ public class Task implements DetailedTask {
 	 * @param 	accDev
 	 *        	The acceptable deviation of this task expressed as an integer between 0 and 100.
 	 */
-	public Task(String description, Duration duration, int accDev)
+	Task(String description, Duration duration, int accDev)
 	{
 		this(description, duration, accDev, null, null);
 	}
@@ -452,7 +452,7 @@ public class Task implements DetailedTask {
 	 * @throws 	IllegalArgumentException
 	 *         	If the start and/or end time are not initialized.
 	 */ // TODO package visible maken
-	public final void update(LocalDateTime start, LocalDateTime end, Status status) throws IllegalArgumentException
+	final void update(LocalDateTime start, LocalDateTime end, Status status) throws IllegalArgumentException
 	{
 		if(!canUpdateStatus(status))
 			throw new IllegalArgumentException("This task can't be updated to the given status.");

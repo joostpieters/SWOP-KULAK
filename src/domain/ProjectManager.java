@@ -34,10 +34,19 @@ public class ProjectManager {
     }
     
     /**
-	 * @return the systemClock
+     * Advance this system clock to the given timestamp 
+     * 
+     * @param timestamp The time to advance the system time.
+     */
+    public void advanceSystemTime(LocalDateTime timestamp){
+        systemClock.advanceTime(timestamp);
+    }
+    
+    /**
+	 * @return A copy of the systemClock
 	 */
 	public Clock getSystemClock() {
-		return systemClock;
+		return new Clock(systemClock);
 	}
 
 	/**
