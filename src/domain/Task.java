@@ -451,7 +451,7 @@ public class Task implements DetailedTask {
 	 *         	not a valid status that can be assigned to this task.
 	 * @throws 	IllegalArgumentException
 	 *         	If the start and/or end time are not initialized.
-	 */
+	 */ // TODO package visible maken
 	public final void update(LocalDateTime start, LocalDateTime end, Status status) throws IllegalArgumentException
 	{
 		if(!canUpdateStatus(status))
