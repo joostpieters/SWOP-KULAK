@@ -445,6 +445,51 @@ public class TaskTest {
     }
     
     /*
+     * test of setAlternativeTask method, of class Task.
+     * Attempt to set alternative task of t6 to t3 with illegal wrong project argument
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testSetAlternativeTaskException4()
+    {
+    	Project p1 = pm.createProject("p1", "not p0", LocalDateTime.of(2000, 11, 12, 13, 14), LocalDateTime.of(2030, 11, 12, 13, 14));
+    	t6.setAlternativeTask(t0, p1);
+    }
+    
+    /*
+     * test of setAlternativeTask method, of class Task.
+     * Attempt to set alternative task of t6 to a task belonging to a different project
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testSetAlternativeTaskException5()
+    {
+    	Project p1 = pm.createProject("p1", "not p", LocalDateTime.of(2000, 11, 12, 13, 14), LocalDateTime.of(2030, 11, 12, 13, 14));
+    	Task p1t0 = p1.createTask("task belonging to p1", new Duration(120), 33, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
+    	t6.setAlternativeTask(p1t0, p1);
+    }
+    
+    /*
+     * test of setAlternativeTask method, of class Task.
+     * Attempt to set alternative task of t6 to a task belonging to a different project
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testSetAlternativeTaskException6()
+    {
+    	Project p1 = pm.createProject("p1", "not p", LocalDateTime.of(2000, 11, 12, 13, 14), LocalDateTime.of(2030, 11, 12, 13, 14));
+    	Task p1t0 = p1.createTask("task belonging to p1", new Duration(120), 33, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
+    	t6.setAlternativeTask(p1t0, p);
+    }
+    
+    /**
+     * Test of setAlternative method, of class Task
+     */
+    @Test
+    public void testSetAlternativeTask()
+    {
+    	t6.setAlternativeTask(t0, p);
+    	assertEquals(t0, t6.getAlternativeTask());
+    }
+    
+    /*
      * test of canHaveAsPrerequisiteTasks method, of class Task.
      */
     @Test
