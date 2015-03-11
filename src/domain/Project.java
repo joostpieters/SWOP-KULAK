@@ -367,12 +367,18 @@ public class Project implements DetailedProject {
 			return true;
 		} else {
 			Duration temp, max = Duration.ZERO;
+			Duration temp2, max2 = Duration.ZERO;
 			for(Task t : getTasks()) {
 				temp = t.estimatedWorkTimeNeeded();
+				temp2 = t.getTimeSpent();
 				if(temp.compareTo(max) > 0)
 					max = temp;
+				if(temp2.compareTo(max2) > 0)
+					max2 = temp2;
 			}
-			LocalDateTime end = max.getEndTimeFrom(getTime());
+			LocalDateTime end = max.getEndTimeFrom(max2.getEndTimeFrom(getCreationTime()));
+			if(end.isBefore(getTime()))
+				end = getTime();
 			return !end.isAfter(getDueTime());
 		}
 	}

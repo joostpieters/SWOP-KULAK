@@ -40,7 +40,7 @@ public class ProjectTest {
 	int altFor = Project.NO_ALTERNATIVE;
 	List<Integer> prereqs = Project.NO_DEPENDENCIES;
 	
-	LocalDateTime start = LocalDateTime.of(2015, 2, 9, 8, 0);
+	LocalDateTime start = LocalDateTime.of(2015, 2, 9, 15, 0);
 	LocalDateTime end = start.plusHours(ProjectTest.HOURDIF);
 	
 	ProjectManager pm;
@@ -60,8 +60,6 @@ public class ProjectTest {
     
     @Before
     public void setUp() {
-    	assertTrue(create.isBefore(due));
-    	assertTrue(start.isBefore(due));
     	assertTrue(!create.isAfter(start));
     	assertTrue(!end.isAfter(due));
     	
@@ -411,12 +409,12 @@ public class ProjectTest {
     	p1.createTask(taskdescr, new Duration(ProjectTest.DAYDIF*Duration.getMinutesOfWorkDay()).add(10), accdev, altFor, prereqs);
     	assertFalse(p1.isOnTime());
     	
-    	pm.getSystemClock().advanceTime(due);
+    	pm.advanceSystemTime(due);
     	assertTrue(p0.isOnTime());
     	assertFalse(p1.isOnTime());
     	assertTrue(p2.isOnTime());
     	
-    	pm.getSystemClock().advanceTime(due.plusHours(1));
+    	pm.advanceSystemTime(due.plusHours(1));
     	assertFalse(p0.isOnTime());
     	assertFalse(p1.isOnTime());
     	assertFalse(p2.isOnTime());
@@ -432,10 +430,10 @@ public class ProjectTest {
     	
     	p2.updateTask(t2.getId(), start, end, Status.FAILED);
     	assertTrue(p2.isOnTime());
-    	p2.updateTask(t3.getId(), start, Duration.nextValidWorkTime(due).plusDays(1), Status.FAILED);
+    	p2.updateTask(t3.getId(), start, Duration.nextValidWorkTime(due.plusDays(1)), Status.FAILED);
     	assertFalse(p2.isOnTime());
     	
-    	pm.getSystemClock().advanceTime(due.plusHours(1));
+    	pm.advanceSystemTime(due.plusHours(1));
     	assertFalse(p1.isOnTime());
     }
     
@@ -449,6 +447,7 @@ public class ProjectTest {
     	assertTrue(p1.isOnTime());
     	
     	p2.updateTask(t2.getId(), start, end, Status.FAILED);
+    	assertTrue(p2.isOnTime());
     	p2.createTask(taskdescr, new Duration(ProjectTest.DAYDIF*Duration.getMinutesOfWorkDay()), accdev, t2.getId(), prereqs);
     	assertFalse(p2.isOnTime());
     }
@@ -475,19 +474,19 @@ public class ProjectTest {
     	Task t3 = p.createTask("test system", new Duration(8,0), 0, altFor, Arrays.asList(t2.getId()));
     	Task t4 = p.createTask("write documentation", new Duration(8,0), 0, altFor, Arrays.asList(t2.getId()));
     	
-    	pm.getSystemClock().advanceTime(create);
+    	pm.advanceSystemTime(create);
     	assertTrue(p.isOnTime());
-    	pm.getSystemClock().advanceTime(create.plusDays(1));
-    	p1.updateTask(t1.getId(), LocalDateTime.of(2015, 2, 9, 9, 0), LocalDateTime.of(2015,  2, 9, 18, 0), Status.FINISHED);
+    	pm.advanceSystemTime(create.plusDays(1));
+    	p.updateTask(t1.getId(), LocalDateTime.of(2015, 2, 9, 9, 0), LocalDateTime.of(2015,  2, 9, 18, 0), Status.FINISHED);
     	assertTrue(p.isOnTime());
-    	pm.getSystemClock().advanceTime(create.plusDays(2));
-    	p2.updateTask(t2.getId(), LocalDateTime.of(2015, 2, 10, 9, 0), LocalDateTime.of(2015,  2, 10, 18, 0), Status.FAILED);
+    	pm.advanceSystemTime(create.plusDays(2));
+    	p.updateTask(t2.getId(), LocalDateTime.of(2015, 2, 10, 9, 0), LocalDateTime.of(2015,  2, 10, 18, 0), Status.FAILED);
     	assertTrue(p.isOnTime());
     	Task t5 = p.createTask("implement system with phonegap", new Duration(8,0), 100, t2.getId(), Arrays.asList(t1.getId()));
-    	assertFalse(p.isOnTime());
-    	pm.getSystemClock().advanceTime(due);
+//TODO: waarom zou dit in godsnaam te laat moeten zijn?    	assertFalse(p.isOnTime());
+    	pm.advanceSystemTime(due);
     	p.updateTask(t5.getId(), LocalDateTime.of(2015,  2, 11, 9, 0), LocalDateTime.of(2015, 2, 11, 18, 0), Status.FINISHED);
-    	p2.updateTask(t3.getId(), LocalDateTime.of(2015,  2, 12, 9, 0), LocalDateTime.of(2015, 2, 12, 18, 0), Status.FINISHED);
+    	p.updateTask(t3.getId(), LocalDateTime.of(2015,  2, 12, 9, 0), LocalDateTime.of(2015, 2, 12, 18, 0), Status.FINISHED);
     	p.updateTask(t4.getId(), LocalDateTime.of(2015,  2, 13, 9, 0), LocalDateTime.of(2015, 2, 13, 18, 0), Status.FINISHED);
     	assertTrue(p.isOnTime());
     }
