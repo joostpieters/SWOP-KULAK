@@ -261,6 +261,7 @@ public class Task implements DetailedTask {
 		
 		if( !( project.hasTask(getId()) && project.hasTask(alternativeTask.getId()) ) )
 			throw new IllegalArgumentException("This task and/or the given alternative task don't belong to the given project");
+		
 		this.alternativeTask = alternativeTask;
 	}
 	

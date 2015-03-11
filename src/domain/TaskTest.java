@@ -545,6 +545,37 @@ public class TaskTest {
     	assertEquals(87, someTask4.getDelay().toMinutes());
     	
     }
+    
+    /**
+     * Test of method canUpdateStatus, of class Task
+     */
+    @Test
+    public void testCanUpdateStatus()
+    {
+    	assertEquals(Status.FINISHED, t3.getStatus());       // t3 is finished
+    	assertFalse(t3.canUpdateStatus(Status.FAILED));      // finished  -> failed
+    	assertFalse(t3.canUpdateStatus(Status.AVAILABLE));   // finished  -> available
+    	assertFalse(t3.canUpdateStatus(Status.UNAVAILABLE)); // finished  -> unavailable
+
+    	assertEquals(Status.FAILED, t6.getStatus());         // t6 is failed
+    	assertFalse(t6.canUpdateStatus(Status.FINISHED));    // failed  -> finished
+    	assertFalse(t6.canUpdateStatus(Status.AVAILABLE));   // failed  -> available
+    	assertFalse(t6.canUpdateStatus(Status.UNAVAILABLE)); // failed  -> unavailable
+    	
+    	assertEquals(Status.AVAILABLE, t0.getStatus());      // t0 is available
+    	assertTrue(t0.canUpdateStatus(Status.FINISHED));     // available    -> finished
+    	assertTrue(t0.canUpdateStatus(Status.FAILED));       // available    -> failed
+    	assertFalse(t0.canUpdateStatus(Status.UNAVAILABLE)); // available    -> unavailable
+
+    	assertEquals(Status.UNAVAILABLE, t2.getStatus());    // t2 is unavailable
+    	assertFalse(t2.canUpdateStatus(Status.FINISHED));    // unavailable  -> finished
+    	assertTrue(t2.canUpdateStatus(Status.FAILED));       // unavailable  -> failed
+    	assertFalse(t2.canUpdateStatus(Status.FINISHED));    // unavailable  -> available
+
+    	
+    	
+    }
+    
     /**
      * Test of dependsOn method, of class Task.
      */
@@ -569,9 +600,6 @@ public class TaskTest {
         
         assertTrue(t8.dependsOn(t7));
         assertTrue(t8.dependsOn(t7alternative)); // indirectly depends on the alternative task of t7
-        
-        
-        
     }
     
 }
