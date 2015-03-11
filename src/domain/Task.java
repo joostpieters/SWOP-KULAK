@@ -451,7 +451,7 @@ public class Task implements DetailedTask {
 	 *         	not a valid status that can be assigned to this task.
 	 * @throws 	IllegalArgumentException
 	 *         	If the start and/or end time are not initialized.
-	 */
+	 */ // TODO package visible maken
 	public final void update(LocalDateTime start, LocalDateTime end, Status status) throws IllegalArgumentException
 	{
 		if(!canUpdateStatus(status))
@@ -596,19 +596,15 @@ public class Task implements DetailedTask {
 	}
 	
 	/**
-	 * The estimated amount of time needed until this task can be set to finished.
+	 * The estimated amount of time needed until this task can be set to finished. TODO commentaar
 	 * 
 	 * @return If this task is already finished, a duration of 0 is returned.
 	 *         
 	 */
 	public Duration estimatedWorkTimeNeeded()
 	{
-		if(!canBeFulfilled())
-			throw new IllegalStateException("This task doesn't have an estimated work time needed because this task can't be fulfilled");
 		if(getStatus() == Status.AVAILABLE)
 			return getEstimatedDuration();
-		if(getStatus() == Status.FAILED)
-			return getEstimatedDuration().add(getAlternativeTask().estimatedWorkTimeNeeded());
 		if(getStatus() == Status.UNAVAILABLE)
 		{
 			Duration retDuration = getEstimatedDuration();
@@ -616,7 +612,7 @@ public class Task implements DetailedTask {
 				retDuration = retDuration.add(prereq.estimatedWorkTimeNeeded());
 			return retDuration;
 		}
-		//if(getStatus() == Status.FINISHED)
+		//if(getStatus() == Status.FAILED || getStatus() == Status.FINISHED)
 		return new Duration(0);
 	}
 	
