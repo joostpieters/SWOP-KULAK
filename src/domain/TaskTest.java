@@ -80,62 +80,21 @@ public class TaskTest {
     	int estDur = 10;
     	int accDev = 30;
     	ArrayList<Task> prereq = new ArrayList<Task>(Arrays.asList(t3));
-    	Task task0 = p.createTask(description, new Duration(estDur), accDev, Project.NO_ALTERNATIVE, Arrays.asList(t3.getId()));
+    	Task task0 = new Task(description, new Duration(estDur), accDev,  prereq);
     	assertEquals(description, task0.getDescription());
     	assertEquals(estDur, task0.getEstimatedDuration().toMinutes());
     	assertEquals(accDev, task0.getAcceptableDeviation());
     	for(int i = 0; i < prereq.size(); i++)
     		assertEquals(prereq.get(i), task0.getPrerequisiteTasks().get(i));
-    	//Task(String description, Duration estDur, int accDev, List<Task> prereq, altFor)
-    	Task task00 = p.createTask("task00", new Duration(10), 30, t6.getId(), Arrays.asList(t0.getId()));
-    			//new Task("task00", new Duration(10), 30, Arrays.asList(t0), t6);
-    	assertEquals(task00, t6.getAlternativeTask());
-    	
-    	String description1 = "task1 description";
-    	int estDur1 = 55;
-    	int accDev1 = 22;
-    	Task task1 = p.createTask(description1, new Duration(estDur1), accDev1, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-    			//new Task(description1, new Duration(estDur1), accDev1);
-    	assertEquals(description1, task1.getDescription());
-    	assertEquals(estDur1, task1.getEstimatedDuration().toMinutes());
-    	assertEquals(accDev1, task1.getAcceptableDeviation());
-    	
-    	//Task(String description, Duration estDur, int accDev, List<Task> prereq)
-    	String description2 = "task2 description";
-    	int estDur2 = 55;
-    	int accDev2 = 22;
-    	ArrayList<Task> prereq2 = new ArrayList<Task>(Arrays.asList(task0));
-    	Task task2 = p.createTask(description2, new Duration(estDur2), accDev2, Project.NO_ALTERNATIVE, Arrays.asList(task0.getId()));
-    			//new Task(description2, new Duration(estDur2), accDev2, prereq2);
-    	assertEquals(description2, task2.getDescription());
-    	assertEquals(estDur2, task2.getEstimatedDuration().toMinutes());
-    	assertEquals(accDev2, task2.getAcceptableDeviation());
-    	for(int i = 0; i < prereq2.size(); i++)
-    		assertEquals(prereq2.get(i), task2.getPrerequisiteTasks().get(i));
     	
     	//Task(String description, Duration estDur, int accDev)
     	String description3 = "task3 description!";
     	int estDur3 = 120;
     	int accDev3 = 55;
-    	Task task3 = p.createTask(description3, new Duration(estDur3), accDev3, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-    			//new Task(description3, new Duration(estDur3), accDev3);
+    	Task task3 = new Task(description3, new Duration(estDur3), accDev3);
     	assertEquals(description3, task3.getDescription());
     	assertEquals(estDur3, task3.getEstimatedDuration().toMinutes());
     	assertEquals(accDev3, task3.getAcceptableDeviation());
-    	
-    	//Task(String description, Duration duration, int accDev, Task alternativeFor)
-    	p.updateTask(task3.getId(), LocalDateTime.of(2015, 3, 9, 15, 4), LocalDateTime.of(2015, 3, 9, 16, 4), Status.FAILED);
-    	//task3.update(LocalDateTime.of(2015, 3, 9, 15, 4), LocalDateTime.of(2015, 3, 9, 16, 4), Status.FAILED);
-    	
-    	String description4 = "descr4";
-    	Duration estDur4 = new Duration(222);
-    	int accDev4 = 44;
-    	Task task4 = p.createTask(description4, estDur4, accDev4, task3.getId(), p.NO_DEPENDENCIES);
-    			//new Task(description4, estDur4, accDev4, task3);
-    	assertEquals(description4, task4.getDescription());
-    	assertEquals(estDur4.toMinutes(), task4.getEstimatedDuration().toMinutes());
-    	assertEquals(accDev4, task4.getAcceptableDeviation());
-    	assertEquals(task4, task3.getAlternativeTask());
     }
     
     /**
