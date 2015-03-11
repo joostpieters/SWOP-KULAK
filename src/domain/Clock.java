@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
  */
 public class Clock {
 	
-	//TODO: beter dan initialiseren van now? (voorbeelden van februari etc...)
 	public static final LocalDateTime NEW_YEAR = LocalDateTime.of(2015, 1, 1, 0, 0);
     
     private LocalDateTime time;

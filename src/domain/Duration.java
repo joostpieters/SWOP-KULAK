@@ -181,8 +181,7 @@ public class Duration implements Comparable<Duration>{
      * @return 	True if and only is the given begin time is strictly before the 
      * 			given end time.
      */
-    public static boolean isValidInterval(LocalDateTime begin, LocalDateTime end){
-    	//TODO: nodig voor getWorkTimeBetween, maar goed zo?
+    public static boolean isValidInterval(LocalDateTime begin, LocalDateTime end) {
         return !begin.isAfter(end);
     }
     

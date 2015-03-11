@@ -472,19 +472,24 @@ public class ProjectTest {
     	Project p = pm.createProject(name, descr, LocalDateTime.of(2015, 2, 9, 8, 0), LocalDateTime.of(2015, 2, 13, 19, 0));
     	Task t1 = p.createTask("design system", new Duration(8,0), 0, altFor, prereqs);
     	Task t2 = p.createTask("implement system in native code", new Duration(16,0), 50, altFor, Arrays.asList(t1.getId()));
-    	p.createTask("test system", new Duration(8,0), 0, altFor, Arrays.asList(t2.getId()));
-    	p.createTask("write documentation", new Duration(8,0), 0, altFor, Arrays.asList(t2.getId()));
+    	Task t3 = p.createTask("test system", new Duration(8,0), 0, altFor, Arrays.asList(t2.getId()));
+    	Task t4 = p.createTask("write documentation", new Duration(8,0), 0, altFor, Arrays.asList(t2.getId()));
     	
     	pm.getSystemClock().advanceTime(create);
     	assertTrue(p.isOnTime());
-    	t1.update(LocalDateTime.of(2015, 2, 9, 9, 0), LocalDateTime.of(2015,  2, 9, 18, 0), Status.FINISHED);
     	pm.getSystemClock().advanceTime(create.plusDays(1));
+    	t1.update(LocalDateTime.of(2015, 2, 9, 9, 0), LocalDateTime.of(2015,  2, 9, 18, 0), Status.FINISHED);
     	assertTrue(p.isOnTime());
+    	pm.getSystemClock().advanceTime(create.plusDays(2));
     	t2.update(LocalDateTime.of(2015, 2, 10, 9, 0), LocalDateTime.of(2015,  2, 10, 18, 0), Status.FAILED);
     	assertTrue(p.isOnTime());
-    	p.createTask("implement system with phonegap", new Duration(8,0), 100, t2.getId(), Arrays.asList(t1.getId()));
-    	pm.getSystemClock().advanceTime(create.plusDays(4));
+    	Task t5 = p.createTask("implement system with phonegap", new Duration(8,0), 100, t2.getId(), Arrays.asList(t1.getId()));
     	assertFalse(p.isOnTime());
+    	pm.getSystemClock().advanceTime(due);
+    	t5.update(LocalDateTime.of(2015,  2, 11, 9, 0), LocalDateTime.of(2015, 2, 11, 18, 0), Status.FINISHED);
+    	t3.update(LocalDateTime.of(2015,  2, 12, 9, 0), LocalDateTime.of(2015, 2, 12, 18, 0), Status.FINISHED);
+    	t4.update(LocalDateTime.of(2015,  2, 13, 9, 0), LocalDateTime.of(2015, 2, 13, 18, 0), Status.FINISHED);
+    	assertTrue(p.isOnTime());
     }
     
 }
