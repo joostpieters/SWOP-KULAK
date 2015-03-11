@@ -2,6 +2,7 @@ package controller;
 
 import domain.DetailedProject;
 import domain.DetailedTask;
+import domain.Project;
 import domain.ProjectManager;
 import domain.Status;
 import domain.Task;
@@ -24,6 +25,7 @@ public class UpdateTaskStatusHandler {
     private final ProjectManager manager;
     
     private Task currentTask;
+    private Project currentProject;
     
     /**
      * Initialize a new create task handler with the given projectmanager.
@@ -55,6 +57,7 @@ public class UpdateTaskStatusHandler {
      */
     public void selectTask(int pId, int tId){
         currentTask = manager.getProject(pId).getTask(tId);
+        currentProject = manager.getProject(pId);
     }
     
     /**
@@ -63,9 +66,11 @@ public class UpdateTaskStatusHandler {
      * @param startTime The start time of the task (yyyy-MM-dd HH:mm)
      * @param endTime The end time of the task (yyyy-MM-dd HH:mm)
      * @param status The status of the task @see domain.Status
+     * @throws RuntimeException An error occured whilte updating the currently
+     * selected task.
      */
-    public void updateCurrentTask(String startTime, String endTime, String status){
-        if(currentTask  == null){
+    public void updateCurrentTask(String startTime, String endTime, String status) throws RuntimeException{
+        if(currentTask  == null || currentProject == null){
             throw new IllegalStateException("No task currently selected.");
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -92,7 +97,7 @@ public class UpdateTaskStatusHandler {
         
         
         try {
-            currentTask.update(start, end, taskStatus);
+            currentProject.updateTask(currentTask.getId(), start, end, taskStatus);
         } catch (IllegalArgumentException | IllegalStateException e) {
             throw e;
         }catch(Exception e){

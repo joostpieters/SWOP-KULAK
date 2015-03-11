@@ -33,7 +33,7 @@ public class AdvanceSystemTimeHandler {
      */   
     public void  advanceTime(String timestamp){
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             LocalDateTime time = LocalDateTime.parse(timestamp, formatter);
             manager.advanceSystemTime(time);
         } catch (DateTimeParseException e) {
