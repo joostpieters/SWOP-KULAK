@@ -28,8 +28,8 @@ public class Task implements DetailedTask {
      ****************************************/
 	
 	/**
-	 * Initializes this task based on the given description, estimated duration,
-	 * acceptable deviation, prerequisite tasks and alternative task for.
+	 * Initializes this task based on the given description, estimated duration, acceptable deviation
+	 *  and prerequisite tasks.
 	 *  
 	 * @param 	description
 	 *        	The description of this task.
@@ -39,10 +39,8 @@ public class Task implements DetailedTask {
 	 *        	The acceptable deviation of this task expressed as an integer between 0 and 100.
 	 * @param 	prereq
 	 *        	The list of prerequisite tasks for this task.
-	 * @param   alternativeFor
-	 *          The task for which this task is an alternative for.
 	 */
-	Task(String description, Duration duration, int accDev, List<Task> prereq, Task alternativeFor)
+	Task(String description, Duration duration, int accDev, List<Task> prereq)
 	{
 		this.id = generateId();
 		setDescription(description);
@@ -53,60 +51,22 @@ public class Task implements DetailedTask {
 		else
 			setPrerequisiteTasks(prereq);
 		updateStatus();
-		if(alternativeFor != null)
-			alternativeFor.setAlternativeTask(this);
-	}
-	
-	/**
-	 * Initializes this task based on the given description, estimated duration,
-	 * acceptable deviation and alternative task for.
-	 *  
-	 * @param 	description
-	 *        	The description of this task.
-     * @param   duration
-     *          The estimated duration of this task
-	 * @param 	accDev
-	 *        	The acceptable deviation of this task expressed as an integer between 0 and 100.
-	 * @param   alternativeFor
-	 *          The task for which this task is an alternative for.
-	 */
-	Task(String description, Duration duration, int accDev, Task alternativeFor)
-	{
-		this(description, duration, accDev, null, alternativeFor);
-	}
-	
-	/**
-	 * Initializes this task based on the given description, estimated duration, acceptable deviation
-	 *  and prerequisite tasks.
-	 *  
-	 * @param 	description
-	 *        	The description of this task.
-	  * @param       duration
-         *              The estimated duration of this task
-	 * @param 	accDev
-	 *        	The acceptable deviation of this task expressed as an integer between 0 and 100.
-	 * @param 	prereq
-	 *        	The list of prerequisite tasks for this task.
-	 */
-	Task(String description, Duration duration, int accDev, List<Task> prereq)
-	{
-		this(description, duration, accDev, prereq, null);
 	}
 
 	/**
 	 * Initializes this task based on the given description, estimated duration
 	 * and acceptable deviation.
 	 *  
-	 * @param 	description
+	 * @param   description
 	 *        	The description of this task.
-	  * @param       duration
-         *              The estimated duration of this task
+	 * @param   duration
+	 *          The estimated duration of this task
 	 * @param 	accDev
 	 *        	The acceptable deviation of this task expressed as an integer between 0 and 100.
 	 */
 	Task(String description, Duration duration, int accDev)
 	{
-		this(description, duration, accDev, null, null);
+		this(description, duration, accDev, null);
 	}
 
     /****************************************
