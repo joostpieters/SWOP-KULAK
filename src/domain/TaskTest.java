@@ -399,20 +399,6 @@ public class TaskTest {
     	assertFalse(t0.canHaveAsAcceptableDeviation(101456));
     }
     
-    /**
-     * Test of estimatedWorkTimeNeeded method, of class Task
-     */
-    public void testEstimatedWorkTimeNeeded()
-    {
-    	System.out.println("estimatedWorkTimeNeeded");
-    	
-    	assertEquals(t0.getEstimatedDuration().toMinutes(), t0.estimatedWorkTimeNeeded().toMinutes());
-    	assertEquals(0, t3.getEstimatedDuration().toMinutes());
-    	assertEquals(40, t4.getEstimatedDuration().toMinutes());
-    	assertEquals(t7alternative.estimatedWorkTimeNeeded().toMinutes(), t7.estimatedWorkTimeNeeded().toMinutes());
-    	
-    }
-    
     /*
      * test of setAlternativeTask method, of class Task.
      * Attempt to set alternative task of t0 which is not failed
@@ -562,7 +548,6 @@ public class TaskTest {
     	// duration 20, acceptable deviation 20 => max duration 24 minutes
     	// checking time span duration < max duration
     	Task someTask2 = p.createTask("20, 20", new Duration(20), 20, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-    			//new Task("20, 20", new Duration(20), 20);
     	Timespan TS20 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 13, 0),
     			LocalDateTime.of(2015,  3, 4, 13, 20));
@@ -572,7 +557,6 @@ public class TaskTest {
     	// duration 30, acceptable deviation 10 => max duration 33 minutes
     	// checking time span duration > max duration
     	Task someTask3 = p.createTask("30, 10", new Duration(30), 10, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-//new Task("30, 10", new Duration(30), 10);
     	Timespan TS35 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 13, 0),
     			LocalDateTime.of(2015,  3, 4, 13, 35));
@@ -616,8 +600,29 @@ public class TaskTest {
     	assertFalse(t2.canUpdateStatus(Status.FINISHED));    // unavailable  -> finished
     	assertTrue(t2.canUpdateStatus(Status.FAILED));       // unavailable  -> failed
     	assertFalse(t2.canUpdateStatus(Status.FINISHED));    // unavailable  -> available
+    }
 
+    /**
+     * Test of estimatedWorkTimeNeeded method, of class Task
+     */
+    @Test
+    public void testEstimatedWorkTimeNeeded()
+    {
+    	System.out.println("estimatedWorkTimeNeeded");
+
+    	assertEquals(Status.FINISHED, t3.getStatus());
+    	assertEquals(Duration.ZERO.toMinutes(), t3.estimatedWorkTimeNeeded().toMinutes());
+
+    	assertEquals(Status.FAILED, t6.getStatus());
+    	assertEquals(Duration.ZERO.toMinutes(), t6.estimatedWorkTimeNeeded().toMinutes());
     	
+    	assertEquals(Status.AVAILABLE, t0.getStatus());
+    	assertEquals(t0.getEstimatedDuration().toMinutes(), t0.estimatedWorkTimeNeeded().toMinutes());
+    	
+    	Task unavailableTask = p.createTask("unavailable", new Duration(33), 22, Project.NO_ALTERNATIVE, Arrays.asList(t0.getId()));
+    	assertEquals(Status.UNAVAILABLE, unavailableTask.getStatus());
+    	long estimatedWorkTimeExpected = t0.estimatedWorkTimeNeeded().toMinutes() + unavailableTask.getEstimatedDuration().toMinutes();
+    	assertEquals(estimatedWorkTimeExpected, unavailableTask.estimatedWorkTimeNeeded().toMinutes());
     	
     }
     
