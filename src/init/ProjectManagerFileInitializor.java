@@ -141,7 +141,7 @@ public class ProjectManagerFileInitializor extends StreamTokenizer {
         expectLabel("tasks");
         while (ttype == '-') {
             expectChar('-');
-            int project = expectIntField("project");
+            int projectId = expectIntField("project");
             String description = expectStringField("description");
             
             int estimatedDuration = expectIntField("estimatedDuration");
@@ -162,7 +162,7 @@ public class ProjectManagerFileInitializor extends StreamTokenizer {
             }
             
             Duration duration = new Duration(estimatedDuration);
-            Task task = manager.getProject(project).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks);
+            Task task = manager.getProject(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks);
 
             expectLabel("status");
             Status status = null;
@@ -176,7 +176,7 @@ public class ProjectManagerFileInitializor extends StreamTokenizer {
             if (status != null) {
                 LocalDateTime startTime = expectDateField("startTime");
                 LocalDateTime endTime = expectDateField("endTime");
-                task.update(startTime, endTime, status);
+                manager.getProject(projectId).updateTask(task.getId(), startTime, endTime, status);
             }
 
         }
