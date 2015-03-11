@@ -244,7 +244,11 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    /**
+     * The select task button is pressed in the available tasks list overview
+     * @param evt 
+     */
     private void selectTaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectTaskButtonActionPerformed
         try {
             int tId = (int) taskModel.getValueAt(availableTaskTable.convertRowIndexToModel(availableTaskTable.getSelectedRow()), 0);
@@ -257,7 +261,11 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(rootPane, "Please select a task.", null, JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_selectTaskButtonActionPerformed
-
+    
+    /**
+     * The update task button is pressed in the task update form
+     * @param evt 
+     */
     private void updateTaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateTaskButtonActionPerformed
         try{
             String startTime = startTimeTextField.getText();

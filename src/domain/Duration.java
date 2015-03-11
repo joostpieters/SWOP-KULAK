@@ -406,7 +406,7 @@ public class Duration implements Comparable<Duration>{
          */
         @Override
         public String toString(){
-            return getHours() + "hours " + getMinutes() + "minutes";
+            return (getHours() > 0 ? getHours() + " hours  " : "") + getMinutes() + " minutes";
         }
         
         /**
