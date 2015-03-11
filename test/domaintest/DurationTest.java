@@ -16,8 +16,21 @@ import static org.junit.Assert.*;
  * @author Mathias
  */
 public class DurationTest {
-	
-	//TODO: tests failen bij verandering constanten...
+	//Constant used for test.
+//	/** Constant to indicate the first day of the work week, Monday is 1. */
+//	public static final int BEGINWORKWEEK = 1;
+//    /** Constant to indicate the last day of the work week, Friday is 5. */
+//	public static final int ENDWORKWEEK = 5;	
+//    /** Constant to indicate the begin time of a work day. */
+//	public static final LocalTime BEGINWORKDAY = LocalTime.of(9, 0);
+//	/** Constant to indicate the end time of a work day. */
+//	public static final LocalTime ENDWORKDAY = LocalTime.of(18, 0);
+//    /** Constant to indicate the begin time of the lunch. */
+//	public static final LocalTime BEGINLUNCH = LocalTime.of(12, 0);
+//    /** Constant to indicate the end time of the lunch. */
+//	public static final LocalTime ENDLUNCH = LocalTime.of(13, 0);
+//    /** Constant for a duration of zero.
+       
     
     public DurationTest() {
     }

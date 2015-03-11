@@ -182,8 +182,7 @@ public class Duration implements Comparable<Duration>{
      * 			given end time.
      */
     public static boolean isValidInterval(LocalDateTime begin, LocalDateTime end){
-    	//TODO: nodig voor getWorkTimeBetween, maar goed zo?
-        return !begin.isAfter(end);
+    	return !begin.isAfter(end);
     }
     
     /**

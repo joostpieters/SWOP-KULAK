@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  */
 public class AdvanceSystemTimeHandler {
     
-    private ProjectManager manager;
+    private final ProjectManager manager;
         
     /**
      * Initialize a new advance system time handler with the given projectmanager.
@@ -35,7 +35,7 @@ public class AdvanceSystemTimeHandler {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
             LocalDateTime time = LocalDateTime.parse(timestamp, formatter);
-            manager.getSystemClock().advanceTime(time);
+            manager.advanceSystemTime(time);
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("The provided timestamp is in the wrong format.");
         } catch (IllegalArgumentException | IllegalStateException e) {
