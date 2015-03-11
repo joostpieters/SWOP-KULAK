@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package domaintest;
 
 import domain.TaskTest;
@@ -14,8 +9,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- *
- * @author Mathias
+ * This testsuite, runs all the tests for this application
+ * 
+ * @author Frederic, Mathias, Pieter-Jan
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ClockTest.class,

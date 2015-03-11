@@ -213,30 +213,7 @@ public class Duration implements Comparable<Duration>{
         return Duration.ENDWORKWEEK - Duration.BEGINWORKWEEK + 1;
     }
 
-	/**
-	 * Get the number of work days between the given time moments.
-	 * 
-	 * @param 	begin 
-	 * 			The begin time
-	 * @param 	end 
-	 * 			The end time
-	 * @return 	The number of weekdays between the given moments, including the begin
-	 * 			excluding the end.
-	 */
-	public static long getWorkDaysBetween(LocalDateTime begin, LocalDateTime end) {
-		int w1 = begin.getDayOfWeek().getValue();
-		begin = begin.minusDays(w1-1);
-
-		int w2 = end.getDayOfWeek().getValue();
-		end = end.minusDays(w2-1);
-
-		//end Saturday to start Saturday 
-		long days = ChronoUnit.DAYS.between(begin, end);
-		long daysWithoutSunday = days / 7 * Duration.getDaysOfWorkWeek();
-
-		return daysWithoutSunday - w1 + w2;
-	}
-
+	
 	/**
 	 * Check whether the given time falls within the business hours.
 	 * 
@@ -257,6 +234,14 @@ public class Duration implements Comparable<Duration>{
 		return isValidWorkDay(time) && checkDays && checkLunch;
 	}
 	
+        /**
+         * Check whether the given date falls within the workweek
+         * 
+         * @param date The date to check
+         * @return True if and only if the given date is later than or equal 
+         * to the start of the workweek, and before or equal to the end of the 
+         * workweek.
+         */
 	public static boolean isValidWorkDay(LocalDateTime date) {
 		return date.getDayOfWeek().getValue() >= Duration.BEGINWORKWEEK && 
 				date.getDayOfWeek().getValue() <= Duration.ENDWORKWEEK;
