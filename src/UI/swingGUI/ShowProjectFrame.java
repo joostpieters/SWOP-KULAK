@@ -496,7 +496,7 @@ public class ShowProjectFrame extends javax.swing.JFrame {
             initTaskDetails(task);
             CardLayout card = (CardLayout) mainPanel.getLayout();
             card.show(mainPanel, "taskDetails");
-            System.out.println(tId);
+            
         } catch (IndexOutOfBoundsException e) {
             JOptionPane.showMessageDialog(rootPane, "Please select a task.", null, JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
