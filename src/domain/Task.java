@@ -587,12 +587,13 @@ public class Task implements DetailedTask {
 		if(getStatus() == Status.UNAVAILABLE)
 		{
 			Duration retDuration = getEstimatedDuration();
-			for(Task prereq : getPrerequisiteTasks())
+			for(Task prereq : getPrerequisiteTasks()) {
 				retDuration = retDuration.add(prereq.estimatedWorkTimeNeeded());
+				if(prereq.hasAlternativeTask())
+					retDuration = retDuration.add(prereq.getAlternativeTask().getEstimatedDuration());
+			}
 			return retDuration;
 		}
-		if(hasAlternativeTask())
-			return getAlternativeTask().estimatedWorkTimeNeeded();
 		//if(getStatus() == Status.FAILED || getStatus() == Status.FINISHED)
 		return new Duration(0);
 	}

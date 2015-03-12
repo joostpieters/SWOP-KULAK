@@ -65,6 +65,7 @@ public class ProjectTest {
     	assertTrue(!end.isAfter(due));
     	
     	pm = new ProjectManager();
+    	pm.advanceSystemTime(create);
     	
     	p0 = pm.createProject(name, descr, create, due);
     	
@@ -346,7 +347,6 @@ public class ProjectTest {
      */
     @Test
     public void testGetUnacceptablyOverdueTasksSimple() {
-    	pm.advanceSystemTime(create);
     	assertTrue(p0.getUnacceptablyOverdueTasks().isEmpty());
     	assertTrue(p1.getUnacceptablyOverdueTasks().isEmpty());
     	assertTrue(p2.getUnacceptablyOverdueTasks().isEmpty());
@@ -363,7 +363,26 @@ public class ProjectTest {
     	assertTrue(p1.getUnacceptablyOverdueTasks().containsKey(tt));
     	assertEquals((double) (DAYDIF - 2) / DAYDIF, (double) p1.getUnacceptablyOverdueTasks().get(t), EPS); //weekend: -2
     	assertEquals((double) 1 / DAYDIF, (double) p1.getUnacceptablyOverdueTasks().get(tt), EPS);
+    	
+    	pm.advanceSystemTime(due);
+    	assertTrue(p0.getUnacceptablyOverdueTasks().isEmpty());
+    	assertEquals(p1.getTasks().size(), p1.getUnacceptablyOverdueTasks().size());
+    	assertEquals(p2.getTasks().size(), p2.getUnacceptablyOverdueTasks().size());
+    	assertEquals(pFinished.getTasks().size(), pFinished.getUnacceptablyOverdueTasks().size());
     }
+    
+    /**
+     * Test getUnacceptablyOverdueTasks method in case of alternative (no prereqs).
+     */
+    @Test
+    public void testGetUnacceptablyOverdueTasksAlternative() {
+    	p1.updateTask(t1.getId(), start, end, Status.FAILED);
+    	Task t = p1.createTask(taskdescr, new Duration(create, due).add(new Duration(HOURDIF, 0)), accdev, t1.getId(), prereqs);
+    	assertEquals(1, p1.getUnacceptablyOverdueTasks().size());
+    	assertTrue(p1.getUnacceptablyOverdueTasks().containsKey(t));
+    	assertEquals((double) 60 * HOURDIF / (DAYDIF * Duration.getMinutesOfWorkDay()), (double) p1.getUnacceptablyOverdueTasks().get(t), EPS);
+    }
+    
     
     /**
      * Test isFinished method in trivial cases.
