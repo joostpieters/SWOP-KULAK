@@ -4,16 +4,14 @@ import controller.AdvanceSystemTimeHandler;
 import controller.FrontController;
 import domain.Duration;
 import domain.Project;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import domain.ProjectManager;
 import domain.Task;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * This scenario test, tests the advance system time use case
@@ -34,7 +32,7 @@ public class AdvanceSystemTimeScenarioTest {
     public static void setUpClass() {
         manager = new ProjectManager();
         // only p1 has tasks
-        p1 = manager.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
+        p1 = manager.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 30, 17, 50));
         t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
 
         t2 = p1.createTask("A difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Arrays.asList(0));
@@ -47,16 +45,17 @@ public class AdvanceSystemTimeScenarioTest {
     }
 
     /**
-     * Tests the main success scenario of the "Create Project" use case
+     * Tests the main success scenario of the "Advance System time" use case
      */
     @Test
     public void testMainSuccessScenario() {
         // Step 4
         assertTrue(p1.isOnTime());
-        handler.advanceTime("22-03-2015 18:00");
+        assertTrue(p1.getUnacceptablyOverdueTasks().isEmpty());
+        handler.advanceTime("2015-12-03 18:00");
         assertFalse(p1.isOnTime());
-        // TODO meer parameters checken die veranderen bij advance tijd
-        //unacceptably overdue taken.
+        assertTrue(p1.getUnacceptablyOverdueTasks().contains(t1));
+        assertFalse(p1.getUnacceptablyOverdueTasks().contains(t2));
     }
 
     /**
@@ -75,6 +74,6 @@ public class AdvanceSystemTimeScenarioTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidDataDescription() {
-        handler.advanceTime("03-12-1944 17:30");
+        handler.advanceTime("1944-03-12 17:30");
     }
 }

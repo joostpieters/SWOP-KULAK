@@ -10,15 +10,16 @@ import domain.ProjectManager;
 import domain.Status;
 import domain.Task;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 
 /**
@@ -89,7 +90,11 @@ public class ShowProjectScenarioTest {
         assertEquals("A description.", p1Details.getDescription());
         assertEquals(LocalDateTime.of(2015, 3, 12, 17, 30), p1Details.getCreationTime());
         assertEquals(LocalDateTime.of(2015, 3, 22, 17, 50), p1Details.getDueTime());
-        // TODO more details
+        assertFalse(p1Details.isFinished());
+        assertTrue(p1Details.isOnTime());
+        assertTrue(p1.getTasks().contains(t1));
+        assertTrue(p1.getTasks().contains(t2));
+        assertEquals(Duration.ZERO, p1Details.getDelay());
         
         //step 5 select task t2
         DetailedTask t2Details = handler.getTask(t2.getId());
