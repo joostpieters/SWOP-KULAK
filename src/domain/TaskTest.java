@@ -64,7 +64,6 @@ public class TaskTest {
     @Test
     public void testConstructorValid()
     {
-    	System.out.println("Task constructor");
     	
     	//Task(String description, Duration estDur, int accDev, List<Task> prereq)
     	String description = "task0 description";
@@ -93,7 +92,6 @@ public class TaskTest {
      */
     @Test
     public void testGetId() {
-        System.out.println("getId");
         
         Task instance = p.createTask("description", new Duration(40), 20, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
         		//new Task("description", new Duration(40), 20);
@@ -111,8 +109,6 @@ public class TaskTest {
     @Test
     public void testCanHaveAsDescription()
     {
-    	System.out.println("canHaveAsDescription");
-    	
     	assertTrue(t0.canHaveAsDescription("tekst"));
     	assertFalse(t0.canHaveAsDescription(null));
     	assertFalse(t0.canHaveAsDescription(""));
@@ -176,8 +172,6 @@ public class TaskTest {
     @Test
     public void testGetTimeSpent()
     {
-    	System.out.println("getTimeSpent");
-    	
     	LocalDateTime startA = LocalDateTime.of(2014, 10, 30, 10, 10);
     	LocalDateTime endA = LocalDateTime.of(2014, 10, 30, 10, 20);
 
@@ -199,7 +193,6 @@ public class TaskTest {
     @Test
     public void testUpdate()
     {
-    	System.out.println("Update");
     	// AVAILABLE -> FINISHED
     	assertEquals(Status.AVAILABLE, t0.getStatus());
     	LocalDateTime startTime = LocalDateTime.of(2016, 10, 30, 0, 0);
@@ -222,8 +215,6 @@ public class TaskTest {
      */
     @Test
     public void testStatus() {
-        System.out.println("Status");
-        
         assertEquals(Status.AVAILABLE, t0.getStatus());
         assertEquals(Status.AVAILABLE, t1.getStatus());
         assertEquals(Status.UNAVAILABLE, t2.getStatus());
@@ -248,8 +239,6 @@ public class TaskTest {
      */
     @Test
     public void testIsFulfilled() {
-        System.out.println("isFulfilled");
-        
         assertFalse(t0.isFulfilled());
         assertFalse(t1.isFulfilled());
         assertFalse(t2.isFulfilled());
@@ -268,8 +257,6 @@ public class TaskTest {
      */
     @Test (expected = IllegalStateException.class)
     public void testEndsBeforeException() {
-    	System.out.println("EndsBeforeException");
-    	
         Task availableTask = new Task("doesn't have a time span", new Duration(10), 30);
         availableTask.endsBefore(new Timespan(
         		LocalDateTime.of(2015, 5, 4, 10, 2),
@@ -281,8 +268,6 @@ public class TaskTest {
      */
     @Test
     public void testHasTimeSpan() {
-    	System.out.println("hasTimeSpan");
-    	
         assertFalse(t0.hasTimeSpan());
         assertTrue(t3.hasTimeSpan());
     }
@@ -294,8 +279,6 @@ public class TaskTest {
     @Test
     public void testCanHaveAsTimeSpan()
     {
-    	System.out.println("canHaveAsTimeSpan");
-    	
     	Timespan t0timeSpan = new Timespan(
 				LocalDateTime.of(2015, 3, 5, 14, 30),
 				LocalDateTime.of(2015, 3, 5, 15, 22));
@@ -388,8 +371,6 @@ public class TaskTest {
     @Test
     public void testCanHaveAsAcceptableDeviation()
     {
-    	System.out.println("canHaveAsAcceptableDeviation");
-    	
     	assertTrue(t0.canHaveAsAcceptableDeviation(0));
     	assertTrue(t0.canHaveAsAcceptableDeviation(15));
     	assertTrue(t0.canHaveAsAcceptableDeviation(67));
@@ -496,8 +477,6 @@ public class TaskTest {
     @Test
     public void testCanBeFulfilled()
     {
-    	System.out.println("canBeFulfilled");
-    	
     	assertTrue(t3.canBeFulfilled());
     	assertTrue(t0.canBeFulfilled());
     	assertFalse(t6.canBeFulfilled());
@@ -509,10 +488,8 @@ public class TaskTest {
      * Test of canHaveAsAlternativeTask method, of class Task.
      */
     @Test
-    public void testCanHaveAsAlternativeTask() // TODO uitgebreider
+    public void testCanHaveAsAlternativeTask()
     {
-    	System.out.println("canHaveAsAlternativeTask");
-    	
     	// null
     	assertFalse(t0.canHaveAsAlternativeTask(null));
     	// this
@@ -531,8 +508,6 @@ public class TaskTest {
     @Test
     public void testGetDelay()
     {
-    	System.out.println("getDelay");
-    	
     	// Task with no time span t0
     	assertEquals(0, t0.getDelay().toMinutes());
     	
@@ -608,8 +583,6 @@ public class TaskTest {
     @Test
     public void testEstimatedWorkTimeNeeded()
     {
-    	System.out.println("estimatedWorkTimeNeeded");
-
     	assertEquals(Status.FINISHED, t3.getStatus());
     	assertEquals(Duration.ZERO.toMinutes(), t3.estimatedWorkTimeNeeded().toMinutes());
 
@@ -631,8 +604,6 @@ public class TaskTest {
      */
     @Test
     public void testDependsOn() {
-        System.out.println("dependsOn");
-        
         assertFalse(t0.dependsOn(t1));
         assertFalse(t0.dependsOn(t6));
         

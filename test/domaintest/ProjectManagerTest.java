@@ -23,13 +23,8 @@ import static org.junit.Assert.*;
  * @author Mathias Benoit
  */
 public class ProjectManagerTest {
-    private static Project p1;
-    private static Project p0;
-    private static Task t1;
-    private static Task t2;
-    private static Project p2;
-    private static Project p3;
-    private static Task t3;
+    private static Project p1, p2, p3;
+    private static Task t1, t2, t3;
     
     public ProjectManagerTest() {
     }
@@ -39,7 +34,7 @@ public class ProjectManagerTest {
     @BeforeClass
     public static void setUpClass() {
         manager = new ProjectManager();
-        p0 = manager.createProject("Test", "Description", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 12, 17, 50));
+        manager.createProject("Test", "Description", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 12, 17, 50));
         p1 = manager.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
         

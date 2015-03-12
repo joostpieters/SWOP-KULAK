@@ -39,7 +39,6 @@ public class ClockTest {
      */
     @Test
     public void testAdvanceTime() {
-        System.out.println("advanceTime");
         Clock instance = new Clock(LocalDateTime.of(2015, 2, 26, 14, 30));
         instance.advanceTime(LocalDateTime.of(2015, 2, 27, 14, 40));
         
@@ -51,7 +50,6 @@ public class ClockTest {
      */
     @Test (expected=IllegalArgumentException.class)
     public void testAdvanceTimeWithPastTime() {
-        System.out.println("advanceTime");
         Clock instance = new Clock();
         instance.advanceTime(LocalDateTime.of(1994, 11, 30, 10, 30));
     }

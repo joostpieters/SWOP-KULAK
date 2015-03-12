@@ -86,32 +86,37 @@ public class DurationTest {
      * Test of the Duration constructor between 2 times, with an end time the
      * same as begin.
      */
-    @Test(expected = IllegalArgumentException.class)
-    public void testDurationBetweenConstructorInvalidInterval() {
+    @Test
+    public void testDurationBetweenConstructorEmptyInterval() {
         LocalDateTime begin = LocalDateTime.of(2015, 2, 16, 12, 30);
-        new Duration(begin, begin);
+        Duration d = new Duration(begin, begin);
+        assertTrue(d.equals(Duration.ZERO));
     }
 
     /**
      * Test of the Duration constructor between 2 times, with a begin time
      * before the bussiness hours
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testDurationBetweenConstructorInvalidBeginTime() {
         LocalDateTime begin = LocalDateTime.of(2015, 2, 16, 6, 0);
         LocalDateTime end = LocalDateTime.of(2015, 2, 20, 9, 30);
-        new Duration(begin, end);
+        Duration d = new Duration(begin, end);
+        assertEquals(32, d.getHours());
+        assertEquals(30, d.getMinutes());
     }
 
     /**
      * Test of the Duration constructor between 2 times, with an end time after
      * the bussiness hours
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testDurationBetweenConstructorInvalidEndTime() {
-        LocalDateTime begin = LocalDateTime.of(2015, 2, 16, 8, 0);
+        LocalDateTime begin = LocalDateTime.of(2015, 2, 16, 9, 0);
         LocalDateTime end = LocalDateTime.of(2015, 2, 20, 18, 30);
-        new Duration(begin, end);
+        Duration d = new Duration(begin, end);
+        assertEquals(40, d.getHours());
+        assertEquals(0, d.getMinutes());
     }
 
     /**
