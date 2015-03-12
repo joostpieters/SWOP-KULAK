@@ -1,13 +1,14 @@
 package domain;
 
-import domain.Clock;
 import java.time.LocalDateTime;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -52,6 +53,23 @@ public class ClockTest {
     public void testAdvanceTimeWithPastTime() {
         Clock instance = new Clock();
         instance.advanceTime(LocalDateTime.of(1994, 11, 30, 10, 30));
+    }
+    
+    /**
+     * Test of equals method, of class Clock.
+     */
+    @Test
+    public void testEquals() {
+        Clock instance = new Clock(LocalDateTime.of(2015, 2, 26, 14, 30));
+        Clock instance2 = new Clock(LocalDateTime.of(2015, 2, 26, 14, 30));
+        Clock instance3 = new Clock(LocalDateTime.of(2015, 2, 26, 14, 31));
+        
+        assertTrue(instance.equals(instance2));
+        assertFalse(instance.equals(instance3));
+        
+        assertFalse(instance.equals(LocalDateTime.of(2015, 2, 26, 14, 31)));
+        
+        
     }
     
 }

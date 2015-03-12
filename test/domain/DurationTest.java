@@ -1,6 +1,5 @@
 package domain;
 
-import domain.Duration;
 import java.time.LocalDateTime;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -105,6 +104,18 @@ public class DurationTest {
         assertEquals(32, d.getHours());
         assertEquals(30, d.getMinutes());
     }
+    
+    /**
+     * Test of the Duration constructor between 2 times, with a begin time
+     * after the end time
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testDurationBetweenConstructorInvalidInterval() {
+        LocalDateTime begin = LocalDateTime.of(2015, 2, 16, 10, 0);
+        LocalDateTime end = LocalDateTime.of(2015, 2, 15, 9, 30);
+        Duration d = new Duration(begin, end);
+        
+    }
 
     /**
      * Test of the Duration constructor between 2 times, with an end time after
@@ -129,6 +140,7 @@ public class DurationTest {
         assertEquals(250, instance.toMinutes());
         instance = instance.add(-150);
         assertEquals(100, instance.toMinutes());
+        assertEquals(instance, instance.add(null));
     }
 
     /**
@@ -162,6 +174,7 @@ public class DurationTest {
         Duration instance2 = new Duration(100);
         instance = instance.subtract(instance2);
         assertEquals(instance.toMinutes(), 0);
+        assertEquals(instance2, instance2.subtract(null));
     }
 
     /**
@@ -215,6 +228,18 @@ public class DurationTest {
         Duration instance = new Duration(1941);
         assertEquals(1165, instance.multiplyBy(0.6).toMinutes());
     }
+    
+     /**
+     * Test of percentage over method, of class Duration.
+     */
+    @Test
+    public void testPercentageOver() {
+       
+        Duration instance = new Duration(1500);
+        Duration instance2 = new Duration(3000);
+        assertEquals(0, instance.percentageOver(instance2),0);
+        assertEquals(1, instance2.percentageOver(instance),0);
+    }
 
     /**
      * Test nextValidWorkTime method in case of a valid work time.
@@ -237,6 +262,22 @@ public class DurationTest {
         assertTrue(tooEarly.toLocalTime().isBefore(Duration.BEGINWORKDAY));
         assertEquals(LocalDateTime.of(tooEarly.toLocalDate(), Duration.BEGINWORKDAY),
                 Duration.nextValidWorkTime(tooEarly));
+    }
+    
+    /**
+     * Test of equals method, of class Duration.
+     */
+    @Test
+    public void testEquals() {
+        
+        Duration instance = new Duration(1941);
+        Duration instance2 = new Duration(1941);
+        Duration instance3 = new Duration(2);
+        assertTrue(instance.equals(instance2));
+        assertTrue(instance2.equals(instance));
+        assertFalse(instance.equals(instance3));
+        assertFalse(instance.equals("Not a duration"));
+        
     }
 
     /**

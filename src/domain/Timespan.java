@@ -24,12 +24,14 @@ public final class Timespan {
      */
     public Timespan(LocalDateTime startTime, LocalDateTime endTime) throws IllegalArgumentException {
         
-        if(!canHaveAsTimeInterval(startTime, endTime)){
-            throw new IllegalArgumentException("The start time is later than the end time.");
-        }
+        
         
         if(!canHaveAsTime(startTime) || !canHaveAsTime(endTime)){
             throw new IllegalArgumentException("The start time is not valid.");
+        }
+        
+        if(!canHaveAsTimeInterval(startTime, endTime)){
+            throw new IllegalArgumentException("The start time is later than the end time.");
         }
         
         this.startTime = startTime;

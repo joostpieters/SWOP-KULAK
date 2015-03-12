@@ -1,16 +1,14 @@
 package domain;
 
 import java.time.LocalDateTime;
-
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import domain.Duration;
-import domain.Timespan;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -60,6 +58,24 @@ public class TimespanTest {
         assertEquals(timespan.getStartTime(), start);
         assertEquals(timespan.getEndTime(), end);
         assertEquals(timespan.getDuration(), new Duration(start, end));
+    }
+    
+    /**
+     * Test constructor with invalid begin time
+     */
+     @Test (expected = IllegalArgumentException.class)
+    public void testTimespanConstructorInvalidBegin() {
+        LocalDateTime end = LocalDateTime.of(2015, 1, 6, 14, 30);
+        Timespan timespan = new Timespan(null, end);
+    }
+    
+    /**
+     * Test constructor with invalid end time
+     */
+     @Test (expected = IllegalArgumentException.class)
+    public void testTimespanConstructorInvalidEnd() {
+        LocalDateTime start = LocalDateTime.of(2015, 1, 6, 14, 29);
+        Timespan timespan = new Timespan(start, null);
     }
     
     /**

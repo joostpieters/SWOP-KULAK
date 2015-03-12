@@ -93,7 +93,7 @@ public class Clock {
         if(!(o instanceof Clock)){
             return false;
         }
-    	return ((Clock) o).getTime() == getTime();
+    	return ((Clock) o).getTime().equals(getTime());
     }
     /**
      * 
