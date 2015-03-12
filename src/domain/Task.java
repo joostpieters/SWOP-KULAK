@@ -572,12 +572,13 @@ public class Task implements DetailedTask {
 	}
 	
 	/**
-	 * The estimated amount of time needed until this task can be set to finished. TODO commentaar
+	 * The estimated amount of work time needed for this task.
 	 * 
 	 * @return If this task is finished or failed, a duration of 0.
-	 *         If this task is unavailable, the sum of the amounts of work time
+	 *         If this task is unavailable, the sum of the amounts of estimated work time
 	 *         needed of the prerequisite tasks of this task + the estimated
-	 *         duration of this task.
+	 *         duration of this task + the estimated durations of the alternatives of the prerequisites
+	 *         of this task.
 	 *         If this task is available, the estimated duration of this task.
 	 *         
 	 */
