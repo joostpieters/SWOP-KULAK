@@ -232,7 +232,7 @@ public class ShowProjectFrame extends javax.swing.JFrame {
         jLabel2.setFont(jLabel2.getFont().deriveFont(jLabel2.getFont().getSize()+15f));
         jLabel2.setText("Select Project");
 
-        projectTable.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        projectTable.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         projectTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(projectTable);
 
