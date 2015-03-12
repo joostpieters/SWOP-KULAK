@@ -47,7 +47,7 @@ public class Task implements DetailedTask {
 		this.estimatedDuration = duration;
 		setAcceptableDeviation(accDev);
 		if(prereq == null)
-			setPrerequisiteTasks(new ArrayList<Task>());
+			setPrerequisiteTasks(new ArrayList<>());
 		else
 			setPrerequisiteTasks(prereq);
 		updateStatus();
@@ -294,7 +294,7 @@ public class Task implements DetailedTask {
     @Override
 	public List<Task> getPrerequisiteTasks()
 	{
-		return new ArrayList<Task>(this.prerequisiteTasks);
+		return new ArrayList<>(this.prerequisiteTasks);
 	}
 
 	/**

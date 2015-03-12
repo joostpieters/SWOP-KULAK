@@ -39,7 +39,7 @@ public class ProjectManagerFileInitializor extends StreamTokenizer {
     /**
      * 
      * @return The next token
-     * @see StreamTokenizer.nextToken()
+     * @see java.io.StreamTokenizer#nextToken()
      */
     @Override
     public int nextToken() {

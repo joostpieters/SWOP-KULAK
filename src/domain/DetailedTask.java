@@ -3,8 +3,9 @@ package domain;
 import java.util.List;
 
 /**
- *
- * @author Mathias
+ * This interface provides methods to retrieve all data from a task object.
+ * 
+ * @author Frederic, Mathias, Pieter-Jan
  */
 public interface DetailedTask {
 

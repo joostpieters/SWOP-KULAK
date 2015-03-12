@@ -47,5 +47,13 @@ public class AdvanceSystemTimeHandler {
             
         }
         
-    }    
+    } 
+    
+    /**
+     * 
+     * @return The current time as indicated by the system clock 
+     */
+    public LocalDateTime getCurrentTime(){
+        return manager.getSystemClock().getTime();
+    }
 }
