@@ -1,4 +1,4 @@
-package domaintest;
+package domain;
 
 import domain.Duration;
 import domain.Project;

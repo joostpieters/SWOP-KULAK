@@ -16,7 +16,7 @@ public class CreateProjectFrame extends javax.swing.JFrame {
     /**
      * Creates new form CreateProjectFrame
      *
-     * @param handler
+     * @param handler The handler to use in this frame
      */
     public CreateProjectFrame(CreateProjectHandler handler) {
         initComponents();

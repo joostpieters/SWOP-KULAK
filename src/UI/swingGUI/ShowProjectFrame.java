@@ -6,6 +6,7 @@ import domain.DetailedTask;
 import java.awt.CardLayout;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -90,18 +91,22 @@ public class ShowProjectFrame extends javax.swing.JFrame {
             status += project.isOnTime() ? "and will be delayed" : "and is on time";
         }
         statusLabel.setText(status);
-        String[] columnNames = {"Id", "Description", "Estimated Duration", "Acceptable Deviation", "Status"};
+        String[] columnNames = {"Id", "Description", "Estimated Duration", "Acceptable Deviation", "Status", "Percentage Overdue"};
         List<DetailedTask> tasks = (List<DetailedTask>) project.getTasks();
+        Map<DetailedTask, Double> overdueTasks = (Map<DetailedTask, Double>) project.getUnacceptablyOverdueTasks();
+        
         Object[][] data = new Object[tasks.size()][];
 
         int i = 0;
         for (DetailedTask task : tasks) {
+            double overdueProcent = overdueTasks.containsKey(task) ? overdueTasks.get(task) : 0;
             data[i] = new Object[]{
                 task.getId(),
-                task.getDescription(),
+                (overdueProcent > 0 ? "*" : "") + task.getDescription(),
                 task.getEstimatedDuration(),
                 task.getAcceptableDeviation() + "%",
-                task.getStatus()
+                task.getStatus(),
+                overdueProcent + "%"
             };
             i++;
         }

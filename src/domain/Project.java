@@ -1,5 +1,6 @@
 package domain;
 
+import exception.ObjectNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,8 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import exception.ObjectNotFoundException;
 
 /**
  * This class represents a project with an id, a name, a description, 
@@ -56,7 +55,7 @@ public class Project implements DetailedProject {
      * 			The system clock this project depends on.
      * 
      * @throws	IllegalArgumentException
-     * 			if id < 0
+     * 			if id &lt; 0
      * 			or if name or descr = null
      * 			or if creation and due form an invalid time pair.
      */
@@ -105,7 +104,7 @@ public class Project implements DetailedProject {
      * @param 	name
      * 			The name to be checked.
      * 
-     * @return	name != null && name.length() > 0
+     * @return	name != null &amp;&amp; name.length() &gt; 0
      */
     public final boolean canHaveAsName(String name) {
     	return name != null && name.length() > 0;
@@ -125,7 +124,7 @@ public class Project implements DetailedProject {
      * @param 	descr
      * 			The description to be checked.
      * 
-     * @return	descr != null && descr.length() > 0
+     * @return	descr != null &amp;&amp; descr.length() &gt; 0
      */
     public final boolean canHaveAsDescription(String descr) {
     	return descr != null && descr.length() > 0;
@@ -274,7 +273,7 @@ public class Project implements DetailedProject {
 	 * @throws	IllegalStateException
 	 * 			if this project is already finished.
 	 * 
-	 * @see		Task#Task(String, Duration, int, List, Task)
+	 * @see		Task#Task(String, Duration, int, List)
 	 */
 	public Task createTask(String descr, Duration estdur, int accdev, int altFor, List<Integer> prereqs) {
 		if(isFinished())
@@ -319,7 +318,7 @@ public class Project implements DetailedProject {
 	 * @throws	IllegalArgumentException
 	 * 			if the given start time was before the creation time of this project.
 	 * 
-	 * @see		Task#update(LocalDateTime, LocalDateTime, Status)
+	 * @see		Task#update(LocalDateTime, LocalDateTime, Status, Project)
 	 */
 	public void updateTask(int tid, LocalDateTime start, LocalDateTime end, Status status) {
 		if(start.isBefore(getCreationTime()))
@@ -349,13 +348,14 @@ public class Project implements DetailedProject {
 	 * Return all tasks which can cause this project to get overdue and 
 	 * the percentage the project will be late because of the task.
 	 * 
-	 * @return	a map of tasks for which the work time needed > 
+	 * @return	a map of tasks for which the work time needed  &gt;
 	 * 			({@link #getDueTime()} - {@link #getSystemTime()})
 	 * 			to their corresponding percentage by which they are over time.
 	 * 
 	 * @see		Task#estimatedWorkTimeNeeded()
 	 * @see		Duration#percentageOver(Duration)
 	 */
+        @Override
 	public Map<Task, Double> getUnacceptablyOverdueTasks() {
 		Map<Task, Double> result = new HashMap<>();
 		

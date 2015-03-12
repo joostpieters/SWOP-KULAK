@@ -1,6 +1,7 @@
 package UI.swingGUI;
 
 import controller.FrontController;
+import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
 
 
@@ -14,6 +15,8 @@ public class MainFrame extends javax.swing.JFrame {
     private static final long serialVersionUID = -2541384231489389714L;
 
     private final FrontController controller;
+    
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     /**
      * Creates new form MainFrame
@@ -42,6 +45,7 @@ public class MainFrame extends javax.swing.JFrame {
         updateTaskButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Taskman - A Project-Oriented Task Manager");
 
         createProjectButton.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         createProjectButton.setText("Create New Project");
@@ -107,7 +111,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(modifySystemTimeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -115,9 +119,9 @@ public class MainFrame extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(26, 26, 26)
+                .addGap(27, 27, 27)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(listAllProjectsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(createProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -125,9 +129,9 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(createNewTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(updateTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(46, 46, 46)
+                .addGap(50, 50, 50)
                 .addComponent(modifySystemTimeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(96, Short.MAX_VALUE))
+                .addContainerGap(92, Short.MAX_VALUE))
         );
 
         pack();
@@ -167,7 +171,8 @@ public class MainFrame extends javax.swing.JFrame {
      */
     private void modifySystemTime(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifySystemTime
         try {
-            String timestamp = JOptionPane.showInputDialog(rootPane, "Advance System Time to:", "yyyy-MM-dd HH:mm");
+            String currentTime = controller.getAdvanceSystemTimeHandler().getCurrentTime().format(formatter);
+            String timestamp = JOptionPane.showInputDialog(rootPane, "Advance System Time to:", currentTime);
             //nothing entered
             if(timestamp == null){
                 return;
