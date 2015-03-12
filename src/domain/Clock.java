@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * This class represents the system clock
@@ -9,7 +10,10 @@ import java.time.LocalDateTime;
  */
 public class Clock {
 	
-	public static final LocalDateTime NEW_YEAR = LocalDateTime.of(2000, 1, 1, 0, 0);
+    /**
+     * Time used to initialize the clock, when no time is given.
+     */
+    public static final LocalDateTime INCEPTION = LocalDateTime.of(2000, 1, 1, 0, 0);
     
     private LocalDateTime time;
     
@@ -24,10 +28,10 @@ public class Clock {
     }
     
     /**
-     * Initializes this clock with new year 2015 as its inception moment.
+     * Initializes this clock with INCEPTION constant as its inception moment.
      */
     public Clock() {
-        this(NEW_YEAR);
+        this(INCEPTION);
     }
     
     /**
@@ -77,8 +81,29 @@ public class Clock {
         setTime(time);
     }
     
+    /**
+     * Check wether the given object is equal to this clock.
+     * 
+     * @param o The other object to check.
+     * @return True if and only if the given object is a Clock and it has the 
+     * same time as this clock.
+     */
     @Override
     public boolean equals(Object o) {
+        if(!(o instanceof Clock)){
+            return false;
+        }
     	return ((Clock) o).getTime() == getTime();
+    }
+    /**
+     * 
+     * @return The hahcode for this clock, clocks with the same time, have the 
+     * same hashcode.
+     */
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 19 * hash + Objects.hashCode(this.time);
+        return hash;
     }
 }
