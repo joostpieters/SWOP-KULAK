@@ -166,11 +166,11 @@ public class Duration implements Comparable<Duration>{
      * 			(this - other) / other - 1 otherwise.
      */
     public double percentageOver(Duration other) {
-    	long dif = getMinutes() - other.getMinutes();
+    	long dif = toMinutes()- other.toMinutes();
     	if(dif < 0)
     		return 0;
     	
-    	return (double) dif / other.getMinutes() - 1;
+    	return (double) dif / other.toMinutes();
     }
     
     /**

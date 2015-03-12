@@ -26,6 +26,7 @@ import static org.junit.Assert.*;
  */
 public class ProjectTest {
 	
+	private static final double EPS = 1e-15;
 	private static final int DAYDIF = 4;
 	private static final int HOURDIF = 2;
 	
@@ -151,6 +152,17 @@ public class ProjectTest {
     	String descr = "";
     	
     	new Project(name, descr, create, due, pm.getSystemClock());
+    }
+    
+    /**
+     * Test getAvailableTasks method when project is already finished.
+     */
+    @Test
+    public void testCanhaveAsTask() {
+    	assertFalse(p0.canHaveAsTask(null));
+    	Task t = p0.createTask(taskdescr, estdur, accdev, altFor, prereqs);
+    	assertFalse(p0.canHaveAsTask(t));
+    	assertFalse(p0.canHaveAsTask(tFin));
     }
     
     /**
@@ -330,11 +342,27 @@ public class ProjectTest {
     }
     
     /**
-     * Test getAvailableTasks method when project is already finished.
+     * Test getUnacceptablyOverdueTasks method in simple case (no alternative or prereqs).
      */
     @Test
-    public void testCanhaveAsTask() {
-    	assertFalse(p0.canHaveAsTask(null));
+    public void testGetUnacceptablyOverdueTasksSimple() {
+    	pm.advanceSystemTime(create);
+    	assertTrue(p0.getUnacceptablyOverdueTasks().isEmpty());
+    	assertTrue(p1.getUnacceptablyOverdueTasks().isEmpty());
+    	assertTrue(p2.getUnacceptablyOverdueTasks().isEmpty());
+    	assertTrue(pFinished.getUnacceptablyOverdueTasks().isEmpty());
+    	
+    	Task t = p1.createTask(taskdescr, new Duration(create, due.plusDays(DAYDIF)), accdev, altFor, prereqs);
+    	assertEquals(1, p1.getUnacceptablyOverdueTasks().size());
+    	assertTrue(p1.getUnacceptablyOverdueTasks().containsKey(t));
+    	assertEquals((double) (DAYDIF - 2) / DAYDIF, (double) p1.getUnacceptablyOverdueTasks().get(t), EPS); //weekend: -2
+    	
+    	Task tt = p1.createTask(taskdescr, new Duration(create, due.plusDays(1)), accdev, altFor, prereqs);
+    	assertEquals(2, p1.getUnacceptablyOverdueTasks().size());
+    	assertTrue(p1.getUnacceptablyOverdueTasks().containsKey(t));
+    	assertTrue(p1.getUnacceptablyOverdueTasks().containsKey(tt));
+    	assertEquals((double) (DAYDIF - 2) / DAYDIF, (double) p1.getUnacceptablyOverdueTasks().get(t), EPS); //weekend: -2
+    	assertEquals((double) 1 / DAYDIF, (double) p1.getUnacceptablyOverdueTasks().get(tt), EPS);
     }
     
     /**

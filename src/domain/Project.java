@@ -216,7 +216,7 @@ public class Project implements DetailedProject {
 	public boolean canHaveAsTask(Task t) {
 		if(t == null)
 			return false;
-		boolean taskCheck = !tasks.containsKey(t.getId());
+		boolean taskCheck = !tasks.containsKey(t.getId()) && !t.isFulfilled();
 		boolean altTaskCheck = t.getAlternativeTask() == null || tasks.containsKey(t.getAlternativeTask().getId());
 		boolean prereqTaskCheck = true;
 		for(Task x : t.getPrerequisiteTasks())
@@ -359,7 +359,7 @@ public class Project implements DetailedProject {
 	public Map<Task, Double> getUnacceptablyOverdueTasks() {
 		Map<Task, Double> result = new HashMap<>();
 		
-		for(Task t : getAvailableTasks()) {
+		for(Task t : getTasks()) {
 			LocalDateTime estFinTime = t.estimatedWorkTimeNeeded().getEndTimeFrom(getSystemTime());
 			if(estFinTime.isAfter(getDueTime()))
 				result.put(t, new Duration(getCreationTime(), estFinTime).percentageOver(new Duration(getCreationTime(), getDueTime())));
