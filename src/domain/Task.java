@@ -631,7 +631,10 @@ public class Task implements DetailedTask {
 	/**
 	 * Calculates the amount of time spent on this task.
 	 * 
-	 * @return If this task has a duration then the duration of the time span of this task is returned.
+	 * @return If this task has a time span then the result is equal to
+	 *         the sum of the maximum amount of time spent on a prerequisite task
+	 *         of this task and the alternative task if this task has an alternative task
+	 *         and the duration of the time span of this task.
 	 *         Otherwise a duration of 0 minutes is returned.
 	 */
 	public Duration getTimeSpent()

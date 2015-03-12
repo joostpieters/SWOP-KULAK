@@ -629,4 +629,15 @@ public class TaskTest {
         assertTrue(t8.dependsOn(t7alternative)); // indirectly depends on the alternative task of t7
     }
     
+    /**
+     * Test of getTimeSpent method, of class Task.
+     */
+    @Test
+    public void TestGetTimeSpent()
+    {
+    	assertEquals(165, t7.getTimeSpent().toMinutes());
+    	assertEquals(0, t8.getTimeSpent().toMinutes());
+    	assertEquals(0, t1.getTimeSpent().toMinutes());
+    	assertEquals(165, t6.getTimeSpent().toMinutes());
+    }
 }
