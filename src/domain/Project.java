@@ -449,7 +449,7 @@ public class Project implements DetailedProject {
      * 
      * @return	the sum of durations of the time spans of all tasks in this project.
      * 
-     * @see		Task#getTimeSpan();
+     * @see		Task#getTimeSpan()
      */
         @Override
     public Duration getTotalExecutionTime() {
