@@ -629,4 +629,21 @@ public class TaskTest {
         assertTrue(t8.dependsOn(t7alternative)); // indirectly depends on the alternative task of t7
     }
     
+    /**
+     * Test of getTimeSpent method, of class Task.
+     */
+    @Test
+    public void TestGetTimeSpent()
+    {
+    	assertEquals(165, t7.getTimeSpent().toMinutes());
+    	assertEquals(0, t8.getTimeSpent().toMinutes());
+    	assertEquals(0, t1.getTimeSpent().toMinutes());
+    	assertEquals(165, t6.getTimeSpent().toMinutes());
+
+    	t0.update(LocalDateTime.of(2015, 3, 10, 10, 0), LocalDateTime.of(2015, 3, 10, 11, 30), Status.FINISHED, p);
+    	assertEquals(90, t0.getTimeSpent().toMinutes());
+    	Task task = p.createTask("task abc", new Duration(33), 54, Project.NO_ALTERNATIVE, Arrays.asList(t0.getId()));
+    	task.update(LocalDateTime.of(2015, 3, 11, 10, 0), LocalDateTime.of(2015, 3, 11, 15, 30), Status.FINISHED, p);
+    	assertEquals(90+4*60+30, task.getTimeSpent().toMinutes());
+    }
 }
