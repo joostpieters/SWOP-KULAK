@@ -591,6 +591,8 @@ public class Task implements DetailedTask {
 				retDuration = retDuration.add(prereq.estimatedWorkTimeNeeded());
 			return retDuration;
 		}
+		if(hasAlternativeTask())
+			return getAlternativeTask().estimatedWorkTimeNeeded();
 		//if(getStatus() == Status.FAILED || getStatus() == Status.FINISHED)
 		return new Duration(0);
 	}
@@ -632,10 +634,19 @@ public class Task implements DetailedTask {
 	 */
 	public Duration getTimeSpent()
 	{
-		if(hasTimeSpan())
-			return getTimeSpan().getDuration(); 
-		else 
-			return new Duration(0);
+		if(hasTimeSpan()) {
+			Duration temp, max = Duration.ZERO;
+			for(Task t : getPrerequisiteTasks()) {
+				temp = t.getTimeSpent();
+				if(temp.compareTo(max) > 0)
+					max = temp;
+			}
+			temp = getTimeSpan().getDuration().add(max);
+			if(hasAlternativeTask())
+				return temp.add(getAlternativeTask().getTimeSpent());
+			return temp;
+		}
+		return new Duration(0);
 	}
 	
 	/**

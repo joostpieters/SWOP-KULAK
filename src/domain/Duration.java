@@ -12,9 +12,11 @@ import java.time.temporal.ChronoUnit;
  */
 public class Duration implements Comparable<Duration>{
         
-    /** Constant to indicate the first day of the work week, Monday is 1. */
+    /** Constant to indicate the first day of the work week. 
+     * The value for this constant is {@value} (Monday is 1, Sunday is 7). */
 	public static final int BEGINWORKWEEK = 1;
-    /** Constant to indicate the last day of the work week, Friday is 5. */
+    /** Constant to indicate the last day of the work week. 
+     * The value for this constant is {@value} (Monday is 1, Sunday is 7). */
 	public static final int ENDWORKWEEK = 5;	
     /** Constant to indicate the begin time of a work day. */
 	public static final LocalTime BEGINWORKDAY = LocalTime.of(9, 0);
@@ -143,15 +145,32 @@ public class Duration implements Comparable<Duration>{
     }
     
     /**
-     * Returns a copy of this duration multiplied by the given mulitplicant
+     * Returns a copy of this duration multiplied by the given multiplicand
      * 
-     * @param 	multiplicant 
+     * @param 	multiplicand 
      * 			The value to multiply this duration by
-     * @return 	A duration, based on this duration, multiplied by the given multiplicant,
+     * @return 	A duration, based on this duration, multiplied by the given multiplicand,
      * 			rounded to the nearest integer.
      */
-    public Duration multiplyBy(double multiplicant){
-        return new Duration(Math.round(multiplicant * toMinutes()));
+    public Duration multiplyBy(double multiplicand){
+        return new Duration(Math.round(multiplicand * toMinutes()));
+    }
+    
+    /**
+     * Calculate how much this duration lasts longer than another duration.
+     * 
+     * @param 	other
+     * 			The duration to compare with.
+     * 
+     * @return	0 if the given duration is longer.
+     * 			(this - other) / other - 1 otherwise.
+     */
+    public double percentageOver(Duration other) {
+    	long dif = getMinutes() - other.getMinutes();
+    	if(dif < 0)
+    		return 0;
+    	
+    	return (double) dif / other.getMinutes() - 1;
     }
     
     /**
@@ -255,16 +274,18 @@ public class Duration implements Comparable<Duration>{
 	 * @param 	end 
 	 * 			The end time
 	 * @return 	The work time between the 2 given moments in minutes based on the
-	 * 			start and end of a work day and minus the weekends and lunchbreaks.
+	 * 			start and end of a work day and minus the weekends and lunch breaks.
+	 * 			In case of invalid begin or end time, the next valid work time is used.
 	 * @throws 	IllegalArgumentException 
-	 * 			The given time interval is not valid or 
-	 * 			the begin or end time is not valid
+	 * 			The given time interval is not valid.
 	 */
 	private static long getWorkTimeBetween(LocalDateTime begin, LocalDateTime end) throws IllegalArgumentException{
-		if(!isValidInterval(begin, end))
+		if(!Duration.isValidInterval(begin, end))
 			throw new IllegalArgumentException("The given begin time isn't before the given end time.");
-		if(!isValidWorkTime(begin) || !isValidWorkTime(end))
-			throw new IllegalArgumentException("Begin- as well as endtime should be during workhours.");
+		if(!Duration.isValidWorkTime(begin))
+			begin = Duration.nextValidWorkTime(begin);
+		if(!Duration.isValidWorkTime(end))
+			end = Duration.nextValidWorkTime(end);
 
 		long minutesTillEnd = ChronoUnit.MINUTES.between(begin,  end);
 		long totalMinutes = 0;

@@ -2,6 +2,7 @@ package domain;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -10,15 +11,23 @@ import java.util.TreeMap;
 import exception.ObjectNotFoundException;
 
 /**
- * This class represents a project
+ * This class represents a project with an id, a name, a description, 
+ * a creation time, a due time and a list of tasks.
+ * This project also contains a system clock to indicate the current system time.
+ * Some constants have been defined to be used as default values for task-id's.
  * 
- * @author Frederic, Mathias, Pieter-Jan 
+ * @author 	Frederic, Mathias, Pieter-Jan 
+ * 
+ * @see		ProjectManager
+ * @see		Task
+ * @see		Clock
  */
 public class Project implements DetailedProject {
 	
-    /**Constant to use to create a task with no dependencies. */
+    /**Constant to use when a task has no dependencies. */
 	public static final List<Integer> NO_DEPENDENCIES = new ArrayList<>(0);
-    /** Constant to use when a project has no alternative. */
+    /** Constant to use when a project has no alternative. 
+     * The value of this constant is {@value}. */
 	public static final int NO_ALTERNATIVE = -1;
 	
 	private static int nextId = 0;
@@ -148,7 +157,7 @@ public class Project implements DetailedProject {
 	/**
 	 * @return the time of the clock used in this project.
 	 */
-	public LocalDateTime getTime() {
+	public LocalDateTime getSystemTime() {
 		return clock.getTime();
 	}
 
@@ -160,21 +169,37 @@ public class Project implements DetailedProject {
 	public List<Task> getTasks(){
         return new LinkedList<>(tasks.values());
     }
+    	
+	/**
+	 * Checks whether this project contains the task with the given task id.
+	 * 
+	 * @param 	tid
+	 *        	The id of the task to be checked.
+	 *        
+	 * @return 	true if this project contains a task with the given task id,
+	 * 			false otherwise.
+	 */
+	public boolean hasTask(int tid) {
+		return tasks.containsKey(tid);
+	}
 	
 	/**
 	 * Get a task with given id contained in this project.
 	 * 
 	 * @param 	tid
 	 * 			The id of the task to be returned.
+	 * 
 	 * @return	The task with the given id if it is contained in this project.
 	 * @throws  ObjectNotFoundException
 	 *          if this project doesn't contain the task with the given id.
+	 *     
+	 * @see		#hasTask(int)
 	 */
 	public Task getTask(int tid) {
-		Task t = tasks.get(tid);
-		if(t == null)
+		if(!hasTask(tid))
 			throw new ObjectNotFoundException("Task with tid " + tid + " doesn't exist in this project (" + id + ").", tid);
-		return t;
+		
+		return tasks.get(tid);
 	}
 	
 	/**
@@ -182,10 +207,11 @@ public class Project implements DetailedProject {
 	 * 
 	 * @param 	t
 	 * 			The task to be checked.
+	 * 
 	 * @return	true if t is not null and is not in this project already,
-				and if the alternative tasks for t are in this project,
-				and if the prerequisite tasks for t are in this project,
-				false otherwise.
+	 *			and if the alternative tasks for t are in this project,
+	 *			and if the prerequisite tasks for t are in this project,
+	 *			false otherwise.
 	 */
 	public boolean canHaveAsTask(Task t) {
 		if(t == null)
@@ -200,18 +226,6 @@ public class Project implements DetailedProject {
 			}
 		
 		return taskCheck && altTaskCheck && prereqTaskCheck;
-	}
-	
-	/** TODO kan misschien gebruikt worden in andere methodes?
-	 * Checks whether this project contains the task with the given task id.
-	 * 
-	 * @param tid
-	 *        The task id to check.
-	 * @return True if and only if this project contains a task with the given task id.
-	 */
-	public boolean hasTask(int tid)
-	{
-		return tasks.containsKey(tid);
 	}
     
     /****************************************
@@ -229,9 +243,9 @@ public class Project implements DetailedProject {
 	 * @throws	NullPointerException
 	 * 			if t == null.
 	 * @throws	IllegalArgumentException
-	 * 			if t.getAlternativeTask() doesn't exist in this project
-	 * 			or if there exists a task in t.getPrerequisiteTasks() 
-	 * 			which doesn't exist in this project.
+	 * 			if this project can't have the given task as task.
+	 * 
+	 * @see		#canHaveAsTask(Task)
 	 */
 	private void addTask(Task t) {
 		if(isFinished())
@@ -265,6 +279,7 @@ public class Project implements DetailedProject {
 	public Task createTask(String descr, Duration estdur, int accdev, int altFor, List<Integer> prereqs) {
 		if(isFinished())
 			throw new IllegalStateException("This project has already been finished.");
+		
 		if(altFor < 0)
 			altFor = Project.NO_ALTERNATIVE;
 		if(prereqs == null)
@@ -316,8 +331,10 @@ public class Project implements DetailedProject {
 	/**
 	 * Return all tasks from this project which are available.
 	 * 
-	 * @return	all tasks t for which t.isAvailable() is true,
+	 * @return	a list of tasks which are available,
 	 * 			an empty list if this project is already finished.
+	 * 
+	 * @see		Task#isAvailable()
 	 */
 	public List<Task> getAvailableTasks() {
 		List<Task> result = new LinkedList<>();
@@ -328,13 +345,24 @@ public class Project implements DetailedProject {
 		return result;
 	}
 	
-	public List<Task> getUnacceptablyOverdueTasks() {
-		List<Task> result = new LinkedList<>();
+	/**
+	 * Return all tasks which can cause this project to get overdue and 
+	 * the percentage the project will be late because of the task.
+	 * 
+	 * @return	a map of tasks for which the work time needed > 
+	 * 			({@link #getDueTime()} - {@link #getSystemTime()})
+	 * 			to their corresponding percentage by which they are over time.
+	 * 
+	 * @see		Task#estimatedWorkTimeNeeded()
+	 * @see		Duration#percentageOver(Duration)
+	 */
+	public Map<Task, Double> getUnacceptablyOverdueTasks() {
+		Map<Task, Double> result = new HashMap<>();
 		
 		for(Task t : getAvailableTasks()) {
-			LocalDateTime estFinTime = t.estimatedWorkTimeNeeded().getEndTimeFrom(getTime());
+			LocalDateTime estFinTime = t.estimatedWorkTimeNeeded().getEndTimeFrom(getSystemTime());
 			if(estFinTime.isAfter(getDueTime()))
-				result.add(t);
+				result.put(t, new Duration(getCreationTime(), estFinTime).percentageOver(new Duration(getCreationTime(), getDueTime())));
 		}
 		
 		return result;
@@ -346,6 +374,8 @@ public class Project implements DetailedProject {
 	 * @return	true if this all tasks in this project have been finished
 	 * 			and if this project contains at least one task,
 	 * 			false otherwise.
+	 * 
+	 * @see		Task#isFulfilled()
 	 */
     @Override
 	public boolean isFinished() {
@@ -385,15 +415,15 @@ public class Project implements DetailedProject {
 			Duration temp2, max2 = Duration.ZERO;
 			for(Task t : getTasks()) {
 				temp = t.estimatedWorkTimeNeeded();
-				temp2 = t.getTimeSpent();
 				if(temp.compareTo(max) > 0)
 					max = temp;
+				temp2 = t.getTimeSpent();
 				if(temp2.compareTo(max2) > 0)
 					max2 = temp2;
 			}
-			LocalDateTime end = max.getEndTimeFrom(max2.getEndTimeFrom(getCreationTime()));
-			if(end.isBefore(getTime()))
-				end = getTime();
+			LocalDateTime end = max.add(max2).getEndTimeFrom(getCreationTime());
+			if(end.isBefore(getSystemTime()))
+				end = getSystemTime();
 			return !end.isAfter(getDueTime());
 		}
 	}
@@ -415,7 +445,6 @@ public class Project implements DetailedProject {
     }
     
     /**
-     * 
      * @return a string, representing the name of this project
      */
     @Override

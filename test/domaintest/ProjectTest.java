@@ -241,6 +241,41 @@ public class ProjectTest {
     }
     
     /**
+     * Test updateTask method with valid parameters.
+     */
+    @Test
+    public void testUpdateTaskValid() {
+    	p1.updateTask(t1.getId(), start, end, Status.FINISHED);
+    	assertEquals(start, t1.getTimeSpan().getStartTime());
+    	assertEquals(end, t1.getTimeSpan().getEndTime());
+    	assertEquals(Status.FINISHED, t1.getStatus());
+    	p2.updateTask(t2.getId(), start, end, Status.FAILED);
+    	assertEquals(start, t2.getTimeSpan().getStartTime());
+    	assertEquals(end, t2.getTimeSpan().getEndTime());
+    	assertEquals(Status.FAILED, t2.getStatus());
+    	p2.updateTask(t3.getId(), start, end, Status.FINISHED);
+    	assertEquals(start, t3.getTimeSpan().getStartTime());
+    	assertEquals(end, t3.getTimeSpan().getEndTime());
+    	assertEquals(Status.FINISHED, t3.getStatus());
+    }
+    
+    /**
+     * Test updateTask method with start time before creation of project.
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testUpdateTaskInvalidStartTime() {
+    	p1.updateTask(t1.getId(), create.minusHours(1), end, Status.FAILED);
+    }
+    
+    /**
+     * Test updateTask method with invalid id for a task.
+     */
+    @Test (expected = ObjectNotFoundException.class)
+    public void testUpdateTaskInvalidId() {
+    	p2.updateTask(t1.getId(), start, end, Status.FINISHED);
+    }
+    
+    /**
      * Test getAvailableTasks method in simple cases.
      */
     @Test
@@ -482,8 +517,8 @@ public class ProjectTest {
     	pm.advanceSystemTime(create.plusDays(2));
     	p.updateTask(t2.getId(), LocalDateTime.of(2015, 2, 10, 9, 0), LocalDateTime.of(2015,  2, 10, 18, 0), Status.FAILED);
     	assertTrue(p.isOnTime());
-    	Task t5 = p.createTask("implement system with phonegap", new Duration(8,0), 100, t2.getId(), Arrays.asList(t1.getId()));
-//TODO: waarom zou dit in godsnaam te laat moeten zijn?    	assertFalse(p.isOnTime());
+    	Task t5 = p.createTask("implement system with phonegap", new Duration(17,0), 100, t2.getId(), Arrays.asList(t1.getId()));
+    	assertFalse(p.isOnTime()); //FIXME: why for god's sake should this hold in case of 8-hour-duration, it should be true up to 16-hour-durations?
     	pm.advanceSystemTime(due);
     	p.updateTask(t5.getId(), LocalDateTime.of(2015,  2, 11, 9, 0), LocalDateTime.of(2015, 2, 11, 18, 0), Status.FINISHED);
     	p.updateTask(t3.getId(), LocalDateTime.of(2015,  2, 12, 9, 0), LocalDateTime.of(2015, 2, 12, 18, 0), Status.FINISHED);
