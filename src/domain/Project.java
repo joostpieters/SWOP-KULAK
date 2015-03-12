@@ -451,6 +451,7 @@ public class Project implements DetailedProject {
      * 
      * @see		Task#getTimeSpan();
      */
+        @Override
     public Duration getTotalExecutionTime() {
     	Duration res = Duration.ZERO;
     	for(Task t : getTasks()) {

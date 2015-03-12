@@ -4,6 +4,9 @@ import controller.UpdateTaskStatusHandler;
 import domain.DetailedProject;
 import domain.DetailedTask;
 import java.awt.CardLayout;
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.swing.JOptionPane;
@@ -11,19 +14,20 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  * This jFrame handles the update task status use case
- * 
+ *
  * @author Frederic, Mathias, Pieter-Jan
  */
 public class UpdateTasksStatusFrame extends javax.swing.JFrame {
-	
-	private static final long serialVersionUID = -7570577954812578587L;
-        
+
+    private static final long serialVersionUID = -7570577954812578587L;
+
     private final UpdateTaskStatusHandler handler;
     private DefaultTableModel taskModel;
-	
-	/**
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+    /**
      * Creates new form ListProjectsFrame
-     * 
+     *
      * @param handler The use case handler to use to pass the requests to.
      */
     public UpdateTasksStatusFrame(UpdateTaskStatusHandler handler) {
@@ -31,7 +35,7 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
         initComponents();
         initAvailableTaskTable();
     }
-    
+
     /**
      * Fills the available task table with the appropriate data
      */
@@ -41,18 +45,19 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
         Object[][] data = new Object[tasks.size()][];
 
         int i = 0;
-            for (Entry<DetailedTask, DetailedProject> pair : tasks.entrySet()) {
-                data[i] = new Object[]{
-                    pair.getKey().getId(),
-                    pair.getKey().getDescription(),
-                    pair.getKey().getEstimatedDuration().getHours() + "h " + pair.getKey().getEstimatedDuration().getMinutes() + " min",
-                    pair.getKey().getAcceptableDeviation() + "%",
-                    pair.getValue().getId(),
-                    pair.getValue().getName()
-                };  i++;
-            }
+        for (Entry<DetailedTask, DetailedProject> pair : tasks.entrySet()) {
+            data[i] = new Object[]{
+                pair.getKey().getId(),
+                pair.getKey().getDescription(),
+                pair.getKey().getEstimatedDuration().getHours() + "h " + pair.getKey().getEstimatedDuration().getMinutes() + " min",
+                pair.getKey().getAcceptableDeviation() + "%",
+                pair.getValue().getId(),
+                pair.getValue().getName()
+            };
+            i++;
+        }
 
-        taskModel = new DefaultTableModel(data, columnNames){
+        taskModel = new DefaultTableModel(data, columnNames) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 //all cells false
@@ -245,42 +250,50 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
+
     /**
      * The select task button is pressed in the available tasks list overview
-     * @param evt 
+     *
+     * @param evt
      */
     private void selectTaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectTaskButtonActionPerformed
         try {
             int tId = (int) taskModel.getValueAt(availableTaskTable.convertRowIndexToModel(availableTaskTable.getSelectedRow()), 0);
             int pId = (int) taskModel.getValueAt(availableTaskTable.convertRowIndexToModel(availableTaskTable.getSelectedRow()), 4);
             handler.selectTask(pId, tId);
-            
+
             CardLayout card = (CardLayout) mainPanel.getLayout();
             card.show(mainPanel, "updateTask");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(rootPane, "Please select a task.", null, JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_selectTaskButtonActionPerformed
-    
+
     /**
      * The update task button is pressed in the task update form
-     * @param evt 
+     *
+     * @param evt
      */
     private void updateTaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateTaskButtonActionPerformed
-        try{
+        try {
             String startTime = startTimeTextField.getText();
             String endTime = endTimeTextField.getText();
+
+            LocalDateTime start = LocalDateTime.parse(startTime, formatter);
+            LocalDateTime end = LocalDateTime.parse(endTime, formatter);
+
             String status = (String) statusComboBox.getSelectedItem();
-            handler.updateCurrentTask(startTime, endTime, status);
+            handler.updateCurrentTask(start, end, status);
             dispose();
-        }catch (Exception e) {
+        } catch (DateTimeException e) {
+            JOptionPane.showMessageDialog(rootPane, "The given time is not in the right format.", null, JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(rootPane, e.getMessage(), null, JOptionPane.ERROR_MESSAGE);
         }
-        
+
     }//GEN-LAST:event_updateTaskButtonActionPerformed
 
- 
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable availableTaskTable;
     private javax.swing.JTextField endTimeTextField;

@@ -1,18 +1,18 @@
 package scenariotest;
 
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import controller.CreateProjectHandler;
 import controller.FrontController;
 import domain.DetailedProject;
 import domain.Project;
 import domain.ProjectManager;
-import static org.junit.Assert.*;
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
+import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import org.junit.BeforeClass;
+import org.junit.Test;
 /**
  * This scenario test, tests the create projects use case
  * 
@@ -40,8 +40,8 @@ public class CreateProjectScenarioTest {
     	// Step 4
     	String project1Name = "project 1 :)";
     	String project1Description = "This is project 1";
-    	String project1StartTime = "2015-03-12 17:30";
-    	String project1EndTime = "2015-03-13 14:44";
+    	LocalDateTime project1StartTime = LocalDateTime.of(2015,03,12, 17,30);
+    	LocalDateTime project1EndTime = LocalDateTime.of(2015,03,13, 14,44);
     	handler.createProject(project1Name, project1Description, project1StartTime, project1EndTime);
     	List<Project> projects = manager.getProjects();
     	boolean foundProject = false;
@@ -67,8 +67,8 @@ public class CreateProjectScenarioTest {
     {
     	String project5InvalidName = "";
     	String project5Description = "This is not project 4";
-    	String project5StartTime = "2015-03-13 11:30";
-    	String project5EndTime = "2015-04-13 14:42";
+    	LocalDateTime project5StartTime = LocalDateTime.of(2015,03,12, 17,30);
+    	LocalDateTime project5EndTime = LocalDateTime.of(2015,03,13, 14,44);
     	handler.createProject(project5InvalidName, project5Description, project5StartTime, project5EndTime);
     }
     /**
@@ -79,34 +79,34 @@ public class CreateProjectScenarioTest {
     {
     	String project4Name = "a valid project name";
     	String project4InvalidDescription = "";
-    	String project4StartTime = "2015-02-13 10:30";
-    	String project4EndTime = "2015-04-15 15:51";
+    	LocalDateTime project4StartTime = LocalDateTime.of(2015,03,12, 17,30);
+    	LocalDateTime project4EndTime = LocalDateTime.of(2015,03,13, 14,44);
     	handler.createProject(project4Name, project4InvalidDescription, project4StartTime, project4EndTime);
     }
     
     /**
      * Tests extension 4a. "The entered data is invalid" with an invalid start time
      */
-    @Test (expected = IllegalArgumentException.class)
+    @Test (expected = DateTimeException.class)
     public void testInvalidDataStartTime()
     {
     	String project2Name = "project 2 :)";
     	String project2Description = "This is project 2";
-    	String project2InvalidStartTime = "2015-03-12 17-30";
-    	String project2EndTime = "2015-03-13 14:44";
+    	LocalDateTime project2InvalidStartTime = LocalDateTime.of(2015, 3, 33, 17, 30);
+    	LocalDateTime project2EndTime = LocalDateTime.of(2015, 3, 12, 17, 30);
     	handler.createProject(project2Name, project2Description, project2InvalidStartTime, project2EndTime);
     }
     
     /**
      * Tests extension 4a. "The entered data is invalid" with an invalid end time
      */
-    @Test (expected = IllegalArgumentException.class)
+    @Test (expected = DateTimeException.class)
     public void testInvalidDataEndTime()
     {
     	String project3Name = "project 3 :)";
     	String project3Description = "This is project 3!!";
-    	String project3StartTime = "2015-03-12 17:30";
-    	String project3InvalidEndTime = "2015-03-13 oops 14:44";
+    	LocalDateTime project3StartTime = LocalDateTime.of(2015, 3, 12, 17, 30);
+    	LocalDateTime project3InvalidEndTime = LocalDateTime.of(2015, 3, 33, 17, 30);
     	handler.createProject(project3Name, project3Description, project3StartTime, project3InvalidEndTime);
     }
     
@@ -118,8 +118,8 @@ public class CreateProjectScenarioTest {
     {
     	String project6Name = "project 6 :)";
     	String project6Description = "1+2+3=6";
-    	String project6StartTime = "2015-03-12 17:30";
-    	String project6EndTime = "2015-03-12 14:44";
+    	LocalDateTime project6EndTime = LocalDateTime.of(2015, 3, 12, 17, 30);
+    	LocalDateTime project6StartTime = LocalDateTime.of(2015, 3, 12, 17, 30);
     	handler.createProject(project6Name, project6Description, project6StartTime, project6EndTime);
     }
     

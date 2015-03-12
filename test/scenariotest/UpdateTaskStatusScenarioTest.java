@@ -1,25 +1,19 @@
 package scenariotest;
 
 import controller.FrontController;
-import controller.ShowProjectHandler;
 import controller.UpdateTaskStatusHandler;
 import domain.DetailedProject;
 import domain.DetailedTask;
 import domain.Duration;
 import domain.Project;
 import domain.ProjectManager;
-import domain.Status;
 import domain.Task;
-
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 
 
 /**
@@ -65,40 +59,25 @@ public class UpdateTaskStatusScenarioTest {
     	// Step 3: The user selects the task he wants to change.
     	handler.selectTask(p1.getId(), t1.getId());
     	// Step 6: The system updates the task status.
-    	handler.updateCurrentTask("2015-03-14 10:10", "2015-03-17 14:10", "FINISHED");
-    }
-    
-    /**
-     * Tests use case extension 6a, with a badly formatted start time.
-     */
-    @Test (expected = Exception.class)
-    public void testInvalidDataStartDateTime1()
-    {
-    	String invalidStartDateTime = "2015-3-3 10:10";
-    	// Step 2: The system shows a list of all available tasks and the project
-    	//         they belong to.
-    	Map<DetailedTask, DetailedProject> tasks = handler.getAvailableTasks();
-    	// Step 3: The user selects the task he wants to change.
-    	handler.selectTask(p1.getId(), t1.getId());
-    	// Step 6: The system updates the task status.
-    	handler.updateCurrentTask(invalidStartDateTime, "2015-03-17 14:10", "FINISHED");
+    	handler.updateCurrentTask(LocalDateTime.of(2015,03,14,10,10), LocalDateTime.of(2015,03,17,14,10), "FINISHED");
     }
     
     /**
      * Tests use case extension 6a, with an invalid start time.
      */
     @Test (expected = Exception.class)
-    public void testInvalidDataStartTime2()
+    public void testInvalidDataStartDateTime1()
     {
-    	String invalidStartDateTime = "2015-03-54 10:10";
+    	LocalDateTime invalidStartDateTime = LocalDateTime.of(2015,240,17,14,10);
     	// Step 2: The system shows a list of all available tasks and the project
     	//         they belong to.
     	Map<DetailedTask, DetailedProject> tasks = handler.getAvailableTasks();
     	// Step 3: The user selects the task he wants to change.
     	handler.selectTask(p1.getId(), t1.getId());
     	// Step 6: The system updates the task status.
-    	handler.updateCurrentTask(invalidStartDateTime, "2015-03-17 14:10", "FINISHED");
+    	handler.updateCurrentTask(invalidStartDateTime, LocalDateTime.of(2015,03,17,14,10), "FINISHED");
     }
+    
     
     /**
      * Tests use case extension 6a, with an invalid start time before the project creation time.
@@ -106,30 +85,14 @@ public class UpdateTaskStatusScenarioTest {
     @Test (expected = Exception.class)
     public void testInvalidDataStartDateTime3()
     {
-    	String invalidStartDateTime = "2014-03-54 10:10";
+    	LocalDateTime invalidStartDateTime = LocalDateTime.of(1944, 3, 12, 17, 30);
     	// Step 2: The system shows a list of all available tasks and the project
     	//         they belong to.
     	Map<DetailedTask, DetailedProject> tasks = handler.getAvailableTasks();
     	// Step 3: The user selects the task he wants to change.
     	handler.selectTask(p1.getId(), t1.getId());
     	// Step 6: The system updates the task status.
-    	handler.updateCurrentTask(invalidStartDateTime, "2015-03-17 14:10", "FINISHED");
-    }
-    
-    /**
-     * Tests use case extension 6a, with a badly formatted start time.
-     */
-    @Test (expected = Exception.class)
-    public void testInvalidDataEndDateTime1()
-    {
-    	String invalidEndDateTime = "2015-3-3 10:10";
-    	// Step 2: The system shows a list of all available tasks and the project
-    	//         they belong to.
-    	Map<DetailedTask, DetailedProject> tasks = handler.getAvailableTasks();
-    	// Step 3: The user selects the task he wants to change.
-    	handler.selectTask(p1.getId(), t1.getId());
-    	// Step 6: The system updates the task status.
-    	handler.updateCurrentTask("2015-03-14 10:10", invalidEndDateTime, "FINISHED");
+    	handler.updateCurrentTask(invalidStartDateTime, LocalDateTime.of(2015, 3, 12, 17, 30), "FINISHED");
     }
     
     /**
@@ -138,14 +101,14 @@ public class UpdateTaskStatusScenarioTest {
     @Test (expected = Exception.class)
     public void testInvalidDataEndTime2()
     {
-    	String invalidEndDateTime = "2015-03-54 10:10";
+    	LocalDateTime invalidEndDateTime = LocalDateTime.of(2015, 3, 78, 17, 30);
     	// Step 2: The system shows a list of all available tasks and the project
     	//         they belong to.
     	Map<DetailedTask, DetailedProject> tasks = handler.getAvailableTasks();
     	// Step 3: The user selects the task he wants to change.
     	handler.selectTask(p1.getId(), t1.getId());
     	// Step 6: The system updates the task status.
-    	handler.updateCurrentTask("2015-03-14 10:10", invalidEndDateTime, "FINISHED");
+    	handler.updateCurrentTask(LocalDateTime.of(2015, 3, 12, 17, 40), invalidEndDateTime, "FINISHED");
     }
     
     /**
@@ -154,13 +117,13 @@ public class UpdateTaskStatusScenarioTest {
     @Test (expected = Exception.class)
     public void testInvalidDataEndDateTime3()
     {
-    	String invalidEndDateTime = "2014-03-54 10:10";
+    	LocalDateTime invalidEndDateTime = LocalDateTime.of(1944, 3, 12, 17, 30);
     	// Step 2: The system shows a list of all available tasks and the project
     	//         they belong to.
     	Map<DetailedTask, DetailedProject> tasks = handler.getAvailableTasks();
     	// Step 3: The user selects the task he wants to change.
     	handler.selectTask(p1.getId(), t1.getId());
     	// Step 6: The system updates the task status.
-    	handler.updateCurrentTask("2015-03-14 10:10", invalidEndDateTime, "FINISHED");
+    	handler.updateCurrentTask(LocalDateTime.of(2015, 3, 12, 17, 30), invalidEndDateTime, "FINISHED");
     }
 }

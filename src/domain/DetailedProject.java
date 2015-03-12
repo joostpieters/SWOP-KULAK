@@ -83,4 +83,13 @@ public interface DetailedProject {
      */
     Map<? extends DetailedTask, Double> getUnacceptablyOverdueTasks(); 
     
+    /**
+     * Get the amount of working hours that have been put into this project thus far.
+     * 
+     * @return	the sum of durations of the time spans of all tasks in this project.
+     * 
+     * @see		Task#getTimeSpan();
+     */
+    public Duration getTotalExecutionTime();
+    
 }

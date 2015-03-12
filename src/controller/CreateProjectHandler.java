@@ -2,8 +2,6 @@ package controller;
 
 import domain.ProjectManager;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,19 +28,14 @@ public class CreateProjectHandler {
      * 
      * @param name The name of the new project.
      * @param description The description of the new project.
-     * @param startTime The start time of the new project.
+     * @param creationTime The creation time of the new project.
      * @param dueTime The due time of the new project.
      * @throws RuntimeException an error occured in processing the create project request.
      */
-    public void createProject(String name, String description, String startTime, String dueTime) throws RuntimeException{
-        
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    public void createProject(String name, String description, LocalDateTime creationTime, LocalDateTime dueTime) throws RuntimeException{
+       
         try{
-            LocalDateTime start = LocalDateTime.parse(startTime, formatter);
-            LocalDateTime due = LocalDateTime.parse(dueTime, formatter);
-            manager.createProject(name, description, start, due);
-        }catch(DateTimeParseException e){
-            throw new IllegalArgumentException("The given time is not in the right format.");
+            manager.createProject(name, description, creationTime, dueTime);
         }catch(IllegalArgumentException | IllegalStateException e){
             throw e;
         }catch(Exception e){

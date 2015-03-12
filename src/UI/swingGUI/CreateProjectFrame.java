@@ -1,6 +1,9 @@
 package UI.swingGUI;
 
 import controller.CreateProjectHandler;
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
 
 /**
@@ -12,6 +15,7 @@ public class CreateProjectFrame extends javax.swing.JFrame {
 
     private static final long serialVersionUID = -8172848294908727774L;
     private final CreateProjectHandler handler;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     /**
      * Creates new form CreateProjectFrame
@@ -168,10 +172,16 @@ public class CreateProjectFrame extends javax.swing.JFrame {
         String description = descriptionTextArea.getText();
         String creationTime = creationTimeTextField.getText();
         String dueTime = dueTimeTextField.getText();
-        try {
-            handler.createProject(name, description, creationTime, dueTime);
+                    
+        try{
+            LocalDateTime start = LocalDateTime.parse(creationTime, formatter);
+            LocalDateTime due = LocalDateTime.parse(dueTime, formatter);
+             
+            handler.createProject(name, description, start, due);
             dispose();
-        } catch (Exception e) {
+        }catch(DateTimeException e){
+            JOptionPane.showMessageDialog(rootPane, "The given time is not in the right format.", null, JOptionPane.ERROR_MESSAGE);
+        }catch (Exception e) {
             JOptionPane.showMessageDialog(rootPane, e.getMessage(), null, JOptionPane.ERROR_MESSAGE);
         }
 
