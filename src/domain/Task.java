@@ -140,7 +140,8 @@ public class Task implements DetailedTask {
 	}
 
 	/**
-	 * @return 	The timeSpan indicating the actual start and end time of this task.
+	 * @return 	The timeSpan indicating the actual start and end time if this task has one,
+	 * 			null otherwise.	
 	 */
     @Override
 	public Timespan getTimeSpan()

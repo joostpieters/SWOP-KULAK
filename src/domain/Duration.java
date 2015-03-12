@@ -125,8 +125,11 @@ public class Duration implements Comparable<Duration>{
      * 			The Duration to add to this duration
      * @return 	A Duration, based on this duration with the given amount of 
      * 			time the given duration represents added.
+     * 			If otherDuration == null, this is returned.
      */
-    public Duration add(Duration otherDuration){
+    public Duration add(Duration otherDuration) {
+    	if(otherDuration == null)
+    		return this;
         return new Duration(minutes + otherDuration.toMinutes());
     }
     
@@ -137,10 +140,13 @@ public class Duration implements Comparable<Duration>{
      * 			The Duration to subtract from this duration
      * @return 	A Duration, based on this duration with the given amount of 
      * 			time the given duration represents added.
+     * 			If otherDuration == null, this is returned.
      * @throws 	IllegalArgumentException 
      * 			if the given duration to subtract causes the duration to be negative.
      */
-    public Duration subtract(Duration otherDuration) throws IllegalArgumentException{
+    public Duration subtract(Duration otherDuration) throws IllegalArgumentException {
+    	if(otherDuration == null)
+    		return this;
         return new Duration(minutes - otherDuration.toMinutes());
     }
     

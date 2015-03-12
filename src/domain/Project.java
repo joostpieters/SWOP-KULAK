@@ -445,6 +445,22 @@ public class Project implements DetailedProject {
     }
     
     /**
+     * Get the amount of working hours that have been put into this project thus far.
+     * 
+     * @return	the sum of durations of the time spans of all tasks in this project.
+     * 
+     * @see		Task#getTimeSpan();
+     */
+    public Duration getTotalExecutionTime() {
+    	Duration res = Duration.ZERO;
+    	for(Task t : getTasks()) {
+    		if(t.hasTimeSpan())
+    			res = res.add(t.getTimeSpan().getDuration());
+    	}
+    	return res;
+    }
+    
+    /**
      * @return a string, representing the name of this project
      */
     @Override
