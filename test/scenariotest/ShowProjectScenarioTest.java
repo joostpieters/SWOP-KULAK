@@ -48,7 +48,7 @@ public class ShowProjectScenarioTest {
         p1 = manager.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
         
-        t2 = p1.createTask("A difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Arrays.asList(0));
+        t2 = p1.createTask("A difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Arrays.asList(t1.getId()));
         
         p2 = manager.createProject("Test 2", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         p3 = manager.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
@@ -77,9 +77,9 @@ public class ShowProjectScenarioTest {
     public void testShowProjects() {
         //step 2
         List<DetailedProject> projects = handler.getProjects();
-        assertEquals(p1, projects.get(p1.getId()));
-        assertEquals(p2, projects.get(p2.getId()));
-        assertEquals(p3, projects.get(p3.getId()));
+        assertEquals(p1, projects.get(0));
+        assertEquals(p2, projects.get(1));
+        assertEquals(p3, projects.get(2));
         
         //step 3, select project 1
         handler.selectProject(p1.getId());

@@ -1,11 +1,11 @@
 package domain;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import scenariotest.*;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+
+import scenariotest.AdvanceSystemTimeScenarioTest;
 
 /**
  * This testsuite, runs all the tests for this application
@@ -18,23 +18,12 @@ import org.junit.runners.Suite;
                     ProjectTest.class,
                     TaskTest.class,
                     TimespanTest.class, 
-                    DurationTest.class})
+                    DurationTest.class,
+                    AdvanceSystemTimeScenarioTest.class,
+                    CreateProjectScenarioTest.class,
+                    CreateTaskScenarioTest.class,
+                    ShowProjectScenarioTest.class,
+                    UpdateTaskStatusScenarioTest.class})
 public class TaskManTestSuite {
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    @After
-    public void tearDown() throws Exception {
-    }
     
 }

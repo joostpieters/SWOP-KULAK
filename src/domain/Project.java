@@ -431,7 +431,7 @@ public class Project implements DetailedProject {
     /**
      * Gets the total delay of this project.
      * 
-     * @return 	the sum of the delays of the tasks within this project if isOnTime(),
+     * @return 	the sum of the delays of the tasks within this project if !{@link #isOnTime()},
      * 			null otherwise.
      */
     @Override

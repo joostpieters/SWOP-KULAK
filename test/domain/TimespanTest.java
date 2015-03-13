@@ -1,13 +1,11 @@
 package domain;
 
-import java.time.LocalDateTime;
-import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.BeforeClass;
+
+import java.time.LocalDateTime;
+
 import org.junit.Test;
 
 /**
@@ -15,25 +13,6 @@ import org.junit.Test;
  * @author Mathias
  */
 public class TimespanTest {
-    
-    public TimespanTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
-    }
 
     @Test (expected = IllegalArgumentException.class)
     public void testTimespanConstructorWithEndBeforeBegin() {
@@ -66,7 +45,7 @@ public class TimespanTest {
      @Test (expected = IllegalArgumentException.class)
     public void testTimespanConstructorInvalidBegin() {
         LocalDateTime end = LocalDateTime.of(2015, 1, 6, 14, 30);
-        Timespan timespan = new Timespan(null, end);
+        new Timespan(null, end);
     }
     
     /**
@@ -75,7 +54,7 @@ public class TimespanTest {
      @Test (expected = IllegalArgumentException.class)
     public void testTimespanConstructorInvalidEnd() {
         LocalDateTime start = LocalDateTime.of(2015, 1, 6, 14, 29);
-        Timespan timespan = new Timespan(start, null);
+        new Timespan(start, null);
     }
     
     /**

@@ -11,10 +11,7 @@ import domain.Task;
 import exception.ObjectNotFoundException;
 import java.util.Arrays;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -47,17 +44,6 @@ public class ProjectTest {
 	ProjectManager pm;
 	Project p0, p1, p2, pFinished;
 	Task t1, t2, t3, tFin;
-	
-    public ProjectTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
     
     @Before
     public void setUp() {
@@ -79,10 +65,6 @@ public class ProjectTest {
     	pFinished = pm.createProject(name, descr, create, due);
     	tFin = pFinished.createTask("design system", new Duration(8), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
     	pFinished.updateTask(tFin.getId(), start, end, Status.FINISHED);
-    }
-    
-    @After
-    public void tearDown() {
     }
     
     /**
@@ -571,6 +553,60 @@ public class ProjectTest {
     	p.updateTask(t3.getId(), LocalDateTime.of(2015,  2, 12, 9, 0), LocalDateTime.of(2015, 2, 12, 18, 0), Status.FINISHED);
     	p.updateTask(t4.getId(), LocalDateTime.of(2015,  2, 13, 9, 0), LocalDateTime.of(2015, 2, 13, 18, 0), Status.FINISHED);
     	assertTrue(p.isOnTime());
+    }
+    
+    /**
+     * Test getDelay method in case project is on time.
+     */
+    @Test
+    public void testGetDelayOnTime() {
+    	assertEquals(Duration.ZERO, p0.getDelay());
+    	assertEquals(Duration.ZERO, p1.getDelay());
+    	assertEquals(Duration.ZERO, p2.getDelay());
+    	assertEquals(Duration.ZERO, pFinished.getDelay());
+    	
+    	LocalDateTime end = estdur.getEndTimeFrom(start);
+    	p1.updateTask(t1.getId(), start, end, Status.FINISHED);
+    	assertFalse(end.isAfter(due));
+    	assertEquals(Duration.ZERO, p1.getDelay());
+    	
+    	p2.updateTask(t2.getId(), start, end.plusDays(1), Status.FINISHED);
+    	assertEquals(Duration.ZERO, p2.getDelay());
+    	p2.updateTask(t3.getId(), start, end.plusDays(2), Status.FINISHED);
+    	assertEquals(Duration.ZERO, p2.getDelay());
+    }
+    
+    /**
+     * Test getDelay method in case project is not on time.
+     */
+    @Test
+    public void testGetDelayNotOnTime() {
+    	p1.updateTask(t1.getId(), start, due.plusDays(1), Status.FINISHED);
+    	assertEquals(t1.getDelay(), p1.getDelay());
+    	
+    	p2.updateTask(t2.getId(), start, end.plusDays(1), Status.FAILED);
+    	p2.updateTask(t3.getId(), start,  due.plusDays(1), Status.FINISHED);
+    	assertEquals(t2.getDelay().add(t3.getDelay()), p2.getDelay());
+    }
+    
+    /**
+     * Test getTotalExecutionTime method.
+     */
+    @Test
+    public void testGetTotalExecutionTime() {
+    	assertEquals(Duration.ZERO, p0.getTotalExecutionTime());
+    	assertEquals(Duration.ZERO, p1.getTotalExecutionTime());
+    	assertEquals(Duration.ZERO, p2.getTotalExecutionTime());
+    	assertEquals(tFin.getTimeSpan().getDuration(), pFinished.getTotalExecutionTime());
+    	
+    	p1.updateTask(t1.getId(), start, end, Status.FINISHED);
+    	assertEquals(t1.getTimeSpan().getDuration(), p1.getTotalExecutionTime());
+    	
+    	Duration dur = new Duration(13, 30);
+    	p2.updateTask(t2.getId(), start, dur.getEndTimeFrom(start), Status.FINISHED);
+    	assertEquals(dur, p2.getTotalExecutionTime());
+    	p2.updateTask(t3.getId(), start, end, Status.FAILED);
+    	assertEquals(new Duration(start, end).add(dur), p2.getTotalExecutionTime());
     }
     
 }

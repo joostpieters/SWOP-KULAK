@@ -23,10 +23,7 @@ public class AdvanceSystemTimeScenarioTest {
     private static ProjectManager manager;
     private static AdvanceSystemTimeHandler handler;
     private static Project p1;
-    private static Project p2;
-    private static Project p3;
-    private static Task t1;
-    private static Task t2;
+    private static Task t1, t2;
 
     @BeforeClass
     public static void setUpClass() {
@@ -35,10 +32,10 @@ public class AdvanceSystemTimeScenarioTest {
         p1 = manager.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 30, 17, 50));
         t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
 
-        t2 = p1.createTask("A difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Arrays.asList(0));
+        t2 = p1.createTask("A difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Arrays.asList(t1.getId()));
 
-        p2 = manager.createProject("Test 2", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
-        p3 = manager.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
+        manager.createProject("Test 2", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
+        manager.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
 
         FrontController controller = new FrontController(manager);
         handler = controller.getAdvanceSystemTimeHandler();

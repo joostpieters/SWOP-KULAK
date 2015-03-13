@@ -26,9 +26,6 @@ public class ProjectManagerTest {
     private static Project p1, p2, p3;
     private static Task t1, t2, t3;
     
-    public ProjectManagerTest() {
-    }
-    
     private static ProjectManager manager;
     
     @BeforeClass
