@@ -40,6 +40,7 @@ public class UpdateTaskStatusScenarioTest {
         
         FrontController controller = new FrontController(manager);
         handler = controller.getUpdateTaskHandler();
+        manager.advanceSystemTime(LocalDateTime.of(2015,03,17,14,10));
     }
 
     /**

@@ -51,7 +51,7 @@ public class CreateTaskScenarioTest {
     public void testMainSuccessScenario() {
 
         // Step 4
-        
+        manager.advanceSystemTime(LocalDateTime.of(2015, 03, 16, 17, 30));
         p1.updateTask(t2.getId(), LocalDateTime.of(2015, 03, 12, 17, 30), LocalDateTime.of(2015, 03, 16, 17, 30), Status.FAILED);
         
         handler.createTask(p1.getId(), "Fun task", 50, Arrays.asList(t1.getId()), 10, 20, t2.getId());

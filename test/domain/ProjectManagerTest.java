@@ -5,13 +5,11 @@ import domain.Project;
 import domain.ProjectManager;
 import domain.Status;
 import domain.Task;
+
 import exception.ObjectNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -40,20 +38,9 @@ public class ProjectManagerTest {
         p2 = manager.createProject("Test 2", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         
         t3 =  p2.createTask("Another difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
+        manager.advanceSystemTime(p2.getDueTime());
         p2.updateTask(t3.getId(), p2.getCreationTime(), p2.getDueTime(), Status.FINISHED);
         p3 = manager.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
     }
 
     /**

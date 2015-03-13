@@ -2,6 +2,7 @@ package scenariotest;
 
 import controller.FrontController;
 import controller.ShowProjectHandler;
+
 import domain.DetailedProject;
 import domain.DetailedTask;
 import domain.Duration;
@@ -9,15 +10,14 @@ import domain.Project;
 import domain.ProjectManager;
 import domain.Status;
 import domain.Task;
+
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -32,11 +32,8 @@ public class ShowProjectScenarioTest {
     
     private static ProjectManager manager;
     private static ShowProjectHandler handler;
-    private static Project p1;
-    private static Project p2;
-    private static Project p3;
-    private static Task t1;
-    private static Task t2;
+    private static Project p1, p2, p3;
+    private static Task t1, t2;
     
     public ShowProjectScenarioTest() {
     }
@@ -55,19 +52,6 @@ public class ShowProjectScenarioTest {
         
         FrontController controller = new FrontController(manager);
         handler = controller.getShowProjectHandler();
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-        
-    }
-    
-    @After
-    public void tearDown() {
     }
 
     /**

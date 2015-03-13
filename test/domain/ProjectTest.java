@@ -56,15 +56,16 @@ public class ProjectTest {
     	p0 = pm.createProject(name, descr, create, due);
     	
     	p1 = pm.createProject(name, descr, create, due);
-    	t1 = p1.createTask("design system", new Duration(8), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
+    	t1 = p1.createTask("design system", new Duration(8, 0), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
     	
     	p2 = pm.createProject(name, descr, create, due);
-    	t2 = p2.createTask("design system", new Duration(8), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-    	t3 = p2.createTask("implement system in native code", new Duration(16), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
+    	t2 = p2.createTask("design system", new Duration(8, 0), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
+    	t3 = p2.createTask("implement system in native code", new Duration(16, 0), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
     	
-    	pFinished = pm.createProject(name, descr, create, due);
-    	tFin = pFinished.createTask("design system", new Duration(8), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-    	pFinished.updateTask(tFin.getId(), start, end, Status.FINISHED);
+    	LocalDateTime hist = create.minusDays(DAYDIF);
+    	pFinished = pm.createProject(name, descr, hist, create);
+    	tFin = pFinished.createTask("design system", new Duration(8, 0), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
+    	pFinished.updateTask(tFin.getId(), hist, hist.plusHours(HOURDIF), Status.FINISHED);
     }
     
     /**
@@ -169,6 +170,7 @@ public class ProjectTest {
      */
     @Test
     public void testCreateTaskAlternative() {
+    	pm.advanceSystemTime(end);
     	p1.updateTask(t1.getId(), start, end, Status.FAILED);
     	
     	int altFor = t1.getId();
@@ -205,6 +207,7 @@ public class ProjectTest {
      */
     @Test (expected = ObjectNotFoundException.class)
     public void testCreateTaskInvalidAlternative() {
+    	pm.advanceSystemTime(end);
     	p1.updateTask(t1.getId(), start, end, Status.FAILED);
     	
     	int altFor = t1.getId();
@@ -240,6 +243,7 @@ public class ProjectTest {
      */
     @Test
     public void testUpdateTaskValid() {
+    	pm.advanceSystemTime(end);
     	p1.updateTask(t1.getId(), start, end, Status.FINISHED);
     	assertEquals(start, t1.getTimeSpan().getStartTime());
     	assertEquals(end, t1.getTimeSpan().getEndTime());
@@ -267,6 +271,7 @@ public class ProjectTest {
      */
     @Test (expected = ObjectNotFoundException.class)
     public void testUpdateTaskInvalidId() {
+    	pm.advanceSystemTime(end);
     	p2.updateTask(t1.getId(), start, end, Status.FINISHED);
     }
     
@@ -290,6 +295,7 @@ public class ProjectTest {
      */
     @Test
     public void testGetAvailableTasksAlternative() {
+    	pm.advanceSystemTime(end);
     	p1.updateTask(t1.getId(), start, end, Status.FAILED);
     	Task alt = p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs);
     	assertEquals(1, p1.getAvailableTasks().size());
@@ -308,6 +314,7 @@ public class ProjectTest {
     	assertTrue(p2.getAvailableTasks().contains(t3));
     	assertFalse(p2.getAvailableTasks().contains(prereq));
     	
+    	pm.advanceSystemTime(end);
     	p2.updateTask(t2.getId(), start, end, Status.FINISHED);
     	p2.updateTask(t3.getId(), start, end, Status.FINISHED);
     	assertEquals(1, p2.getAvailableTasks().size());
@@ -350,7 +357,7 @@ public class ProjectTest {
     	assertTrue(p0.getUnacceptablyOverdueTasks().isEmpty());
     	assertEquals(p1.getTasks().size(), p1.getUnacceptablyOverdueTasks().size());
     	assertEquals(p2.getTasks().size(), p2.getUnacceptablyOverdueTasks().size());
-    	assertEquals(pFinished.getTasks().size(), pFinished.getUnacceptablyOverdueTasks().size());
+    	assertTrue(pFinished.getUnacceptablyOverdueTasks().isEmpty());
     }
     
     /**
@@ -358,13 +365,28 @@ public class ProjectTest {
      */
     @Test
     public void testGetUnacceptablyOverdueTasksAlternative() {
+    	pm.advanceSystemTime(end);
     	p1.updateTask(t1.getId(), start, end, Status.FAILED);
-    	Task t = p1.createTask(taskdescr, new Duration(create, due).add(new Duration(HOURDIF, 0)), accdev, t1.getId(), prereqs);
+    	Task t = p1.createTask(taskdescr, new Duration(create, due), accdev, t1.getId(), prereqs);
     	assertEquals(1, p1.getUnacceptablyOverdueTasks().size());
     	assertTrue(p1.getUnacceptablyOverdueTasks().containsKey(t));
-    	assertEquals((double) 60 * HOURDIF / (DAYDIF * Duration.getMinutesOfWorkDay()), (double) p1.getUnacceptablyOverdueTasks().get(t), EPS);
+    	assertEquals((double) new Duration(create, end).toMinutes() / (DAYDIF * Duration.getMinutesOfWorkDay()), 
+    			(double) p1.getUnacceptablyOverdueTasks().get(t), EPS);
     }
     
+    /**
+     * Test getUnacceptablyOverdueTasks method in case of prereqs (no alternative).
+     */
+    @Test
+    public void testGetUnacceptablyOverdueTasksPrereqs() {
+    	Task t = p1.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t1.getId()));
+    	assertTrue(p1.getUnacceptablyOverdueTasks().isEmpty());
+    	pm.advanceSystemTime(due);
+    	p1.updateTask(t1.getId(), start, due, Status.FINISHED);
+    	assertEquals(1, p1.getUnacceptablyOverdueTasks().size());
+    	assertTrue(p1.getUnacceptablyOverdueTasks().containsKey(t));
+    	assertEquals((double) estdur.toMinutes() / (DAYDIF * Duration.getMinutesOfWorkDay()), (double) p1.getUnacceptablyOverdueTasks().get(t), EPS);
+    } 
     
     /**
      * Test isFinished method in trivial cases.
@@ -375,6 +397,7 @@ public class ProjectTest {
     	assertFalse(p0.isFinished());
     	
     	assertFalse(p1.isFinished());
+    	pm.advanceSystemTime(end);
     	p1.updateTask(t1.getId(), start, end, Status.FINISHED);
     	assertTrue(p1.isFinished());
     	
@@ -393,6 +416,7 @@ public class ProjectTest {
     @Test
     public void testIsFinishedAlternative() {
     	assertFalse(p1.isFinished());
+    	pm.advanceSystemTime(end);
     	p1.updateTask(t1.getId(), start, end, Status.FAILED);
     	assertFalse(p1.isFinished());
     	Task t = p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs);
@@ -406,12 +430,14 @@ public class ProjectTest {
      */
     @Test
     public void testIsFinishedPrereqs() {
+    	pm.advanceSystemTime(end);
     	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()));
     	assertFalse(p2.isFinished());
     	p2.updateTask(t2.getId(), start, end, Status.FINISHED);
     	assertFalse(p2.isFinished());
     	p2.updateTask(t3.getId(), start, end, Status.FINISHED);
     	assertFalse(p2.isFinished());
+    	pm.advanceSystemTime(end.plusDays(5));
     	p2.updateTask(t.getId(), end, end.plusDays(5), Status.FINISHED);
     	assertTrue(p2.isFinished());
     }
@@ -422,7 +448,7 @@ public class ProjectTest {
     @Test
     public void testIsOnTimeFinishedSimple() {
     	assertTrue(pFinished.isOnTime());
-    	
+    	pm.advanceSystemTime(due.plusDays(1));
     	p1.updateTask(t1.getId(), start, due.plusDays(1), Status.FINISHED);
     	assertFalse(p1.isOnTime());
     }
@@ -432,8 +458,10 @@ public class ProjectTest {
      */
     @Test
     public void testIsOnTimeFinishedAlternative() {
+    	pm.advanceSystemTime(end);
     	p1.updateTask(t1.getId(), start, end, Status.FAILED);
     	Task t = p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs);
+    	pm.advanceSystemTime(due);
     	p1.updateTask(t.getId(), start, due, Status.FINISHED);
     	assertTrue(p1.isOnTime());
     }
@@ -443,6 +471,7 @@ public class ProjectTest {
      */
     @Test
     public void testIsOnTimeFinishedAlternative2() {
+    	pm.advanceSystemTime(due.plusHours(1));
     	p1.updateTask(t1.getId(), start, due.plusHours(1), Status.FAILED);
     	Task t = p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs);
     	p1.updateTask(t.getId(), start, due, Status.FINISHED);
@@ -455,8 +484,10 @@ public class ProjectTest {
     @Test
     public void testIsOnTimeFinishedPrereqs() {
     	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()));
+    	pm.advanceSystemTime(due);
     	p2.updateTask(t2.getId(), start, due, Status.FINISHED);
     	p2.updateTask(t3.getId(), start, end, Status.FINISHED);
+    	pm.advanceSystemTime(due.plusHours(1));
     	p2.updateTask(t.getId(), due, due.plusHours(1), Status.FINISHED);
     	assertFalse(p2.isOnTime());
     }
@@ -489,15 +520,16 @@ public class ProjectTest {
      */
     @Test
     public void testIsOnTimeUnFinishedFailedTask() {
+    	pm.advanceSystemTime(end);
     	p1.updateTask(t1.getId(), start, end, Status.FAILED);
     	assertTrue(p1.isOnTime());
     	
     	p2.updateTask(t2.getId(), start, end, Status.FAILED);
     	assertTrue(p2.isOnTime());
-    	p2.updateTask(t3.getId(), start, Duration.nextValidWorkTime(due.plusDays(1)), Status.FAILED);
+    	pm.advanceSystemTime(due.plusDays(1));
+    	p2.updateTask(t3.getId(), start, due.plusDays(1), Status.FAILED);
     	assertFalse(p2.isOnTime());
     	
-    	pm.advanceSystemTime(due.plusHours(1));
     	assertFalse(p1.isOnTime());
     }
     
@@ -506,6 +538,7 @@ public class ProjectTest {
      */
     @Test
     public void testIsOnTimeUnFinishedAlternative() {
+    	pm.advanceSystemTime(end);
     	p1.updateTask(t1.getId(), start, end, Status.FAILED);
     	p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs);
     	assertTrue(p1.isOnTime());
@@ -532,7 +565,10 @@ public class ProjectTest {
      */
     @Test
     public void testIsOnTimeExample() {
-    	Project p = pm.createProject(name, descr, LocalDateTime.of(2015, 2, 9, 8, 0), LocalDateTime.of(2015, 2, 13, 19, 0));
+    	LocalDateTime create = LocalDateTime.of(2015, 2, 9, 8, 0);
+    	LocalDateTime due = LocalDateTime.of(2015, 2, 13, 19, 0);
+    	
+    	Project p = pm.createProject(name, descr, create, due);
     	Task t1 = p.createTask("design system", new Duration(8,0), 0, altFor, prereqs);
     	Task t2 = p.createTask("implement system in native code", new Duration(16,0), 50, altFor, Arrays.asList(t1.getId()));
     	Task t3 = p.createTask("test system", new Duration(8,0), 0, altFor, Arrays.asList(t2.getId()));
@@ -566,12 +602,15 @@ public class ProjectTest {
     	assertEquals(Duration.ZERO, pFinished.getDelay());
     	
     	LocalDateTime end = estdur.getEndTimeFrom(start);
+    	pm.advanceSystemTime(end);
     	p1.updateTask(t1.getId(), start, end, Status.FINISHED);
     	assertFalse(end.isAfter(due));
     	assertEquals(Duration.ZERO, p1.getDelay());
     	
+    	pm.advanceSystemTime(end.plusDays(1));
     	p2.updateTask(t2.getId(), start, end.plusDays(1), Status.FINISHED);
     	assertEquals(Duration.ZERO, p2.getDelay());
+    	pm.advanceSystemTime(end.plusDays(2));
     	p2.updateTask(t3.getId(), start, end.plusDays(2), Status.FINISHED);
     	assertEquals(Duration.ZERO, p2.getDelay());
     }
@@ -581,6 +620,7 @@ public class ProjectTest {
      */
     @Test
     public void testGetDelayNotOnTime() {
+    	pm.advanceSystemTime(due.plusDays(1));
     	p1.updateTask(t1.getId(), start, due.plusDays(1), Status.FINISHED);
     	assertEquals(t1.getDelay(), p1.getDelay());
     	
@@ -599,10 +639,12 @@ public class ProjectTest {
     	assertEquals(Duration.ZERO, p2.getTotalExecutionTime());
     	assertEquals(tFin.getTimeSpan().getDuration(), pFinished.getTotalExecutionTime());
     	
+    	pm.advanceSystemTime(end);
     	p1.updateTask(t1.getId(), start, end, Status.FINISHED);
     	assertEquals(t1.getTimeSpan().getDuration(), p1.getTotalExecutionTime());
     	
     	Duration dur = new Duration(13, 30);
+    	pm.advanceSystemTime(dur.getEndTimeFrom(start));
     	p2.updateTask(t2.getId(), start, dur.getEndTimeFrom(start), Status.FINISHED);
     	assertEquals(dur, p2.getTotalExecutionTime());
     	p2.updateTask(t3.getId(), start, end, Status.FAILED);

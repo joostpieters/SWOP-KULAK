@@ -316,13 +316,16 @@ public class Project implements DetailedProject {
 	 *        	The new status for the task.
 	 *        
 	 * @throws	IllegalArgumentException
-	 * 			if the given start time was before the creation time of this project.
+	 * 			if the given start time was before the creation time of this project
+	 * 			or if the given end time is after {@link #getSystemTime()}.
 	 * 
 	 * @see		Task#update(LocalDateTime, LocalDateTime, Status, Project)
 	 */
 	public void updateTask(int tid, LocalDateTime start, LocalDateTime end, Status status) {
 		if(start.isBefore(getCreationTime()))
 			throw new IllegalArgumentException("A task can't have started before its project.");
+		if(end.isAfter(getSystemTime()))
+			throw new IllegalArgumentException("A task can't be finished in the future.");
 		
 		getTask(tid).update(start, end, status, this);
 	}
@@ -351,6 +354,7 @@ public class Project implements DetailedProject {
 	 * @return	a map of tasks for which the work time needed  &gt;
 	 * 			({@link #getDueTime()} - {@link #getSystemTime()})
 	 * 			to their corresponding percentage by which they are over time.
+	 * 			If this project is finished, an empty map is returned.
 	 * 
 	 * @see		Task#estimatedWorkTimeNeeded()
 	 * @see		Duration#percentageOver(Duration)
@@ -360,6 +364,8 @@ public class Project implements DetailedProject {
 		Map<Task, Double> result = new HashMap<>();
 		
 		for(Task t : getTasks()) {
+			if(t.isFulfilled())
+				continue;
 			LocalDateTime estFinTime = t.estimatedWorkTimeNeeded().getEndTimeFrom(getSystemTime());
 			if(estFinTime.isAfter(getDueTime()))
 				result.put(t, new Duration(getCreationTime(), estFinTime).percentageOver(new Duration(getCreationTime(), getDueTime())));
