@@ -2,7 +2,6 @@ package scenariotest;
 
 import controller.FrontController;
 import controller.ShowProjectHandler;
-
 import domain.DetailedProject;
 import domain.DetailedTask;
 import domain.Duration;
@@ -10,11 +9,9 @@ import domain.Project;
 import domain.ProjectManager;
 import domain.Status;
 import domain.Task;
-
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -39,7 +36,7 @@ public class ShowProjectScenarioTest {
     }
     
     @BeforeClass
-    public static void setUpClass() {
+    public static void setUpBeforeClass() {
         manager = new ProjectManager();
         // only p1 has tasks
         p1 = manager.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
@@ -61,9 +58,10 @@ public class ShowProjectScenarioTest {
     public void testShowProjects() {
         //step 2
         List<DetailedProject> projects = handler.getProjects();
-        assertEquals(p1, projects.get(0));
-        assertEquals(p2, projects.get(1));
-        assertEquals(p3, projects.get(2));
+        assertTrue(projects.contains(p1));
+        assertTrue(projects.contains(p2));
+        assertTrue(projects.contains(p3));
+        assertTrue(projects.size() == 3);
         
         //step 3, select project 1
         handler.selectProject(p1.getId());

@@ -1,7 +1,6 @@
 package domain;
 
 import java.time.LocalDateTime;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -13,6 +12,20 @@ import org.junit.Test;
  * @author Frederic, Mathias, Pieter-Jan
  */
 public class DurationTest {
+    /*Constants used for test:
+	
+     public static final int BEGINWORKWEEK = 1;
+    
+     public static final int ENDWORKWEEK = 5;	
+    
+     public static final LocalTime BEGINWORKDAY = LocalTime.of(9, 0);
+	
+     public static final LocalTime ENDWORKDAY = LocalTime.of(18, 0);
+    
+     public static final LocalTime BEGINLUNCH = LocalTime.of(12, 0);
+    
+     public static final LocalTime ENDLUNCH = LocalTime.of(13, 0);
+     */
 
     /**
      * Test of the Duration constructor between 2 times
@@ -77,7 +90,7 @@ public class DurationTest {
     public void testDurationBetweenConstructorInvalidInterval() {
         LocalDateTime begin = LocalDateTime.of(2015, 2, 16, 10, 0);
         LocalDateTime end = LocalDateTime.of(2015, 2, 15, 9, 30);
-        new Duration(begin, end);
+        Duration d = new Duration(begin, end);
         
     }
 
