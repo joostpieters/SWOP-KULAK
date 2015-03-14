@@ -176,6 +176,7 @@ public class ProjectManagerFileInitializor extends StreamTokenizer {
             if (status != null) {
                 LocalDateTime startTime = expectDateField("startTime");
                 LocalDateTime endTime = expectDateField("endTime");
+                manager.advanceSystemTime(endTime);
                 manager.getProject(projectId).updateTask(task.getId(), startTime, endTime, status);
             }
 
