@@ -7,6 +7,8 @@ package init;
  * @author Frederic, Mathias, Pieter-Jan
  */
 import domain.Duration;
+import domain.Failed;
+import domain.Finished;
 import domain.Project;
 import domain.ProjectManager;
 import domain.Status;
@@ -168,10 +170,10 @@ public class ProjectManagerFileInitializor extends StreamTokenizer {
             Status status = null;
             if (isWord("finished")) {
                 nextToken();
-                status = Status.FINISHED;
+                status = new Finished();
             } else if (isWord("failed")) {
                 nextToken();
-                status = Status.FAILED;
+                status = new Failed();
             }
             if (status != null) {
                 LocalDateTime startTime = expectDateField("startTime");

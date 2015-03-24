@@ -3,10 +3,11 @@ package scenariotest;
 
 import controller.CreateTaskHandler;
 import controller.FrontController;
+import domain.Available;
 import domain.Duration;
+import domain.Failed;
 import domain.Project;
 import domain.ProjectManager;
-import domain.Status;
 import domain.Task;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -52,7 +53,7 @@ public class CreateTaskScenarioTest {
 
         // Step 4
         manager.advanceSystemTime(LocalDateTime.of(2015, 03, 16, 17, 30));
-        p1.updateTask(t2.getId(), LocalDateTime.of(2015, 03, 12, 17, 30), LocalDateTime.of(2015, 03, 16, 17, 30), Status.FAILED);
+        p1.updateTask(t2.getId(), LocalDateTime.of(2015, 03, 12, 17, 30), LocalDateTime.of(2015, 03, 16, 17, 30), new Failed());
         
         handler.createTask(p1.getId(), "Fun task", 50, Arrays.asList(t1.getId()), 10, 20, t2.getId());
         
@@ -66,7 +67,7 @@ public class CreateTaskScenarioTest {
                 assertEquals(10, t.getEstimatedDuration().getHours());
                 assertEquals(20, t.getEstimatedDuration().getMinutes());
                 assertEquals(t, t2.getAlternativeTask());
-                assertEquals(Status.UNAVAILABLE, t.getStatus());
+                assertTrue(t.getStatus() instanceof Available);
                 assertTrue(t.getPrerequisiteTasks().contains(t1));
 
             }

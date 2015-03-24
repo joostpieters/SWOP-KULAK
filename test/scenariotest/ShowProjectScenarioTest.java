@@ -2,12 +2,12 @@ package scenariotest;
 
 import controller.FrontController;
 import controller.ShowProjectHandler;
+import domain.Available;
 import domain.DetailedProject;
 import domain.DetailedTask;
 import domain.Duration;
 import domain.Project;
 import domain.ProjectManager;
-import domain.Status;
 import domain.Task;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -82,7 +82,7 @@ public class ShowProjectScenarioTest {
         DetailedTask t2Details = handler.getTask(t2.getId());
         assertEquals("A difficult task.", t2Details.getDescription());
         assertEquals(new Duration(500), t2Details.getEstimatedDuration());
-        assertEquals(Status.UNAVAILABLE, t2Details.getStatus());
+        assertTrue(t2Details.getStatus() instanceof Available);
         assertEquals(Arrays.asList(t1), t2Details.getPrerequisiteTasks());
         assertEquals(50, t2Details.getAcceptableDeviation());
         

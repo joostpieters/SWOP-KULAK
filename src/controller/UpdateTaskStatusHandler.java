@@ -73,10 +73,11 @@ public class UpdateTaskStatusHandler {
         Status taskStatus;
 
         try {
-            taskStatus = Status.valueOf(status.toUpperCase());
-        } catch (IllegalArgumentException e) {
+            Class<?> statusClass = Class.forName(status);
+            taskStatus = (Status) statusClass.newInstance();
+            
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             throw new IllegalArgumentException("The given status doesn't exist.");
-
         }
 
         try {

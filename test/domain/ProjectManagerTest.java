@@ -1,19 +1,13 @@
 package domain;
 
-import domain.Duration;
-import domain.Project;
-import domain.ProjectManager;
-import domain.Status;
-import domain.Task;
-
 import exception.ObjectNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Unit test class for projectmanager
@@ -39,7 +33,7 @@ public class ProjectManagerTest {
         
         t3 =  p2.createTask("Another difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
         manager.advanceSystemTime(p2.getDueTime());
-        p2.updateTask(t3.getId(), p2.getCreationTime(), p2.getDueTime(), Status.FINISHED);
+        p2.updateTask(t3.getId(), p2.getCreationTime(), p2.getDueTime(), new Finished());
         p3 = manager.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
     }
 

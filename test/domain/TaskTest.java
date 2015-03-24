@@ -1,14 +1,12 @@
 package domain;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,7 +37,7 @@ public class TaskTest {
     			);
     	pm.advanceSystemTime(t3ts.getEndTime());
     	t3 = p.createTask("t3 finished", new Duration(30), 40, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-    	p.updateTask(t3.getId(), t3ts.getStartTime(), t3ts.getEndTime(), Status.FINISHED);
+    	p.updateTask(t3.getId(), t3ts.getStartTime(), t3ts.getEndTime(), new Finished());
     	t4 = p.createTask("t4", new Duration(30), 10, Project.NO_ALTERNATIVE, Arrays.asList(t3.getId()));
     	t5 = p.createTask("t5", new Duration(20), 5, Project.NO_ALTERNATIVE, Arrays.asList(t3.getId(), t2.getId()));
     	Timespan t6ts = new Timespan(
@@ -48,9 +46,9 @@ public class TaskTest {
     			);
     	pm.advanceSystemTime(t6ts.getEndTime());
     	t6 = p.createTask("t6", new Duration(10), 3, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-    	p.updateTask(t6.getId(), t6ts.getStartTime(), t6ts.getEndTime(), Status.FAILED);
+    	p.updateTask(t6.getId(), t6ts.getStartTime(), t6ts.getEndTime(), new Finished());
     	t7 = p.createTask("t7", new Duration(15), 4, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-    	p.updateTask(t7.getId(), t6ts.getStartTime(), t6ts.getEndTime(), Status.FAILED);
+    	p.updateTask(t7.getId(), t6ts.getStartTime(), t6ts.getEndTime(), new Finished());
     	t7alternative = p.createTask("alternative for t7", new Duration(10), 2, t7.getId(), Project.NO_DEPENDENCIES);
     	t8 = p.createTask("depends on t7", new Duration(33), 3, Project.NO_ALTERNATIVE, Arrays.asList(t7.getId()));
     }
