@@ -31,7 +31,7 @@ public class Failed extends Status {
             throw new IllegalArgumentException("This task and/or the given alternative task don't belong to the given project");
         }
 
-        task.alternativeTask = alternativeTask;
+        task.setAlternativeTaskRaw(alternativeTask);
     }
 
     /**

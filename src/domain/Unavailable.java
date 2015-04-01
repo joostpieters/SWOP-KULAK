@@ -84,5 +84,36 @@ public class Unavailable extends Status {
         if(!(status instanceof Unavailable))
             throw new IllegalArgumentException("This task can't be updated to the given status.");
     }
-
+    
+     /**
+     * Checks whether this task was fulfilled before the given time span.
+     *
+     * @param task The task to check.
+     * @param timeSpan The time span to check.
+     * @return False, an unavailable task can never be fulfilled
+     * @throws IllegalStateException If this task is not fulfilled.
+     */
+    @Override
+    boolean isFulfilledBefore(Task task, Timespan timeSpan) throws IllegalStateException {
+        return false;
+    }
+    
+      /**
+     * Transition to the failed state
+     * 
+     * @param timespan The timespan of this failed task
+     * @param task The task which is to be set to failed.
+     * 
+     * @throws IllegalStateException This state can't transition to finished.
+     * @throws IllegalArgumentException The given task can't have the given time span as its time span 
+    */
+    @Override
+    void fail(Task task, Timespan timespan)
+    {
+        if(!canHaveAsTimeSpan(task, timespan))
+            throw new IllegalArgumentException("The given task can't have the given time span as its time span");
+        else
+            task.setTimeSpan(timespan);
+        task.setStatus(new Failed());
+    }
 }

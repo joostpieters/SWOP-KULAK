@@ -18,7 +18,7 @@ public class Task implements DetailedTask {
     private int acceptableDeviation;
     private Timespan timeSpan;
     private Duration estimatedDuration;
-    Task alternativeTask;
+    private Task alternativeTask;
     private List<Task> prerequisiteTasks;
     private Status status;
 
@@ -142,35 +142,15 @@ public class Task implements DetailedTask {
 
     /**
      * Sets the time span of this task to the given time span.
-     *
+     * (this method must only be used by a subclass of status.)
+     * 
      * @param timeSpan The new time span of this task.
-     * @throws IllegalArgumentException If this task can't have the given time
-     * span as its time span.
-     * @see canHaveAsTimeSpan
      */
-    private void setTimeSpan(Timespan timeSpan) throws IllegalArgumentException {
-        if (!canHaveAsTimeSpan(timeSpan)) {
-            throw new IllegalArgumentException("The given time span is not a valid time span for this task");
-        }
+    void setTimeSpan(Timespan timeSpan) throws IllegalArgumentException {
         this.timeSpan = timeSpan;
     }
 
-    /**
-     * Checks whether the given time span is a valid time span for this task.
-     *
-     * @param timeSpan The time span to check.
-     * @return False if any of the prerequisite tasks were fulfilled before the
-     * given time span.
-     * @see isFulfilledBefore
-     */
-    public boolean canHaveAsTimeSpan(Timespan timeSpan) {
-        for (Task t : getPrerequisiteTasks()) {
-            if (t.isFulfilled() && !t.isFulfilledBefore(timeSpan)) {
-                return false;
-            }
-        }
-        return true;
-    }
+    
 
     /**
      * @return The acceptable deviation of this task expressed as an integer
@@ -231,8 +211,18 @@ public class Task implements DetailedTask {
      * @see Status#setAlternativeTask(domain.Task, domain.Project)
      * @see canHaveAsAlternativeTask
      */
-    void setAlternativeTask(Task alternativeTask, Project project) throws IllegalStateException, IllegalArgumentException {
+    public void setAlternativeTask(Task alternativeTask, Project project) throws IllegalStateException, IllegalArgumentException {
         status.setAlternativeTask(this, alternativeTask, project);
+    }
+    
+    /**
+     * This method sets the alternative of this task without any checks
+     * (Must only be used by subclasses of status.)
+     * 
+     * @param task The alternative task.
+     */
+    void setAlternativeTaskRaw(Task task){
+        alternativeTask = task;
     }
 
     /**
@@ -425,18 +415,7 @@ public class Task implements DetailedTask {
         return getTimeSpan().endsBefore(timeSpan);
     }
 
-    /**
-     * Checks whether this task was fulfilled before the given time span.
-     *
-     * @param timeSpan The time span to check.
-     * @return True if this task is finished and this task ends before the given
-     * time span. Otherwise the result is equal to whether or not the
-     * alternative task of this task was fulfilled before the given time span.
-     * @throws IllegalStateException If this task is not fulfilled.
-     */
-    boolean isFulfilledBefore(Timespan timeSpan) throws IllegalStateException {
-        return getStatus().isFulfilledBefore(this, timeSpan);
-    }
+   
 
     /**
      * Checks whether this task has a time span.
