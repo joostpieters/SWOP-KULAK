@@ -67,17 +67,4 @@ public class Failed extends Status {
         return Duration.ZERO;
     }
     
-    
-    /**
-     * Change the status of the given task to the given status.
-     * Failed can only be changed to failed
-     * 
-     * @throws IllegalArgumentException The given status isn't a failed status.
-     */
-    @Override
-    void changeTo(Task task, Status status) {
-        if(! (status instanceof Failed) )
-            throw new IllegalArgumentException("This task can't be updated to the given status.");
-    }
-
 }

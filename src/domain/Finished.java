@@ -72,17 +72,5 @@ public class Finished extends Status {
     Duration estimatedWorkTimeNeeded(Task task) {
         return Duration.ZERO;
     }
-
-    /**
-     * Change the status of the given task to the given status.
-     * Finished can only be changed to finished
-     * 
-     * @throws IllegalArgumentException The given status isn't a finished status.
-     */
-    @Override
-    void changeTo(Task task, Status status) {
-        if(! (status instanceof Finished) )
-            throw new IllegalArgumentException("This task can't be updated to the given status.");
-    }
-
+   
 }

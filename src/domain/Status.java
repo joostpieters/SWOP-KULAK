@@ -90,13 +90,6 @@ public abstract class Status {
     abstract Duration estimatedWorkTimeNeeded(Task task);
 
     /**
-     * Change the status of the given task to the given status.
-     *
-     */
-    abstract void changeTo(Task task, Status status);
-
-        
-    /**
      * Transition to the failed state
      * 
      * @param timespan The timespan of this failed task
@@ -140,5 +133,32 @@ public abstract class Status {
         return true;
     }
     
+    /**
+     * Check whether the given object is the same status as this status
+     * 
+     * @param o The object to check
+     * @return True if and only if the given object is a status and is of the 
+     * same class of this status.
+     */
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof Status){
+            return hashCode() == o.hashCode();
+        }
+        
+        return false;
+    }
+
+    /**
+     * Generates a hashcode for this status
+     * 
+     * @return A positive integer that represents this status, statuses of 
+     * same classes have the same hashcode.
+     */
+    @Override
+    public int hashCode() {
+        int hash = this.getClass().hashCode();
+        return hash;
+    }
     
 }

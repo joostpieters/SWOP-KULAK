@@ -4,6 +4,7 @@ package scenariotest;
 import controller.CreateTaskHandler;
 import controller.HandlerFactory;
 import domain.Available;
+import domain.Clock;
 import domain.Duration;
 import domain.Failed;
 import domain.Project;
@@ -29,6 +30,7 @@ public class CreateTaskScenarioTest {
     private static Project p1;
     private static Task t1;
     private static Task t2;
+    private static Clock clock;
 
     @BeforeClass
     public static void setUpClass() {
@@ -41,7 +43,8 @@ public class CreateTaskScenarioTest {
         t1 = p1.createTask("Prereq", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
         t2 = p1.createTask("Alternative", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
         
-        HandlerFactory controller = new HandlerFactory(manager);
+        clock = new Clock();
+        HandlerFactory controller = new HandlerFactory(manager, clock);
         handler = controller.getCreateTaskHandler();
     }
 
@@ -52,7 +55,7 @@ public class CreateTaskScenarioTest {
     public void testMainSuccessScenario() {
 
         // Step 4
-        manager.advanceSystemTime(LocalDateTime.of(2015, 03, 16, 17, 30));
+        clock.advanceTime(LocalDateTime.of(2015, 03, 16, 17, 30));
         p1.updateTask(t2.getId(), LocalDateTime.of(2015, 03, 12, 17, 30), LocalDateTime.of(2015, 03, 16, 17, 30), new Failed());
         
         handler.createTask(p1.getId(), "Fun task", 50, Arrays.asList(t1.getId()), 10, 20, t2.getId());

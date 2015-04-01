@@ -375,9 +375,17 @@ public class Task implements DetailedTask {
             throw new IllegalArgumentException("A task can't have started before its project.");
         }
         
-        getStatus().changeTo(this, status);
-        setTimeSpan(new Timespan(start, end));
-        setStatus(status);
+        //TODO
+        Timespan timespan = new Timespan(start, end);
+        if(status instanceof Failed){
+            getStatus().fail(this, timespan);
+        }else if(status instanceof Finished){
+            getStatus().finish(this, timespan);
+        }else{
+            throw new IllegalArgumentException("Invalid status");
+        }
+        
+        
     }
 
     /**

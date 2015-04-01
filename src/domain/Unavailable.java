@@ -73,18 +73,6 @@ public class Unavailable extends Status {
         return retDuration;
     }
     
-    /**
-     * Change the status of the given task to the given status.
-     * Unvailable can only be changed to unavailable
-     * 
-     * @throws IllegalArgumentException The given status isn't an unavailable status.
-     */
-    @Override
-    void changeTo(Task task, Status status) {
-        if(!(status instanceof Unavailable))
-            throw new IllegalArgumentException("This task can't be updated to the given status.");
-    }
-    
      /**
      * Checks whether this task was fulfilled before the given time span.
      *

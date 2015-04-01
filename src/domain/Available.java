@@ -60,22 +60,6 @@ public class Available extends Status {
     }
 
     /**
-     * Change the status of the given task to the given status. Available can
-     * only be changed to finished, available or failed.
-     *
-     * @throws IllegalArgumentException The given status isn't a failed,
-     * finished or available status.
-     */
-    @Override
-    void changeTo(Task task, Status status) {
-        if (!(status instanceof Failed) && !(status instanceof Finished) && !(status instanceof Available)) {
-            throw new IllegalArgumentException("This task can't be updated to the given status.");
-        }
-        task.setStatus(status);
-
-    }
-
-    /**
      * Checks whether this task was fulfilled before the given time span.
      *
      * @param task The task to check.

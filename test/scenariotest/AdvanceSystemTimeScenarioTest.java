@@ -2,6 +2,7 @@ package scenariotest;
 
 import controller.AdvanceSystemTimeHandler;
 import controller.HandlerFactory;
+import domain.Clock;
 import domain.Duration;
 import domain.Project;
 import domain.ProjectContainer;
@@ -24,6 +25,7 @@ public class AdvanceSystemTimeScenarioTest {
     private static AdvanceSystemTimeHandler handler;
     private static Project p1;
     private static Task t1, t2;
+    private static Clock clock;
 
     @BeforeClass
     public static void setUpClass() {
@@ -36,8 +38,8 @@ public class AdvanceSystemTimeScenarioTest {
 
         manager.createProject("Test 2", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         manager.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
-
-        HandlerFactory controller = new HandlerFactory(manager);
+        clock = new Clock();
+        HandlerFactory controller = new HandlerFactory(manager, clock);
         handler = controller.getAdvanceSystemTimeHandler();
     }
 
@@ -47,12 +49,12 @@ public class AdvanceSystemTimeScenarioTest {
     @Test
     public void testMainSuccessScenario() {
         // Step 4
-        assertTrue(p1.isOnTime());
-        assertTrue(p1.getUnacceptablyOverdueTasks().isEmpty());
+        assertTrue(p1.isOnTime(clock));
+        assertTrue(p1.getUnacceptablyOverdueTasks(clock).isEmpty());
         handler.advanceTime("2015-12-03 18:00");
-        assertFalse(p1.isOnTime());
-        assertTrue(p1.getUnacceptablyOverdueTasks().containsKey(t1));
-        assertTrue(p1.getUnacceptablyOverdueTasks().containsKey(t2));
+        assertFalse(p1.isOnTime(clock));
+        assertTrue(p1.getUnacceptablyOverdueTasks(clock).containsKey(t1));
+        assertTrue(p1.getUnacceptablyOverdueTasks(clock).containsKey(t2));
     }
 
     /**

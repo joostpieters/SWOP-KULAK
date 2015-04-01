@@ -3,6 +3,7 @@ package scenariotest;
 
 import controller.CreateProjectHandler;
 import controller.HandlerFactory;
+import domain.Clock;
 import domain.DetailedProject;
 import domain.Project;
 import domain.ProjectContainer;
@@ -22,11 +23,13 @@ public class CreateProjectScenarioTest {
 	
 	private static ProjectContainer manager;
 	private static CreateProjectHandler handler;
+    private static Clock clock;
     
     @BeforeClass
     public static void setUpClass() {
         manager = new ProjectContainer();
-        HandlerFactory controller = new HandlerFactory(manager);
+        clock = new Clock();
+        HandlerFactory controller = new HandlerFactory(manager, clock);
         handler = controller.getCreateProjectHandler();
     }
     

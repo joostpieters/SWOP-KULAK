@@ -25,14 +25,16 @@ public class ProjectContainerTest {
         manager = new ProjectContainer();
         manager.createProject("Test", "Description", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 12, 17, 50));
         p1 = manager.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
+        // available
         t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
         
+        // unavailable
         t2 = p1.createTask("A difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Arrays.asList(0));
         
         p2 = manager.createProject("Test 2", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
-        
+        //available
         t3 =  p2.createTask("Another difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-        manager.advanceSystemTime(p2.getDueTime());
+        
         p2.updateTask(t3.getId(), p2.getCreationTime(), p2.getDueTime(), new Finished());
         p3 = manager.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
     }
@@ -64,7 +66,7 @@ public class ProjectContainerTest {
     @Test
     public void testGetAvailableTasks(){
                 
-        assertFalse(manager.getAllAvailableTasks().containsKey(t3));
+        assertTrue(manager.getAllAvailableTasks().containsKey(t3));
         assertTrue(manager.getAllAvailableTasks().containsKey(t1));
         assertFalse(manager.getAllAvailableTasks().containsKey(t2));
     }
@@ -100,12 +102,4 @@ public class ProjectContainerTest {
         assertEquals(4, manager.getNbProjects());
     }
     
-    /**
-     * Test of testAdvanceSystemTime, of class ProjectContainer.
-     */
-    @Test
-    public void testAdvanceSystemTime(){
-        manager.advanceSystemTime(LocalDateTime.MAX);
-        assertEquals(LocalDateTime.MAX, manager.getSystemClock().getTime());
-    }
 }

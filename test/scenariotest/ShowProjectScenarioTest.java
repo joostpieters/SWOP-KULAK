@@ -3,6 +3,7 @@ package scenariotest;
 import controller.HandlerFactory;
 import controller.ShowProjectHandler;
 import domain.Available;
+import domain.Clock;
 import domain.DetailedProject;
 import domain.DetailedTask;
 import domain.Duration;
@@ -31,6 +32,7 @@ public class ShowProjectScenarioTest {
     private static ShowProjectHandler handler;
     private static Project p1, p2, p3;
     private static Task t1, t2;
+    private static Clock clock;
     
     public ShowProjectScenarioTest() {
     }
@@ -47,7 +49,8 @@ public class ShowProjectScenarioTest {
         p2 = manager.createProject("Test 2", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         p3 = manager.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         
-        HandlerFactory controller = new HandlerFactory(manager);
+        clock = new Clock();
+        HandlerFactory controller = new HandlerFactory(manager, clock);
         handler = controller.getShowProjectHandler();
     }
 
@@ -73,10 +76,10 @@ public class ShowProjectScenarioTest {
         assertEquals(LocalDateTime.of(2015, 3, 12, 17, 30), p1Details.getCreationTime());
         assertEquals(LocalDateTime.of(2015, 3, 22, 17, 50), p1Details.getDueTime());
         assertFalse(p1Details.isFinished());
-        assertTrue(p1Details.isOnTime());
+        assertTrue(p1Details.isOnTime(clock));
         assertTrue(p1.getTasks().contains(t1));
         assertTrue(p1.getTasks().contains(t2));
-        assertEquals(Duration.ZERO, p1Details.getDelay());
+        assertEquals(Duration.ZERO, p1Details.getDelay(clock));
         
         //step 5 select task t2
         DetailedTask t2Details = handler.getTask(t2.getId());
