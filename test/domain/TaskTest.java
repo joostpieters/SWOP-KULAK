@@ -571,7 +571,6 @@ public class TaskTest {
 //    	assertTrue(t2.canUpdateStatus(new Failed()));       // unavailable  -> failed
 //    	assertFalse(t2.canUpdateStatus(new Finished()));    // unavailable  -> available
 //    }
-
     /**
      * Test of estimatedWorkTimeNeeded method, of class Task
      */

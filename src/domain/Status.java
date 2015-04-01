@@ -97,7 +97,7 @@ public abstract class Status {
      * 
      * @throws IllegalStateException This state can't transition to finished.
     */
-    void fail(Task task, Timespan timespan)
+    void fail(Task task, Timespan timespan) throws IllegalStateException
     {
         throw new IllegalStateException("This status can't transition to failed.");
     }
@@ -105,8 +105,8 @@ public abstract class Status {
     /**
      * Transition to the finished state
      * 
-     * @param timespan The timespan of this failed task
-     * @param task The task which is to be set to failed.
+     * @param timespan The timespan of this finished task
+     * @param task The task which is to be set to finished.
      * 
      * @throws IllegalStateException This state can't transition to failed.
     */

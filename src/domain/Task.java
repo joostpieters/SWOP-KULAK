@@ -387,7 +387,28 @@ public class Task implements DetailedTask {
         
         
     }
-
+    /**
+     * Fail this task
+     * 
+     * @param timespan The timespan of this failed task
+     * 
+     */
+    void fail(Timespan timespan)
+    {
+    	getStatus().fail(this, timespan);
+    }
+    
+    /**
+     * Finish this task
+     * 
+     * @param timespan The timespan of this finished task
+     * 
+    */
+    void finish(Timespan timespan)
+    {
+    	getStatus().finish(this, timespan);
+    }
+    
     /**
      * Checks whether this task is available.
      *
