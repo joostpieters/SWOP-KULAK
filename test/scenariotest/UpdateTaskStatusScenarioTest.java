@@ -57,7 +57,7 @@ public class UpdateTaskStatusScenarioTest {
     	// Step 3: The user selects the task he wants to change.
     	handler.selectTask(p1.getId(), t1.getId());
     	// Step 6: The system updates the task status.
-    	handler.updateCurrentTask(LocalDateTime.of(2015,03,14,10,10), LocalDateTime.of(2015,03,17,14,10), "FINISHED");
+    	handler.updateCurrentTask(LocalDateTime.of(2015,03,14,10,10), LocalDateTime.of(2015,03,17,14,10), "Finished");
     }
     
     /**
@@ -90,7 +90,7 @@ public class UpdateTaskStatusScenarioTest {
     	// Step 3: The user selects the task he wants to change.
     	handler.selectTask(p1.getId(), t1.getId());
     	// Step 6: The system updates the task status.
-    	handler.updateCurrentTask(invalidStartDateTime, LocalDateTime.of(2015, 3, 12, 17, 30), "FINISHED");
+    	handler.updateCurrentTask(invalidStartDateTime, LocalDateTime.of(2015, 3, 12, 17, 30), "Finished");
     }
     
     /**
@@ -122,6 +122,6 @@ public class UpdateTaskStatusScenarioTest {
     	// Step 3: The user selects the task he wants to change.
     	handler.selectTask(p1.getId(), t1.getId());
     	// Step 6: The system updates the task status.
-    	handler.updateCurrentTask(LocalDateTime.of(2015, 3, 12, 17, 30), invalidEndDateTime, "FINISHED");
+    	handler.updateCurrentTask(LocalDateTime.of(2015, 3, 12, 17, 30), invalidEndDateTime, "Finished");
     }
 }

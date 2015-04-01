@@ -73,7 +73,7 @@ public class UpdateTaskStatusHandler {
         Status taskStatus;
 
         try {
-            Class<?> statusClass = Class.forName(status);
+            Class<?> statusClass = Class.forName("domain." + status);
             taskStatus = (Status) statusClass.newInstance();
             
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
