@@ -17,7 +17,7 @@ import org.junit.Test;
 public class TaskTest {
 	
     private Project p;
-    private ProjectManager pm;
+    private ProjectContainer pm;
 	private Task t0, t1, t2, t3, t4, t5, t6, t7, t7alternative, t8;
 	
     public TaskTest() {
@@ -25,7 +25,7 @@ public class TaskTest {
     
     @Before
     public void setUp() {
-    	pm = new ProjectManager();
+    	pm = new ProjectContainer();
     	p = pm.createProject("Name", "Description", LocalDateTime.of(2001, 1, 9, 8, 0), LocalDateTime.of(2072, 10, 9, 8, 0));
     	t0 = p.createTask("description!", new Duration(10), 20, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
     	t1 = p.createTask("t1", new Duration(10), 10, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);

@@ -1,16 +1,17 @@
 package init;
 
 /**
- * This class reads input from a filereader to initialize a projectmanager with 
+ * This class reads input from a filereader to initialize a projectcontainer with 
  * the appropriate data.
  *
  * @author Frederic, Mathias, Pieter-Jan
  */
+import domain.Clock;
 import domain.Duration;
 import domain.Failed;
 import domain.Finished;
 import domain.Project;
-import domain.ProjectManager;
+import domain.ProjectContainer;
 import domain.Status;
 import domain.Task;
 import java.io.IOException;
@@ -21,21 +22,24 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectManagerFileInitializor extends StreamTokenizer {
+public class ProjectContainerFileInitializor extends StreamTokenizer {
 
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    private final ProjectManager manager;
+    private final ProjectContainer manager;
+    private final Clock clock;
     
     /**
-     * Initialize this ProjectManagerFileInitializor with the given reader and
-     * projectmanager
+     * Initialize this ProjectConainerFileInitializor with the given reader and
+     * projectcontainer
      * 
      * @param r The reader to use to read in the file
-     * @param manager The projectmanager to initialize
+     * @param manager The projectContainer to initialize
+     * @param clock The clock to use
      */
-    public ProjectManagerFileInitializor(Reader r, ProjectManager manager) {
+    public ProjectContainerFileInitializor(Reader r, ProjectContainer manager, Clock clock) {
         super(r);
         this.manager = manager;
+        this.clock = clock;
     }
     
     /**
@@ -178,7 +182,7 @@ public class ProjectManagerFileInitializor extends StreamTokenizer {
             if (status != null) {
                 LocalDateTime startTime = expectDateField("startTime");
                 LocalDateTime endTime = expectDateField("endTime");
-                manager.advanceSystemTime(endTime);
+                clock.advanceTime(endTime);
                 manager.getProject(projectId).updateTask(task.getId(), startTime, endTime, status);
             }
 

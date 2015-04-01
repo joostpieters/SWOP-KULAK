@@ -10,19 +10,19 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Unit test class for projectmanager
+ * Unit test class for projectContainer
  * 
  * @author Mathias Benoit
  */
-public class ProjectManagerTest {
+public class ProjectContainerTest {
     private static Project p1, p2, p3;
     private static Task t1, t2, t3;
     
-    private static ProjectManager manager;
+    private static ProjectContainer manager;
     
     @BeforeClass
     public static void setUpClass() {
-        manager = new ProjectManager();
+        manager = new ProjectContainer();
         manager.createProject("Test", "Description", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 12, 17, 50));
         p1 = manager.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
@@ -38,28 +38,28 @@ public class ProjectManagerTest {
     }
 
     /**
-     * Test of getProject method, of class ProjectManager if the id doesn't exists.
+     * Test of getProject method, of class ProjectContainer if the id doesn't exists.
      */
     @Test (expected=ObjectNotFoundException.class)
     public void testGetProjectFail() throws ObjectNotFoundException{
-        ProjectManager instance = new ProjectManager();
+        ProjectContainer instance = new ProjectContainer();
         instance.getProject(12);
     }
     
     /**
-     * Test of getProject and create project method, of class ProjectManager.
+     * Test of getProject and create project method, of class ProjectContainer.
      */
     @Test
     public void testGetProjectAndCreateProject() throws ObjectNotFoundException{
-        ProjectManager projectManager = new ProjectManager();
-        Project project1 = projectManager.createProject("Test", "Description", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 12, 17, 50));
+        ProjectContainer projectContainer = new ProjectContainer();
+        Project project1 = projectContainer.createProject("Test", "Description", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 12, 17, 50));
         int pId = project1.getId();
-        Project project2 = projectManager.getProject(pId);
+        Project project2 = projectContainer.getProject(pId);
         assertEquals(project1, project2);
     }
     
     /**
-     * Test of getAllavailableTasks, of class ProjectManager.
+     * Test of getAllavailableTasks, of class ProjectContainer.
      */
     @Test
     public void testGetAvailableTasks(){
@@ -70,7 +70,7 @@ public class ProjectManagerTest {
     }
     
     /**
-     * Test of getAllTasks, of class ProjectManager.
+     * Test of getAllTasks, of class ProjectContainer.
      */
     @Test
     public void testGetAllTasks(){
@@ -81,7 +81,7 @@ public class ProjectManagerTest {
     }
     
     /**
-     * Test of getUnfinishedProjects, of class ProjectManager.
+     * Test of getUnfinishedProjects, of class ProjectContainer.
      */
     @Test
     public void testGetUnfinishedProjects(){
@@ -92,7 +92,7 @@ public class ProjectManagerTest {
     }
     
     /**
-     * Test of getNbProjects, of class ProjectManager.
+     * Test of getNbProjects, of class ProjectContainer.
      */
     @Test
     public void testGetNbProjects(){
@@ -101,7 +101,7 @@ public class ProjectManagerTest {
     }
     
     /**
-     * Test of testAdvanceSystemTime, of class ProjectManager.
+     * Test of testAdvanceSystemTime, of class ProjectContainer.
      */
     @Test
     public void testAdvanceSystemTime(){

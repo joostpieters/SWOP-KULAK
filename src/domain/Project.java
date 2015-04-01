@@ -17,7 +17,7 @@ import java.util.TreeMap;
  * 
  * @author 	Frederic, Mathias, Pieter-Jan 
  * 
- * @see		ProjectManager
+ * @see		projectContainer
  * @see		Task
  * @see		Clock
  */

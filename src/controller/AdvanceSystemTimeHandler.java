@@ -1,7 +1,7 @@
 package controller;
 
 import domain.Clock;
-import domain.ProjectManager;
+import domain.ProjectContainer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -15,16 +15,16 @@ import java.util.logging.Logger;
  */
 public class AdvanceSystemTimeHandler {
     
-    private final ProjectManager manager;
+    private final ProjectContainer manager;
     private final Clock clock;
         
     /**
-     * Initialize a new advance system time handler with the given projectmanager.
+     * Initialize a new advance system time handler with the given projectContainer.
      * 
      * @param manager The manager to use in this handler
      * @param clock The clock to use to manipulate
      */   
-    public AdvanceSystemTimeHandler(ProjectManager manager, Clock clock){
+    public AdvanceSystemTimeHandler(ProjectContainer manager, Clock clock){
         this.manager = manager;
         this.clock = clock;
     }

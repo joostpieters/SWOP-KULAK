@@ -36,7 +36,7 @@ public class ProjectTest {
 	LocalDateTime start = LocalDateTime.of(2015, 2, 9, 15, 0);
 	LocalDateTime end = start.plusHours(ProjectTest.HOURDIF);
 	
-	ProjectManager pm;
+	ProjectContainer pm;
 	Project p0, p1, p2, pFinished;
 	Task t1, t2, t3, tFin;
     
@@ -45,7 +45,7 @@ public class ProjectTest {
     	assertTrue(!create.isAfter(start));
     	assertTrue(!end.isAfter(due));
     	
-    	pm = new ProjectManager();
+    	pm = new ProjectContainer();
     	pm.advanceSystemTime(create);
     	
     	p0 = pm.createProject(name, descr, create, due);

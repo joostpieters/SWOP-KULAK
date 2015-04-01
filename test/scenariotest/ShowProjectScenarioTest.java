@@ -7,7 +7,7 @@ import domain.DetailedProject;
 import domain.DetailedTask;
 import domain.Duration;
 import domain.Project;
-import domain.ProjectManager;
+import domain.ProjectContainer;
 import domain.Task;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -27,7 +27,7 @@ import org.junit.Test;
 
 public class ShowProjectScenarioTest {
     
-    private static ProjectManager manager;
+    private static ProjectContainer manager;
     private static ShowProjectHandler handler;
     private static Project p1, p2, p3;
     private static Task t1, t2;
@@ -37,7 +37,7 @@ public class ShowProjectScenarioTest {
     
     @BeforeClass
     public static void setUpBeforeClass() {
-        manager = new ProjectManager();
+        manager = new ProjectContainer();
         // only p1 has tasks
         p1 = manager.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);

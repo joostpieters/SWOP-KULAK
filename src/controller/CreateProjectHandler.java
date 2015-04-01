@@ -1,6 +1,6 @@
 package controller;
 
-import domain.ProjectManager;
+import domain.ProjectContainer;
 import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,19 +12,19 @@ import java.util.logging.Logger;
  */
 public class CreateProjectHandler {
     
-    private final ProjectManager manager;
+    private final ProjectContainer manager;
     
     /**
-     * Initialize this createprojecthandler with the given projectmanager.
+     * Initialize this createprojecthandler with the given projectContainer.
      * 
-     * @param manager The projectmanager to use in this handler. 
+     * @param manager The projectContainer to use in this handler. 
      */
-    public CreateProjectHandler(ProjectManager manager){
+    public CreateProjectHandler(ProjectContainer manager){
         this.manager = manager;
     }
     
     /**
-     * Create the project with the given parameters in this project manager.
+     * Create the project with the given parameters in this project container.
      * 
      * @param name The name of the new project.
      * @param description The description of the new project.

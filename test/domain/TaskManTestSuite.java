@@ -15,7 +15,7 @@ import scenariotest.UpdateTaskStatusScenarioTest;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ClockTest.class,
-                     ProjectManagerTest.class,
+                     ProjectContainerTest.class,
                     ProjectTest.class,
                     TaskTest.class,
                     TimespanTest.class, 

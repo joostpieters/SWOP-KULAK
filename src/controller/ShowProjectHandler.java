@@ -5,7 +5,7 @@ import domain.Clock;
 import domain.DetailedProject;
 import domain.DetailedTask;
 import domain.Project;
-import domain.ProjectManager;
+import domain.ProjectContainer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,32 +18,32 @@ import java.util.List;
  */
 public class ShowProjectHandler {
     
-    private final ProjectManager manager;
+    private final ProjectContainer manager;
     
     private Project currentProject;
     private final Clock clock;
     
     /**
-     * Initialize a new show project handler with the given projectmanager.
+     * Initialize a new show project handler with the given projectContainer.
      * 
-     * @param manager The projectmanager to use in this handler. 
+     * @param manager The projectContainer to use in this handler. 
      * @param clock The clock to use in this handler
      */   
-    public ShowProjectHandler(ProjectManager manager, Clock clock){
+    public ShowProjectHandler(ProjectContainer manager, Clock clock){
         this.manager = manager;
         this.clock = clock;
     }
     
     /**
      * 
-     * @return A list of projects of this projectmanager
+     * @return A list of projects of this projectContainer
      */
     public List<DetailedProject> getProjects(){
         return new ArrayList<>(manager.getProjects());
     }
     
     /**
-     * Select the project with the given id in this projectmanager and set it as
+     * Select the project with the given id in this projectContainer and set it as
      * this current project to show
      * 
      * @param projectId The id of the project ro retrieve 

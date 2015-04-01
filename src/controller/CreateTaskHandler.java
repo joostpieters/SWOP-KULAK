@@ -4,7 +4,7 @@ import domain.DetailedProject;
 import domain.DetailedTask;
 import domain.Duration;
 import domain.Project;
-import domain.ProjectManager;
+import domain.ProjectContainer;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -18,14 +18,14 @@ import java.util.logging.Logger;
  */
 public class CreateTaskHandler {
     
-    private final ProjectManager manager;
+    private final ProjectContainer manager;
     
     /**
-     * Initialize a new create task handler with the given projectmanager.
+     * Initialize a new create task handler with the given projectContainer.
      * 
-     * @param manager The projectmanager to use in this handler. 
+     * @param manager The projectContainer to use in this handler. 
      */   
-    public CreateTaskHandler(ProjectManager manager){
+    public CreateTaskHandler(ProjectContainer manager){
         this.manager = manager;
     }
     
@@ -76,7 +76,7 @@ public class CreateTaskHandler {
     
     /**
      * 
-     * @return A list of all projects in this projectmanager.
+     * @return A list of all projects in this projectContainer.
      * @throws IllegalStateException No unfinished projects are available.
      */
     public List<DetailedProject> getUnfinishedProjects() throws IllegalStateException{

@@ -3,7 +3,7 @@ package controller;
 import domain.DetailedProject;
 import domain.DetailedTask;
 import domain.Project;
-import domain.ProjectManager;
+import domain.ProjectContainer;
 import domain.Status;
 import domain.Task;
 import java.time.LocalDateTime;
@@ -19,25 +19,25 @@ import java.util.logging.Logger;
  */
 public class UpdateTaskStatusHandler {
 
-    private final ProjectManager manager;
+    private final ProjectContainer manager;
 
     private Task currentTask;
     private Project currentProject;
 
     /**
-     * Initialize a new create task handler with the given projectmanager.
+     * Initialize a new create task handler with the given projectContainer.
      *
-     * @param manager The projectmanager to use in this handler.
+     * @param manager The projectContainer to use in this handler.
      */
-    public UpdateTaskStatusHandler(ProjectManager manager) {
+    public UpdateTaskStatusHandler(ProjectContainer manager) {
         this.manager = manager;
     }
 
     /**
-     * Returns a map with all available tasks in this projectmanager ascociated
+     * Returns a map with all available tasks in this projectContainer ascociated
      * with their project.
      *
-     * @return All available tasks in the projectmanager of this handler.
+     * @return All available tasks in the projectContainer of this handler.
      */
     public Map<DetailedTask, DetailedProject> getAvailableTasks() {
 

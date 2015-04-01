@@ -1,7 +1,7 @@
 package controller;
 
 import domain.Clock;
-import domain.ProjectManager;
+import domain.ProjectContainer;
 
 
 /**
@@ -11,18 +11,18 @@ import domain.ProjectManager;
  */
 public class HandlerFactory {
     
-    private final ProjectManager manager;
+    private final ProjectContainer manager;
     private final Clock clock;
     
     
     
     /**
-     * Initialize a new front controller with the given projectmanager.
+     * Initialize a new front controller with the given projectContainer.
      * 
-     * @param manager The projectmanager to use in this factory. 
+     * @param manager The projectContainer to use in this factory. 
      * @param clock The system clock to use in this factory
      */   
-    public HandlerFactory(ProjectManager manager, Clock clock){
+    public HandlerFactory(ProjectContainer manager, Clock clock){
         this.manager = manager;
         this.clock = clock;
     }

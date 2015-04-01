@@ -5,7 +5,7 @@ import controller.CreateProjectHandler;
 import controller.HandlerFactory;
 import domain.DetailedProject;
 import domain.Project;
-import domain.ProjectManager;
+import domain.ProjectContainer;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,12 +20,12 @@ import org.junit.Test;
  */
 public class CreateProjectScenarioTest {
 	
-	private static ProjectManager manager;
+	private static ProjectContainer manager;
 	private static CreateProjectHandler handler;
     
     @BeforeClass
     public static void setUpClass() {
-        manager = new ProjectManager();
+        manager = new ProjectContainer();
         HandlerFactory controller = new HandlerFactory(manager);
         handler = controller.getCreateProjectHandler();
     }

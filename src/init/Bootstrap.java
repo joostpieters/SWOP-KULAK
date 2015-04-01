@@ -3,7 +3,7 @@ package init;
 import UI.swingGUI.MainFrame;
 import controller.HandlerFactory;
 import domain.Clock;
-import domain.ProjectManager;
+import domain.ProjectContainer;
 import java.io.FileReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,16 +35,18 @@ public class Bootstrap {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-
+        
+        
+        Clock clock = new Clock();
         int option = JOptionPane.showConfirmDialog(null, "Would you like to initialize the system with an input file?");
-        ProjectManager manager = new ProjectManager();
+        ProjectContainer manager = new ProjectContainer();
         if (option == 0) {
-            initManagerFromFile(manager);
+            initManagerFromFile(manager, clock);
         } else if (option == 2) {
             return;
         }
 
-        HandlerFactory factory = new HandlerFactory(manager, new Clock());
+        HandlerFactory factory = new HandlerFactory(manager, clock);
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             new MainFrame(factory).setVisible(true);
@@ -57,7 +59,7 @@ public class Bootstrap {
      * 
      * @param manager The manager to initialize
      */
-    private static void initManagerFromFile(ProjectManager manager) {
+    private static void initManagerFromFile(ProjectContainer manager, Clock clock) {
         
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Task Man inputfile", "tman");
@@ -67,7 +69,7 @@ public class Bootstrap {
 
             try (FileReader fileReader = new FileReader(chooser.getSelectedFile())) {
 
-                ProjectManagerFileInitializor fileInitializor = new ProjectManagerFileInitializor(fileReader, manager);
+                ProjectContainerFileInitializor fileInitializor = new ProjectContainerFileInitializor(fileReader, manager, clock);
                 fileInitializor.processFile();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, "An error occured while reading/processing the file, please try again.", null, JOptionPane.ERROR_MESSAGE);

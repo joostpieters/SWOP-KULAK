@@ -7,7 +7,7 @@ import domain.Available;
 import domain.Duration;
 import domain.Failed;
 import domain.Project;
-import domain.ProjectManager;
+import domain.ProjectContainer;
 import domain.Task;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -24,7 +24,7 @@ import org.junit.Test;
  */
 public class CreateTaskScenarioTest {
 
-    private static ProjectManager manager;
+    private static ProjectContainer manager;
     private static CreateTaskHandler handler;
     private static Project p1;
     private static Task t1;
@@ -32,7 +32,7 @@ public class CreateTaskScenarioTest {
 
     @BeforeClass
     public static void setUpClass() {
-        manager = new ProjectManager();
+        manager = new ProjectContainer();
         String project1Name = "project 1 :)";
         String project1Description = "This is project 1";
         LocalDateTime project1StartTime = LocalDateTime.of(2015, 03, 12, 17, 30);
