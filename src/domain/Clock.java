@@ -82,6 +82,28 @@ public class Clock {
     }
     
     /**
+     * Check whether the given time is strictly after this clock time
+     * 
+     * @param time The time to check
+     * @return True if and only if the given time is strictly more in the future
+     * than the time of this clock.
+     */
+    public boolean isAfter(LocalDateTime time){
+        return getTime().isAfter(time);
+    }
+    
+    /**
+     * Check whether the given time is strictly before this clock time
+     * 
+     * @param time The time to check
+     * @return True if and only if the given time is strictly more in the past
+     * than the time of this clock.
+     */
+    public boolean isBefore(LocalDateTime time){
+        return getTime().isBefore(time);
+    }
+    
+    /**
      * Check wether the given object is equal to this clock.
      * 
      * @param o The other object to check.

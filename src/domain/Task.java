@@ -545,5 +545,10 @@ public class Task implements DetailedTask {
     public boolean hasAlternativeTask() {
         return getAlternativeTask() != null;
     }
+    
+    public LocalDateTime getEstimatedEndTime(Clock clock)
+    {
+        return estimatedWorkTimeNeeded().getEndTimeFrom(clock.getTime());
+    }
 
 }

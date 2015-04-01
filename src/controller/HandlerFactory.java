@@ -1,5 +1,6 @@
 package controller;
 
+import domain.Clock;
 import domain.ProjectManager;
 
 
@@ -8,26 +9,29 @@ import domain.ProjectManager;
  * 
  * @author Frederic, Mathias, Pieter-Jan
  */
-public class FrontController {
+public class HandlerFactory {
     
     private final ProjectManager manager;
+    private final Clock clock;
     
     
     
     /**
      * Initialize a new front controller with the given projectmanager.
      * 
-     * @param manager The projectmanager to use in this controller. 
+     * @param manager The projectmanager to use in this factory. 
+     * @param clock The system clock to use in this factory
      */   
-    public FrontController(ProjectManager manager){
+    public HandlerFactory(ProjectManager manager, Clock clock){
         this.manager = manager;
+        this.clock = clock;
     }
     
     /** 
      * @return A new show project handler, initialized with this manager.
      */
     public ShowProjectHandler getShowProjectHandler(){
-        return new ShowProjectHandler(manager);
+        return new ShowProjectHandler(manager, clock);
     }
     
     /** 
@@ -55,6 +59,6 @@ public class FrontController {
      * @return A new advance system time handler, initialized with this manager.
      */
     public AdvanceSystemTimeHandler getAdvanceSystemTimeHandler(){
-        return new AdvanceSystemTimeHandler(manager);
+        return new AdvanceSystemTimeHandler(manager, clock);
     }
 }

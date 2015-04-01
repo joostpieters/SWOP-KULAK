@@ -1,5 +1,6 @@
 package controller;
 
+import domain.Clock;
 import domain.ProjectManager;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,14 +16,17 @@ import java.util.logging.Logger;
 public class AdvanceSystemTimeHandler {
     
     private final ProjectManager manager;
+    private final Clock clock;
         
     /**
      * Initialize a new advance system time handler with the given projectmanager.
      * 
      * @param manager The manager to use in this handler
+     * @param clock The clock to use to manipulate
      */   
-    public AdvanceSystemTimeHandler(ProjectManager manager){
+    public AdvanceSystemTimeHandler(ProjectManager manager, Clock clock){
         this.manager = manager;
+        this.clock = clock;
     }
     
     
@@ -35,7 +39,7 @@ public class AdvanceSystemTimeHandler {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             LocalDateTime time = LocalDateTime.parse(timestamp, formatter);
-            manager.advanceSystemTime(time);
+            clock.advanceTime(time);
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("The provided timestamp is in the wrong format.");
         } catch (IllegalArgumentException | IllegalStateException e) {
@@ -54,6 +58,6 @@ public class AdvanceSystemTimeHandler {
      * @return The current time as indicated by the system clock 
      */
     public LocalDateTime getCurrentTime(){
-        return manager.getSystemClock().getTime();
+        return clock.getTime();
     }
 }

@@ -2,7 +2,7 @@ package scenariotest;
 
 
 import controller.CreateTaskHandler;
-import controller.FrontController;
+import controller.HandlerFactory;
 import domain.Available;
 import domain.Duration;
 import domain.Failed;
@@ -41,7 +41,7 @@ public class CreateTaskScenarioTest {
         t1 = p1.createTask("Prereq", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
         t2 = p1.createTask("Alternative", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
         
-        FrontController controller = new FrontController(manager);
+        HandlerFactory controller = new HandlerFactory(manager);
         handler = controller.getCreateTaskHandler();
     }
 

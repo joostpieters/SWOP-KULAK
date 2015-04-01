@@ -1,6 +1,7 @@
 package controller;
 
 
+import domain.Clock;
 import domain.DetailedProject;
 import domain.DetailedTask;
 import domain.Project;
@@ -20,14 +21,17 @@ public class ShowProjectHandler {
     private final ProjectManager manager;
     
     private Project currentProject;
+    private final Clock clock;
     
     /**
      * Initialize a new show project handler with the given projectmanager.
      * 
      * @param manager The projectmanager to use in this handler. 
+     * @param clock The clock to use in this handler
      */   
-    public ShowProjectHandler(ProjectManager manager){
+    public ShowProjectHandler(ProjectManager manager, Clock clock){
         this.manager = manager;
+        this.clock = clock;
     }
     
     /**
@@ -66,5 +70,13 @@ public class ShowProjectHandler {
             throw new IllegalStateException("No project is currently selected in this handler.");
         }
         return currentProject.getTask(taskId);
+    }
+    
+    /**
+     * 
+     * @return The clock used by this handler.
+     */
+    public Clock getClock(){
+        return clock;
     }
 }

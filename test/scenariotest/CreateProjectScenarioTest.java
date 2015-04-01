@@ -2,7 +2,7 @@ package scenariotest;
 
 
 import controller.CreateProjectHandler;
-import controller.FrontController;
+import controller.HandlerFactory;
 import domain.DetailedProject;
 import domain.Project;
 import domain.ProjectManager;
@@ -26,7 +26,7 @@ public class CreateProjectScenarioTest {
     @BeforeClass
     public static void setUpClass() {
         manager = new ProjectManager();
-        FrontController controller = new FrontController(manager);
+        HandlerFactory controller = new HandlerFactory(manager);
         handler = controller.getCreateProjectHandler();
     }
     

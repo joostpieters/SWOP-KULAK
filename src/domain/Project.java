@@ -38,7 +38,7 @@ public class Project implements DetailedProject {
     private final String description;
     private final Timespan creationDueTime;
     private final Map<Integer, Task> tasks = new TreeMap<>();
-    private final Clock clock;
+    
     
     /**
      * Construct a new project, with given id, name, description, 
@@ -51,15 +51,12 @@ public class Project implements DetailedProject {
      * 			The creation time for this project.
      * @param 	due
      * 			The due time for this project.
-     * @param	clock
-     * 			The system clock this project depends on.
-     * 
      * @throws	IllegalArgumentException
      * 			if id &lt; 0
      * 			or if name or descr = null
      * 			or if creation and due form an invalid time pair.
      */
-    public Project(String name, String descr, LocalDateTime creation, LocalDateTime due, Clock clock){
+    public Project(String name, String descr, LocalDateTime creation, LocalDateTime due){
     	if(!canHaveAsName(name) || !canHaveAsDescription(descr))
     		throw new IllegalArgumentException("Both name (at least one character) and description "
     				+ "(at least one character) are expected.");
@@ -68,7 +65,7 @@ public class Project implements DetailedProject {
     	this.name = name;
     	this.description = descr;
     	this.creationDueTime = new Timespan(creation, due);
-    	this.clock = clock;
+    	
     }
     
     /****************************************
@@ -144,20 +141,6 @@ public class Project implements DetailedProject {
     @Override
 	public LocalDateTime getDueTime() {
 		return creationDueTime.getEndTime();
-	}
-
-	/**
-	 * @return the clock used in this project.
-	 */
-	public Clock getClock() {
-		return new Clock(clock);
-	}
-	
-	/**
-	 * @return the time of the clock used in this project.
-	 */
-	public LocalDateTime getSystemTime() {
-		return clock.getTime();
 	}
 
 	/**
@@ -324,8 +307,6 @@ public class Project implements DetailedProject {
 	public void updateTask(int tid, LocalDateTime start, LocalDateTime end, Status status) {
 		if(start.isBefore(getCreationTime()))
 			throw new IllegalArgumentException("A task can't have started before its project.");
-		if(end.isAfter(getSystemTime()))
-			throw new IllegalArgumentException("A task can't be finished in the future.");
 		
 		getTask(tid).update(start, end, status, this);
 	}
@@ -351,6 +332,7 @@ public class Project implements DetailedProject {
 	 * Return all tasks which can cause this project to get overdue and 
 	 * the percentage the project will be late because of the task.
 	 * 
+     * @param clock The clock to use to check overdue
 	 * @return	a map of tasks for which the work time needed  &gt;
 	 * 			({@link #getDueTime()} - {@link #getSystemTime()})
 	 * 			to their corresponding percentage by which they are over time.
@@ -360,13 +342,13 @@ public class Project implements DetailedProject {
 	 * @see		Duration#percentageOver(Duration)
 	 */
         @Override
-	public Map<Task, Double> getUnacceptablyOverdueTasks() {
+	public Map<Task, Double> getUnacceptablyOverdueTasks(Clock clock) {
 		Map<Task, Double> result = new HashMap<>();
 		
 		for(Task t : getTasks()) {
 			if(t.isFulfilled())
 				continue;
-			LocalDateTime estFinTime = t.estimatedWorkTimeNeeded().getEndTimeFrom(getSystemTime());
+			LocalDateTime estFinTime = t.getEstimatedEndTime(clock);
 			if(estFinTime.isAfter(getDueTime()))
 				result.put(t, new Duration(getCreationTime(), estFinTime).percentageOver(new Duration(getCreationTime(), getDueTime())));
 		}
@@ -410,7 +392,7 @@ public class Project implements DetailedProject {
 	 * 			false otherwise.
 	 */
     @Override
-	public boolean isOnTime() {
+	public boolean isOnTime(Clock clock) {
 		if(isFinished()) {
 			for(Task t : getTasks())
 				if(t.getTimeSpan().getEndTime().isAfter(this.getDueTime()))
@@ -428,8 +410,8 @@ public class Project implements DetailedProject {
 					max2 = temp2;
 			}
 			LocalDateTime end = max.add(max2).getEndTimeFrom(getCreationTime());
-			if(end.isBefore(getSystemTime()))
-				end = getSystemTime();
+			if(clock.isAfter(end))
+				end = clock.getTime();
 			return !end.isAfter(getDueTime());
 		}
 	}
@@ -437,12 +419,13 @@ public class Project implements DetailedProject {
     /**
      * Gets the total delay of this project.
      * 
+     * @param clock The clock to reltively check the delay to.
      * @return 	the sum of the delays of the tasks within this project if !{@link #isOnTime()},
      * 			null otherwise.
      */
     @Override
-    public Duration getDelay() {
-    	if(isOnTime())
+    public Duration getDelay(Clock clock) {
+    	if(isOnTime(clock))
     		return Duration.ZERO;
     	Duration totalDuration = Duration.ZERO;
     	for(Task t : getTasks())

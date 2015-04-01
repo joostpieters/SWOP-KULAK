@@ -16,14 +16,12 @@ public class ProjectManager {
     
     private final Map<Integer, Project> projects;
     
-    private final Clock systemClock ;
-    
+        
     /**
      * Initializes a new project manager and its systemClock.
      */
     public ProjectManager(){
         projects = new HashMap<>();
-        systemClock = new Clock();
     }
     
     /**
@@ -33,22 +31,7 @@ public class ProjectManager {
         return new ArrayList<>(projects.values());
     }
     
-    /**
-     * Advance this system clock to the given timestamp 
-     * 
-     * @param timestamp The time to advance the system time.
-     */
-    public void advanceSystemTime(LocalDateTime timestamp){
-        systemClock.advanceTime(timestamp);
-    }
-    
-    /**
-	 * @return A copy of the systemClock
-	 */
-	public Clock getSystemClock() {
-		return new Clock(systemClock);
-	}
-
+   
 	/**
      * @return the list of unfinished projects contained by this projectmanager. 
      */
@@ -78,7 +61,7 @@ public class ProjectManager {
      */
     public Project createProject(String name, String description, LocalDateTime startTime, LocalDateTime dueTime){
         
-        Project p = new Project(name,description, startTime, dueTime, systemClock);
+        Project p = new Project(name,description, startTime, dueTime);
         addProject(p);
         return p;
     }

@@ -1,7 +1,8 @@
 package init;
 
 import UI.swingGUI.MainFrame;
-import controller.FrontController;
+import controller.HandlerFactory;
+import domain.Clock;
 import domain.ProjectManager;
 import java.io.FileReader;
 import java.util.logging.Level;
@@ -43,10 +44,10 @@ public class Bootstrap {
             return;
         }
 
-        FrontController controller = new FrontController(manager);
+        HandlerFactory factory = new HandlerFactory(manager, new Clock());
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
-            new MainFrame(controller).setVisible(true);
+            new MainFrame(factory).setVisible(true);
         });
     }
     

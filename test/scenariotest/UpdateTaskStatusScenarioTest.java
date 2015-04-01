@@ -1,6 +1,6 @@
 package scenariotest;
 
-import controller.FrontController;
+import controller.HandlerFactory;
 import controller.UpdateTaskStatusHandler;
 import domain.Duration;
 import domain.Project;
@@ -38,7 +38,7 @@ public class UpdateTaskStatusScenarioTest {
         manager.createProject("Test 2", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         manager.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         
-        FrontController controller = new FrontController(manager);
+        HandlerFactory controller = new HandlerFactory(manager);
         handler = controller.getUpdateTaskHandler();
         manager.advanceSystemTime(LocalDateTime.of(2015,03,17,14,10));
     }

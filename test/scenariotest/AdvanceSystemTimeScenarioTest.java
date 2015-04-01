@@ -1,7 +1,7 @@
 package scenariotest;
 
 import controller.AdvanceSystemTimeHandler;
-import controller.FrontController;
+import controller.HandlerFactory;
 import domain.Duration;
 import domain.Project;
 import domain.ProjectManager;
@@ -37,7 +37,7 @@ public class AdvanceSystemTimeScenarioTest {
         manager.createProject("Test 2", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         manager.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
 
-        FrontController controller = new FrontController(manager);
+        HandlerFactory controller = new HandlerFactory(manager);
         handler = controller.getAdvanceSystemTimeHandler();
     }
 

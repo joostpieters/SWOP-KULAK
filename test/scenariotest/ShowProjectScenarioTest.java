@@ -1,6 +1,6 @@
 package scenariotest;
 
-import controller.FrontController;
+import controller.HandlerFactory;
 import controller.ShowProjectHandler;
 import domain.Available;
 import domain.DetailedProject;
@@ -47,7 +47,7 @@ public class ShowProjectScenarioTest {
         p2 = manager.createProject("Test 2", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         p3 = manager.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         
-        FrontController controller = new FrontController(manager);
+        HandlerFactory controller = new HandlerFactory(manager);
         handler = controller.getShowProjectHandler();
     }
 

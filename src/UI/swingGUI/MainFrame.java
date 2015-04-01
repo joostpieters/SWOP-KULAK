@@ -1,6 +1,6 @@
 package UI.swingGUI;
 
-import controller.FrontController;
+import controller.HandlerFactory;
 import java.time.format.DateTimeFormatter;
 import javax.swing.JOptionPane;
 
@@ -14,7 +14,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private static final long serialVersionUID = -2541384231489389714L;
 
-    private final FrontController controller;
+    private final HandlerFactory controller;
     
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -23,7 +23,7 @@ public class MainFrame extends javax.swing.JFrame {
      *
      * @param controller The controller to use to pass the requests to
      */
-    public MainFrame(FrontController controller) {
+    public MainFrame(HandlerFactory controller) {
         this.controller = controller;
         initComponents();
         
