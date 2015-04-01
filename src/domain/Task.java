@@ -525,6 +525,13 @@ public class Task implements DetailedTask {
         return getAlternativeTask() != null;
     }
     
+    /**
+     * Returns the etimated end time of this task
+     * 
+     * @param clock The clock to use to determine the start time of this task
+     * @return The time of the given clock + the estimated work time needed
+     * by this task.
+     */
     public LocalDateTime getEstimatedEndTime(Clock clock)
     {
         return estimatedWorkTimeNeeded().getEndTimeFrom(clock.getTime());

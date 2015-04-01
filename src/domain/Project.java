@@ -395,7 +395,7 @@ public class Project implements DetailedProject {
 	public boolean isOnTime(Clock clock) {
 		if(isFinished()) {
 			for(Task t : getTasks())
-				if(t.getTimeSpan().getEndTime().isAfter(this.getDueTime()))
+				if(t.getTimeSpan().endsAfter(this.getDueTime()))
 					return false;
 			return true;
 		} else {

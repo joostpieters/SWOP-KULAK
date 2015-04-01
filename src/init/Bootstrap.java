@@ -13,7 +13,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
- * @author Mathias
+ * @author Mathias :)
  */
 public class Bootstrap {
 

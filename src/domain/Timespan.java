@@ -127,4 +127,15 @@ public final class Timespan {
         return getEndTime().compareTo(anotherTimespan.getStartTime()) <= 0;
     }
     
+    /**
+     * Check whether the given time is before the end of this timespan.
+     * 
+     * @param time The time to check
+     * @return True if and only if the end time of this timespan happens strictly
+     * before the given time.
+     */
+    public boolean endsAfter(LocalDateTime time){
+        return getEndTime().isAfter(time);
+    }
+    
 }
