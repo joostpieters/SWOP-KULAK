@@ -51,7 +51,7 @@ public abstract class Status {
     }
 
     /**
-     * Checks whether this task was fulfilled before the given time span.
+     * Checks whether the given task was fulfilled before the given time span.
      *
      * @param task The task to check.
      * @param timeSpan The time span to check.
@@ -126,7 +126,8 @@ public abstract class Status {
      */
     protected boolean canHaveAsTimeSpan(Task task, Timespan timeSpan) {
         for (Task t : task.getPrerequisiteTasks()) {
-            if (t.isFulfilled() && !isFulfilledBefore(t,timeSpan)) {
+            
+            if (t.isFulfilled() && !t.getStatus().isFulfilledBefore(t,timeSpan)) {
                 return false;
             }
         }

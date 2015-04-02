@@ -581,6 +581,7 @@ public class ProjectTest {
     	assertFalse(p.isOnTime(clock)); //FIXME: why for god's sake should this hold in case of 8-hour-duration, it should be true up to 16-hour-durations?
     	clock.advanceTime(due);
     	p.updateTask(t5.getId(), LocalDateTime.of(2015,  2, 11, 9, 0), LocalDateTime.of(2015, 2, 11, 18, 0), new Finished());
+        
     	p.updateTask(t3.getId(), LocalDateTime.of(2015,  2, 12, 9, 0), LocalDateTime.of(2015, 2, 12, 18, 0), new Finished());
     	p.updateTask(t4.getId(), LocalDateTime.of(2015,  2, 13, 9, 0), LocalDateTime.of(2015, 2, 13, 18, 0), new Finished());
     	assertTrue(p.isOnTime(clock));

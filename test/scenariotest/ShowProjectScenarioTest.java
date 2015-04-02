@@ -10,6 +10,7 @@ import domain.Duration;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.Task;
+import domain.Unavailable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -85,7 +86,7 @@ public class ShowProjectScenarioTest {
         DetailedTask t2Details = handler.getTask(t2.getId());
         assertEquals("A difficult task.", t2Details.getDescription());
         assertEquals(new Duration(500), t2Details.getEstimatedDuration());
-        assertTrue(t2Details.getStatus() instanceof Available);
+        assertTrue(t2Details.getStatus() instanceof Unavailable);
         assertEquals(Arrays.asList(t1), t2Details.getPrerequisiteTasks());
         assertEquals(50, t2Details.getAcceptableDeviation());
         

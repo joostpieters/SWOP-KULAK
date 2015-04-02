@@ -23,6 +23,8 @@ public class Finished extends Status {
 
     /**
      * The status is finished, so there's nothing to update
+     * 
+     * @param task The task to update the status of
      */
     @Override
     public void update(Task task) {
@@ -35,7 +37,6 @@ public class Finished extends Status {
      */
     @Override
     public boolean isFulfilled(Task task) {
-
         return true;
 
     }

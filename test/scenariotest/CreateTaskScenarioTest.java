@@ -10,6 +10,7 @@ import domain.Failed;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.Task;
+import domain.Unavailable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -70,7 +71,8 @@ public class CreateTaskScenarioTest {
                 assertEquals(10, t.getEstimatedDuration().getHours());
                 assertEquals(20, t.getEstimatedDuration().getMinutes());
                 assertEquals(t, t2.getAlternativeTask());
-                assertTrue(t.getStatus() instanceof Available);
+                
+                assertTrue(t.getStatus() instanceof Unavailable);
                 assertTrue(t.getPrerequisiteTasks().contains(t1));
 
             }

@@ -46,7 +46,7 @@ public class TaskTest {
     			);
     	//pm.advanceSystemTime(t6ts.getEndTime());
     	t6 = p.createTask("t6", new Duration(10), 3, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-    	p.updateTask(t6.getId(), t6ts.getStartTime(), t6ts.getEndTime(), new Finished());
+    	p.updateTask(t6.getId(), t6ts.getStartTime(), t6ts.getEndTime(), new Failed());
     	t7 = p.createTask("t7", new Duration(15), 4, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
     	p.updateTask(t7.getId(), t6ts.getStartTime(), t6ts.getEndTime(), new Failed());
     	t7alternative = p.createTask("alternative for t7", new Duration(10), 2, t7.getId(), Project.NO_DEPENDENCIES);
@@ -477,7 +477,7 @@ public class TaskTest {
     	assertFalse(t6.canBeFulfilled());
     	assertTrue(t7.canBeFulfilled());
     	assertTrue(t8.canBeFulfilled());
-    	assertFalse(new Task("description", new Duration(10), 30, Arrays.asList(t6)).canBeFulfilled());
+        assertFalse(new Task("description", new Duration(10), 30, Arrays.asList(t6)).canBeFulfilled());
     }
     /**
      * Test of canHaveAsAlternativeTask method, of class Task.
@@ -630,6 +630,7 @@ public class TaskTest {
 
     	t0.update(LocalDateTime.of(2015, 3, 10, 10, 0), LocalDateTime.of(2015, 3, 10, 11, 30), new Finished(), p);
     	assertEquals(90, t0.getTimeSpent().toMinutes());
+        
     	Task task = p.createTask("task abc", new Duration(33), 54, Project.NO_ALTERNATIVE, Arrays.asList(t0.getId()));
     	task.update(LocalDateTime.of(2015, 3, 11, 10, 0), LocalDateTime.of(2015, 3, 11, 15, 30), new Finished(), p);
     	assertEquals(90+4*60+30, task.getTimeSpent().toMinutes());

@@ -66,7 +66,7 @@ public class ProjectContainerTest {
     @Test
     public void testGetAvailableTasks(){
                 
-        assertTrue(manager.getAllAvailableTasks().containsKey(t3));
+        assertFalse(manager.getAllAvailableTasks().containsKey(t3));
         assertTrue(manager.getAllAvailableTasks().containsKey(t1));
         assertFalse(manager.getAllAvailableTasks().containsKey(t2));
     }

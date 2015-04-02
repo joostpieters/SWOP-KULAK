@@ -39,7 +39,7 @@ public class StatusTest {
     			LocalDateTime.of(2015, 3, 5, 14, 20));
     	//pm.advanceSystemTime(t3ts.getEndTime());
     	t3 = p.createTask("t3 finished", new Duration(30), 40, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-    	p.updateTask(t3.getId(), ts0.getStartTime(), ts0.getEndTime(), new Finished());
+    	p.updateTask(t3.getId(), ts0.getStartTime(), ts0.getEndTime(), new Failed());
     	t4 = p.createTask("t4", new Duration(30), 10, Project.NO_ALTERNATIVE, Arrays.asList(t3.getId()));
     	t5 = p.createTask("t5", new Duration(20), 5, Project.NO_ALTERNATIVE, Arrays.asList(t3.getId(), t2.getId()));
 
@@ -63,7 +63,7 @@ public class StatusTest {
     	assertTrue(t1.getStatus() instanceof Available);
     	t1.fail(ts0);
     	assertTrue(t1.getStatus() instanceof Failed);
-    	// Unavailable -> Failed TODO!
+    	// Unavailable -> Failed
     	assertTrue(t4.getStatus() instanceof Unavailable);
     	t4.fail(ts2);
     	assertTrue(t4.getStatus() instanceof Failed);

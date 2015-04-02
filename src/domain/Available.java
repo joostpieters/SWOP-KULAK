@@ -30,7 +30,7 @@ public class Available extends Status {
     void update(Task task) {
         boolean unavailable = false;
         for (Task t : task.getPrerequisiteTasks()) {
-            if (t.isFulfilled()) {
+            if (!t.isFulfilled()) {
                 unavailable = true;
             }
         }
@@ -48,6 +48,18 @@ public class Available extends Status {
     boolean canBeFulfilled(Task task) {
         return true;
     }
+    
+    /**
+     * Checks whether the given task has been fulfilled.
+     *
+     * @param task The task to check if it is fulfilled.
+     * @return False an available task can never be fulfilled
+     */
+    @Override
+    boolean isFulfilled(Task task) {
+        return false;
+    }
+
 
     /**
      * The estimated amount of work time needed for this task.

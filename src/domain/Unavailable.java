@@ -24,6 +24,7 @@ public class Unavailable extends Status {
      * Updates the status of this task to AVAILABLE if all the prerequisite
      * tasks are fulfilled.
      *
+     * @param task The task to update the status of
      */
     @Override
     public void update(Task task) {
@@ -83,6 +84,17 @@ public class Unavailable extends Status {
      */
     @Override
     boolean isFulfilledBefore(Task task, Timespan timeSpan) throws IllegalStateException {
+        return false;
+    }
+    
+    /**
+     * Checks whether the given task has been fulfilled.
+     *
+     * @param task The task to check if it is fulfilled.
+     * @return False an available task can never be fulfilled
+     */
+    @Override
+    boolean isFulfilled(Task task) {
         return false;
     }
     
