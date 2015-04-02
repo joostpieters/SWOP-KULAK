@@ -567,6 +567,7 @@ public class ProjectTest {
     	Task t1 = p.createTask("design system", new Duration(8,0), 0, altFor, prereqs);
     	Task t2 = p.createTask("implement system in native code", new Duration(16,0), 50, altFor, Arrays.asList(t1.getId()));
     	Task t3 = p.createTask("test system", new Duration(8,0), 0, altFor, Arrays.asList(t2.getId()));
+        
     	Task t4 = p.createTask("write documentation", new Duration(8,0), 0, altFor, Arrays.asList(t2.getId()));
     	
     	clock.advanceTime(create);
@@ -576,12 +577,13 @@ public class ProjectTest {
     	assertTrue(p.isOnTime(clock));
     	clock.advanceTime(create.plusDays(2));
     	p.updateTask(t2.getId(), LocalDateTime.of(2015, 2, 10, 9, 0), LocalDateTime.of(2015,  2, 10, 18, 0), new Failed());
+        
     	assertTrue(p.isOnTime(clock));
     	Task t5 = p.createTask("implement system with phonegap", new Duration(17,0), 100, t2.getId(), Arrays.asList(t1.getId()));
     	assertFalse(p.isOnTime(clock)); //FIXME: why for god's sake should this hold in case of 8-hour-duration, it should be true up to 16-hour-durations?
     	clock.advanceTime(due);
     	p.updateTask(t5.getId(), LocalDateTime.of(2015,  2, 11, 9, 0), LocalDateTime.of(2015, 2, 11, 18, 0), new Finished());
-        
+       
     	p.updateTask(t3.getId(), LocalDateTime.of(2015,  2, 12, 9, 0), LocalDateTime.of(2015, 2, 12, 18, 0), new Finished());
     	p.updateTask(t4.getId(), LocalDateTime.of(2015,  2, 13, 9, 0), LocalDateTime.of(2015, 2, 13, 18, 0), new Finished());
     	assertTrue(p.isOnTime(clock));

@@ -58,15 +58,14 @@ public abstract class Status {
      * @return True if this task is finished and this task ends before the given
      * time span. Otherwise the result is equal to whether or not the
      * alternative task of this task was fulfilled before the given time span.
-     * @throws IllegalStateException If this task is not fulfilled.
+     * 
      */
     boolean isFulfilledBefore(Task task, Timespan timeSpan) throws IllegalStateException {
-        if (!isFulfilled(task)) {
-            throw new IllegalStateException("Tried to check whether this task was "
-                    + "fulfilled before the given time span while this task is not fulfilled.");
+        if (!task.isFulfilled() || !task.hasAlternativeTask()) {
+           return false;
         }
-
-        return isFulfilledBefore(task.getAlternativeTask(), timeSpan);
+        
+        return task.getAlternativeTask().getStatus().isFulfilledBefore(task.getAlternativeTask(), timeSpan);
     }
 
     /**
