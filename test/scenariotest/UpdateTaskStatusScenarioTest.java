@@ -2,6 +2,8 @@ package scenariotest;
 
 import controller.HandlerFactory;
 import controller.UpdateTaskStatusHandler;
+import domain.Acl;
+import domain.Auth;
 import domain.Clock;
 import domain.Duration;
 import domain.Project;
@@ -27,6 +29,8 @@ public class UpdateTaskStatusScenarioTest {
     private static Project p1;
     private static Task t1;
     private static Clock clock;
+    private static Auth auth;
+    private static Acl acl;
     
     @BeforeClass
     public static void setUpClass() {
@@ -41,7 +45,9 @@ public class UpdateTaskStatusScenarioTest {
         manager.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         
         clock = new Clock();
-        HandlerFactory controller = new HandlerFactory(manager, clock);
+        auth = new Auth();
+        acl = new Acl();
+        HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl);
         handler = controller.getUpdateTaskHandler();
         clock.advanceTime(LocalDateTime.of(2015,03,17,14,10));
     }

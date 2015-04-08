@@ -1,5 +1,7 @@
 package controller;
 
+import domain.Acl;
+import domain.Auth;
 import domain.DetailedProject;
 import domain.DetailedTask;
 import domain.Project;
@@ -17,7 +19,7 @@ import java.util.logging.Logger;
  *
  * @author Frederic, Mathias, Pieter-Jan
  */
-public class UpdateTaskStatusHandler {
+public class UpdateTaskStatusHandler extends Handler{
 
     private final ProjectContainer manager;
 
@@ -28,8 +30,11 @@ public class UpdateTaskStatusHandler {
      * Initialize a new create task handler with the given projectContainer.
      *
      * @param manager The projectContainer to use in this handler.
+     * @param auth The authorization manager to use
+     * @param acl The action control list to use
      */
-    public UpdateTaskStatusHandler(ProjectContainer manager) {
+    public UpdateTaskStatusHandler(ProjectContainer manager, Auth auth, Acl acl) {
+        super(auth, acl);
         this.manager = manager;
     }
 

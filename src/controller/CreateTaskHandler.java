@@ -1,12 +1,13 @@
 package controller;
 
+import domain.Acl;
+import domain.Auth;
 import domain.DetailedProject;
 import domain.DetailedTask;
 import domain.Duration;
 import domain.Project;
 import domain.ProjectContainer;
 import java.util.ArrayList;
-
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,7 +17,7 @@ import java.util.logging.Logger;
  * 
  * @author Frederic, Mathias, Pieter-Jan
  */
-public class CreateTaskHandler {
+public class CreateTaskHandler extends Handler{
     
     private final ProjectContainer manager;
     
@@ -24,8 +25,11 @@ public class CreateTaskHandler {
      * Initialize a new create task handler with the given projectContainer.
      * 
      * @param manager The projectContainer to use in this handler. 
+     * @param auth The authorization manager to use
+     * @param acl The action control list to use
      */   
-    public CreateTaskHandler(ProjectContainer manager){
+    public CreateTaskHandler(ProjectContainer manager, Auth auth, Acl acl){
+        super(auth, acl);
         this.manager = manager;
     }
     

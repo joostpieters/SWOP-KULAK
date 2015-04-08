@@ -1,5 +1,7 @@
 package controller;
 
+import domain.Acl;
+import domain.Auth;
 import domain.ProjectContainer;
 import java.time.LocalDateTime;
 import java.util.logging.Level;
@@ -10,7 +12,7 @@ import java.util.logging.Logger;
  * 
  * @author Frederic, Mathias, Pieter-Jan
  */
-public class CreateProjectHandler {
+public class CreateProjectHandler extends Handler{
     
     private final ProjectContainer manager;
     
@@ -18,8 +20,11 @@ public class CreateProjectHandler {
      * Initialize this createprojecthandler with the given projectContainer.
      * 
      * @param manager The projectContainer to use in this handler. 
+     * @param auth The authorization manager to use
+     * @param acl The action control list to use
      */
-    public CreateProjectHandler(ProjectContainer manager){
+    public CreateProjectHandler(ProjectContainer manager, Auth auth, Acl acl){
+        super(auth, acl);
         this.manager = manager;
     }
     

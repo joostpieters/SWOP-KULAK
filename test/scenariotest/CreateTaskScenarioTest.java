@@ -3,7 +3,8 @@ package scenariotest;
 
 import controller.CreateTaskHandler;
 import controller.HandlerFactory;
-import domain.Available;
+import domain.Acl;
+import domain.Auth;
 import domain.Clock;
 import domain.Duration;
 import domain.Failed;
@@ -32,6 +33,8 @@ public class CreateTaskScenarioTest {
     private static Task t1;
     private static Task t2;
     private static Clock clock;
+    private static Acl acl;
+    private static Auth auth;
 
     @BeforeClass
     public static void setUpClass() {
@@ -45,7 +48,9 @@ public class CreateTaskScenarioTest {
         t2 = p1.createTask("Alternative", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
         
         clock = new Clock();
-        HandlerFactory controller = new HandlerFactory(manager, clock);
+        auth = new Auth();
+        acl = new Acl();
+        HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl);
         handler = controller.getCreateTaskHandler();
     }
 

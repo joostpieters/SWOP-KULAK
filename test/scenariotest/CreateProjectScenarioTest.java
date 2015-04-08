@@ -3,6 +3,8 @@ package scenariotest;
 
 import controller.CreateProjectHandler;
 import controller.HandlerFactory;
+import domain.Acl;
+import domain.Auth;
 import domain.Clock;
 import domain.DetailedProject;
 import domain.Project;
@@ -24,12 +26,16 @@ public class CreateProjectScenarioTest {
 	private static ProjectContainer manager;
 	private static CreateProjectHandler handler;
     private static Clock clock;
+    private static Auth auth;
+    private static Acl acl;
     
     @BeforeClass
     public static void setUpClass() {
         manager = new ProjectContainer();
         clock = new Clock();
-        HandlerFactory controller = new HandlerFactory(manager, clock);
+         auth = new Auth();
+        acl = new Acl();
+        HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl);
         handler = controller.getCreateProjectHandler();
     }
     

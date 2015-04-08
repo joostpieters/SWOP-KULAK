@@ -1,5 +1,7 @@
 package controller;
 
+import domain.Acl;
+import domain.Auth;
 import domain.Clock;
 import domain.ProjectContainer;
 
@@ -13,6 +15,8 @@ public class HandlerFactory {
     
     private final ProjectContainer manager;
     private final Clock clock;
+    private final Acl acl;
+    private final Auth auth;
     
     
     
@@ -21,8 +25,12 @@ public class HandlerFactory {
      * 
      * @param manager The projectContainer to use in this factory. 
      * @param clock The system clock to use in this factory
+     * @param auth The authorization manager to use
+     * @param acl The action control list to use
      */   
-    public HandlerFactory(ProjectContainer manager, Clock clock){
+    public HandlerFactory(ProjectContainer manager, Clock clock, Auth auth, Acl acl){
+        this.acl = acl;
+        this.auth = auth;
         this.manager = manager;
         this.clock = clock;
     }
@@ -38,21 +46,21 @@ public class HandlerFactory {
      * @return A new create project handler, initialized with this manager.
      */
     public CreateProjectHandler getCreateProjectHandler(){
-        return new CreateProjectHandler(manager);
+        return new CreateProjectHandler(manager, auth, acl);
     }
     
     /** 
      * @return A new create task handler, initialized with this manager.
      */
     public CreateTaskHandler getCreateTaskHandler(){
-        return new CreateTaskHandler(manager);
+        return new CreateTaskHandler(manager, auth, acl);
     }
     
     /** 
      * @return A new update task handler, initialized with this manager.
      */
     public UpdateTaskStatusHandler getUpdateTaskHandler(){
-        return new UpdateTaskStatusHandler(manager);
+        return new UpdateTaskStatusHandler(manager, auth, acl);
     }
     
      /** 

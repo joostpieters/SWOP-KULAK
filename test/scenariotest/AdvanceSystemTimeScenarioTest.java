@@ -2,6 +2,8 @@ package scenariotest;
 
 import controller.AdvanceSystemTimeHandler;
 import controller.HandlerFactory;
+import domain.Acl;
+import domain.Auth;
 import domain.Clock;
 import domain.Duration;
 import domain.Project;
@@ -26,6 +28,8 @@ public class AdvanceSystemTimeScenarioTest {
     private static Project p1;
     private static Task t1, t2;
     private static Clock clock;
+    private static Auth auth;
+    private static Acl acl;
 
     @BeforeClass
     public static void setUpClass() {
@@ -39,7 +43,9 @@ public class AdvanceSystemTimeScenarioTest {
         manager.createProject("Test 2", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         manager.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         clock = new Clock();
-        HandlerFactory controller = new HandlerFactory(manager, clock);
+        auth = new Auth();
+        acl = new Acl();
+        HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl);
         handler = controller.getAdvanceSystemTimeHandler();
     }
 

@@ -2,9 +2,13 @@ package init;
 
 import UI.swingGUI.MainFrame;
 import controller.HandlerFactory;
+import domain.Acl;
+import domain.Auth;
 import domain.Clock;
 import domain.ProjectContainer;
+import domain.User;
 import java.io.FileReader;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -45,8 +49,34 @@ public class Bootstrap {
         } else if (option == 2) {
             return;
         }
-
-        HandlerFactory factory = new HandlerFactory(manager, clock);
+        
+        Auth auth = new Auth();
+        
+        Auth.registerUser(new User("lol", "developer"));
+        String username;
+        while(true){
+            username = JOptionPane.showInputDialog("Enter your username");
+            
+            if(username == null || auth.login(username)){
+                break;
+            }else{
+                JOptionPane.showMessageDialog(null, "You entered the wrong credentials.", null, JOptionPane.WARNING_MESSAGE);
+            }
+                
+            
+        }
+        
+        
+        Acl acl = new Acl();
+        acl.addEntry("developer", Arrays.asList("UpdateTaskStatus"));
+        acl.addEntry("manager", Arrays.asList("CreateTask", "CreateProject"));
+        HandlerFactory factory = new HandlerFactory(manager, clock, auth, acl);
+        
+        // display uncaught exceptions
+        Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
+            JOptionPane.showMessageDialog(null, e.getMessage(), null, JOptionPane.WARNING_MESSAGE);
+        });
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             new MainFrame(factory).setVisible(true);
