@@ -40,17 +40,12 @@ public abstract class Status {
      * Checks whether the given task has been fulfilled.
      *
      * @param task The task to check if it is fulfilled.
-     * @return True if and only if this task is finished or if it has an
+     * @return True if and only if this task is finished or if it is failed and has an
      * alternative task and this alternative task is fulfilled.
      */
-    boolean isFulfilled(Task task) {
-        if (task.getAlternativeTask() != null) {
-            return task.getAlternativeTask().isFulfilled();
-        }
-        return false;
-    }
+    abstract boolean isFulfilled(Task task);
 
-    /**
+    /** TODO
      * Checks whether the given task was fulfilled before the given time span.
      *
      * @param task The task to check.
@@ -60,13 +55,7 @@ public abstract class Status {
      * alternative task of this task was fulfilled before the given time span.
      * 
      */
-    boolean isFulfilledBefore(Task task, Timespan timeSpan) throws IllegalStateException {
-        if (!task.isFulfilled() || !task.hasAlternativeTask()) {
-           return false;
-        }
-        
-        return task.getAlternativeTask().getStatus().isFulfilledBefore(task.getAlternativeTask(), timeSpan);
-    }
+    abstract boolean isFulfilledBefore(Task task, Timespan timeSpan);
 
     /**
      * Checks whether the given task can be fulfilled or already is fulfilled,

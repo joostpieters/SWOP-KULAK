@@ -45,13 +45,11 @@ public class Finished extends Status {
      * Checks whether this task was fulfilled before the given time span.
      *
      * @param timeSpan The time span to check.
-     * @return True if this task is finished and this task ends before the given
-     * time span. Otherwise the result is equal to whether or not the
-     * alternative task of this task was fulfilled before the given time span.
-     * @throws IllegalStateException If this task is not fulfilled.
+     * @return True if and only if this task ended before the given timespan.
+     * @see Task#endsBefore
      */
     @Override
-    boolean isFulfilledBefore(Task task, Timespan timeSpan) throws IllegalStateException {
+    boolean isFulfilledBefore(Task task, Timespan timeSpan) {
         return task.endsBefore(timeSpan);
     }
 

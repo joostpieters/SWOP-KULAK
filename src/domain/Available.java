@@ -16,7 +16,7 @@ public class Available extends Status {
     }
 
     @Override
-    public void setAlternativeTask(Task task, Task alternativeTask, Project project) throws IllegalStateException, IllegalArgumentException {
+    public void setAlternativeTask(Task task, Task alternativeTask, Project project) throws IllegalStateException {
         throw new IllegalStateException("Can't set an alternative task for this "
                 + "task because the status of this task is not equal to FAILED.");
     }
@@ -80,7 +80,7 @@ public class Available extends Status {
      * @throws IllegalStateException If this task is not fulfilled.
      */
     @Override
-    boolean isFulfilledBefore(Task task, Timespan timeSpan) throws IllegalStateException {
+    boolean isFulfilledBefore(Task task, Timespan timeSpan) {
         return false;
     }
     

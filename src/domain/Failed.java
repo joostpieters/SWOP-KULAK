@@ -22,15 +22,10 @@ public class Failed extends Status {
                     + "this task already has an alternative task.");
         }
 
-        if (!task.canHaveAsAlternativeTask(alternativeTask)) {
+        if (!task.canHaveAsAlternativeTask(alternativeTask, project)) {
             throw new IllegalArgumentException(
                     "This task can't have the given task as its alternative task.");
         }
-
-        if (!(project.hasTask(task.getId()) && project.hasTask(alternativeTask.getId()))) {
-            throw new IllegalArgumentException("This task and/or the given alternative task don't belong to the given project");
-        }
-
         task.setAlternativeTaskRaw(alternativeTask);
     }
 
@@ -41,6 +36,37 @@ public class Failed extends Status {
      */
     @Override
     void update(Task task) {
+    }
+    
+    /**
+     * Checks whether the given task has been fulfilled.
+     *
+     * @param task The task to check if it is fulfilled.
+     * @return True if and only if the given task has an alternative task and the alternative task is fulfilled.
+     */
+    boolean isFulfilled(Task task) {
+        if (task.getAlternativeTask() != null) {
+            return task.getAlternativeTask().isFulfilled();
+        }
+        return false;
+    }
+    
+    /**
+     * Checks whether the given task was fulfilled before the given time span.
+     *
+     * @param task The task to check.
+     * @param timeSpan The time span to check.
+     * @return True if this task is finished and this task ends before the given
+     * time span. Otherwise the result is equal to whether or not the
+     * alternative task of this task was fulfilled before the given time span.
+     */
+    @Override
+    boolean isFulfilledBefore(Task task, Timespan timeSpan) {
+        if (!task.isFulfilled() || !task.hasAlternativeTask()) {
+           return false;
+        }
+        
+        return task.getAlternativeTask().getStatus().isFulfilledBefore(task.getAlternativeTask(), timeSpan); // TODO misschien isFulfilledBefore aanmaken in Task en delegeren naar Status.isFulfilledBefore
     }
     
     /**

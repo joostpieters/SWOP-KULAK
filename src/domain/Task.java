@@ -149,9 +149,7 @@ public class Task implements DetailedTask {
     void setTimeSpan(Timespan timeSpan) throws IllegalArgumentException {
         this.timeSpan = timeSpan;
     }
-
     
-
     /**
      * @return The acceptable deviation of this task expressed as an integer
      * between 0 and 100.
@@ -160,7 +158,7 @@ public class Task implements DetailedTask {
     public int getAcceptableDeviation() {
         return this.acceptableDeviation;
     }
-
+    
     /**
      * Sets this task his acceptable deviation to the given acceptable
      * deviation.
@@ -176,7 +174,7 @@ public class Task implements DetailedTask {
         }
         this.acceptableDeviation = accDev;
     }
-
+    
     /**
      * Checks whether this task can have the given acceptable deviation as its
      * acceptable deviation.
@@ -230,12 +228,15 @@ public class Task implements DetailedTask {
      * alternative task.
      *
      * @param altTask The alternative task to check.
-     * @return False if the given alternative task is equal to null. False if
-     * the given alternative task is equal to this task. False if the given
-     * alternative task depends on this task. True otherwise.
+     * @return False if the given alternative task is equal to null.
+     *         False if the given alternative task is equal to this task.
+     *         False if the given alternative task depends on this task.
+     *         False if this task doesn't belong to the given project.
+     *         False if the given alternative task doesn't belong to the given project.
+     *         True otherwise.
      * @see dependsOn
      */
-    public boolean canHaveAsAlternativeTask(Task altTask) {
+    public boolean canHaveAsAlternativeTask(Task altTask, Project project) {
         if (altTask == null) {
             return false;
         }
@@ -245,6 +246,10 @@ public class Task implements DetailedTask {
         if (altTask.dependsOn(this)) {
             return false;
         }
+        if(!project.hasTask(getId()))
+        	return false;
+        if(!project.hasTask(altTask.getId()))
+        	return false;
         return true;
     }
 
@@ -443,9 +448,7 @@ public class Task implements DetailedTask {
         }
         return getTimeSpan().endsBefore(timeSpan);
     }
-
-   
-
+    
     /**
      * Checks whether this task has a time span.
      *
