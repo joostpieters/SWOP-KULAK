@@ -95,6 +95,14 @@ public class Duration implements Comparable<Duration> {
     public int getMinutes() {
         return (int) minutes % 60;
     }
+    
+    /**
+     * @return The work week configuration of this duration.
+     */
+    public WorkWeekConfiguration getWorkWeekConfiguration()
+    {
+    	return this.configuration;
+    }
 
     /**
      * @return The total number of minutes in this duration.

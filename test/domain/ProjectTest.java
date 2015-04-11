@@ -365,7 +365,7 @@ public class ProjectTest {
     	Task t = p1.createTask(taskdescr, new Duration(create, due), accdev, t1.getId(), prereqs);
     	assertEquals(1, p1.getUnacceptablyOverdueTasks(clock).size());
     	assertTrue(p1.getUnacceptablyOverdueTasks(clock).containsKey(t));
-    	assertEquals((double) new Duration(create, end).toMinutes() / (DAYDIF * Duration.getMinutesOfWorkDay()), 
+    	assertEquals((double) new Duration(create, end).toMinutes() / (DAYDIF * new WorkWeekConfiguration().getMinutesOfWorkDay()), 
     			(double) p1.getUnacceptablyOverdueTasks(clock).get(t), EPS);
     }
     

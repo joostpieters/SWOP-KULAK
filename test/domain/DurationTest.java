@@ -212,29 +212,6 @@ public class DurationTest {
         assertEquals(0, instance.percentageOver(instance2),0);
         assertEquals(1, instance2.percentageOver(instance),0);
     }
-
-    /**
-     * Test nextValidWorkTime method in case of a valid work time.
-     */
-    @Test
-    public void testNextValidWorkTimeValid() {
-        LocalDateTime worktime = LocalDateTime.of(2015, 3, 10, 10, 0);
-        assertTrue(Duration.isValidWorkTime(worktime));
-        assertEquals(worktime, Duration.nextValidWorkTime(worktime));
-    }
-
-    /**
-     * Test nextValidWorkTime method in case of a time before the work day
-     * began.
-     */
-    @Test
-    public void testNextValidWorkTimeTooEarly() {
-        LocalDateTime tooEarly = LocalDateTime.of(2015, 3, 10, 5, 0);
-        assertTrue(Duration.isValidWorkDay(tooEarly));
-        assertTrue(tooEarly.toLocalTime().isBefore(Duration.BEGINWORKDAY));
-        assertEquals(LocalDateTime.of(tooEarly.toLocalDate(), Duration.BEGINWORKDAY),
-                Duration.nextValidWorkTime(tooEarly));
-    }
     
     /**
      * Test of equals method, of class Duration.
@@ -251,63 +228,4 @@ public class DurationTest {
         assertFalse(instance.equals("Not a duration"));
         
     }
-
-    /**
-     * Test nextValidWorkTime method in case of a time after the work day ended.
-     */
-    @Test
-    public void testNextValidWorkTimeTooLate() {
-        LocalDateTime tooLate = LocalDateTime.of(2015, 3, 10, 22, 0);
-        assertTrue(Duration.isValidWorkDay(tooLate));
-        assertTrue(tooLate.getDayOfWeek().getValue() != Duration.ENDWORKWEEK);
-        assertTrue(tooLate.toLocalTime().isAfter(Duration.ENDWORKDAY));
-        assertEquals(LocalDateTime.of(tooLate.toLocalDate().plusDays(1), Duration.BEGINWORKDAY),
-                Duration.nextValidWorkTime(tooLate));
-    }
-
-    /**
-     * Test nextValidWorkTime method in case of a time during lunch break.
-     */
-    @Test
-    public void testNextValidWorkTimeLunch() {
-        LocalDateTime lunch = LocalDateTime.of(2015, 3, 10, 12, 30);
-        assertTrue(Duration.isValidWorkDay(lunch));
-        assertTrue(lunch.toLocalTime().isAfter(Duration.BEGINLUNCH));
-        assertTrue(lunch.toLocalTime().isBefore(Duration.ENDLUNCH));
-        assertEquals(LocalDateTime.of(lunch.toLocalDate(), Duration.ENDLUNCH),
-                Duration.nextValidWorkTime(lunch));
-    }
-
-    /**
-     * Test nextValidWorkTime method in case of a not working time.
-     */
-    @Test
-    public void testNextValidWorkTimeWeekend() {
-        LocalDateTime saturdayMorning = LocalDateTime.of(2015, 3, 7, 4, 0);
-        assertFalse(Duration.isValidWorkDay(saturdayMorning));
-        assertFalse(Duration.isValidWorkDay(saturdayMorning.plusDays(1)));
-        assertTrue(Duration.isValidWorkDay(saturdayMorning.plusDays(2)));
-        assertEquals(LocalDateTime.of(saturdayMorning.toLocalDate().plusDays(2), Duration.BEGINWORKDAY),
-                Duration.nextValidWorkTime(saturdayMorning));
-
-        LocalDateTime saturdayEvening = LocalDateTime.of(2015, 3, 7, 1, 0);
-        assertFalse(Duration.isValidWorkDay(saturdayEvening));
-        assertFalse(Duration.isValidWorkDay(saturdayEvening.plusDays(1)));
-        assertTrue(Duration.isValidWorkDay(saturdayEvening.plusDays(2)));
-        assertEquals(LocalDateTime.of(saturdayEvening.toLocalDate().plusDays(2), Duration.BEGINWORKDAY),
-                Duration.nextValidWorkTime(saturdayEvening));
-
-        LocalDateTime sundayMorning = LocalDateTime.of(2015, 3, 8, 10, 30);
-        assertFalse(Duration.isValidWorkDay(sundayMorning));
-        assertTrue(Duration.isValidWorkDay(sundayMorning.plusDays(1)));
-        assertEquals(LocalDateTime.of(sundayMorning.toLocalDate().plusDays(1), Duration.BEGINWORKDAY),
-                Duration.nextValidWorkTime(sundayMorning));
-
-        LocalDateTime sundayEvening = LocalDateTime.of(2015, 3, 8, 22, 45);
-        assertFalse(Duration.isValidWorkDay(sundayEvening));
-        assertTrue(Duration.isValidWorkDay(sundayEvening.plusDays(1)));
-        assertEquals(LocalDateTime.of(sundayEvening.toLocalDate().plusDays(1), Duration.BEGINWORKDAY),
-                Duration.nextValidWorkTime(sundayEvening));
-    }
-
 }
