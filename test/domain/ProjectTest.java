@@ -1,13 +1,17 @@
 package domain;
 
 import exception.ObjectNotFoundException;
+
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse; 
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -41,6 +45,8 @@ public class ProjectTest {
 	Task t1, t2, t3, tFin;
     private Clock clock;
     
+    private WorkWeekConfiguration wwc_default;
+    
     @Before
     public void setUp() {
     	assertTrue(!create.isAfter(start));
@@ -48,6 +54,8 @@ public class ProjectTest {
     	
     	pm = new ProjectContainer();
     	clock = new Clock(create);
+    	
+    	wwc_default = new WorkWeekConfiguration(1, 5, LocalTime.of(9, 0), LocalTime.of(18, 0), LocalTime.of(12, 0), LocalTime.of(13, 0));
     	
     	p0 = pm.createProject(name, descr, create, due);
     	
@@ -365,7 +373,7 @@ public class ProjectTest {
     	Task t = p1.createTask(taskdescr, new Duration(create, due), accdev, t1.getId(), prereqs);
     	assertEquals(1, p1.getUnacceptablyOverdueTasks(clock).size());
     	assertTrue(p1.getUnacceptablyOverdueTasks(clock).containsKey(t));
-    	assertEquals((double) new Duration(create, end).toMinutes() / (DAYDIF * new WorkWeekConfiguration().getMinutesOfWorkDay()), 
+    	assertEquals((double) new Duration(create, end).toMinutes() / (DAYDIF * wwc_default.getMinutesOfWorkDay()), 
     			(double) p1.getUnacceptablyOverdueTasks(clock).get(t), EPS);
     }
     
@@ -380,7 +388,7 @@ public class ProjectTest {
     	p1.updateTask(t1.getId(), start, due, new Finished());
     	assertEquals(1, p1.getUnacceptablyOverdueTasks(clock).size());
     	assertTrue(p1.getUnacceptablyOverdueTasks(clock).containsKey(t));
-    	assertEquals((double) estdur.toMinutes() / (DAYDIF * Duration.getMinutesOfWorkDay()), (double) p1.getUnacceptablyOverdueTasks(clock).get(t), EPS);
+    	assertEquals((double) estdur.toMinutes() / (DAYDIF * wwc_default.getMinutesOfWorkDay()), (double) p1.getUnacceptablyOverdueTasks(clock).get(t), EPS);
     } 
     
     /**
@@ -496,7 +504,7 @@ public class ProjectTest {
     	assertTrue(p1.isOnTime(clock));
     	assertTrue(p2.isOnTime(clock));
     	
-    	p1.createTask(taskdescr, new Duration(ProjectTest.DAYDIF*Duration.getMinutesOfWorkDay()).add(10), accdev, altFor, prereqs);
+    	p1.createTask(taskdescr, new Duration(ProjectTest.DAYDIF*wwc_default.getMinutesOfWorkDay()).add(10), accdev, altFor, prereqs);
     	assertFalse(p1.isOnTime(clock));
     	
     	clock.advanceTime(due);
@@ -540,7 +548,7 @@ public class ProjectTest {
     	
     	p2.updateTask(t2.getId(), start, end, new Failed());
     	assertTrue(p2.isOnTime(clock));
-    	p2.createTask(taskdescr, new Duration(ProjectTest.DAYDIF*Duration.getMinutesOfWorkDay()), accdev, t2.getId(), prereqs);
+    	p2.createTask(taskdescr, new Duration(ProjectTest.DAYDIF*wwc_default.getMinutesOfWorkDay()), accdev, t2.getId(), prereqs);
     	assertFalse(p2.isOnTime(clock));
     }
     
@@ -551,7 +559,7 @@ public class ProjectTest {
     public void testIsOnTimeUnFinishedPrereqs() {
     	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()));
     	assertTrue(p2.isOnTime(clock));
-    	p2.createTask(taskdescr, new Duration(ProjectTest.DAYDIF*Duration.getMinutesOfWorkDay()), accdev, altFor, Arrays.asList(t.getId()));
+    	p2.createTask(taskdescr, new Duration(ProjectTest.DAYDIF*wwc_default.getMinutesOfWorkDay()), accdev, altFor, Arrays.asList(t.getId()));
     	assertFalse(p2.isOnTime(clock));
     }
     
