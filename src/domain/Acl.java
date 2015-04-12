@@ -77,6 +77,8 @@ public class Acl {
      * @param permissionList The permissions to ascociate with the given role
      */
     public void addEntry(String role, List<String> permissionList){
+        if(permissionList == null)
+            permissionList = new ArrayList<>();
         permissions.put(role, permissionList);
     }
    
