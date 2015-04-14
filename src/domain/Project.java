@@ -275,7 +275,8 @@ public class Project implements DetailedProject {
 			for(Integer tId : prereqs) {
 				taskList.add(getTask(tId));
 			}
-			t = new Task(descr, estdur, accdev, taskList);
+			//TODO: lijst/map van resources meegeven
+			t = new Task(descr, estdur, accdev, taskList, null);
 		}
 		
 		addTask(t);

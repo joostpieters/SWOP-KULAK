@@ -2,7 +2,9 @@ package domain;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class represents a task
@@ -17,16 +19,15 @@ public class Task implements DetailedTask {
     private String description;
     private int acceptableDeviation;
     private Timespan timeSpan;
-    private Duration estimatedDuration;
+    private final Duration estimatedDuration;
     private Task alternativeTask;
     private List<Task> prerequisiteTasks;
     private Status status;
+    private final Map<ResourceType, Integer> requiredResources;
 
-    /**
-     * **************************************
-     * Constructors	*
-     ***************************************
-     */
+    /****************************************
+     * Constructors							*
+     ****************************************/
     /**
      * Initializes this task based on the given description, estimated duration,
      * acceptable deviation and prerequisite tasks.
@@ -37,7 +38,7 @@ public class Task implements DetailedTask {
      * integer between 0 and 100.
      * @param prereq The list of prerequisite tasks for this task.
      */
-    Task(String description, Duration duration, int accDev, List<Task> prereq) {
+    Task(String description, Duration duration, int accDev, List<Task> prereq, Map<ResourceType, Integer> resources) {
         this.id = generateId();
         setDescription(description);
         this.estimatedDuration = duration;
@@ -47,6 +48,7 @@ public class Task implements DetailedTask {
         } else {
             setPrerequisiteTasks(prereq);
         }
+        this.requiredResources = resources;
         
         Status initStatus = new Available();
         setStatus(initStatus);
@@ -63,7 +65,7 @@ public class Task implements DetailedTask {
      * integer between 0 and 100.
      */
     Task(String description, Duration duration, int accDev) {
-        this(description, duration, accDev, null);
+        this(description, duration, accDev, null, new HashMap<ResourceType, Integer>());
     }
 
     /**
@@ -203,10 +205,6 @@ public class Task implements DetailedTask {
      * task belong to.
      * @throws IllegalStateException
      * @see Status#setAlternativeTask(domain.Task, domain.Project)
-     * @throws IllegalArgumentException
-     * @see Status#setAlternativeTask(domain.Task, domain.Project)
-     * @throws IllegalArgumentException
-     * @see Status#setAlternativeTask(domain.Task, domain.Project)
      * @see canHaveAsAlternativeTask
      */
     public void setAlternativeTask(Task alternativeTask, Project project) throws IllegalStateException, IllegalArgumentException {
@@ -342,6 +340,13 @@ public class Task implements DetailedTask {
     }
 
     /**
+	 * @return the requiredResources
+	 */
+	public Map<ResourceType, Integer> getRequiredResources() {
+		return requiredResources;
+	}
+
+	/**
      * Calculates the maximum duration of this task by which this task will
      * still be finished on time.
      *
