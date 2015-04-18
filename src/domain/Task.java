@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * This class represents a task
@@ -37,6 +38,7 @@ public class Task implements DetailedTask {
      * @param accDev The acceptable deviation of this task expressed as an
      * integer between 0 and 100.
      * @param prereq The list of prerequisite tasks for this task.
+     * @param resources The resources this task requires to be performed
      */
     Task(String description, Duration duration, int accDev, List<Task> prereq, Map<ResourceType, Integer> resources) {
         this.id = generateId();
@@ -343,7 +345,7 @@ public class Task implements DetailedTask {
 	 * @return the requiredResources
 	 */
 	public Map<ResourceType, Integer> getRequiredResources() {
-		return requiredResources;
+		return new TreeMap<>(requiredResources);
 	}
 
 	/**
@@ -572,6 +574,13 @@ public class Task implements DetailedTask {
     public LocalDateTime getEstimatedEndTime(Clock clock)
     {
         return estimatedWorkTimeNeeded().getEndTimeFrom(clock.getTime());
+    }
+    
+    /**
+     * Move this task to the executing state
+     */
+    public void execute(){
+        getStatus().execute(this);
     }
 
 }

@@ -18,8 +18,7 @@ public abstract class Handler {
         this.auth = auth;
        this.acl = acl;
         checkLogin();
-        checkPermission();
-        
+        checkPermission();        
     }
     
     

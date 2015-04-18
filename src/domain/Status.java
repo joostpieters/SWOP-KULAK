@@ -123,6 +123,17 @@ public abstract class Status {
     }
     
     /**
+     * Moves the given task to the executing state
+     * 
+     * @param task The task to adjust
+     * @throws IllegalStateException The task can't move to executing from this
+     * state.
+     */
+    public void execute(Task task) throws IllegalStateException {
+        throw new IllegalStateException("This task can't execute, because it's not available.");
+    }
+    
+    /**
      * Check whether the given object is the same status as this status
      * 
      * @param o The object to check

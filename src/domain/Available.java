@@ -1,5 +1,7 @@
 package domain;
 
+import java.util.Map.Entry;
+
 /**
  * This class represents an available status of a task.
  *
@@ -23,7 +25,8 @@ public class Available extends Status {
 
     /**
      * Updates the status of this task to UNAVAILABLE if not all the
-     * prerequisite tasks are fulfilled.
+     * prerequisite tasks are fulfilled. Or if not  all resources are available
+     * at current system time //TODO
      *
      */
     @Override
@@ -34,6 +37,12 @@ public class Available extends Status {
                 unavailable = true;
             }
         }
+        
+        for (Entry<ResourceType, Integer>  t : task.getRequiredResources().entrySet()) {
+            //TODO
+           t.getKey().getAvailability();
+        }
+        
 
         if (unavailable) {
             task.setStatus(new Unavailable());
@@ -120,5 +129,15 @@ public class Available extends Status {
         else
             task.setTimeSpan(timespan);
         task.setStatus(new Finished());
+    }
+    
+     /**
+     * Moves the given task to the executing state
+     * 
+     * @param task The task to adjust
+     */
+    @Override
+    public void execute(Task task){
+        task.setStatus(new Executing());
     }
 }

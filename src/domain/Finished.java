@@ -12,7 +12,6 @@ public class Finished extends Status {
      * 
      */
     public Finished() {
-       
     }
 
     @Override
@@ -38,7 +37,6 @@ public class Finished extends Status {
     @Override
     public boolean isFulfilled(Task task) {
         return true;
-
     }
 
     /**
@@ -70,6 +68,5 @@ public class Finished extends Status {
     @Override
     Duration estimatedWorkTimeNeeded(Task task) {
         return Duration.ZERO;
-    }
-   
+    }   
 }
