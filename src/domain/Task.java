@@ -1,5 +1,6 @@
 package domain;
 
+import exception.ConflictException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ public class Task implements DetailedTask {
     private Task alternativeTask;
     private List<Task> prerequisiteTasks;
     private Status status;
+    private LocalDateTime plannedStartTime;
     private final Map<ResourceType, Integer> requiredResources;
 
     /****************************************
@@ -582,5 +584,26 @@ public class Task implements DetailedTask {
     public void execute(){
         getStatus().execute(this);
     }
-
+    
+    /**
+     * Check whether this task is planned
+     * 
+     * @return True if and only if this task has a planned start time.
+     */
+    public boolean isPlanned(){
+        return plannedStartTime != null;
+    }
+    
+    /**
+     * Plan this task at the given start time
+     * 
+     * @param startTime The time this task is planned to start
+     * @param developers The developers to assign to this task
+     * @param resources The resources to assign to this task // TODO unificeren met devs??
+     * @throws exception.ConflictException The task's reservations 
+     * conflict with another task
+     */
+    public void plan(LocalDateTime startTime, List<User> developers, List<Resource> resources) throws ConflictException{
+        // TODO resource checks
+    }
 }
