@@ -69,4 +69,18 @@ public class HandlerFactory {
     public AdvanceSystemTimeHandler getAdvanceSystemTimeHandler(){
         return new AdvanceSystemTimeHandler(manager, clock);
     }
+    
+    /** 
+     * @return A new plan task handler, initialized with this manager.
+     */
+    public PlanTaskHandler getPlanTaskHandler(){
+        return new PlanTaskHandler(manager, auth, acl);
+    }
+    
+    /** 
+     * @return A new run simulation handler, initialized with this manager.
+     */
+    public RunSimulationHandler getSimulationHandler(){
+        return new RunSimulationHandler(manager, auth, acl);
+    }
 }

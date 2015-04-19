@@ -52,7 +52,7 @@ public class Bootstrap {
         
         Auth auth = new Auth();
         
-        Auth.registerUser(new User("lol", "developer"));
+        Auth.registerUser(new User("lol", "manager"));
         String username;
         while(true){
             username = JOptionPane.showInputDialog("Enter your username");
@@ -69,7 +69,7 @@ public class Bootstrap {
         
         Acl acl = new Acl();
         acl.addEntry("developer", Arrays.asList("UpdateTaskStatus"));
-        acl.addEntry("manager", Arrays.asList("CreateTask", "CreateProject"));
+        acl.addEntry("manager", Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation"));
         HandlerFactory factory = new HandlerFactory(manager, clock, auth, acl);
         
         // display uncaught exceptions

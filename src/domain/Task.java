@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * This class represents a task
@@ -347,7 +346,7 @@ public class Task implements DetailedTask {
 	 * @return the requiredResources
 	 */
 	public Map<ResourceType, Integer> getRequiredResources() {
-		return new TreeMap<>(requiredResources);
+            return requiredResources;
 	}
 
 	/**

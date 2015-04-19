@@ -40,9 +40,11 @@ public class MainFrame extends javax.swing.JFrame {
         createProjectButton = new javax.swing.JButton();
         listAllProjectsButton = new javax.swing.JButton();
         createNewTaskButton = new javax.swing.JButton();
-        modifySystemTimeButton = new javax.swing.JButton();
+        planTaskButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         updateTaskButton = new javax.swing.JButton();
+        modifySystemTimeButton1 = new javax.swing.JButton();
+        simulationButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Taskman - A Project-Oriented Task Manager");
@@ -71,12 +73,12 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        modifySystemTimeButton.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        modifySystemTimeButton.setText("Modify System Time");
-        modifySystemTimeButton.setToolTipText("");
-        modifySystemTimeButton.addActionListener(new java.awt.event.ActionListener() {
+        planTaskButton.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        planTaskButton.setText("Plan Task");
+        planTaskButton.setToolTipText("");
+        planTaskButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                modifySystemTime(evt);
+                planTask(evt);
             }
         });
 
@@ -93,6 +95,24 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
+        modifySystemTimeButton1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        modifySystemTimeButton1.setText("Modify System Time");
+        modifySystemTimeButton1.setToolTipText("");
+        modifySystemTimeButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modifySystemTime(evt);
+            }
+        });
+
+        simulationButton.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        simulationButton.setText("Run Simulation");
+        simulationButton.setToolTipText("");
+        simulationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                runSimulation(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -101,27 +121,29 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap(48, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(listAllProjectsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(createNewTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(createNewTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(modifySystemTimeButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(67, 67, 67)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(updateTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(createProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(createProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(planTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(49, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
+                .addGap(187, 187, 187)
+                .addComponent(simulationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(modifySystemTimeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabel1)
+                .addGap(231, 231, 231))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(27, 27, 27)
+                .addGap(30, 30, 30)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addGap(52, 52, 52)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(listAllProjectsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(createProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -129,9 +151,13 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(createNewTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(updateTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(50, 50, 50)
-                .addComponent(modifySystemTimeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(92, Short.MAX_VALUE))
+                .addGap(52, 52, 52)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(planTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(modifySystemTimeButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                .addComponent(simulationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -165,8 +191,17 @@ public class MainFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_createNewTask
     
+   
     /**
-     * Start the advance system time use case
+     * Start the update task use case
+     * @param evt 
+     */
+    private void updateTask(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateTask
+        new UpdateTasksStatusFrame(controller.getUpdateTaskHandler()).setVisible(true);
+    }//GEN-LAST:event_updateTask
+    
+    /**
+     * Start the modify system time use case
      * @param evt 
      */
     private void modifySystemTime(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifySystemTime
@@ -184,12 +219,17 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_modifySystemTime
     
     /**
-     * Start the update task use case
+     * Start the plan task use case
+     * 
      * @param evt 
      */
-    private void updateTask(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateTask
-        new UpdateTasksStatusFrame(controller.getUpdateTaskHandler()).setVisible(true);
-    }//GEN-LAST:event_updateTask
+    private void planTask(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_planTask
+        (new PlanTaskFrame(controller.getPlanTaskHandler())).setVisible(true);
+    }//GEN-LAST:event_planTask
+
+    private void runSimulation(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runSimulation
+        (new RunSimulationFrame(controller.getSimulationHandler())).setVisible(true);
+    }//GEN-LAST:event_runSimulation
 
     
 
@@ -198,7 +238,9 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton createProjectButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JButton listAllProjectsButton;
-    private javax.swing.JButton modifySystemTimeButton;
+    private javax.swing.JButton modifySystemTimeButton1;
+    private javax.swing.JButton planTaskButton;
+    private javax.swing.JButton simulationButton;
     private javax.swing.JButton updateTaskButton;
     // End of variables declaration//GEN-END:variables
 }

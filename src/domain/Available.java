@@ -1,7 +1,5 @@
 package domain;
 
-import java.util.Map.Entry;
-
 /**
  * This class represents an available status of a task.
  *
@@ -38,10 +36,10 @@ public class Available extends Status {
             }
         }
         
-        for (Entry<ResourceType, Integer>  t : task.getRequiredResources().entrySet()) {
-            //TODO
-           t.getKey().getAvailability();
-        }
+//        for (Entry<ResourceType, Integer>  t : task.getRequiredResources().entrySet()) {
+//            //TODO
+//           t.getKey().getAvailability();
+//        }
         
 
         if (unavailable) {
