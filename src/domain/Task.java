@@ -613,16 +613,8 @@ public class Task implements DetailedTask {
      * another task
      */
     public void plan(LocalDateTime startTime, List<Resource> resources) throws ConflictException {
-
-        if (resources != null) {
-            Timespan timespan = new Timespan(startTime, estimatedDuration);
-            for (Resource resource : resources) {
-                resource.makeReservation(this, timespan);
-                
-            } 
-            
-        }
-
+        PlanCommand planCommand = new PlanCommand(timeSpan, resources, this);
+        planCommand.execute();
         plannedStartTime = startTime;
     }
 }

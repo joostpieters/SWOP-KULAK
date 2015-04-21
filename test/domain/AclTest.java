@@ -37,11 +37,11 @@ public class AclTest {
     public void setUp() {
         acl = new Acl();
         
-        acl.addEntry("admin", new ArrayList<>(Arrays.asList("edit", "remove", "view")));
-        acl.addEntry("moderator", new ArrayList<>(Arrays.asList("edit", "view")));
+        acl.addEntry("manager", new ArrayList<>(Arrays.asList("edit", "remove", "view")));
+        acl.addEntry("developer", new ArrayList<>(Arrays.asList("edit", "view")));
         
-        user1 = new User("John", "admin");
-        user2 = new User("Fred", "moderator");
+        user1 = new Manager("John");
+        user2 = new Developer("Fred");
         
     }
     
@@ -87,7 +87,7 @@ public class AclTest {
     @Test
     public void testGetPermissions_String() {
         
-        String role = "admin";
+        String role = "manager";
         
         List<String> result = acl.getPermissions(role);
         

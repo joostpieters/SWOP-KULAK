@@ -1,7 +1,6 @@
 package domain;
 
 import exception.ConflictException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -118,17 +117,31 @@ public class ResourceType {
         return result;
     }
     
-    //TODO
+    /**
+     * Check whether the given list of resourcetypes is mutually compatible
+     * 
+     * @param resources The resource to check
+     * @return True if and only if all the given resourctypes don't mutually 
+     * conflict and for each resourcetype, there requirements are included in
+     * the given list.
+     */
     public static boolean isValidCombination(Map<ResourceType, Integer> resources) {
         for (ResourceType type : resources.keySet()) {
             if(!type.canHaveAsCombination(resources))
                 return false;
         }
-        
         return true;
     }
     
-    //TODO
+    /**
+     * Checks whether the given list of resourcetypes is compatible with this 
+     * resourcetype
+     * 
+     * @param resources The resourcetype to check, including this resourcetype
+     * @return True if and only if this resource does not conflict with any of
+     * the given resourcetypes and that all the resourcetypes that this resourcetype
+     * requires are included in the given list.
+     */
     public boolean canHaveAsCombination(Map<ResourceType, Integer> resources) {
         for (ResourceType resource : resources.keySet()) {
             if (conflicts.contains(resource)) {

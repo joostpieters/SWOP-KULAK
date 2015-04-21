@@ -32,8 +32,8 @@ public class AuthTest {
     @Before
     public void setUp() {
         auth = new Auth();
-        user1 = new User("John", "admin");
-        user2 = new User("Fred", "moderator");
+        user1 = new Manager("John");
+        user2 = new Developer("Fred");
         Auth.registerUser(user1);
         Auth.registerUser(user2);
     }
