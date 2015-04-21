@@ -14,7 +14,7 @@ public class PlanCommand {
     private final List<Resource> resources;
     private final Timespan timespan;
     private List<ReservationCommand> reservations;
-    private Object oldReservations;
+    private List<Reservation> oldReservations;
 
     public PlanCommand(Timespan timespan, List<Resource> resources, Task task) {
         this.task = task;
@@ -70,8 +70,10 @@ public class PlanCommand {
     }
     
     private void revertMove() {
+        int i =0;
         for(Resource res : resources){
-            resource.makeReservation(oldReservations);
+            res.makeReservation(oldReservations.get(i));
+            i++;
         }
     }
 }
