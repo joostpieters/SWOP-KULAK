@@ -1,6 +1,8 @@
 package domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -16,6 +18,7 @@ public class Clock {
     public static final LocalDateTime INCEPTION = LocalDateTime.of(2000, 1, 1, 0, 0);
     
     private LocalDateTime time;
+    private final List<ClockObserver> observers;
     
     /**
      * Initializes this clock with the given time.
@@ -25,6 +28,7 @@ public class Clock {
      */
     public Clock(LocalDateTime time) {
         setTime(time);
+        observers = new ArrayList<>();
     }
     
     /**
@@ -56,13 +60,14 @@ public class Clock {
     }
     
     /**
-     * Set the time of this clock.
+     * Set the time of this clock and report the change to all observers.
      * 
      * @param 	time
      * 			The new time for this clock.
      */
     private void setTime(LocalDateTime time) {
     	this.time = time;
+        report();
     }
     
     /**
@@ -102,6 +107,34 @@ public class Clock {
     public boolean isBefore(LocalDateTime time){
         return getTime().isBefore(time);
     }
+    
+    /**
+     * Atttach the given observer to the list of observers of this clock
+     * 
+     * @param observer The observer to attach
+     */
+    public void attach(ClockObserver observer){
+        observers.add(observer);
+    }
+    
+    /**
+     * Detach the given observer from the list of observers
+     * 
+     * @param observer The observer to detach
+     */
+    public void detach(ClockObserver observer){
+        observers.remove(observer);
+    }
+    
+    /**
+     * Report a change in this clock to all its attached observers
+     */
+    private void report(){
+        for (ClockObserver observer : observers) {
+            observer.update(time);
+        }
+    }
+    
     
     /**
      * Check wether the given object is equal to this clock.
