@@ -8,7 +8,7 @@ import java.util.List;
  * @author Mathias, Pieter-Jan, Frederic
  */
 public class Planning {
-    public Planning(Timespan timespan, List<User> devs, List<Resource> resources) {
+    public Planning(Timespan timespan, List<Resource> resources) {
         for(Resource resource : resources){
             resource.makeReservation(null, timespan);        
             
