@@ -92,6 +92,18 @@ public final class Timespan {
     }
     
     /**
+     * Check whether this timespan contains the given local date time.
+     * 
+     * @param 	localDT
+     *          The local date time to check
+     * @return 	True if and only if the start time of this time span falls before the given local date time
+     *          and the end time of this time span falls after the given local date time.
+     */
+    public boolean overlapsWith(LocalDateTime localDT){
+    	return localDT.compareTo(getStartTime()) >= 0 && localDT.compareTo(getEndTime()) <= 0;
+    }
+    
+    /**
      * Returns the duration by which the duration of this time span
      * exceeds the given duration.
      * 
