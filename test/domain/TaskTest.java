@@ -65,7 +65,7 @@ public class TaskTest {
     	int estDur = 10;
     	int accDev = 30;
     	ArrayList<Task> prereq = new ArrayList<Task>(Arrays.asList(t3));
-    	Task task0 = new Task(description, new Duration(estDur), accDev,  prereq);
+    	Task task0 = new Task(description, new Duration(estDur), accDev,  prereq, null);
     	assertEquals(description, task0.getDescription());
     	assertEquals(estDur, task0.getEstimatedDuration().toMinutes());
     	assertEquals(accDev, task0.getAcceptableDeviation());
@@ -477,7 +477,7 @@ public class TaskTest {
     	assertFalse(t6.canBeFulfilled());
     	assertTrue(t7.canBeFulfilled());
     	assertTrue(t8.canBeFulfilled());
-        assertFalse(new Task("description", new Duration(10), 30, Arrays.asList(t6)).canBeFulfilled());
+        assertFalse(new Task("description", new Duration(10), 30, Arrays.asList(t6), null).canBeFulfilled());
     }
     /**
      * Test of canHaveAsAlternativeTask method, of class Task.
