@@ -601,16 +601,16 @@ public class Task implements DetailedTask {
      * Plan this task at the given start time
      * 
      * @param startTime The time this task is planned to start
-     * @param developers The developers to assign to this task
-     * @param resources The resources to assign to this task // TODO unificeren met devs??
+     * @param resources The resources to assign to this task
      * @throws exception.ConflictException The task's reservations 
      * conflict with another task
      */
-    public void plan(LocalDateTime startTime, List<User> developers, List<Resource> resources) throws ConflictException{
+    public void plan(LocalDateTime startTime, List<Resource> resources) throws ConflictException{
         
         Timespan timespan = new Timespan(startTime, getEstimatedDuration().getEndTimeFrom(startTime));
-        for(ResourceType type : requiredResources.keySet()){
-            for(requiredResources.get(type))
+        for(Resource resource : resources){
+            resource.makeReservation(this, timespan);        
+            
         }
     }
 }
