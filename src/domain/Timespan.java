@@ -38,7 +38,10 @@ public final class Timespan {
         this.endTime = endTime;
         
     }
-
+    public Timespan(LocalDateTime startTime, Duration duration)
+    {
+    	this(startTime, startTime.plusMinutes(duration.getMinutes()));
+    }
     /**
      * Check whether the given start and end time form a valid interval
      * 
