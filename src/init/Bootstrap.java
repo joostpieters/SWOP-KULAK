@@ -5,12 +5,14 @@ import controller.HandlerFactory;
 import domain.Acl;
 import domain.Auth;
 import domain.Clock;
+import domain.Manager;
 import domain.ProjectContainer;
-import domain.User;
+
 import java.io.FileReader;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -52,7 +54,7 @@ public class Bootstrap {
         
         Auth auth = new Auth();
         
-        Auth.registerUser(new User("lol", "manager"));
+        Auth.registerUser(new Manager("lol"));
         String username;
         while(true){
             username = JOptionPane.showInputDialog("Enter your username");

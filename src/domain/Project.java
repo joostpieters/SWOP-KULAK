@@ -305,11 +305,11 @@ public class Project implements DetailedProject {
 	 * 
 	 * @see		Task#update(LocalDateTime, LocalDateTime, Status, Project)
 	 */
-	public void updateTask(int tid, LocalDateTime start, LocalDateTime end, Status status) {
+	public void updateTask(int tid, LocalDateTime start, LocalDateTime end, Status status, LocalDateTime now) {
 		if(start.isBefore(getCreationTime()))
 			throw new IllegalArgumentException("A task can't have started before its project.");
 		
-		getTask(tid).update(start, end, status, this);
+		getTask(tid).update(start, end, status, this, now);
 	}
 	
 	/**

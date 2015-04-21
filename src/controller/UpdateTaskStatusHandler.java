@@ -86,7 +86,7 @@ public class UpdateTaskStatusHandler extends Handler{
         }
 
         try {
-            currentProject.updateTask(currentTask.getId(), startTime, endTime, taskStatus);
+ //           currentProject.updateTask(currentTask.getId(), startTime, endTime, taskStatus);
         } catch (IllegalArgumentException | IllegalStateException e) {
             throw e;
         } catch (Exception e) {

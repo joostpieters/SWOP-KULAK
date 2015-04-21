@@ -1,5 +1,7 @@
 package domain;
 
+
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -8,12 +10,6 @@ import java.util.TreeSet;
 
 import exception.ConflictException;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Iterator;
 public class Resource implements ClockObserver {
 
 	private static int nextId = 0;
@@ -29,7 +25,7 @@ public class Resource implements ClockObserver {
 	 * @param name
 	 * @param type
 	 */
-	public Resource(String name, ResourceType type) {
+	public Resource(String name) {
 		this.id = generateId();
 		this.name = name;
 		this.reservations = new HashSet<>();
@@ -120,6 +116,13 @@ public class Resource implements ClockObserver {
 		return result;
 	}
 	
+	public Reservation getReservation(Task t) {
+		for(Reservation r : reservations)
+			if(r.getTask().equals(t))
+				return r;
+		return null;
+	}
+	
 	public SortedSet<Reservation> getReservations(LocalDateTime from) {
 		SortedSet<Reservation> result = new TreeSet<>(Reservation.timespanComparator());
 		for(Reservation r : reservations) {
@@ -174,10 +177,6 @@ public class Resource implements ClockObserver {
 //		return result;
 	}
 	
-	
-=======
-
->>>>>>> branch 'master' of ssh://git@github.com/mrTsjolder/SWOP-KULAK.git
 	/****************************************************
 	 * Mutators                                         *
 	 ****************************************************/
@@ -212,7 +211,6 @@ public class Resource implements ClockObserver {
 	 */
 	public void clearFutureReservations(LocalDateTime currentTime, Task task)
 	{
-		List<Reservation> archivedReservations = new ArrayList<Reservation>();
 		for(Iterator<Reservation> iterator = getReservations().iterator(); iterator.hasNext();)
 		{
 			Reservation reservation = iterator.next();
