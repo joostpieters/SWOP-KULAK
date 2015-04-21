@@ -1,7 +1,10 @@
 package domain;
 
 import exception.ConflictException;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class represents the action of doing a reservation
@@ -14,7 +17,7 @@ public class PlanCommand {
     private final List<Resource> resources;
     private final Timespan timespan;
     private List<ReservationCommand> reservations;
-    private List<Reservation> oldReservations;
+    private Map<Resource, Reservation> oldReservations;
 
     public PlanCommand(Timespan timespan, List<Resource> resources, Task task) {
         this.task = task;
@@ -23,6 +26,7 @@ public class PlanCommand {
         for (Resource resource : resources) {
             reservations.add(new ReservationCommand(timespan, resource, task));
         }
+        oldReservations = new HashMap<Resource, Reservation>();
     }
 
     public void execute() throws ConflictException {
@@ -35,7 +39,7 @@ public class PlanCommand {
 
     private void moveTask() throws ConflictException {
         for(Resource res : resources){
-            oldReservations.add(res.getReservation(task));
+            oldReservations.put(res, res.getReservation(task));
         }
         
         try {
@@ -71,9 +75,18 @@ public class PlanCommand {
     
     private void revertMove() {
         int i =0;
-        for(Resource res : resources){
-            res.makeReservation(oldReservations.get(i));
-            i++;
+        for(Resource res : oldReservations.keySet()){
+        	try
+        	{
+            	res.makeReservation(oldReservations.get(res));
+        	}
+        	catch(Exception e) {}
         }
+        /*for(Resource res : resources){
+        	Reservation oldReservation = oldReservations.get(i);
+        	if(oldReservation != null)
+        		res.makeReservation(oldReservation);
+            i++;
+        }*/
     }
 }
