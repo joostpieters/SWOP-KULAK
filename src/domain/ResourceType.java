@@ -1,6 +1,8 @@
 package domain;
 
 import exception.ConflictException;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -147,6 +149,14 @@ public class ResourceType {
 
         return true;
 
+    }
+    //TODO
+    public void clearFutureReservations(LocalDateTime currentTime, Task task)
+    {
+    	for(Resource resource : getResources())
+    	{
+    		resource.clearFutureReservations(currentTime, task);
+    	}
     }
 
 }

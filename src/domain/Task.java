@@ -395,9 +395,9 @@ public class Task implements DetailedTask {
         //TODO
         Timespan timespan = new Timespan(start, end);
         if(status instanceof Failed){
-            getStatus().fail(this, timespan, currentTime);
+            getStatus().fail(this, timespan);
         }else if(status instanceof Finished){
-            getStatus().finish(this, timespan, currentTime);
+            getStatus().finish(this, timespan);
         }else{
             throw new IllegalArgumentException("Invalid status");
         }
@@ -431,9 +431,7 @@ public class Task implements DetailedTask {
     public void clearFutureReservations(LocalDateTime currentTime)
     {
     	for(ResourceType resourceType : getRequiredResources().keySet())
-    	{
-    	}
-    		//resource.clearFutureReservations(currentTime, task);
+    		resourceType.clearFutureReservations(currentTime, this);
     }
     /**
      * Checks whether this task is available.
