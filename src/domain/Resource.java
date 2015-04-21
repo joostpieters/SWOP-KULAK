@@ -1,7 +1,11 @@
 package domain;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import exception.ConflictException;
 
@@ -102,6 +106,61 @@ public class Resource {
 		return result;
 	}
 	
+	public SortedSet<Reservation> getReservations(LocalDateTime from) {
+		SortedSet<Reservation> result = new TreeSet<>(Reservation.timespanComparator());
+		for(Reservation r : reservations) {
+			if(!r.expiredBefore(from))
+				result.add(r);
+		}
+		return result;
+	}
+	
+	public SortedSet<Timespan> nextAvailableTimespans(LocalDateTime from) {
+		SortedSet<Timespan> result = new TreeSet<>();
+		SortedSet<Reservation> reservations = getReservations(from);
+		if(reservations.isEmpty()) {
+			result.add(new Timespan(from));
+			return result;
+		}
+		
+		Iterator<Reservation> it = reservations.iterator();
+		Reservation r1, r2 = it.next();
+		
+		while(it.hasNext()) {
+			r1 = r2;
+			r2 = it.next();
+			if(!r1.conflictsWith(r2))
+				result.add(new Timespan(r1.getEndTime(), r2.getStartTime()));
+		}
+		
+		result.add(new Timespan(r2.getEndTime()));
+		return result;
+//		SortedSet<LocalDateTime> result = new TreeSet<>();
+//		Set<Reservation> reservations = getReservations(from);
+//		if(reservations.isEmpty()) {
+//			result.add(from);
+//			return result;
+//		}
+//		
+//		Iterator<Reservation> it = reservations.iterator();
+//		Reservation r1, r2 = it.next();
+//		while(it.hasNext()) {
+//			r1 = r2;
+//			r2 = it.next();
+//			if(r1.timeBetween(r2).compareTo(dur) > 1) {
+//				LocalDateTime next = r1.getEndTime();
+//				result.add(next);
+//				next = LocalDateTime.of(next.toLocalDate(), next.toLocalTime().minusMinutes(next.getMinute()));
+//				while(dur.getEndTimeFrom(next).isBefore(r2.getStartTime())) {
+//					result.add(next);
+//					next = next.plusHours(1);
+//				}
+//			}
+//		}
+//		return result;
+	}
+	
+	
 	/****************************************************
 	 * Mutators                                         *
 	 ****************************************************/
@@ -116,13 +175,15 @@ public class Resource {
 	 * @throws 	ConflictException
 	 *        	if this resource is not available during span.
 	 */
-	public void makeReservation(Task task, Timespan span) throws ConflictException {
+	public Reservation makeReservation(Task task, Timespan span) throws ConflictException {
 		if(!isAvailable(span)) {
 			Set<Task> confl = findConflictingTasks(span);
 			confl.add(task);
 			throw new ConflictException("This resource is not available for the given timespan.", confl);
 		}
-		reservations.add(new Reservation(task, span));
+		Reservation r = new Reservation(task, span);
+		reservations.add(r);
+		return r;
 	}
 	
 }

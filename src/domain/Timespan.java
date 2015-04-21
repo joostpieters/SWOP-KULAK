@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
  * 
  * @author Frederic, Mathias, Pieter-Jan 
  */
-public final class Timespan {
+public final class Timespan implements Comparable<Timespan>{
     
     private final LocalDateTime startTime, endTime;
     
@@ -37,6 +37,10 @@ public final class Timespan {
         this.startTime = startTime;
         this.endTime = endTime;
         
+    }
+    
+    public Timespan(LocalDateTime startTime) {
+    	this(startTime, LocalDateTime.MAX);
     }
 
     /**
@@ -137,5 +141,21 @@ public final class Timespan {
     public boolean endsAfter(LocalDateTime time){
         return getEndTime().isAfter(time);
     }
+    
+    public Duration timeBetween(Timespan other) {
+    	if(this.overlapsWith(other))
+    		return Duration.ZERO;
+    	else if(other.endsBefore(this))
+    		return other.timeBetween(this);
+    	else
+    		return new Duration(this.getEndTime(), other.getStartTime());
+    }
+
+	public int compareTo(Timespan o) {
+		int res = this.getStartTime().compareTo(o.getStartTime());
+		if(res == 0)
+			res = this.getEndTime().compareTo(o.getEndTime());
+		return res;
+	}
     
 }
