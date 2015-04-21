@@ -237,6 +237,7 @@ public class Resource implements ClockObserver {
 	/**
 	 * Archives the reservations which are in the past compared to the given current time.
 	 */
+        @Override
 	public void update(LocalDateTime currentTime)
 	{
 		for(Iterator<Reservation> iterator = getReservations().iterator(); iterator.hasNext();)
