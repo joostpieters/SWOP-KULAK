@@ -38,10 +38,20 @@ public final class Timespan {
         this.endTime = endTime;
         
     }
+    
+    /**
+     * Initialize this timespan based on the given begin time and duration.
+     * 
+     * @param startTime
+     *        The start time of this timespan
+     * @param duration
+     *        The duration of this timespan
+     */
     public Timespan(LocalDateTime startTime, Duration duration)
     {
     	this(startTime, startTime.plusMinutes(duration.getMinutes()));
     }
+    
     /**
      * Check whether the given start and end time form a valid interval
      * 
