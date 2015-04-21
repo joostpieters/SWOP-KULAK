@@ -42,7 +42,20 @@ public final class Timespan implements Comparable<Timespan>{
     public Timespan(LocalDateTime startTime) {
     	this(startTime, LocalDateTime.MAX);
     }
-
+    
+    /**
+     * Initialize this timespan based on the given begin time and duration.
+     * 
+     * @param startTime
+     *        The start time of this timespan
+     * @param duration
+     *        The duration of this timespan
+     */
+    public Timespan(LocalDateTime startTime, Duration duration)
+    {
+    	this(startTime, startTime.plusMinutes(duration.getMinutes()));
+    }
+    
     /**
      * Check whether the given start and end time form a valid interval
      * 
@@ -80,6 +93,18 @@ public final class Timespan implements Comparable<Timespan>{
     public boolean overlapsWith(Timespan anotherTimespan){
         return anotherTimespan.getStartTime().compareTo(endTime) <= 0 &&
                startTime.compareTo(anotherTimespan.getEndTime()) <= 0;
+    }
+    
+    /**
+     * Check whether this timespan contains the given local date time.
+     * 
+     * @param 	localDT
+     *          The local date time to check
+     * @return 	True if and only if the start time of this time span falls before the given local date time
+     *          and the end time of this time span falls after the given local date time.
+     */
+    public boolean overlapsWith(LocalDateTime localDT){
+    	return localDT.compareTo(getStartTime()) >= 0 && localDT.compareTo(getEndTime()) <= 0;
     }
     
     /**
