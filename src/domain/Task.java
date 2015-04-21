@@ -381,7 +381,7 @@ public class Task implements DetailedTask {
      * @throws IllegalArgumentException If The given project's creation time is
      * before the given start time.
      */
-    final void update(LocalDateTime start, LocalDateTime end, Status status, Project project) throws IllegalArgumentException {
+    final void update(LocalDateTime start, LocalDateTime end, Status status, Project project, LocalDateTime currentTime) throws IllegalArgumentException {
         if (start == null || end == null) {
             throw new IllegalArgumentException("The given start and/or end time are not initialized.");
         }
@@ -395,9 +395,9 @@ public class Task implements DetailedTask {
         //TODO
         Timespan timespan = new Timespan(start, end);
         if(status instanceof Failed){
-            getStatus().fail(this, timespan);
+            getStatus().fail(this, timespan, currentTime);
         }else if(status instanceof Finished){
-            getStatus().finish(this, timespan);
+            getStatus().finish(this, timespan, currentTime);
         }else{
             throw new IllegalArgumentException("Invalid status");
         }
@@ -410,9 +410,10 @@ public class Task implements DetailedTask {
      * @param timespan The timespan of this failed task
      * 
      */
-    void fail(Timespan timespan)
+    void fail(Timespan timespan, LocalDateTime currentTime)
     {
     	getStatus().fail(this, timespan);
+    	clearFutureReservations(currentTime);
     }
     
     /** TODO: clear future reservations
@@ -421,17 +422,16 @@ public class Task implements DetailedTask {
      * @param timespan The timespan of this finished task
      * 
     */
-    void finish(Timespan timespan)
+    void finish(Timespan timespan, LocalDateTime currentTime)
     {
     	getStatus().finish(this, timespan);
+    	clearFutureReservations(currentTime);
     }
-    
-    void clearFutureReservations()
+    // TODO verplaatsen
+    public void clearFutureReservations(LocalDateTime currentTime)
     {
     	for(Resource resource : getRequiredResources())
-    	{
-    		resource.clearFutureReservations();
-    	}
+    		resource.clearFutureReservations(currentTime);
     }
     /**
      * Checks whether this task is available.
