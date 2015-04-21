@@ -1,46 +1,77 @@
 package domain;
 
+import exception.ConflictException;
 import java.util.List;
 
 /**
  * This class represents the action of doing a reservation
- * 
+ *
  * @author Mathias, Frederic, Pieter-Jan
  */
 public class PlanCommand {
+
     private final Task task;
     private final List<Resource> resources;
     private final Timespan timespan;
     private List<ReservationCommand> reservations;
-    
-    public PlanCommand(Timespan timespan, List<Resource> resources, Task task){
+    private Object oldReservations;
+
+    public PlanCommand(Timespan timespan, List<Resource> resources, Task task) {
         this.task = task;
         this.resources = resources;
         this.timespan = timespan;
-    }
-    
-    
-    public void execute(){
-        if(task.isPlanned()){
-            moveTask();
-        }else{
-            planTask();
-        }
-    }
-    
-    private void moveTask(){
-        
-    }
-    
-    private void planTask(){
-        for(Resource resource : resources){
+        for (Resource resource : resources) {
             reservations.add(new ReservationCommand(timespan, resource, task));
         }
     }
-    
-    private void revert(){
-        for(ReservationCommand command : reservations){
+
+    public void execute() throws ConflictException {
+        if (task.isPlanned()) {
+            moveTask();
+        } else {
+            planTask();
+        }
+    }
+
+    private void moveTask() throws ConflictException {
+        for(Resource res : resources){
+            oldReservations.add(res.getReservation(task));
+        }
+        
+        try {
+            for (ReservationCommand command : reservations) {
+                command.execute();
+            }
+        } catch (ConflictException ex) {
+            revert();
+            revertMove();
+            
+            throw ex;
+        }
+        
+    }
+
+    private void planTask() throws ConflictException {
+        try {
+            for (ReservationCommand command : reservations) {
+                command.execute();
+            }
+        } catch (ConflictException ex) {
+            revert();
+            
+            throw ex;
+        }
+    }
+
+    private void revert() {
+        for (ReservationCommand command : reservations) {
             command.revert();
+        }
+    }
+    
+    private void revertMove() {
+        for(Resource res : resources){
+            resource.makeReservation(oldReservations);
         }
     }
 }
