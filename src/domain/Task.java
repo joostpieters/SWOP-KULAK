@@ -430,8 +430,10 @@ public class Task implements DetailedTask {
     // TODO verplaatsen
     public void clearFutureReservations(LocalDateTime currentTime)
     {
-    	for(Resource resource : getRequiredResources())
-    		resource.clearFutureReservations(currentTime);
+    	for(ResourceType resourceType : getRequiredResources().keySet())
+    	{
+    	}
+    		//resource.clearFutureReservations(currentTime, task);
     }
     /**
      * Checks whether this task is available.

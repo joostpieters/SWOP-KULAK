@@ -186,4 +186,15 @@ public class Resource implements ClockObserver {
 			}
 		}
 	}
+	
+	/**
+	 * Removes the given reservation from this resources reservations.
+	 * 
+	 * @param reservation The reservation to remove.
+	 * @return True if this resource contained the given reservation.
+	 */
+	public boolean removeReservation(Reservation reservation)
+	{
+		return getReservations().remove(reservation);
+	}
 }
