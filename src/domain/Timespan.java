@@ -96,15 +96,15 @@ public final class Timespan implements Comparable<Timespan>{
     }
     
     /**
-     * Check whether this timespan contains the given local date time.
+     * Check whether this timespan contains the given time.
      * 
-     * @param 	localDT
+     * @param 	time
      *          The local date time to check
-     * @return 	True if and only if the start time of this time span falls before the given local date time
-     *          and the end time of this time span falls after the given local date time.
+     * @return 	True if and only if the start time of this time span falls before the given time
+     *          and the end time of this time span falls after the given time. (Not strict)
      */
-    public boolean overlapsWith(LocalDateTime localDT){
-    	return localDT.compareTo(getStartTime()) >= 0 && localDT.compareTo(getEndTime()) <= 0;
+    public boolean overlapsWith(LocalDateTime time){
+    	return time.compareTo(getStartTime()) >= 0 && time.compareTo(getEndTime()) <= 0;
     }
     
     /**
@@ -145,7 +145,7 @@ public final class Timespan implements Comparable<Timespan>{
     
     /**
      * Check whether this timespan ends before the given timespan, not necessarily
-     * stritcly before
+     * strictly before
      * 
      * @param 	anotherTimespan 
      * 			The timespan to compare to
@@ -165,6 +165,23 @@ public final class Timespan implements Comparable<Timespan>{
      */
     public boolean endsAfter(LocalDateTime time){
         return getEndTime().isAfter(time);
+    }
+    
+    /**
+     * Compares this time span with the given time.
+     * 
+     * @param time The time to compare with.
+     * @return 0 if this time span overlaps with the given time.
+     *         -1 if the given time is strictly before the start time of this time span.
+     *         1 otherwise.
+     */
+    public int compareTo(LocalDateTime time)
+    {
+    	if(overlapsWith(time))
+    		return 0;
+    	else if (getStartTime().isBefore(time))
+    		return -1;
+    	else return 1;
     }
     
     public Duration timeBetween(Timespan other) {
