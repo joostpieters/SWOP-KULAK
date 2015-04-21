@@ -1,14 +1,13 @@
 package domain;
 
 
+import exception.ConflictException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import exception.ConflictException;
 
 public class Resource implements ClockObserver {
 
@@ -262,4 +261,15 @@ public class Resource implements ClockObserver {
 	{
 		return getReservations().remove(reservation);
 	}
+        
+           /**
+         * Make the given reservation for this resource
+         * 
+         * @param reservation The reservation to make 
+     * @throws exception.ConflictException The given reservation conflicts with
+     * another reservation.
+         */
+    public void makeReservation(Reservation reservation) throws ConflictException {
+        makeReservation(reservation.getTask(), reservation.getTimespan());
+    }
 }
