@@ -12,6 +12,7 @@ public class Resource {
 	private final int id;
 	private final String name;
 	private final Set<Reservation> reservations;
+	private final Set<Reservation> previousReservations;
 	
 	/**
 	 * 
@@ -124,4 +125,8 @@ public class Resource {
 		reservations.add(new Reservation(task, span));
 	}
 	
+	public void update(LocalDateTime currentTime)
+	{
+		
+	}
 }

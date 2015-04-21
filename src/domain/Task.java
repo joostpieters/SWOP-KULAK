@@ -404,7 +404,7 @@ public class Task implements DetailedTask {
         
         
     }
-    /**
+    /** TODO: clear future reservations
      * Fail this task
      * 
      * @param timespan The timespan of this failed task
@@ -415,7 +415,7 @@ public class Task implements DetailedTask {
     	getStatus().fail(this, timespan);
     }
     
-    /**
+    /** TODO: clear future reservations
      * Finish this task
      * 
      * @param timespan The timespan of this finished task
@@ -426,6 +426,13 @@ public class Task implements DetailedTask {
     	getStatus().finish(this, timespan);
     }
     
+    void clearFutureReservations()
+    {
+    	for(Resource resource : getRequiredResources())
+    	{
+    		resource.clearFutureReservations();
+    	}
+    }
     /**
      * Checks whether this task is available.
      *
