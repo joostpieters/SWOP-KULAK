@@ -1,9 +1,8 @@
 package domain;
 
+import exception.ConflictException;
 import java.util.HashSet;
 import java.util.Set;
-
-import exception.ConflictException;
 
 public class Resource {
 	
@@ -22,7 +21,7 @@ public class Resource {
 	public Resource(String name, ResourceType type) {
 		this.id = generateId();
 		this.name = name;
-		this.reservations = new HashSet<Reservation>();
+		this.reservations = new HashSet<>();
 	}
 	
 	/****************************************************

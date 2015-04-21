@@ -42,6 +42,8 @@ public class Task implements DetailedTask {
      * @param resources The resources this task requires to be performed
      */
     Task(String description, Duration duration, int accDev, List<Task> prereq, Map<ResourceType, Integer> resources) {
+        if(!ResourceType.isValidCombination(resources))
+            throw new IllegalArgumentException("This combination of resourcetypes is not valid.");
         this.id = generateId();
         setDescription(description);
         this.estimatedDuration = duration;
@@ -51,6 +53,8 @@ public class Task implements DetailedTask {
         } else {
             setPrerequisiteTasks(prereq);
         }
+        
+        
         this.requiredResources = resources;
         
         Status initStatus = new Available();
@@ -603,6 +607,10 @@ public class Task implements DetailedTask {
      * conflict with another task
      */
     public void plan(LocalDateTime startTime, List<User> developers, List<Resource> resources) throws ConflictException{
-        // TODO resource checks
+        
+        Timespan timespan = new Timespan(startTime, getEstimatedDuration().getEndTimeFrom(startTime));
+        for(ResourceType type : requiredResources.keySet()){
+            for(requiredResources.get(type))
+        }
     }
 }
