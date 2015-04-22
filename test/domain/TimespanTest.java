@@ -47,15 +47,6 @@ public class TimespanTest {
     }
     
     /**
-     * Test constructor with invalid end time
-     */
-     @Test (expected = IllegalArgumentException.class)
-    public void testTimespanConstructorInvalidEnd() {
-        LocalDateTime start = LocalDateTime.of(2015, 1, 6, 14, 29);
-        new Timespan(start, null);
-    }
-    
-    /**
      * Test overlapswith methode of timespan
      */
     @Test

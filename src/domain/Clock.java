@@ -27,8 +27,9 @@ public class Clock {
      * 			The intitial time to start the clock on
      */
     public Clock(LocalDateTime time) {
-        setTime(time);
         observers = new ArrayList<>();
+        setTime(time);
+        
     }
     
     /**

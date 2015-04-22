@@ -1,12 +1,9 @@
 package domain;
 
 import exception.ConflictException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -158,10 +155,13 @@ public class ResourceType {
      * @param 	resources 
      *       	The resource to check
      * @return 	{@code true} if and only if all the given resource types don't mutually 
-     *        	conflict and for each resource type, there requirements are included in
-     *        	the given list.
+     *        	conflict and for each resource type, its requirements are included in
+     *        	the given list. 
      */
     public static boolean isValidCombination(Map<ResourceType, Integer> resources) {
+        if(resources == null){
+            return true;
+        }
         for (ResourceType type : resources.keySet()) {
             if(!type.canHaveAsCombination(resources))
                 return false;
