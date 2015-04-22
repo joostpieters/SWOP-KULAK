@@ -24,8 +24,6 @@ public final class Timespan implements Comparable<Timespan>{
      */
     public Timespan(LocalDateTime startTime, LocalDateTime endTime) throws IllegalArgumentException {
         
-        
-        
         if(!canHaveAsTime(startTime) || !canHaveAsTime(endTime)){
             throw new IllegalArgumentException("The start time is not valid.");
         }
@@ -171,8 +169,8 @@ public final class Timespan implements Comparable<Timespan>{
      * Compares this time span with the given time.
      * 
      * @param time The time to compare with.
-     * @return 0 if this time span overlaps with the given time.
-     *         -1 if the given time is strictly before the start time of this time span.
+     * @return 0 if this time span overlaps with the given time,
+     *         -1 if the given time is strictly before the start time of this time span,
      *         1 otherwise.
      */
     public int compareTo(LocalDateTime time)
@@ -183,21 +181,30 @@ public final class Timespan implements Comparable<Timespan>{
     		return -1;
     	else return 1;
     }
-    
-    public Duration timeBetween(Timespan other) {
-    	if(this.overlapsWith(other))
-    		return Duration.ZERO;
-    	else if(other.endsBefore(this))
-    		return other.timeBetween(this);
-    	else
-    		return new Duration(this.getEndTime(), other.getStartTime());
-    }
 
-	public int compareTo(Timespan o) {
-		int res = this.getStartTime().compareTo(o.getStartTime());
+    /**
+     * Compares this time span with another time span.
+     * This is done by comparing starting times.
+     * In case of equal start times, end times are being compared.
+     * 
+     * @param	other
+     * 			The Timespan to be compared with.
+     * @return	0 if this time span equals other,
+     *        	negative if other starts or ends before this,
+     *        	positive if other starts or ends after this.
+     */
+	public int compareTo(Timespan other) {
+		int res = this.getStartTime().compareTo(other.getStartTime());
 		if(res == 0)
-			res = this.getEndTime().compareTo(o.getEndTime());
+			res = this.getEndTime().compareTo(other.getEndTime());
 		return res;
+	}
+	
+	//TODO: misschien weg?
+	public Timespan append(Timespan other) {
+		if(this.compareTo(other) < 0)
+			other.append(this);
+		return new Timespan(other.getStartTime(), this.getEndTime());
 	}
     
 }

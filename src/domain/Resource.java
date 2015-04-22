@@ -92,6 +92,14 @@ public class Resource implements ClockObserver {
 		return true;
 	}
 
+	/**
+	 * Get the set of reservations that conflict with a given time span.
+	 * 
+	 * @param 	span
+	 *       	The time span the reservation conflicts with.
+	 * @return	all reservation that conflict with span.
+	 * @see		Reservation#conflictsWith(Timespan)
+	 */
 	public Set<Reservation> getConflictingReservations(Timespan span) {
 		Set<Reservation> result = new HashSet<>();
 		for(Reservation r : reservations)
@@ -101,11 +109,12 @@ public class Resource implements ClockObserver {
 	}
 
 	/**
-	 * Get the set of tasks that cause conflicts with the given time span.
+	 * Get the set of tasks that cause conflicts with a given time span.
 	 * 
 	 * @param 	span
 	 * 	     	The time span the tasks conflict with.
-	 * @return	all tasks that reserved this resource in span.
+	 * @return	the tasks from all conflicting reservations.
+	 * @see		#getConflictingReservations(Timespan)
 	 */
 	public Set<Task> findConflictingTasks(Timespan span) {
 		Set<Reservation> temp = getConflictingReservations(span);
@@ -115,6 +124,13 @@ public class Resource implements ClockObserver {
 		return result;
 	}
 	
+	/**
+	 * Get all the reservations that involve a given task.
+	 * 
+	 * @param	t
+	 *       	The task to get the reservations for.
+	 * @return	the reservation linked to the given task.
+	 */
 	public Reservation getReservation(Task t) {
 		for(Reservation r : reservations)
 			if(r.getTask().equals(t))
@@ -122,6 +138,13 @@ public class Resource implements ClockObserver {
 		return null;
 	}
 	
+	/**
+	 * Get the reservations from a given point in time.
+	 * 
+	 * @param 	from
+	 *       	The time stamp to start looking for reservations.
+	 * @return	A sorted set of reservations which are not yet finished on from.
+	 */
 	public SortedSet<Reservation> getReservations(LocalDateTime from) {
 		SortedSet<Reservation> result = new TreeSet<>(Reservation.timespanComparator());
 		for(Reservation r : reservations) {
@@ -131,6 +154,14 @@ public class Resource implements ClockObserver {
 		return result;
 	}
 	
+	/**
+	 * Get the timespans this resource is available from a given point in time.
+	 * 
+	 * @param 	from
+	 *       	The time stamp to start looking for free time spans.
+	 * @return	A sorted set of time spans in which this resource is free.
+	 *        	The last time span is an infinite time span.
+	 */
 	public SortedSet<Timespan> nextAvailableTimespans(LocalDateTime from) {
 		SortedSet<Timespan> result = new TreeSet<>();
 		SortedSet<Reservation> reservations = getReservations(from);
@@ -193,8 +224,7 @@ public class Resource implements ClockObserver {
 	public Reservation makeReservation(Task task, Timespan span) throws ConflictException {
 		if(!isAvailable(span)) {
 			Set<Task> confl = findConflictingTasks(span);
-			confl.add(task);
-			throw new ConflictException("This resource is not available for the given timespan.", confl);
+			throw new ConflictException("This resource is not available for the given timespan.", task, confl);
 		}
 		Reservation r = new Reservation(task, span);
 		reservations.add(r);

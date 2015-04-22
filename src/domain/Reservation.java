@@ -19,6 +19,10 @@ public class Reservation {
 		timespan = period;
 	}
 
+	/****************************************************
+	 * Getters & Setters                                *
+	 ****************************************************/
+
 	/**
 	 * @return 	the task
 	 */
@@ -40,6 +44,33 @@ public class Reservation {
 	public LocalDateTime getEndTime() {
 		return timespan.getEndTime();
 	}
+
+	/****************************************************
+	 * Static methods                                   *
+	 ****************************************************/
+
+	/**
+	 * Get a comparator to sort reservations on their time spans.
+	 * NOTE that this comparator can return 0 if {@code !o1.equals(o2)}.
+	 * 
+	 * @return 	a comparator that compares the time spans of reservations 
+	 *        	in order to sort reservations.
+	 * @see		Timespan#compareTo(Timespan)
+	 */
+	public static Comparator<Reservation> timespanComparator() {
+		return new Comparator<Reservation>() {
+
+			@Override
+			public int compare(Reservation o1, Reservation o2) {
+				return o1.getTimespan().compareTo(o2.getTimespan());
+			}
+			
+		};
+	}
+	
+	/****************************************************
+	 * Other methods                                    *
+	 ****************************************************/
 	
 	/**
 	 * Return whether or not this reservation causes a conflict with a given time span.
@@ -58,20 +89,5 @@ public class Reservation {
 	
 	public boolean expiredBefore(LocalDateTime time) {
 		return getEndTime().isBefore(time);
-	}
-	
-	public Duration timeBetween(Reservation other) {
-		return getTimespan().timeBetween(other.getTimespan());
-	}
-	
-	public static Comparator<Reservation> timespanComparator() {
-		return new Comparator<Reservation>() {
-
-			@Override
-			public int compare(Reservation o1, Reservation o2) {
-				return o1.getTimespan().compareTo(o2.getTimespan());
-			}
-			
-		};
 	}
 }

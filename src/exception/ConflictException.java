@@ -14,6 +14,7 @@ public class ConflictException extends Exception {
 
 	private static final long serialVersionUID = -6949314560090380755L;
 	
+	private final Task currentTask;
 	private final Set<Task> conflictingTasks;
 	
 	/**
@@ -25,9 +26,17 @@ public class ConflictException extends Exception {
 	 * @param 	conflictingTasks
 	 *       	The tasks responsible for the conflict.
 	 */
-	public ConflictException(String message, Set<Task> conflictingTasks) {
+	public ConflictException(String message, Task currentTask, Set<Task> conflictingTasks) {
 		super(message);
+		this.currentTask = currentTask;
 		this.conflictingTasks = conflictingTasks;
+	}
+	
+	/**
+	 * @return the current task;
+	 */
+	public Task getCurrentTask() {
+		return currentTask;
 	}
 
 	/**

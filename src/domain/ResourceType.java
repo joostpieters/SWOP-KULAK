@@ -1,12 +1,17 @@
 package domain;
 
 import exception.ConflictException;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class ResourceType {
 
@@ -47,7 +52,7 @@ public class ResourceType {
      * @return the resources
      */
     public Set<Resource> getResources() {
-        return resources;
+        return new HashSet<>(resources);
     }
 
     /**
@@ -55,7 +60,7 @@ public class ResourceType {
      *
      * @param resource The resource to be added.
      */
-    public void addResource(Resource resource) {
+    private void addResource(Resource resource) {
         resources.add(resource);
     }
 
@@ -99,12 +104,12 @@ public class ResourceType {
 //		result.add(resource);
 //		return result;
 //	}
+    
     public Set<Resource> makeReservation(Task task, Timespan span, int quantity) throws ConflictException {
         Set<Resource> availableResources = getAvailableResources(span);
         if (availableResources.size() < quantity) {
             Set<Task> confl = findConflictingTasks(span);
-            confl.add(task);
-            throw new ConflictException("There are not enough resources of the right type available.", confl);
+            throw new ConflictException("There are not enough resources of the right type available.", task, confl);
         }
 
         Set<Resource> result = new HashSet<>();
@@ -117,13 +122,44 @@ public class ResourceType {
         return result;
     }
     
+    public SortedSet<Timespan> nextAvailableTimespans(LocalDateTime from) {
+    	SortedSet<Timespan> result = new TreeSet<>();
+    	
+    	for(Resource r : getResources()) {
+    		result.addAll(r.nextAvailableTimespans(from));
+    	}
+    	
+    	//TODO: is het interessant om die time spans te mergen? Ik dacht eerst wel, maar nu lijkt het mij redelijk zinloos... 
+//    	Iterator<Timespan> it = result.iterator();
+//    	Collection<Timespan> remove = new HashSet<>();
+//    	Collection<Timespan> add = new HashSet<>();
+//    	Timespan t1, t2 = it.next();
+//    	
+//    	while(it.hasNext()) {
+//    		t1 = t2;
+//    		t2 = it.next();
+//    		if(t1.overlapsWith(t2)) {
+//    			t2 = t1.append(t2);
+//    			it.remove();
+//    			remove.add(t1);
+//    			add.add(t2);
+//    		}
+//    	}
+//    	
+//    	result.addAll(add);
+//    	result.removeAll(remove);
+    	
+    	return result;
+    }
+    
     /**
-     * Check whether the given list of resourcetypes is mutually compatible
+     * Check whether the given list of resource types is mutually compatible
      * 
-     * @param resources The resource to check
-     * @return True if and only if all the given resourctypes don't mutually 
-     * conflict and for each resourcetype, there requirements are included in
-     * the given list.
+     * @param 	resources 
+     *       	The resource to check
+     * @return 	{@code true} if and only if all the given resource types don't mutually 
+     *        	conflict and for each resource type, there requirements are included in
+     *        	the given list.
      */
     public static boolean isValidCombination(Map<ResourceType, Integer> resources) {
         for (ResourceType type : resources.keySet()) {
