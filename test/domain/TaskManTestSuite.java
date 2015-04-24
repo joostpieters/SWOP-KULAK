@@ -2,11 +2,15 @@ package domain;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+
 import scenariotest.AdvanceSystemTimeScenarioTest;
 import scenariotest.CreateProjectScenarioTest;
 import scenariotest.CreateTaskScenarioTest;
 import scenariotest.ShowProjectScenarioTest;
 import scenariotest.UpdateTaskStatusScenarioTest;
+import time.ClockTest;
+import time.DurationTest;
+import time.TimespanTest;
 
 /**
  * This testsuite, runs all the tests for this application

@@ -6,14 +6,13 @@ package init;
  *
  * @author Frederic, Mathias, Pieter-Jan
  */
-import domain.Clock;
-import domain.Duration;
 import domain.Failed;
 import domain.Finished;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.Status;
 import domain.Task;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StreamTokenizer;
@@ -21,6 +20,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import time.Clock;
+import time.Duration;
 
 public class ProjectContainerFileInitializor extends StreamTokenizer {
 

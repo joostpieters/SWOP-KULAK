@@ -1,5 +1,8 @@
 package domain;
 
+import time.Duration;
+import time.Timespan;
+
 /**
  * This class represents a unavailable status of a task.
  *

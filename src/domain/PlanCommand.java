@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import time.Timespan;
+
 /**
  * This class represents the action of doing a reservation
  *

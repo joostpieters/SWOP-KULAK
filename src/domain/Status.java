@@ -1,5 +1,8 @@
 package domain;
 
+import time.Duration;
+import time.Timespan;
+
 /**
  * This class represents the status of a task, all satuses are mutually
  * exclusive.

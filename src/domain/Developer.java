@@ -4,6 +4,9 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import time.Timespan;
+import time.WorkWeekConfiguration;
+
 /**
  * This class represents a developer in the system
  * 

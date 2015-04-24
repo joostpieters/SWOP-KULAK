@@ -4,17 +4,21 @@ import controller.AdvanceSystemTimeHandler;
 import controller.HandlerFactory;
 import domain.Acl;
 import domain.Auth;
-import domain.Clock;
-import domain.Duration;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.Task;
+
 import java.time.LocalDateTime;
 import java.util.Arrays;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import time.Clock;
+import time.Duration;
 
 /**
  * This scenario test, tests the advance system time use case

@@ -1,5 +1,8 @@
 package domain;
 
+import time.Duration;
+import time.Timespan;
+
 /**
  * This class represents a finished status of a task.
  *

@@ -4,13 +4,15 @@ import domain.Acl;
 import domain.Auth;
 import domain.DetailedProject;
 import domain.DetailedTask;
-import domain.Duration;
 import domain.Project;
 import domain.ProjectContainer;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import time.Duration;
 
 /**
  * This handler, handles the create task use case

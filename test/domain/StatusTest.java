@@ -8,6 +8,9 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 
+import time.Duration;
+import time.Timespan;
+
 /**
  * 
  * @author Frederic

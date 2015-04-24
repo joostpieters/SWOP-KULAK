@@ -2,12 +2,15 @@ package domain;
 
 
 import exception.ConflictException;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import time.Timespan;
 
 public class Resource implements ClockObserver {
 

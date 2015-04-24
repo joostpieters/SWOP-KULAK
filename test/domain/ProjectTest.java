@@ -15,6 +15,10 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import time.Clock;
+import time.Duration;
+import time.WorkWeekConfiguration;
+
 /**
  * Unit tests for Project
  *

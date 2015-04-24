@@ -4,7 +4,6 @@ import UI.swingGUI.MainFrame;
 import controller.HandlerFactory;
 import domain.Acl;
 import domain.Auth;
-import domain.Clock;
 import domain.Manager;
 import domain.ProjectContainer;
 
@@ -16,6 +15,8 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import time.Clock;
 
 /**
  *

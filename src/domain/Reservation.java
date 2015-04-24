@@ -3,6 +3,8 @@ package domain;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 
+import time.Timespan;
+
 public class Reservation {
 
 	private final Task task;
