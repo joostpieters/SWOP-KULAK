@@ -13,12 +13,12 @@ public final class Timespan implements Comparable<Timespan>{
     private final LocalDateTime startTime, endTime;
     
     /**
-     * Initialize this timespan with the given begin and end time.
+     * Initialize this time span with the given begin and end time.
      * 
      * @param 	startTime 
-     * 			The start time of this timespan
+     * 			The start time of this time span
      * @param 	endTime 
-     * 			The end time of this timespan
+     * 			The end time of this time span
      * @throws 	IllegalArgumentException 
      * 			If the given start and end time don't form a valid interval. 
      */
@@ -37,17 +37,23 @@ public final class Timespan implements Comparable<Timespan>{
         
     }
     
+    /**
+     * Initialize an infinite time span with given begin time.
+     * 
+     * @param 	startTime
+     *       	The start time of this time span.
+     */
     public Timespan(LocalDateTime startTime) {
     	this(startTime, LocalDateTime.MAX);
     }
     
     /**
-     * Initialize this timespan based on the given begin time and duration.
+     * Initialize this time span based on the given begin time and duration.
      * 
      * @param startTime
-     *        The start time of this timespan
+     *        The start time of this time span
      * @param duration
-     *        The duration of this timespan
+     *        The duration of this time span
      */
     public Timespan(LocalDateTime startTime, Duration duration)
     {
@@ -80,6 +86,15 @@ public final class Timespan implements Comparable<Timespan>{
     public LocalDateTime getEndTime() {
         return endTime;
     }
+
+    /**
+     * Check whether this time span is infinite.
+     * 
+     * @return	{@code true} if this represents an infinite time span.
+     */
+	public boolean isInfinite() {
+		return getEndTime() == LocalDateTime.MAX;
+	}
     
     /**
      * Check whether this timespan overlaps with the given timespan
@@ -201,25 +216,28 @@ public final class Timespan implements Comparable<Timespan>{
 	}
 
 	public Timespan roundStartingTime() {
-		//TODO: inconsistentie indien seconden of nanoseconden != 0
-		LocalDateTime newStart = getStartTime().withMinute(0);
+		if(getStartTime().getMinute() == 0)
+			return this;
 		
-		if(canHaveAsTimeInterval(newStart, getEndTime()))
-			return new Timespan(newStart, getEndTime());
-		else
-			return null;
-	}
-
-	public boolean covers(Duration duration) {
-		return !getEndTime().isBefore(duration.getEndTimeFrom(getStartTime()));
+		//TODO: inconsistentie indien seconden of nanoseconden != 0 ???
+		LocalDateTime newStart = getStartTime().withMinute(0);
+		return new Timespan(newStart, getEndTime()).postponeHours(1);
 	}
 
 	public Timespan postponeHours(int hours) {
-		LocalDateTime newStart = getStartTime().plusHours(1);
+		LocalDateTime newStart = getStartTime().plusHours(hours);
 		if(canHaveAsTimeInterval(newStart, getEndTime()))
 			return new Timespan(newStart, getEndTime());
 		else 
 			return null;
+	}
+
+	public boolean startsAfter(LocalDateTime time) {
+		return getStartTime().isAfter(time);
+	}
+
+	public boolean startsBefore(LocalDateTime time) {
+		return getStartTime().isBefore(time);
 	}
     
 }
