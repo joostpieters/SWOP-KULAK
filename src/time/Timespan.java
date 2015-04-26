@@ -199,12 +199,5 @@ public final class Timespan implements Comparable<Timespan>{
 			res = this.getEndTime().compareTo(other.getEndTime());
 		return res;
 	}
-	
-	//TODO: misschien weg?
-	public Timespan append(Timespan other) {
-		if(this.compareTo(other) < 0)
-			other.append(this);
-		return new Timespan(other.getStartTime(), this.getEndTime());
-	}
     
 }

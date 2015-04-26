@@ -185,29 +185,6 @@ public class Resource implements ClockObserver {
 		
 		result.add(new Timespan(r2.getEndTime()));
 		return result;
-//		SortedSet<LocalDateTime> result = new TreeSet<>();
-//		Set<Reservation> reservations = getReservations(from);
-//		if(reservations.isEmpty()) {
-//			result.add(from);
-//			return result;
-//		}
-//		
-//		Iterator<Reservation> it = reservations.iterator();
-//		Reservation r1, r2 = it.next();
-//		while(it.hasNext()) {
-//			r1 = r2;
-//			r2 = it.next();
-//			if(r1.timeBetween(r2).compareTo(dur) > 1) {
-//				LocalDateTime next = r1.getEndTime();
-//				result.add(next);
-//				next = LocalDateTime.of(next.toLocalDate(), next.toLocalTime().minusMinutes(next.getMinute()));
-//				while(dur.getEndTimeFrom(next).isBefore(r2.getStartTime())) {
-//					result.add(next);
-//					next = next.plusHours(1);
-//				}
-//			}
-//		}
-//		return result;
 	}
 	
 	/****************************************************

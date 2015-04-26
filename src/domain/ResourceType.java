@@ -55,16 +55,23 @@ public class ResourceType {
         return new HashSet<>(resources);
     }
 
+    public boolean canHaveAsResource(Resource resource) {
+		return resource != null;
+	}
+
     /**
      * Add a resource to the list of resources of this type.
      *
      * @param resource The resource to be added.
      */
-    private void addResource(Resource resource) {
+    protected void addResource(Resource resource) {
+    	if(!canHaveAsResource(resource))
+    		throw new IllegalArgumentException("The given resource is not of the right type.");
+    	
         resources.add(resource);
     }
 
-    /**
+	/**
      * Get the set of available resources of this type.
      *
      * @param span The time span the resources should be available in.
@@ -72,11 +79,11 @@ public class ResourceType {
      */
     public Set<Resource> getAvailableResources(Timespan span) {
         Set<Resource> result = new HashSet<>();
-        for (Resource r : resources) {
-            if (r.isAvailable(span)) {
+        
+        for (Resource r : getResources())
+            if (r.isAvailable(span))
                 result.add(r);
-            }
-        }
+        
         return result;
     }
 
@@ -88,22 +95,12 @@ public class ResourceType {
      */
     public Set<Task> findConflictingTasks(Timespan span) {
         Set<Task> result = new HashSet<>();
-        for (Resource r : resources) {
+        
+        for (Resource r : getResources())
             result.addAll(r.findConflictingTasks(span));
-        }
 
         return result;
     }
-
-//	public Set<Resource> makeReservation(Resource resource, Task task, Timespan span) throws ConflictException {
-//		if(!resources.contains(resource))
-//			throw new IllegalArgumentException("The given resource is not of the right type.");
-//		resource.makeReservation(task, span);
-//		//TODO: wat te doen met de return types???
-//		Set<Resource> result = new HashSet<>();
-//		result.add(resource);
-//		return result;
-//	}
     
     public Set<Resource> makeReservation(Task task, Timespan span, int quantity) throws ConflictException {
         Set<Resource> availableResources = getAvailableResources(span);
@@ -128,26 +125,6 @@ public class ResourceType {
     	for(Resource r : getResources()) {
     		result.addAll(r.nextAvailableTimespans(from));
     	}
-    	
-    	//TODO: is het interessant om die time spans te mergen? Ik dacht eerst wel, maar nu lijkt het mij redelijk zinloos... 
-//    	Iterator<Timespan> it = result.iterator();
-//    	Collection<Timespan> remove = new HashSet<>();
-//    	Collection<Timespan> add = new HashSet<>();
-//    	Timespan t1, t2 = it.next();
-//    	
-//    	while(it.hasNext()) {
-//    		t1 = t2;
-//    		t2 = it.next();
-//    		if(t1.overlapsWith(t2)) {
-//    			t2 = t1.append(t2);
-//    			it.remove();
-//    			remove.add(t1);
-//    			add.add(t2);
-//    		}
-//    	}
-//    	
-//    	result.addAll(add);
-//    	result.removeAll(remove);
     	
     	return result;
     }
