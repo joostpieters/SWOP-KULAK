@@ -199,12 +199,27 @@ public final class Timespan implements Comparable<Timespan>{
 			res = this.getEndTime().compareTo(other.getEndTime());
 		return res;
 	}
-	
-	//TODO: misschien weg?
-	public Timespan append(Timespan other) {
-		if(this.compareTo(other) < 0)
-			other.append(this);
-		return new Timespan(other.getStartTime(), this.getEndTime());
+
+	public Timespan roundStartingTime() {
+		//TODO: inconsistentie indien seconden of nanoseconden != 0
+		LocalDateTime newStart = getStartTime().withMinute(0);
+		
+		if(canHaveAsTimeInterval(newStart, getEndTime()))
+			return new Timespan(newStart, getEndTime());
+		else
+			return null;
+	}
+
+	public boolean covers(Duration duration) {
+		return !getEndTime().isBefore(duration.getEndTimeFrom(getStartTime()));
+	}
+
+	public Timespan postponeHours(int hours) {
+		LocalDateTime newStart = getStartTime().plusHours(1);
+		if(canHaveAsTimeInterval(newStart, getEndTime()))
+			return new Timespan(newStart, getEndTime());
+		else 
+			return null;
 	}
     
 }

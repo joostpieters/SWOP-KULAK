@@ -2,7 +2,9 @@ package domain;
 
 import domain.time.Timespan;
 import exception.ConflictException;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -12,33 +14,41 @@ import java.util.TreeSet;
 
 public class ResourceType implements DetailedResourceType {
 
+    private final String name;
     private final List<ResourceType> requirements;
     private final List<ResourceType> conflicts;
     private final Timespan availability;
     private final Set<Resource> resources;
-    private final String name;
     
     //TODO availability + null arguments
     public ResourceType(String name, List<ResourceType> requirements, List<ResourceType> conflicts) {
+        this.name = name;
         this.requirements = requirements;
         this.conflicts = conflicts;
         availability = null;
         resources = new HashSet<>();
-        this.name = name;
+    }
+    
+    /**
+     * @return the name
+     */
+    @Override
+    public String getName() {
+        return name;
     }
 
     /**
      * @return the requirements
      */
     public List<ResourceType> getRequirements() {
-        return requirements;
+        return new ArrayList<>(requirements);
     }
 
     /**
      * @return the conflicts
      */
     public List<ResourceType> getConflicts() {
-        return conflicts;
+        return new ArrayList<>(conflicts);
     }
 
     /**
@@ -167,15 +177,6 @@ public class ResourceType implements DetailedResourceType {
     	{
     		resource.clearFutureReservations(currentTime, task);
     	}
-    }
-    
-    /**
-     * 
-     * @return The name of this resourcetype 
-     */
-    @Override
-    public String getName() {
-        return name;
     }
 
 }
