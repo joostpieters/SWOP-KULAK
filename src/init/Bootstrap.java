@@ -52,9 +52,9 @@ public class Bootstrap {
             return;
         }
         
-        Auth auth = new Auth();
+        Auth auth = new Auth(db);
         
-        Auth.registerUser(new Manager("lol"));
+        auth.registerUser(new Manager("lol"));
         String username;
         while(true){
             username = JOptionPane.showInputDialog("Enter your username");
@@ -73,11 +73,11 @@ public class Bootstrap {
         acl.addEntry("developer", Arrays.asList("UpdateTaskStatus"));
         acl.addEntry("manager", Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation"));
         HandlerFactory factory = new HandlerFactory(manager, clock, auth, acl, db);
-        
+        //TODO uncomment
         // display uncaught exceptions
-        Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
-            JOptionPane.showMessageDialog(null, e.getMessage(), null, JOptionPane.WARNING_MESSAGE);
-        });
+//        Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
+//            JOptionPane.showMessageDialog(null, e.getMessage(), null, JOptionPane.WARNING_MESSAGE);
+//        });
         
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {

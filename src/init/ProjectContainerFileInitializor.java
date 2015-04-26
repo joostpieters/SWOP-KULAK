@@ -7,6 +7,7 @@ package init;
  * @author Frederic, Mathias, Pieter-Jan
  */
 import domain.Database;
+import domain.Developer;
 import domain.Executing;
 import domain.Failed;
 import domain.Finished;
@@ -228,6 +229,9 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
         while (ttype == '-') {
             expectChar('-');
             String name = expectStringField("name");
+            //TODO resourcetype voor developers?
+            db.addUser(new Developer(name));
+            
         }
 
         expectLabel("projects");

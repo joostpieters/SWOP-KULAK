@@ -1,8 +1,5 @@
 package domain;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * This class handles the authorization of user and keeps track of the logged
  * in user.
@@ -14,10 +11,15 @@ public class Auth {
     
     
     private User user;
-    private static Map<String, User> users;
+    private final Database db;
     
-    public Auth(){
-       users = new HashMap<>();
+    /**
+     * Initializes this authorization class with the given database
+     * 
+     * @param db The database to use to retrieve the users
+     */
+    public Auth(Database db){
+        this.db = db;
     }
     
     /**
@@ -27,11 +29,15 @@ public class Auth {
      * @return True if and only if the login succeeded.
      */
     public boolean login(String username){
-        if(!users.containsKey(username)){
-            return false;
+        for(User user : db.getUsers()){
+            if(user.getName().equalsIgnoreCase(username)){
+                this.user = user;
+                return true;
+            }
+                
         }
-        user = users.get(username);
-        return true;
+        
+        return false;
     }
     
     /**
@@ -56,7 +62,7 @@ public class Auth {
      * 
      * @param user The user to register
      */
-    public static void registerUser(User user) {
-        users.put(user.getName(), user);
+    public void registerUser(User user) {
+        db.addUser(user);
     }
 }

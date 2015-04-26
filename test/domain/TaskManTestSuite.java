@@ -8,9 +8,9 @@ import scenariotest.CreateProjectScenarioTest;
 import scenariotest.CreateTaskScenarioTest;
 import scenariotest.ShowProjectScenarioTest;
 import scenariotest.UpdateTaskStatusScenarioTest;
-import time.ClockTest;
-import time.DurationTest;
-import time.TimespanTest;
+import domain.time.ClockTest;
+import domain.time.DurationTest;
+import domain.time.TimespanTest;
 
 /**
  * This testsuite, runs all the tests for this application

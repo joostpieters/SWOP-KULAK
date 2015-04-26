@@ -31,11 +31,11 @@ public class AuthTest {
     
     @Before
     public void setUp() {
-        auth = new Auth();
+        auth = new Auth(new Database());
         user1 = new Manager("John");
         user2 = new Developer("Fred");
-        Auth.registerUser(user1);
-        Auth.registerUser(user2);
+        auth.registerUser(user1);
+        auth.registerUser(user2);
     }
     
     @After

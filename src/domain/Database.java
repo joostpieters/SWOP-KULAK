@@ -11,12 +11,14 @@ import java.util.List;
 public class Database {
 
     List<ResourceType> resourceTypes;
+    List<User> users;
     
     /**
      * Initializes this new database
      */
     public Database(){
         resourceTypes = new ArrayList<>();
+        users = new ArrayList<>();
     }
     
     /**
@@ -33,6 +35,22 @@ public class Database {
      */
     public void addResourceType(ResourceType type){
         resourceTypes.add(type);
+    }
+    
+    /**
+     * 
+     * @return The users stored in this database
+     */
+    public List<User> getUsers(){
+        return users;
+    }
+    
+    /**
+     * Adds the given user to this database
+     * @param user The user to add
+     */
+    public void addUser(User user){
+        users.add(user);
     }
 
 }

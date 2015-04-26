@@ -5,7 +5,9 @@ import domain.DetailedProject;
 import domain.DetailedResourceType;
 import domain.DetailedTask;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -31,8 +33,8 @@ public class CreateTaskFrame extends javax.swing.JFrame {
         this.handler = handler;
         initProjectComboBox();
                
-        initTables(((DetailedProject) projectComboBox.getSelectedItem()).getId());     
-        
+        initTaskTables(((DetailedProject) projectComboBox.getSelectedItem()).getId());     
+        initResourceTable();
     }
 
     /**
@@ -45,11 +47,29 @@ public class CreateTaskFrame extends javax.swing.JFrame {
         }
 
     }
+    
+     /**
+     * Inits the resourcetype table with the resourcetypes
+     */
+    private void initResourceTable() {
+        
+        List<DetailedResourceType> resourceTypes = handler.getResourceTypes();
+        Object[][] data = new Object[resourceTypes.size()][];
+        int i = 0;
+        for (DetailedResourceType type : resourceTypes) {
+            data[i] = new Object[]{
+                type.getName(),
+                0};
+            i++;
+        }
+        DefaultTableModel resourceModel = new DefaultTableModel(data, new String[]{"Name", "Quantity"});
+        ResourceTypeTable.setModel(resourceModel);
+    }
 
     /**
      * Initialize the list project table with the appropriate data
      */
-    private void initTables(int pId) {
+    private void initTaskTables(int pId) {
 
         String[] columnNames = {"Id", "Description"};
         List<DetailedTask> tasks = handler.getTasksByProject(pId);
@@ -75,18 +95,7 @@ public class CreateTaskFrame extends javax.swing.JFrame {
         alternativeForTable.setModel(prereqModel);
         alternativeForTable.getColumnModel().getColumn(0).setMaxWidth(50);
         
-        // init resourcetype table
-        List<DetailedResourceType> resourceTypes = handler.getResourceTypes();
-        Object[][] data2 = new Object[resourceTypes.size()][];
-        i = 0;
-        for (DetailedResourceType type : resourceTypes) {
-            data2[i] = new Object[]{
-                type.getName(),
-                0};
-            i++;
-        }
-        DefaultTableModel resourceModel = new DefaultTableModel(data2, new String[]{"Name", "Quantity"});
-        ResourceTypeTable.setModel(resourceModel);
+        
        
     }
 
@@ -106,7 +115,6 @@ public class CreateTaskFrame extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         createTaskButton = new javax.swing.JButton();
-        estDurationHoursTextField = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         projectComboBox = new javax.swing.JComboBox();
@@ -120,7 +128,6 @@ public class CreateTaskFrame extends javax.swing.JFrame {
         alternativeForTable = new javax.swing.JTable();
         jLabel9 = new javax.swing.JLabel();
         estDurationMinutesTextField = new javax.swing.JTextField();
-        jLabel10 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         ResourceTypeTable = new javax.swing.JTable();
         jLabel11 = new javax.swing.JLabel();
@@ -149,9 +156,6 @@ public class CreateTaskFrame extends javax.swing.JFrame {
                 createTask(evt);
             }
         });
-
-        estDurationHoursTextField.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
-        estDurationHoursTextField.setToolTipText("Estimated duration hours");
 
         jLabel6.setText("Minutes");
 
@@ -184,8 +188,6 @@ public class CreateTaskFrame extends javax.swing.JFrame {
         estDurationMinutesTextField.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         estDurationMinutesTextField.setToolTipText("Estimated duration minutes");
 
-        jLabel10.setText("Hours");
-
         ResourceTypeTable.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         ResourceTypeTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane4.setViewportView(ResourceTypeTable);
@@ -211,21 +213,16 @@ public class CreateTaskFrame extends javax.swing.JFrame {
                                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(40, 40, 40)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(projectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(accDevTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(estDurationHoursTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(estDurationMinutesTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jLabel10)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(estDurationMinutesTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jLabel6))
-                                            .addComponent(jLabel7)))
-                                    .addComponent(projectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(jLabel7)
+                                            .addComponent(jLabel6))))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -262,11 +259,9 @@ public class CreateTaskFrame extends javax.swing.JFrame {
                 .addGap(7, 7, 7)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(estDurationHoursTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
                     .addComponent(jLabel5)
-                    .addComponent(estDurationMinutesTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10))
+                    .addComponent(estDurationMinutesTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -311,10 +306,9 @@ public class CreateTaskFrame extends javax.swing.JFrame {
         int Pid = ((DetailedProject) projectComboBox.getSelectedItem()).getId();
         String description = descriptionTextArea.getText();
         int accDev = 0;
-        int estDurationHours = 0, estDurationMinutes = 0;
+        int estDurationMinutes = 0;
         try {
             accDev = Integer.parseInt(accDevTextField.getText());
-            estDurationHours = Integer.parseInt(estDurationHoursTextField.getText());
             estDurationMinutes = Integer.parseInt(estDurationMinutesTextField.getText());
         } catch (NumberFormatException numberFormatException) {
             JOptionPane.showMessageDialog(rootPane, "Some parameters are not numbers, when they should be.", null, JOptionPane.ERROR_MESSAGE);
@@ -333,22 +327,31 @@ public class CreateTaskFrame extends javax.swing.JFrame {
         if (prereqTable.getSelectedRow() != -1) {
             int[] selectedRows = prereqTable.getSelectedRows();
             prereqs = new ArrayList<>();
-            int i = 0;
+            
             for (int rowId : selectedRows) {
 
                 prereqs.add((int) prereqTable.getValueAt(prereqTable.convertRowIndexToModel(rowId), 0));
-                i++;
+                
+            }
+        }
+        
+        Map<Integer, Integer> resources = new HashMap<>();
+        // check if resourcetypes are selected
+        if (ResourceTypeTable.getSelectedRow() != -1) {
+            int[] selectedRows = ResourceTypeTable.getSelectedRows();
+            
+            for (int rowId : selectedRows) {
+                resources.put(rowId, Integer.parseInt(ResourceTypeTable.getValueAt(ResourceTypeTable.convertRowIndexToModel(rowId), 1).toString()));
+                
             }
         }
 
         try {
-            handler.createTask(Pid, description, accDev, prereqs, estDurationHours, estDurationMinutes, altFor, null);
+            handler.createTask(Pid, description, accDev, prereqs, estDurationMinutes, altFor, resources);
             dispose();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(rootPane, e.getMessage(), null, JOptionPane.ERROR_MESSAGE);
         }
-
-
     }//GEN-LAST:event_createTask
     
     /**
@@ -358,7 +361,7 @@ public class CreateTaskFrame extends javax.swing.JFrame {
      */
     private void projectComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_projectComboBoxActionPerformed
         int Pid = ((DetailedProject) projectComboBox.getSelectedItem()).getId();
-        initTables(Pid);
+        initTaskTables(Pid);
     }//GEN-LAST:event_projectComboBoxActionPerformed
 
 
@@ -368,10 +371,8 @@ public class CreateTaskFrame extends javax.swing.JFrame {
     private javax.swing.JTable alternativeForTable;
     private javax.swing.JButton createTaskButton;
     private javax.swing.JTextArea descriptionTextArea;
-    private javax.swing.JTextField estDurationHoursTextField;
     private javax.swing.JTextField estDurationMinutesTextField;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -389,4 +390,6 @@ public class CreateTaskFrame extends javax.swing.JFrame {
     private javax.swing.JTable prereqTable;
     private javax.swing.JComboBox projectComboBox;
     // End of variables declaration//GEN-END:variables
+
+   
 }
