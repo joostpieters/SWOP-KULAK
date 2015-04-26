@@ -52,9 +52,9 @@ public class Bootstrap {
             return;
         }
         
-        Auth auth = new Auth();
+        Auth auth = new Auth(db);
         
-        Auth.registerUser(new Manager("lol"));
+        auth.registerUser(new Manager("lol"));
         String username;
         while(true){
             username = JOptionPane.showInputDialog("Enter your username");
