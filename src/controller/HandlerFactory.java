@@ -1,9 +1,10 @@
 package controller;
 
-import time.Clock;
 import domain.Acl;
 import domain.Auth;
+import domain.Database;
 import domain.ProjectContainer;
+import domain.time.Clock;
 
 
 /**
@@ -17,6 +18,7 @@ public class HandlerFactory {
     private final Clock clock;
     private final Acl acl;
     private final Auth auth;
+    private final Database db;
     
     
     
@@ -27,12 +29,14 @@ public class HandlerFactory {
      * @param clock The system clock to use in this factory
      * @param auth The authorization manager to use
      * @param acl The action control list to use
+     * @param db The database to use
      */   
-    public HandlerFactory(ProjectContainer manager, Clock clock, Auth auth, Acl acl){
+    public HandlerFactory(ProjectContainer manager, Clock clock, Auth auth, Acl acl, Database db){
         this.acl = acl;
         this.auth = auth;
         this.manager = manager;
         this.clock = clock;
+        this.db = db;
     }
     
     /** 
@@ -53,7 +57,7 @@ public class HandlerFactory {
      * @return A new create task handler, initialized with this manager.
      */
     public CreateTaskHandler getCreateTaskHandler(){
-        return new CreateTaskHandler(manager, auth, acl);
+        return new CreateTaskHandler(manager, auth, acl, db);
     }
     
     /** 

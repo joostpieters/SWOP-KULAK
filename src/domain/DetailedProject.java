@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-import time.Clock;
-import time.Duration;
+import domain.time.Clock;
+import domain.time.Duration;
 
 /**
  * This interface provides methods to retrieve all data from a project object.

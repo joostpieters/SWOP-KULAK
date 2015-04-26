@@ -14,8 +14,8 @@ import java.util.Arrays;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import time.Clock;
-import time.Duration;
+import domain.time.Clock;
+import domain.time.Duration;
 
 
 

@@ -1,9 +1,8 @@
 package domain;
 
+import domain.time.Timespan;
 import exception.ConflictException;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -11,20 +10,21 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import time.Timespan;
-
-public class ResourceType {
+public class ResourceType implements DetailedResourceType {
 
     private final List<ResourceType> requirements;
     private final List<ResourceType> conflicts;
     private final Timespan availability;
     private final Set<Resource> resources;
-
-    public ResourceType() {
-        requirements = new ArrayList<>();
-        conflicts = new ArrayList<>();
+    private final String name;
+    
+    //TODO availability + null arguments
+    public ResourceType(String name, List<ResourceType> requirements, List<ResourceType> conflicts) {
+        this.requirements = requirements;
+        this.conflicts = conflicts;
         availability = null;
         resources = new HashSet<>();
+        this.name = name;
     }
 
     /**
@@ -64,7 +64,7 @@ public class ResourceType {
      *
      * @param resource The resource to be added.
      */
-    protected void addResource(Resource resource) {
+    public void addResource(Resource resource) {
     	if(!canHaveAsResource(resource))
     		throw new IllegalArgumentException("The given resource is not of the right type.");
     	
@@ -186,6 +186,15 @@ public class ResourceType {
     	{
     		resource.clearFutureReservations(currentTime, task);
     	}
+    }
+    
+    /**
+     * 
+     * @return The name of this resourcetype 
+     */
+    @Override
+    public String getName() {
+        return name;
     }
 
 }

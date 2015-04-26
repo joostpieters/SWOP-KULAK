@@ -1,16 +1,14 @@
 package domain;
 
+import domain.time.Clock;
+import domain.time.Duration;
+import domain.time.Timespan;
 import exception.ConflictException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import time.Clock;
-import time.Duration;
-import time.Timespan;
 
 /**
  * This class represents a task
@@ -49,6 +47,7 @@ public class Task implements DetailedTask {
     Task(String description, Duration duration, int accDev, List<Task> prereq, Map<ResourceType, Integer> resources) {
         if(!ResourceType.isValidCombination(resources))
             throw new IllegalArgumentException("This combination of resourcetypes is not valid.");
+        this.requiredResources = resources;
         this.id = generateId();
         setDescription(description);
         this.estimatedDuration = duration;
@@ -60,7 +59,7 @@ public class Task implements DetailedTask {
         }
         
         
-        this.requiredResources = resources;
+        
         
         Status initStatus = new Available();
         setStatus(initStatus);
@@ -77,7 +76,7 @@ public class Task implements DetailedTask {
      * integer between 0 and 100.
      */
     Task(String description, Duration duration, int accDev) {
-        this(description, duration, accDev, null, new HashMap<ResourceType, Integer>());
+        this(description, duration, accDev, null, new HashMap<>());
     }
 
     /**

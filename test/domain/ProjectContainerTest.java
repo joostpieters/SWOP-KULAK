@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import time.Duration;
+import domain.time.Duration;
 
 /**
  * Unit test class for projectContainer

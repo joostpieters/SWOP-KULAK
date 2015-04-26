@@ -1,7 +1,9 @@
 package domain;
 
+import domain.time.Clock;
+import domain.time.Duration;
+import domain.time.Timespan;
 import exception.ObjectNotFoundException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,10 +11,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import time.Clock;
-import time.Duration;
-import time.Timespan;
 
 /**
  * This class represents a project with an id, a name, a description, 
@@ -256,6 +254,7 @@ public class Project implements DetailedProject {
 	 * 			The id this task is an alternative for.
 	 * @param 	prereqs
 	 * 			An array of id's of tasks that the new task will depend on.
+     * @param requiredResources The required resourcetypes for this task
 	 * 
 	 * @return	The task that has been created.
 	 * @throws	IllegalStateException
@@ -263,7 +262,7 @@ public class Project implements DetailedProject {
 	 * 
 	 * @see		Task#Task(String, Duration, int, List)
 	 */
-	public Task createTask(String descr, Duration estdur, int accdev, int altFor, List<Integer> prereqs) {
+	public Task createTask(String descr, Duration estdur, int accdev, int altFor, List<Integer> prereqs, Map<ResourceType, Integer> requiredResources) {
 		if(isFinished())
 			throw new IllegalStateException("This project has already been finished.");
 		
@@ -280,8 +279,8 @@ public class Project implements DetailedProject {
 			for(Integer tId : prereqs) {
 				taskList.add(getTask(tId));
 			}
-			//TODO: lijst/map van resources meegeven
-			t = new Task(descr, estdur, accdev, taskList, null);
+			
+			t = new Task(descr, estdur, accdev, taskList, requiredResources);
 		}
 		
 		addTask(t);

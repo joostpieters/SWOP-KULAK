@@ -2,17 +2,19 @@ package controller;
 
 import domain.Acl;
 import domain.Auth;
+import domain.Database;
 import domain.DetailedProject;
+import domain.DetailedResourceType;
 import domain.DetailedTask;
 import domain.Project;
 import domain.ProjectContainer;
-
+import domain.ResourceType;
+import domain.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import time.Duration;
 
 /**
  * This handler, handles the create task use case
@@ -22,6 +24,7 @@ import time.Duration;
 public class CreateTaskHandler extends Handler{
     
     private final ProjectContainer manager;
+    private final Database db;
     
     /**
      * Initialize a new create task handler with the given projectContainer.
@@ -29,10 +32,12 @@ public class CreateTaskHandler extends Handler{
      * @param manager The projectContainer to use in this handler. 
      * @param auth The authorization manager to use
      * @param acl The action control list to use
+     * @param db The database to use
      */   
-    public CreateTaskHandler(ProjectContainer manager, Auth auth, Acl acl){
+    public CreateTaskHandler(ProjectContainer manager, Auth auth, Acl acl, Database db){
         super(auth, acl);
         this.manager = manager;
+        this.db = db;
     }
     
     
@@ -57,8 +62,9 @@ public class CreateTaskHandler extends Handler{
      * @param estDurMinutes The extra minutes to the estimated duration in hours.
      * @param altfor The id of the task, the task is an alternative for, is smaller
      * than 0, if no alternative. 
+     * @param requiredResources The resources that are required for this task.
      */
-    public void createTask(int pId, String description, int accDev, List<Integer> prereq, int estDurHours, int estDurMinutes, int altfor){       
+    public void createTask(int pId, String description, int accDev, List<Integer> prereq, int estDurHours, int estDurMinutes, int altfor, Map<ResourceType, Integer> requiredResources){       
         if(prereq == null){
             prereq = Project.NO_DEPENDENCIES;
         }
@@ -69,7 +75,7 @@ public class CreateTaskHandler extends Handler{
         try {
             Project project = manager.getProject(pId);
             Duration duration = new Duration(estDurHours, estDurMinutes);
-            project.createTask(description, duration, accDev, altfor, prereq);
+            project.createTask(description, duration, accDev, altfor, prereq, requiredResources);
         } catch (IllegalArgumentException | IllegalStateException e) {
             throw e;
         }catch(Exception e){
@@ -99,5 +105,14 @@ public class CreateTaskHandler extends Handler{
      */
     public List<DetailedTask> getAllTasks(){
         return new ArrayList<>(manager.getAllTasks());
+    }
+    
+    /**
+     * Get the list of different resourcetypes.
+     * 
+     * @return A list containing all the resourcetypes registered in this database.
+     */   
+    public List<DetailedResourceType>  getResourceTypes(){
+        return new ArrayList<>(db.getResourceTypes());
     }
 }

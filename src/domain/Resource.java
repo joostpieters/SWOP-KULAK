@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import time.Timespan;
+import domain.time.Timespan;
 
 public class Resource implements ClockObserver {
 

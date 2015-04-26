@@ -8,7 +8,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import time.Duration;
+import domain.time.Duration;
 
 /**
  * This unit class tests the duration class.
