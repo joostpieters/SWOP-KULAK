@@ -8,6 +8,7 @@ import domain.Project;
 import domain.ProjectContainer;
 import domain.Status;
 import domain.Task;
+import domain.time.Clock;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,17 +26,20 @@ public class UpdateTaskStatusHandler extends Handler{
 
     private Task currentTask;
     private Project currentProject;
+    private final Clock clock;
 
     /**
      * Initialize a new create task handler with the given projectContainer.
      *
      * @param manager The projectContainer to use in this handler.
+     * @param clock The clock to use in this handler
      * @param auth The authorization manager to use
      * @param acl The action control list to use
      */
-    public UpdateTaskStatusHandler(ProjectContainer manager, Auth auth, Acl acl) {
+    public UpdateTaskStatusHandler(ProjectContainer manager, Clock clock, Auth auth, Acl acl) {
         super(auth, acl);
         this.manager = manager;
+        this.clock = clock;
     }
 
     /**
@@ -86,7 +90,8 @@ public class UpdateTaskStatusHandler extends Handler{
         }
 
         try {
- //           currentProject.updateTask(currentTask.getId(), startTime, endTime, taskStatus);
+            // TODO idee: hier fail/execute/finish gebruiken, want timespan is niet relevant voor executing en klok niet voor finished/failed
+           currentProject.updateTask(currentTask.getId(), startTime, endTime, taskStatus, clock.getTime());
         } catch (IllegalArgumentException | IllegalStateException e) {
             throw e;
         } catch (Exception e) {

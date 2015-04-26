@@ -3,6 +3,7 @@ package controller;
 import domain.Acl;
 import domain.Auth;
 import domain.DetailedProject;
+import domain.DetailedResourceType;
 import domain.DetailedTask;
 import domain.Project;
 import domain.ProjectContainer;
@@ -47,6 +48,19 @@ public class PlanTaskHandler extends Handler{
     public Map<DetailedTask, DetailedProject> getAvailableTasks() {
 
         return new HashMap<>(manager.getAllAvailableTasks());
+    }
+    
+    /**
+     * Returns a map with all available tasks in this projectContainer ascociated
+     * with their project.
+     *
+     * @return All available tasks in the projectContainer of this handler.
+     */
+    public Map<DetailedResourceType, Integer> getRequiredResourcesCurrenTask() {
+        if (currentTask == null || currentProject == null) {
+            throw new IllegalStateException("No task currently selected.");
+    }
+        return new HashMap<>(currentTask.getRequiredResources());
     }
 
     /**
