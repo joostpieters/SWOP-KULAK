@@ -9,8 +9,10 @@ import domain.DetailedTask;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.ResourceType;
+import domain.Task;
 import domain.time.Duration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -58,13 +60,12 @@ public class CreateTaskHandler extends Handler{
      * @param description The description of the task
      * @param accDev The deviation by which the estimated duration can deviate
      * @param prereq The id's of the task that have to be finished before this task.
-     * @param estDurHours The estimated duration of the test in hours.
      * @param estDurMinutes The extra minutes to the estimated duration in hours.
      * @param altfor The id of the task, the task is an alternative for, is smaller
      * than 0, if no alternative. 
      * @param requiredResources The resources that are required for this task.
      */
-    public void createTask(int pId, String description, int accDev, List<Integer> prereq, int estDurHours, int estDurMinutes, int altfor, Map<ResourceType, Integer> requiredResources){       
+    public void createTask(int pId, String description, int accDev, List<Integer> prereq, int estDurMinutes, int altfor, Map<Integer, Integer> requiredResources){       
         if(prereq == null){
             prereq = Project.NO_DEPENDENCIES;
         }
@@ -74,8 +75,16 @@ public class CreateTaskHandler extends Handler{
         }
         try {
             Project project = manager.getProject(pId);
-            Duration duration = new Duration(estDurHours, estDurMinutes);
-            project.createTask(description, duration, accDev, altfor, prereq, requiredResources);
+            Duration duration = new Duration(estDurMinutes);
+            
+            HashMap<ResourceType, Integer> resources = new HashMap<>();
+            // convert id's to objects
+            for(Integer id : requiredResources.keySet()){
+                resources.put(db.getResourceTypes().get(id), requiredResources.get(id));
+            }
+            
+            Task createTask = project.createTask(description, duration, accDev, altfor, prereq, resources);
+                        
         } catch (IllegalArgumentException | IllegalStateException e) {
             throw e;
         }catch(Exception e){
@@ -84,6 +93,8 @@ public class CreateTaskHandler extends Handler{
             throw new RuntimeException("An unexpected error occured, please contact the system admin.");
             
         }
+        
+        
     } 
     
     /**

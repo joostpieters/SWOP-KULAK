@@ -45,9 +45,10 @@ public class Task implements DetailedTask {
      * @param resources The resources this task requires to be performed
      */
     Task(String description, Duration duration, int accDev, List<Task> prereq, Map<ResourceType, Integer> resources) {
-        if(!ResourceType.isValidCombination(resources))
+        requiredResources = new HashMap<>();
+        if(!canHaveAsResourceTypes(resources))
             throw new IllegalArgumentException("This combination of resourcetypes is not valid.");
-        this.requiredResources = resources;
+        this.requiredResources.putAll(resources);
         this.id = generateId();
         setDescription(description);
         this.estimatedDuration = duration;
@@ -307,6 +308,26 @@ public class Task implements DetailedTask {
             }
         }
 
+        return true;
+    }
+    
+    /**
+     * Check whether the given list of resource types is mutually compatible
+     * 
+     * @param 	resources 
+     *       	The resource to check
+     * @return 	{@code true} if and only if all the given resource types don't mutually 
+     *        	conflict and for each resource type, its requirements are included in
+     *        	the given list. 
+     */
+    public static boolean canHaveAsResourceTypes(Map<ResourceType, Integer> resources) {
+        if(resources == null){
+            return false;
+        }
+        for (ResourceType type : resources.keySet()) {
+            if(!type.canHaveAsCombination(resources))
+                return false;
+        }
         return true;
     }
 

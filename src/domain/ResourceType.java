@@ -129,27 +129,7 @@ public class ResourceType implements DetailedResourceType {
     	return result;
     }
     
-    /**
-     * Check whether the given list of resource types is mutually compatible
-     * 
-     * @param 	resources 
-     *       	The resource to check
-     * @return 	{@code true} if and only if all the given resource types don't mutually 
-     *        	conflict and for each resource type, its requirements are included in
-     *        	the given list. 
-     */
-    public static boolean isValidCombination(Map<ResourceType, Integer> resources) {
-        if(resources == null){
-            return true;
-        }
-        for (ResourceType type : resources.keySet()) {
-            if(!type.canHaveAsCombination(resources))
-                return false;
-        }
-        return true;
-    }
-    
-    /**
+     /**
      * Checks whether the given list of resourcetypes is compatible with this 
      * resourcetype
      * 
