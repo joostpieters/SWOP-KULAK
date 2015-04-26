@@ -2,6 +2,7 @@ package UI.swingGUI;
 
 import controller.PlanTaskHandler;
 import domain.DetailedProject;
+import domain.DetailedResourceType;
 import domain.DetailedTask;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -291,19 +292,21 @@ public class PlanTaskFrame extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(rootPane, "Please select a task.", null, JOptionPane.ERROR_MESSAGE);
         }
-        
+
         // init resource panel
-        for(int i=0; i<10; i++){
-            JComboBox comboBox = new JComboBox();
-            comboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Finished" + i, "Failed" }));
-            comboBox.setPreferredSize(new java.awt.Dimension(200, 30));
-            
-            
-            resourcePanel.add(comboBox, BorderLayout.SOUTH);
-            resourcePanel.add(Box.createRigidArea(new Dimension(5,15)), BorderLayout.SOUTH);
-            
+        for (DetailedResourceType type : handler.getRequiredResourcesCurrenTask().keySet()) {
+
+            for (int i = 0; i < handler.getRequiredResourcesCurrenTask().get(type); i++) {
+                JComboBox comboBox = new JComboBox();
+                comboBox.setModel(new javax.swing.DefaultComboBoxModel(type.getResources().toArray()));
+                comboBox.setPreferredSize(new java.awt.Dimension(200, 30));
+
+                resourcePanel.add(comboBox, BorderLayout.SOUTH);
+                resourcePanel.add(Box.createRigidArea(new Dimension(5, 15)), BorderLayout.SOUTH);
+            }
+
         }
-        
+
         resourcePanel.revalidate();
         resourcePanel.repaint();
     }//GEN-LAST:event_selectTaskButtonActionPerformed
@@ -314,13 +317,11 @@ public class PlanTaskFrame extends javax.swing.JFrame {
      * @param evt
      */
     private void planTaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_planTaskButtonActionPerformed
-        
+
         ResolveConflictFrame resolveConflictFrame = new ResolveConflictFrame(this);
         resolveConflictFrame.setVisible(true);
         this.setVisible(false);
-        
-   
-        
+
 //        try {
 //            String specificTime = SpecificTimeTextField.getText();
 //            

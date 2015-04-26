@@ -51,6 +51,7 @@ public class ResourceType implements DetailedResourceType {
     /**
      * @return the resources
      */
+    @Override
     public Set<Resource> getResources() {
         return new HashSet<>(resources);
     }

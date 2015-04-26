@@ -153,7 +153,7 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
             }
         });
 
-        statusComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Finished", "Failed" }));
+        statusComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Finished", "Failed", "Executing" }));
 
         jLabel8.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         jLabel8.setText("Status");

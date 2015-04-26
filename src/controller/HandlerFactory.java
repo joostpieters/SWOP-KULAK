@@ -64,7 +64,7 @@ public class HandlerFactory {
      * @return A new update task handler, initialized with this manager.
      */
     public UpdateTaskStatusHandler getUpdateTaskHandler(){
-        return new UpdateTaskStatusHandler(manager, auth, acl);
+        return new UpdateTaskStatusHandler(manager, clock, auth, acl);
     }
     
      /** 

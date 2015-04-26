@@ -12,7 +12,7 @@ import java.util.TreeSet;
 
 import domain.time.Timespan;
 
-public class Resource implements ClockObserver {
+public class Resource implements ClockObserver, DetailedResource {
 
 	private static int nextId = 0;
 
@@ -50,6 +50,7 @@ public class Resource implements ClockObserver {
 	/**
 	 * @return the id
 	 */
+    @Override
 	public int getId() {
 		return id;
 	}
@@ -57,6 +58,7 @@ public class Resource implements ClockObserver {
 	/**
 	 * @return the name
 	 */
+    @Override
 	public String getName() {
 		return name;
 	}
