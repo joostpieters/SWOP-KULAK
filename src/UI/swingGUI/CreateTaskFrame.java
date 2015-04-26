@@ -2,11 +2,11 @@ package UI.swingGUI;
 
 import controller.CreateTaskHandler;
 import domain.DetailedProject;
+import domain.DetailedResourceType;
 import domain.DetailedTask;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -74,7 +74,20 @@ public class CreateTaskFrame extends javax.swing.JFrame {
         prereqTable.getColumnModel().getColumn(0).setMaxWidth(50);
         alternativeForTable.setModel(prereqModel);
         alternativeForTable.getColumnModel().getColumn(0).setMaxWidth(50);
-        prereqTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        
+        // init resourcetype table
+        List<DetailedResourceType> resourceTypes = handler.getResourceTypes();
+        Object[][] data2 = new Object[resourceTypes.size()][];
+        i = 0;
+        for (DetailedResourceType type : resourceTypes) {
+            data2[i] = new Object[]{
+                type.getName(),
+                0};
+            i++;
+        }
+        DefaultTableModel resourceModel = new DefaultTableModel(data2, new String[]{"Name", "Quantity"});
+        ResourceTypeTable.setModel(resourceModel);
+       
     }
 
     /**
@@ -329,7 +342,7 @@ public class CreateTaskFrame extends javax.swing.JFrame {
         }
 
         try {
-            handler.createTask(Pid, description, accDev, prereqs, estDurationHours, estDurationMinutes, altFor);
+            handler.createTask(Pid, description, accDev, prereqs, estDurationHours, estDurationMinutes, altFor, null);
             dispose();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(rootPane, e.getMessage(), null, JOptionPane.ERROR_MESSAGE);

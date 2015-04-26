@@ -1,6 +1,6 @@
 package domain;
 
-import time.Timespan;
+import domain.time.Timespan;
 import exception.ConflictException;
 
 /**

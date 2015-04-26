@@ -3,7 +3,7 @@ package domain;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 
-import time.Timespan;
+import domain.time.Timespan;
 
 public class Reservation {
 

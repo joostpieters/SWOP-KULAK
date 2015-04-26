@@ -2,8 +2,8 @@ package domain;
 
 import java.util.List;
 
-import time.Duration;
-import time.Timespan;
+import domain.time.Duration;
+import domain.time.Timespan;
 
 /**
  * This interface provides methods to retrieve all data from a task object.

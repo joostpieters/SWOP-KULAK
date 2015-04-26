@@ -1,7 +1,7 @@
 package domain;
 
-import time.Duration;
-import time.Timespan;
+import domain.time.Duration;
+import domain.time.Timespan;
 
 /**
  * This class represents an available status of a task.

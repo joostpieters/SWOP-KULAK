@@ -4,8 +4,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import time.Timespan;
-import time.WorkWeekConfiguration;
+import domain.time.Timespan;
+import domain.time.WorkWeekConfiguration;
 
 /**
  * This class represents a developer in the system

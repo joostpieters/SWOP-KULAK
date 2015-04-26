@@ -8,7 +8,7 @@ import java.time.LocalTime;
 import org.junit.Before;
 import org.junit.Test;
 
-import time.WorkWeekConfiguration;
+import domain.time.WorkWeekConfiguration;
 
 public class WorkWeekConfigurationTest {
 	private WorkWeekConfiguration wwc_default;

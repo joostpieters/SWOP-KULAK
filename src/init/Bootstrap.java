@@ -4,19 +4,17 @@ import UI.swingGUI.MainFrame;
 import controller.HandlerFactory;
 import domain.Acl;
 import domain.Auth;
+import domain.Database;
 import domain.Manager;
 import domain.ProjectContainer;
-
+import domain.time.Clock;
 import java.io.FileReader;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-import time.Clock;
 
 /**
  *
@@ -45,10 +43,11 @@ public class Bootstrap {
         
         
         Clock clock = new Clock();
+        Database db = new Database();
         int option = JOptionPane.showConfirmDialog(null, "Would you like to initialize the system with an input file?");
         ProjectContainer manager = new ProjectContainer();
         if (option == 0) {
-            initManagerFromFile(manager, clock);
+            initManagerFromFile(manager, clock, db);
         } else if (option == 2) {
             return;
         }
@@ -73,7 +72,7 @@ public class Bootstrap {
         Acl acl = new Acl();
         acl.addEntry("developer", Arrays.asList("UpdateTaskStatus"));
         acl.addEntry("manager", Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation"));
-        HandlerFactory factory = new HandlerFactory(manager, clock, auth, acl);
+        HandlerFactory factory = new HandlerFactory(manager, clock, auth, acl, db);
         
         // display uncaught exceptions
         Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
@@ -92,7 +91,7 @@ public class Bootstrap {
      * 
      * @param manager The manager to initialize
      */
-    private static void initManagerFromFile(ProjectContainer manager, Clock clock) {
+    private static void initManagerFromFile(ProjectContainer manager, Clock clock, Database db) {
         
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Task Man inputfile", "tman");
@@ -102,7 +101,7 @@ public class Bootstrap {
 
             try (FileReader fileReader = new FileReader(chooser.getSelectedFile())) {
 
-                ProjectContainerFileInitializor fileInitializor = new ProjectContainerFileInitializor(fileReader, manager, clock);
+                ProjectContainerFileInitializor fileInitializor = new ProjectContainerFileInitializor(fileReader, manager, clock, db);
                 fileInitializor.processFile();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, "An error occured while reading/processing the file, please try again.", null, JOptionPane.ERROR_MESSAGE);

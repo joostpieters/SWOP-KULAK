@@ -1,51 +1,57 @@
 package init;
 
 /**
- * This class reads input from a filereader to initialize a projectcontainer with 
- * the appropriate data.
+ * This class reads input from a filereader to initialize a projectcontainer
+ * with the appropriate data.
  *
  * @author Frederic, Mathias, Pieter-Jan
  */
+import domain.Database;
+import domain.Executing;
 import domain.Failed;
 import domain.Finished;
 import domain.Project;
 import domain.ProjectContainer;
+import domain.Resource;
+import domain.ResourceType;
 import domain.Status;
-import domain.Task;
-
+import domain.time.Clock;
+import domain.time.Duration;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import time.Clock;
-import time.Duration;
-
 public class ProjectContainerFileInitializor extends StreamTokenizer {
 
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
     private final ProjectContainer manager;
     private final Clock clock;
-    
+    private final Database db;
+
     /**
      * Initialize this ProjectConainerFileInitializor with the given reader and
      * projectcontainer
-     * 
+     *
      * @param r The reader to use to read in the file
      * @param manager The projectContainer to initialize
      * @param clock The clock to use
+     * @param db The database to initialize
      */
-    public ProjectContainerFileInitializor(Reader r, ProjectContainer manager, Clock clock) {
+    public ProjectContainerFileInitializor(Reader r, ProjectContainer manager, Clock clock, Database db) {
         super(r);
         this.manager = manager;
         this.clock = clock;
+        this.db = db;
     }
-    
+
     /**
-     * 
+     *
      * @return The next token
      * @see java.io.StreamTokenizer#nextToken()
      */
@@ -57,8 +63,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             throw new RuntimeException(e);
         }
     }
-    
-    
+
     void error(String msg) {
         throw new RuntimeException("Line " + lineno() + ": " + msg);
     }
@@ -82,6 +87,16 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
         expectChar(':');
     }
 
+    LocalDateTime expectDateField(String label) {
+        String date = expectStringField(label);
+        return LocalDateTime.parse(date, dateTimeFormatter);
+    }
+
+    LocalTime expectTimeField(String label) {
+        String date = expectStringField(label);
+        return LocalTime.parse(date, timeFormatter);
+    }
+
     String expectStringField(String label) {
         expectLabel(label);
         if (ttype != '"') {
@@ -90,11 +105,6 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
         String value = sval;
         nextToken();
         return value;
-    }
-
-    LocalDateTime expectDateField(String label) {
-        String date = expectStringField(label);
-        return LocalDateTime.parse(date, dateTimeFormatter);
     }
 
     int expectInt() {
@@ -125,10 +135,38 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
         expectChar(']');
         return list;
     }
-    
-    /**
-     * Parse the file and populate this manager with the appropriate data.
-     */
+
+    public class IntPair {
+
+        public int first;
+        public int second;
+    }
+
+    List<IntPair> expectLabeledPairList(String first, String second) {
+        ArrayList<IntPair> list = new ArrayList<>();
+        expectChar('[');
+        while (ttype == '{') {
+            if (ttype == '{') {
+                expectChar('{');
+                int f = expectIntField(first);
+                expectChar(',');
+                int s = expectIntField(second);
+                expectChar('}');
+                IntPair p = new IntPair();
+                p.first = f;
+                p.second = s;
+                list.add(p);
+            }
+            if (ttype == ',') {
+                expectChar(',');
+            } else if (ttype != ']') {
+                error("']' (end of list) or ',' (new list item) expected");
+            }
+        }
+        expectChar(']');
+        return list;
+    }
+
     public void processFile() {
         slashSlashComments(false);
         slashStarComments(false);
@@ -136,6 +174,62 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
         commentChar('#');
 
         nextToken();
+
+        LocalDateTime systemTime = expectDateField("systemTime");
+
+        expectLabel("dailyAvailability");
+        while (ttype == '-') {
+            expectChar('-');
+            LocalTime creationTime = expectTimeField("startTime");
+            LocalTime dueTime = expectTimeField("endTime");
+        }
+
+        expectLabel("resourceTypes");
+        while (ttype == '-') {
+            expectChar('-');
+            String name = expectStringField("name");
+            expectLabel("requires");
+            List<Integer> requirementIds = expectIntList();
+            expectLabel("conflictsWith");
+            List<Integer> conflictIds = expectIntList();
+            expectLabel("dailyAvailability");
+            if (ttype == TT_NUMBER) {
+                int availabilityIndex = expectInt();
+            }
+
+            List<ResourceType> requirements = new ArrayList<>();
+
+            // transform ids to objects
+            for (Integer i : requirementIds) {
+                requirements.add(db.getResourceTypes().get(i));
+            }
+
+            List<ResourceType> conflicts = new ArrayList<>();
+
+            // transform ids to objects
+            for (Integer i : conflictIds) {
+                requirements.add(db.getResourceTypes().get(i - 1));
+            }
+
+            db.addResourceType(new ResourceType(name, requirements, conflicts));
+        }
+
+        expectLabel("resources");
+        while (ttype == '-') {
+            expectChar('-');
+            String name = expectStringField("name");
+            expectLabel("type");
+            int typeIndex = expectInt();
+            // add to resourcetype
+            db.getResourceTypes().get(typeIndex).addResource(new Resource(name));
+        }
+
+        expectLabel("developers");
+        while (ttype == '-') {
+            expectChar('-');
+            String name = expectStringField("name");
+        }
+
         expectLabel("projects");
 
         while (ttype == '-') {
@@ -146,12 +240,23 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             LocalDateTime dueTime = expectDateField("dueTime");
             manager.createProject(name, description, creationTime, dueTime);
         }
+
+        expectLabel("plannings");
+        while (ttype == '-') {
+            expectChar('-');
+            LocalDateTime dueTime = expectDateField("plannedStartTime");
+            expectLabel("developers");
+            List<Integer> developers = expectIntList();
+            expectLabel("resources");
+            List<IntPair> resources = expectLabeledPairList("type", "quantity");
+        }
+
         expectLabel("tasks");
         while (ttype == '-') {
             expectChar('-');
             int projectId = expectIntField("project");
             String description = expectStringField("description");
-            
+
             int estimatedDuration = expectIntField("estimatedDuration");
             int acceptableDeviation = expectIntField("acceptableDeviation");
             int alternativeFor = Project.NO_ALTERNATIVE;
@@ -164,13 +269,20 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             if (ttype == '[') {
                 prerequisiteTasks = expectIntList();
             }
-            
+
             if (prerequisiteTasks.isEmpty()) {
                 prerequisiteTasks = Project.NO_DEPENDENCIES;
             }
-            
+
             Duration duration = new Duration(estimatedDuration);
-            Task task = manager.getProject(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks);
+            // TODO waar staan de required resources van een taak in het bestand??? 
+            //Task task = manager.getProject(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks);
+
+            expectLabel("planning");
+            Integer planning;
+            if (ttype == TT_NUMBER) {
+                planning = expectInt();
+            }
 
             expectLabel("status");
             Status status = null;
@@ -181,13 +293,26 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
                 nextToken();
                 status = new Failed();
             }
-            if (status != null) {
+            if (isWord("executing")) {
+                nextToken();
+                status = new Executing();
+            }
+            if (status != null && !(status instanceof Executing)) {
                 LocalDateTime startTime = expectDateField("startTime");
                 LocalDateTime endTime = expectDateField("endTime");
                 clock.advanceTime(endTime);
 //TODO:                manager.getProject(projectId).updateTask(task.getId(), startTime, endTime, status);
             }
 
+        }
+
+        expectLabel("reservations");
+        while (ttype == '-') {
+            expectChar('-');
+            int resource = expectIntField("resource");
+            int task = expectIntField("task");
+            LocalDateTime startTime = expectDateField("startTime");
+            LocalDateTime endTime = expectDateField("endTime");
         }
         if (ttype != TT_EOF) {
             error("End of file or '-' expected");

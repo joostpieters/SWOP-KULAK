@@ -17,8 +17,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import time.Clock;
-import time.Duration;
+import domain.time.Clock;
+import domain.time.Duration;
 
 /**
  * This scenario test, tests the advance system time use case
