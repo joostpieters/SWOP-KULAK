@@ -4,11 +4,14 @@ import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
 import exception.ConflictException;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * This class represents a task
@@ -57,9 +60,6 @@ public class Task implements DetailedTask {
         } else {
             setPrerequisiteTasks(prereq);
         }
-        
-        
-        
         
         Status initStatus = new Available();
         setStatus(initStatus);
@@ -620,5 +620,23 @@ public class Task implements DetailedTask {
         PlanCommand planCommand = new PlanCommand(timeSpan, resources, this);
         planCommand.execute();
         plannedStartTime = startTime;
+    }
+    
+    public SortedSet<LocalDateTime> nextAvailableStartingTimes(LocalDateTime from) {
+    	SortedSet<LocalDateTime> result = new TreeSet<>();
+    	SortedSet<Timespan> freeMoments = new TreeSet<>();
+    	
+    	for(ResourceType type : getRequiredResources().keySet())
+    		freeMoments.addAll(type.nextAvailableTimespans(from));
+    	
+    	for(Timespan span : freeMoments) {
+    		Timespan rounded = span.roundStartingTime();
+    		while(rounded != null && rounded.covers(getEstimatedDuration())) {
+    			result.add(rounded.getStartTime());
+    			rounded = rounded.postponeHours(1);
+    		}
+    	}
+    	
+    	return result;
     }
 }
