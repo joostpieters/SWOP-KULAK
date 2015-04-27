@@ -2,7 +2,6 @@ package controller;
 
 import domain.Acl;
 import domain.Auth;
-import domain.DetailedProject;
 import domain.DetailedResourceType;
 import domain.DetailedTask;
 import domain.Project;
@@ -10,7 +9,9 @@ import domain.ProjectContainer;
 import domain.Status;
 import domain.Task;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,14 +41,13 @@ public class PlanTaskHandler extends Handler{
     }
 
     /**
-     * Returns a map with all available tasks in this projectContainer ascociated
-     * with their project.
+     * Returns a list with all unplanned tasks in this projectContainer
      *
-     * @return All available tasks in the projectContainer of this handler.
+     * @return All unplanned tasks in the projectContainer of this handler.
      */
-    public Map<DetailedTask, DetailedProject> getAvailableTasks() {
+    public List<DetailedTask> getUnplannedTasks() {
 
-        return new HashMap<>(manager.getAllAvailableTasks());
+        return new ArrayList<>(manager.getAllUnplannedTasks());
     }
     
     /**

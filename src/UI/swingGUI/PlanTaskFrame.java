@@ -1,15 +1,13 @@
 package UI.swingGUI;
 
 import controller.PlanTaskHandler;
-import domain.DetailedProject;
 import domain.DetailedResourceType;
 import domain.DetailedTask;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.List;
 import javax.swing.Box;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -44,18 +42,18 @@ public class PlanTaskFrame extends javax.swing.JFrame {
      */
     private void initAvailableTaskTable() {
         String[] columnNames = {"Id", "Description", "Estimated Duration", "Acceptable Deviation", "Project id", "Project"};
-        Map<DetailedTask, DetailedProject> tasks = handler.getAvailableTasks();
+        List<DetailedTask> tasks = handler.getUnplannedTasks();
         Object[][] data = new Object[tasks.size()][];
 
         int i = 0;
-        for (Entry<DetailedTask, DetailedProject> pair : tasks.entrySet()) {
+        for (DetailedTask task : tasks) {
             data[i] = new Object[]{
-                pair.getKey().getId(),
-                pair.getKey().getDescription(),
-                pair.getKey().getEstimatedDuration().getHours() + "h " + pair.getKey().getEstimatedDuration().getMinutes() + " min",
-                pair.getKey().getAcceptableDeviation() + "%",
-                pair.getValue().getId(),
-                pair.getValue().getName()
+                task.getId(),
+                task.getDescription(),
+                task.getEstimatedDuration().getMinutes() + " min",
+                task.getAcceptableDeviation() + "%",
+                task.getProject().getId(),
+                task.getProject().getName()
             };
             i++;
         }

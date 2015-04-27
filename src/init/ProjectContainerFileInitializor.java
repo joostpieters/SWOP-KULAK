@@ -16,6 +16,7 @@ import domain.Task;
 import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
+import exception.ConflictException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StreamTokenizer;
@@ -23,6 +24,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ProjectContainerFileInitializor extends StreamTokenizer {
@@ -165,8 +167,11 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
         expectChar(']');
         return list;
     }
-
-    public void processFile() {
+    
+    /**
+     * Processes the input file and inits all necessary structures
+     */
+    public void processFile() throws ConflictException {
         slashSlashComments(false);
         slashStarComments(false);
         ordinaryChar('/'); // otherwise "//" keeps treated as comments.
@@ -177,7 +182,8 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
         LocalDateTime systemTime = expectDateField("systemTime");
         
         clock.advanceTime(systemTime);
-
+        
+        // TODO 
         expectLabel("dailyAvailability");
         while (ttype == '-') {
             expectChar('-');
@@ -216,13 +222,17 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
         }
 
         expectLabel("resources");
+        ArrayList<Resource> resourcesList = new ArrayList<>();
         while (ttype == '-') {
             expectChar('-');
             String name = expectStringField("name");
             expectLabel("type");
             int typeIndex = expectInt();
             // add to resourcetype
-            db.getResourceTypes().get(typeIndex).addResource(new Resource(name));
+            Resource res = new Resource(name);
+            db.getResourceTypes().get(typeIndex).addResource(res);
+            // add to temp list
+            resourcesList.add(res);
         }
 
         expectLabel("developers");
@@ -246,6 +256,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
         }
 
         expectLabel("plannings");
+        List<HashMap<ResourceType, Integer>> requiredResourceMaps = new ArrayList<>();
         while (ttype == '-') {
             expectChar('-');
             LocalDateTime dueTime = expectDateField("plannedStartTime");
@@ -253,9 +264,15 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             List<Integer> developers = expectIntList();
             expectLabel("resources");
             List<IntPair> resources = expectLabeledPairList("type", "quantity");
+            HashMap<ResourceType, Integer> resourceMap = new HashMap<>();
+            for(IntPair pair : resources){
+                resourceMap.put(db.getResourceTypes().get(pair.first), pair.second);
+            }
+            requiredResourceMaps.add(resourceMap);
         }
 
         expectLabel("tasks");
+        List<Task> taskList = new ArrayList<>();
         while (ttype == '-') {
             expectChar('-');
             int projectId = expectIntField("project");
@@ -279,14 +296,18 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             }
 
             Duration duration = new Duration(estimatedDuration);
-            // TODO waar staan de required resources van een taak in het bestand??? 
-            Task task = manager.getProject(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, Task.NO_REQUIRED_RESOURCE_TYPES);
-
+            
             expectLabel("planning");
             Integer planning;
+            Task task;
             if (ttype == TT_NUMBER) {
                 planning = expectInt();
+                task = manager.getProject(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, requiredResourceMaps.get(planning));
+            }else{
+                task = manager.getProject(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, Task.NO_REQUIRED_RESOURCE_TYPES);
             }
+            // add to temporary list
+            taskList.add(task);
 
             expectLabel("status");
             String status = "";
@@ -322,6 +343,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             int task = expectIntField("task");
             LocalDateTime startTime = expectDateField("startTime");
             LocalDateTime endTime = expectDateField("endTime");
+            resourcesList.get(resource).makeReservation(taskList.get(task), new Timespan(startTime, endTime));
         }
         if (ttype != TT_EOF) {
             error("End of file or '-' expected");

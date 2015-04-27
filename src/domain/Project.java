@@ -309,6 +309,24 @@ public class Project implements DetailedProject {
 		return result;
 	}
 	
+        /**
+	 * Return all tasks from this project which are available.
+	 * 
+	 * @return	a list of tasks which are available to be planned,
+	 * 			an empty list if this project does not contain
+         *              such tasks.
+	 * 
+	 * @see		Task#isPlanned()
+	 */
+	public List<Task> getUnplannedTasks() {
+		List<Task> result = new LinkedList<>();
+		for(Task t : getTasks()) {
+			if(t.isPlanned())
+				result.add(t);
+		}
+		return result;
+	}
+        
 	/**
 	 * Return all tasks which can cause this project to get overdue and 
 	 * the percentage the project will be late because of the task.

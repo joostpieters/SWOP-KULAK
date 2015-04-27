@@ -1,9 +1,8 @@
 package domain;
 
-import java.util.List;
-
 import domain.time.Duration;
 import domain.time.Timespan;
+import java.util.List;
 
 /**
  * This interface provides methods to retrieve all data from a task object.
@@ -61,5 +60,11 @@ public interface DetailedTask {
 	 * @return 	The alternative task for this task.
 	 */
 	DetailedTask getAlternativeTask();
+        
+    /**
+     * 
+     * @return The project this task belongs to 
+     */
+    public DetailedProject getProject();
     
 }
