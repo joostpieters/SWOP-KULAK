@@ -6,25 +6,21 @@ import controller.HandlerFactory;
 import domain.Acl;
 import domain.Auth;
 import domain.Database;
-import domain.Failed;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.Task;
 import domain.Unavailable;
-
+import domain.time.Clock;
+import domain.time.Duration;
+import domain.time.Timespan;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import domain.time.Clock;
-import domain.time.Duration;
 
 /**
  * This scenario test, tests the create task use case
@@ -70,7 +66,7 @@ public class CreateTaskScenarioTest {
 
         // Step 4
         clock.advanceTime(LocalDateTime.of(2015, 03, 16, 17, 30));
-        t2.update(LocalDateTime.of(2015, 03, 12, 17, 30), LocalDateTime.of(2015, 03, 16, 17, 30), new Failed(), clock.getTime());
+        t2.fail(new Timespan(LocalDateTime.of(2015, 03, 12, 17, 30), LocalDateTime.of(2015, 03, 16, 17, 30)), clock.getTime());
         
         //TODO: te controleren: ...,10,20,... -> ...,20,... (nog iets met uren en minuten?)
         handler.createTask(p1.getId(), "Fun task", 50, Arrays.asList(t1.getId()), 20, t2.getId(), new HashMap<>());

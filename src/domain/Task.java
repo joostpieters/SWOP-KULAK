@@ -398,7 +398,9 @@ public class Task implements DetailedTask {
     }
 
     /**
+     * The methods fail, finish and execute should be used in favour of this method
      * Updates the status and the time span of this task.
+     * 
      *
      * @param start The beginning of the time span of this task.
      * @param end The end of the time span of this task.
@@ -413,6 +415,7 @@ public class Task implements DetailedTask {
      * @throws IllegalArgumentException If The given project's creation time is
      * before the given start time.
      */
+    @Deprecated
     public final void update(LocalDateTime start, LocalDateTime end, Status status, LocalDateTime currentTime) throws IllegalArgumentException {
         if (start == null || end == null) {
             throw new IllegalArgumentException("The given start and/or end time are not initialized.");
