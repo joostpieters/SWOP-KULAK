@@ -157,7 +157,7 @@ public class Resource implements ClockObserver, DetailedResource {
 	 */
 	public SortedSet<Reservation> getReservations(LocalDateTime from) {
 		SortedSet<Reservation> result = new TreeSet<>(Reservation.timespanComparator());
-		for(Reservation r : reservations) {
+		for(Reservation r : getReservations()) {
 			if(!r.expiredBefore(from))
 				result.add(r);
 		}
@@ -182,6 +182,8 @@ public class Resource implements ClockObserver, DetailedResource {
 		
 		Iterator<Reservation> it = reservations.iterator();
 		Reservation r1, r2 = it.next();
+		if(r2.startsAfter(from))
+			result.add(new Timespan(from, r2.getStartTime()));
 		
 		while(it.hasNext()) {
 			r1 = r2;
