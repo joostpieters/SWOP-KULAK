@@ -40,6 +40,7 @@ public class Task implements DetailedTask {
     /****************************************
      * Constructors							*
      ****************************************/
+    
     /**
      * Initializes this task based on the given description, estimated duration,
      * acceptable deviation and prerequisite tasks.
@@ -87,11 +88,10 @@ public class Task implements DetailedTask {
         this(description, duration, accDev, null, new HashMap<>(), project);
     }
 
-    /**
-     * **************************************
-     * Getters & Setters & Checkers	*
-     ***************************************
-     */
+    /****************************************
+     * Getters & Setters & Checkers	        *
+     ****************************************/
+    
     /**
      * Generates an id for a new task.
      *
@@ -355,11 +355,10 @@ public class Task implements DetailedTask {
         this.status = status;
     }
 
-    /**
-     * **************************************
-     * Other methods	*
-     ***************************************
-     */
+    /****************************************
+     * Other methods	                    *
+     ****************************************/
+    
     /**
      * Calculates the duration by which this task been delayed.
      *
@@ -400,7 +399,6 @@ public class Task implements DetailedTask {
      * @param start The beginning of the time span of this task.
      * @param end The end of the time span of this task.
      * @param status The new status of this task.
-     * @param project The project this task belongs to.
      * @throws IllegalArgumentException The given status is neither FAILED nor
      * FINISHED and is therefore not a valid status that can be assigned to this
      * task.
@@ -411,7 +409,7 @@ public class Task implements DetailedTask {
      * @throws IllegalArgumentException If The given project's creation time is
      * before the given start time.
      */
-    final void update(LocalDateTime start, LocalDateTime end, Status status, Project project, LocalDateTime currentTime) throws IllegalArgumentException {
+    final void update(LocalDateTime start, LocalDateTime end, Status status, LocalDateTime currentTime) throws IllegalArgumentException {
         if (start == null || end == null) {
             throw new IllegalArgumentException("The given start and/or end time are not initialized.");
         }
