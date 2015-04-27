@@ -48,10 +48,6 @@ public class Task implements DetailedTask {
      * @param resources The resources this task requires to be performed
      */
     Task(String description, Duration duration, int accDev, List<Task> prereq, Map<ResourceType, Integer> resources) {
-        requiredResources = new HashMap<>();
-        if(!canHaveAsResourceTypes(resources))
-            throw new IllegalArgumentException("This combination of resourcetypes is not valid.");
-        this.requiredResources.putAll(resources);
         this.id = generateId();
         setDescription(description);
         this.estimatedDuration = duration;
@@ -61,6 +57,9 @@ public class Task implements DetailedTask {
         } else {
             setPrerequisiteTasks(prereq);
         }
+        if(!canHaveAsResourceTypes(resources))
+            throw new IllegalArgumentException("This combination of resourcetypes is not valid.");
+        this.requiredResources = new HashMap<>(resources);
         
         Status initStatus = new Available();
         setStatus(initStatus);
