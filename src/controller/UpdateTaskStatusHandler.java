@@ -6,9 +6,11 @@ import domain.DetailedProject;
 import domain.DetailedTask;
 import domain.Project;
 import domain.ProjectContainer;
+import domain.Resource;
 import domain.Task;
 import domain.time.Clock;
 import domain.time.Timespan;
+import exception.NoAccessException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -100,15 +102,21 @@ public class UpdateTaskStatusHandler extends Handler {
     
     /**
      * Execute the currently selected task
+     * @throws RuntimeException something went wrong when executing the task
      */
-    public void executeCurrentTask(){
+    public void executeCurrentTask() throws RuntimeException{
         
         if (currentTask == null || currentProject == null) {
             throw new IllegalStateException("No task currently selected.");
         }
-        //TODO developer assigned checking
-        currentTask.execute(clock.getTime());
-         
+        try {
+            if (((Resource) auth.getUser()).getReservation(currentTask) != null) {
+                currentTask.execute(clock.getTime());
+            }            
+            
+        } catch (ClassCastException e) {
+            throw new NoAccessException("Sorry you don't have the right role to execute a task.");
+        }
     }
 
 }

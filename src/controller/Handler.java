@@ -10,8 +10,8 @@ import exception.NoAccessException;
  * @author Mathias, Frederic, Pieter-Jan
  */
 public abstract class Handler {
-    private Auth auth;
-    private Acl acl;
+    protected Auth auth;
+    protected Acl acl;
     
     
     public Handler(Auth auth, Acl acl) throws NoAccessException{

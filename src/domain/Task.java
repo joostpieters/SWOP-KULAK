@@ -32,6 +32,10 @@ public class Task implements DetailedTask {
     private LocalDateTime plannedStartTime;
     private final Map<ResourceType, Integer> requiredResources;
     private final Project project;
+    /**
+     * A constant to indicate that a task requires no resources
+     */
+    public static Map<ResourceType, Integer> NO_REQUIRED_RESOURCE_TYPES = new HashMap<>();
 
     /****************************************
      * Constructors							*
@@ -49,10 +53,6 @@ public class Task implements DetailedTask {
      * @param The project this task belongsto
      */
     Task(String description, Duration duration, int accDev, List<Task> prereq, Map<ResourceType, Integer> resources, Project project) {
-        requiredResources = new HashMap<>();
-        if(!canHaveAsResourceTypes(resources))
-            throw new IllegalArgumentException("This combination of resourcetypes is not valid.");
-        this.requiredResources.putAll(resources);
         this.id = generateId();
         setDescription(description);
         this.estimatedDuration = duration;
@@ -463,7 +463,7 @@ public class Task implements DetailedTask {
             throw new IllegalArgumentException("The given timespan are not initialized.");
         }
         
-        if(!timespan.endsAfter(currentTime)){
+        if(timespan.endsAfter(currentTime)){
             throw new IllegalArgumentException("The given timespan is after the current time.");
         }
     	getStatus().finish(this, timespan);

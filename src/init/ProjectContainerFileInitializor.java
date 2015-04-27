@@ -8,16 +8,14 @@ package init;
  */
 import domain.Database;
 import domain.Developer;
-import domain.Executing;
-import domain.Failed;
-import domain.Finished;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.Resource;
 import domain.ResourceType;
-import domain.Status;
+import domain.Task;
 import domain.time.Clock;
 import domain.time.Duration;
+import domain.time.Timespan;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StreamTokenizer;
@@ -177,6 +175,8 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
         nextToken();
 
         LocalDateTime systemTime = expectDateField("systemTime");
+        
+        clock.advanceTime(systemTime);
 
         expectLabel("dailyAvailability");
         while (ttype == '-') {
@@ -280,7 +280,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
 
             Duration duration = new Duration(estimatedDuration);
             // TODO waar staan de required resources van een taak in het bestand??? 
-            //Task task = manager.getProject(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks);
+            Task task = manager.getProject(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, Task.NO_REQUIRED_RESOURCE_TYPES);
 
             expectLabel("planning");
             Integer planning;
@@ -289,23 +289,28 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             }
 
             expectLabel("status");
-            Status status = null;
+            String status = "";
             if (isWord("finished")) {
                 nextToken();
-                status = new Finished();
+                status = "finished";
             } else if (isWord("failed")) {
                 nextToken();
-                status = new Failed();
+                status = "failed";
             }
             if (isWord("executing")) {
                 nextToken();
-                status = new Executing();
+                status = "executing";
             }
-            if (status != null && !(status instanceof Executing)) {
+            if (!"".equals(status) && !(status.equalsIgnoreCase("executing"))) {
                 LocalDateTime startTime = expectDateField("startTime");
                 LocalDateTime endTime = expectDateField("endTime");
-                clock.advanceTime(endTime);
-              // manager.getProject(projectId).updateTask(task.getId(), startTime, endTime, status);
+                
+                if(status.equalsIgnoreCase("failed")){
+                    manager.getProject(projectId).getTask(task.getId()).fail(new Timespan(startTime, endTime), clock.getTime());
+                }else if(status.equalsIgnoreCase("finished")){
+                    manager.getProject(projectId).getTask(task.getId()).finish(new Timespan(startTime, endTime), clock.getTime());
+                }
+              
             }
 
         }
