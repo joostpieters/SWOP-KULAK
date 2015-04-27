@@ -4,6 +4,7 @@ import controller.HandlerFactory;
 import controller.ShowProjectHandler;
 import domain.Acl;
 import domain.Auth;
+import domain.Database;
 import domain.DetailedProject;
 import domain.DetailedTask;
 import domain.Project;
@@ -13,6 +14,7 @@ import domain.Unavailable;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -34,6 +36,7 @@ import domain.time.Duration;
 
 public class ShowProjectScenarioTest {
     
+	private static Database db;
     private static ProjectContainer manager;
     private static ShowProjectHandler handler;
     private static Project p1, p2, p3;
@@ -47,20 +50,21 @@ public class ShowProjectScenarioTest {
     
     @BeforeClass
     public static void setUpBeforeClass() {
+    	db = new Database();
         manager = new ProjectContainer();
         // only p1 has tasks
         p1 = manager.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
-        t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
+        t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
         
-        t2 = p1.createTask("A difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Arrays.asList(t1.getId()));
+        t2 = p1.createTask("A difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Arrays.asList(t1.getId()), new HashMap<>());
         
         p2 = manager.createProject("Test 2", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         p3 = manager.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         
         clock = new Clock();
-        auth = new Auth();
+        auth = new Auth(db);
         acl = new Acl();
-        HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl);
+        HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
         handler = controller.getShowProjectHandler();
     }
 

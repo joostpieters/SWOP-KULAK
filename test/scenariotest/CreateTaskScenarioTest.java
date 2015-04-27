@@ -5,6 +5,7 @@ import controller.CreateTaskHandler;
 import controller.HandlerFactory;
 import domain.Acl;
 import domain.Auth;
+import domain.Database;
 import domain.Failed;
 import domain.Project;
 import domain.ProjectContainer;
@@ -13,6 +14,7 @@ import domain.Unavailable;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -31,6 +33,7 @@ import domain.time.Duration;
  */
 public class CreateTaskScenarioTest {
 
+	private static Database db;
     private static ProjectContainer manager;
     private static CreateTaskHandler handler;
     private static Project p1;
@@ -42,19 +45,20 @@ public class CreateTaskScenarioTest {
 
     @BeforeClass
     public static void setUpClass() {
+    	db = new Database();
         manager = new ProjectContainer();
         String project1Name = "project 1 :)";
         String project1Description = "This is project 1";
         LocalDateTime project1StartTime = LocalDateTime.of(2015, 03, 12, 17, 30);
         LocalDateTime project1EndTime = LocalDateTime.of(2015, 03, 16, 17, 30);
         p1 = manager.createProject(project1Name, project1Description, project1StartTime, project1EndTime);
-        t1 = p1.createTask("Prereq", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
-        t2 = p1.createTask("Alternative", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES);
+        t1 = p1.createTask("Prereq", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+        t2 = p1.createTask("Alternative", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
         
         clock = new Clock();
-        auth = new Auth();
+        auth = new Auth(db);
         acl = new Acl();
-        HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl);
+        HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
         handler = controller.getCreateTaskHandler();
     }
 
@@ -66,9 +70,10 @@ public class CreateTaskScenarioTest {
 
         // Step 4
         clock.advanceTime(LocalDateTime.of(2015, 03, 16, 17, 30));
-        p1.updateTask(t2.getId(), LocalDateTime.of(2015, 03, 12, 17, 30), LocalDateTime.of(2015, 03, 16, 17, 30), new Failed());
+        t2.update(LocalDateTime.of(2015, 03, 12, 17, 30), LocalDateTime.of(2015, 03, 16, 17, 30), new Failed(), clock.getTime());
         
-        handler.createTask(p1.getId(), "Fun task", 50, Arrays.asList(t1.getId()), 10, 20, t2.getId());
+        //TODO: te controleren: ...,10,20,... -> ...,20,... (nog iets met uren en minuten?)
+        handler.createTask(p1.getId(), "Fun task", 50, Arrays.asList(t1.getId()), 20, t2.getId(), new HashMap<>());
         
         Project project = manager.getProject(p1.getId());
         List<Task> tasks = project.getTasks();
@@ -102,7 +107,8 @@ public class CreateTaskScenarioTest {
         
         Project p2 = manager.createProject(project2Name, project2Description, project2StartTime, project2EndTime);
         int alternativeId = t2.getId();
-        handler.createTask(p2.getId(), "Fun task8", 50, Project.NO_DEPENDENCIES, 10, 20, alternativeId);
+        //TODO: zie vorige to do...
+        handler.createTask(p2.getId(), "Fun task8", 50, Project.NO_DEPENDENCIES, 20, alternativeId, new HashMap<>());
         
     }
 
@@ -113,7 +119,8 @@ public class CreateTaskScenarioTest {
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidDataDeviation() {
         int deviation = 500;
-       handler.createTask(p1.getId(), "Fun task7", deviation, Project.NO_DEPENDENCIES, 10, 20, Project.NO_ALTERNATIVE);
+        //TODO: zie vorige to do...
+       handler.createTask(p1.getId(), "Fun task7", deviation, Project.NO_DEPENDENCIES, 20, Project.NO_ALTERNATIVE, new HashMap<>());
     }
     
     /**
@@ -129,7 +136,8 @@ public class CreateTaskScenarioTest {
         
         Project p2 = manager.createProject(project2Name, project2Description, project2StartTime, project2EndTime);
         int dependencyId = t2.getId();
-        handler.createTask(p2.getId(), "Fun task5", 50, Arrays.asList(dependencyId), 10, 20, Project.NO_ALTERNATIVE);
+        //TODO: zie vorige to do...
+        handler.createTask(p2.getId(), "Fun task5", 50, Arrays.asList(dependencyId), 20, Project.NO_ALTERNATIVE, new HashMap<>());
     }
     
     /**
@@ -138,7 +146,8 @@ public class CreateTaskScenarioTest {
      */
     @Test(expected = IllegalStateException.class)
     public void testInvalidDataStartTime() {
-        handler.createTask(p1.getId(), "Fun task6", 50, Arrays.asList(t1.getId()), 10, 20, t2.getId());
+    	//TODO: zie vorige to do...
+        handler.createTask(p1.getId(), "Fun task6", 50, Arrays.asList(t1.getId()), 20, t2.getId(), new HashMap<>());
     }    
 
 }

@@ -409,7 +409,7 @@ public class Task implements DetailedTask {
      * @throws IllegalArgumentException If The given project's creation time is
      * before the given start time.
      */
-    final void update(LocalDateTime start, LocalDateTime end, Status status, LocalDateTime currentTime) throws IllegalArgumentException {
+    public final void update(LocalDateTime start, LocalDateTime end, Status status, LocalDateTime currentTime) throws IllegalArgumentException {
         if (start == null || end == null) {
             throw new IllegalArgumentException("The given start and/or end time are not initialized.");
         }

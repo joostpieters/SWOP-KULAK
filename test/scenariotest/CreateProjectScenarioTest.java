@@ -5,6 +5,7 @@ import controller.CreateProjectHandler;
 import controller.HandlerFactory;
 import domain.Acl;
 import domain.Auth;
+import domain.Database;
 import domain.DetailedProject;
 import domain.Project;
 import domain.ProjectContainer;
@@ -27,6 +28,7 @@ import domain.time.Clock;
  */
 public class CreateProjectScenarioTest {
 	
+	private static Database db;
 	private static ProjectContainer manager;
 	private static CreateProjectHandler handler;
     private static Clock clock;
@@ -35,11 +37,12 @@ public class CreateProjectScenarioTest {
     
     @BeforeClass
     public static void setUpClass() {
+    	db = new Database();
         manager = new ProjectContainer();
         clock = new Clock();
-         auth = new Auth();
+         auth = new Auth(db);
         acl = new Acl();
-        HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl);
+        HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
         handler = controller.getCreateProjectHandler();
     }
     
