@@ -23,9 +23,10 @@ public class Resource implements ClockObserver, DetailedResource {
 	private final Set<Reservation> previousReservations;
 
 	/**
+	 * Initialize a resource with a given name.
 	 * 
-	 * @param name
-	 * @param type
+	 * @param 	name
+	 *       	The name for this resource.
 	 */
 	public Resource(String name) {
 		this.id = generateId();
@@ -160,11 +161,11 @@ public class Resource implements ClockObserver, DetailedResource {
 	}
 	
 	/**
-	 * Get the timespans this resource is available from a given point in time.
+	 * Get the time spans this resource is available from a given point in time.
 	 * 
 	 * @param 	from
 	 *       	The time stamp to start looking for free time spans.
-	 * @return	A sorted set of time spans in which this resource is free.
+	 * @return	a sorted set of time spans in which this resource is free.
 	 *        	The last time span is an infinite time span.
 	 */
 	public SortedSet<Timespan> nextAvailableTimespans(LocalDateTime from) {
@@ -204,6 +205,8 @@ public class Resource implements ClockObserver, DetailedResource {
 	 *        	if this resource is not available during span.
 	 */
 	public Reservation makeReservation(Task task, Timespan span) throws ConflictException {
+		if(getReservation(task) != null)
+			throw new IllegalArgumentException("This resource has already been reserved for the given task.");
 		if(!isAvailable(span)) {
 			Set<Task> confl = findConflictingTasks(span);
 			throw new ConflictException("This resource is not available for the given timespan.", task, confl);
