@@ -29,6 +29,8 @@ public class Resource implements ClockObserver, DetailedResource {
 	 *       	The name for this resource.
 	 */
 	public Resource(String name) {
+		if(!canHaveAsName(name))
+			throw new IllegalArgumentException("This resource can't have the given name as name.");
 		this.id = generateId();
 		this.name = name;
 		this.reservations = new HashSet<>();
@@ -56,6 +58,10 @@ public class Resource implements ClockObserver, DetailedResource {
 		return id;
 	}
 
+	public boolean canHaveAsName(String name) {
+		return name != null && name.length() > 0;
+	}
+
 	/**
 	 * @return the name
 	 */
@@ -68,14 +74,14 @@ public class Resource implements ClockObserver, DetailedResource {
 	 * @return the reservations
 	 */
 	public Set<Reservation> getReservations() {
-		return reservations;
+		return new HashSet<>(reservations);
 	}
 
 	/**
 	 * @return The previous reservations.
 	 */
 	public Set<Reservation> getPreviousReservations() {
-		return previousReservations;
+		return new HashSet<>(previousReservations);
 	}
 
 	/****************************************************

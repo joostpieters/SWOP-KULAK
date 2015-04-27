@@ -97,15 +97,16 @@ public final class Timespan implements Comparable<Timespan>{
 	}
     
     /**
-     * Check whether this timespan overlaps with the given timespan
+     * Check whether this time span overlaps with the given time span
      * 
      * @param 	anotherTimespan 
-     * 			The timespan to check the overlap with
-     * @return 	True if and only if both timespans share a same moment in time 
+     * 			The time span to check the overlap with
+     * @return 	True if and only if both time spans share a certain period of time.
      */
     public boolean overlapsWith(Timespan anotherTimespan){
-        return anotherTimespan.getStartTime().compareTo(endTime) <= 0 &&
-               startTime.compareTo(anotherTimespan.getEndTime()) <= 0;
+    	//TODO: aangepast: overlappen is enkel als er meer dan 1 exact punt in de tijd gelijk zijn...
+        return anotherTimespan.getStartTime().compareTo(this.getEndTime()) < 0 &&
+               this.getStartTime().compareTo(anotherTimespan.getEndTime()) < 0;
     }
     
     /**
