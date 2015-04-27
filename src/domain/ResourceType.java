@@ -97,6 +97,10 @@ public class ResourceType implements DetailedResourceType {
         
         return result;
     }
+    
+    public boolean hasAvailableResources(Timespan span, int quantity) {
+    	return getAvailableResources(span).size() >= quantity;
+    }
 
     /**
      * Get the set of tasks that cause conflicts with the given time span.

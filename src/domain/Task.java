@@ -62,6 +62,9 @@ public class Task implements DetailedTask {
         } else {
             setPrerequisiteTasks(prereq);
         }
+        if(!canHaveAsResourceTypes(resources))
+            throw new IllegalArgumentException("This combination of resourcetypes is not valid.");
+        this.requiredResources = new HashMap<>(resources);
         
         Status initStatus = new Available();
         setStatus(initStatus);
@@ -661,18 +664,53 @@ public class Task implements DetailedTask {
         plannedStartTime = startTime;
     }
     
+    /**
+     * Get a set of times this task could possibly be started 
+     * from a certain point in time.
+     * 
+     * @param 	from
+     *       	The time after which the task should be started.
+     * @return	a sorted set of possible points in time this task may be started.
+     *        	The task is completely available after the last time in the result.
+     */
     public SortedSet<LocalDateTime> nextAvailableStartingTimes(LocalDateTime from) {
+    	//TODO: bad smell?
+    	//TODO: developers zijn nog niet in rekening gebracht!!!
     	SortedSet<LocalDateTime> result = new TreeSet<>();
-    	SortedSet<Timespan> freeMoments = new TreeSet<>();
+    	Map<ResourceType, Integer> required = getRequiredResources();
+    	SortedSet<Timespan> freeMoments;
+    	SortedSet<LocalDateTime> temp;
+    	LocalDateTime last = LocalDateTime.MIN;
     	
-    	for(ResourceType type : getRequiredResources().keySet())
-    		freeMoments.addAll(type.nextAvailableTimespans(from));
-    	
-    	for(Timespan span : freeMoments) {
-    		Timespan rounded = span.roundStartingTime();
-    		while(rounded != null && rounded.covers(getEstimatedDuration())) {
-    			result.add(rounded.getStartTime());
-    			rounded = rounded.postponeHours(1);
+    	for(ResourceType type : required.keySet()) {
+    		temp = new TreeSet<>();
+    		freeMoments = type.nextAvailableTimespans(from);
+    		for(Timespan span : freeMoments) {
+    			Timespan rounded = span.roundStartingTime();
+    			
+    			//oneindige lus vermijden
+    			if(rounded.isInfinite()) {
+    				
+    				//vanaf de laatste tijd zijn alle resources altijd beschikbaar.
+    				if(rounded.startsAfter(last)) {
+    					last = rounded.getStartTime();
+    					temp.add(rounded.getStartTime());
+    				}
+    			} else {
+    				while(rounded != null && type.hasAvailableResources(rounded, required.get(type))) {
+    					temp.add(rounded.getStartTime());
+    					rounded = rounded.postponeHours(1);
+    				}
+    			}
+    		}
+
+    		if(result.last().isBefore(temp.last())) {
+    			result.retainAll(temp);
+    			result.addAll(temp.subSet(result.last(), temp.last()));
+    		} else {
+    			temp.retainAll(result);
+    			temp.addAll(result.subSet(temp.last(), result.last()));
+    			result = temp;
     		}
     	}
     	
