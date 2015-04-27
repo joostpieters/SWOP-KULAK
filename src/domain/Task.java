@@ -71,6 +71,9 @@ public class Task implements DetailedTask {
         setStatus(initStatus);
         initStatus.update(this);
         this.project = project;
+        
+        if(project == null)
+            throw new IllegalArgumentException("A task cannot exist without a project");
         project.addTask(this);
     }
 
@@ -82,10 +85,11 @@ public class Task implements DetailedTask {
      * @param duration The estimated duration of this task
      * @param accDev The acceptable deviation of this task expressed as an
      * integer between 0 and 100.
+     * @param resources The resources this task requires to be performed
      * @param The project this task belongs to
      */
-    Task(String description, Duration duration, int accDev, Project project) {
-        this(description, duration, accDev, null, new HashMap<>(), project);
+    Task(String description, Duration duration, int accDev, Map<ResourceType, Integer> resources, Project project) {
+        this(description, duration, accDev, null, resources, project);
     }
 
     /****************************************
