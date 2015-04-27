@@ -2,7 +2,6 @@ package domain;
 
 import domain.time.Timespan;
 import exception.ConflictException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -61,6 +60,16 @@ public class ResourceType implements DetailedResourceType {
      */
     public ResourceType(String name, List<ResourceType> requirements, List<ResourceType> conflicts) {
     	this(name, requirements, conflicts, null);
+    }
+    
+     /**
+     * Initialize a resource type with given name.
+     * 
+     * @param 	name
+     *       	The name for this type.
+     */
+    public ResourceType(String name) {
+    	this(name, new ArrayList<>(), new ArrayList<>());
     }
 
 	/****************************************************

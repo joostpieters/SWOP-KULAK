@@ -1,21 +1,19 @@
 package domain;
 
+import domain.time.Clock;
+import domain.time.Duration;
+import domain.time.Timespan;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-
+import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
-
-import domain.time.Clock;
-import domain.time.Duration;
-import domain.time.Timespan;
 
 /**
  *
@@ -74,10 +72,15 @@ public class TaskTest {
     	int estDur = 10;
     	int accDev = 30;
     	ArrayList<Task> prereq = new ArrayList<Task>(Arrays.asList(t3));
-    	Task task0 = new Task(description, new Duration(estDur), accDev,  prereq, new HashMap<>(), p);
+        Map<ResourceType, Integer> resources = new HashMap();
+            ResourceType resourceType = new ResourceType("test");
+        resources.put(resourceType, 5);
+    	Task task0 = new Task(description, new Duration(estDur), accDev,  prereq, resources, p);
     	assertEquals(description, task0.getDescription());
     	assertEquals(estDur, task0.getEstimatedDuration().toMinutes());
     	assertEquals(accDev, task0.getAcceptableDeviation());
+        
+        assertTrue(5 == task0.getRequiredResources().get(resourceType));
     	for(int i = 0; i < prereq.size(); i++)
     		assertEquals(prereq.get(i), task0.getPrerequisiteTasks().get(i));
     	
@@ -85,7 +88,7 @@ public class TaskTest {
     	String description3 = "task3 description!";
     	int estDur3 = 120;
     	int accDev3 = 55;
-    	Task task3 = new Task(description3, new Duration(estDur3), accDev3, p);
+    	Task task3 = new Task(description3, new Duration(estDur3), accDev3, Task.NO_REQUIRED_RESOURCE_TYPES, p);
     	assertEquals(description3, task3.getDescription());
     	assertEquals(estDur3, task3.getEstimatedDuration().toMinutes());
     	assertEquals(accDev3, task3.getAcceptableDeviation());
@@ -261,7 +264,7 @@ public class TaskTest {
      */
     @Test (expected = IllegalStateException.class)
     public void testEndsBeforeException() {
-        Task availableTask = new Task("doesn't have a time span", new Duration(10), 30, p);
+        Task availableTask = new Task("doesn't have a time span", new Duration(10), 30, Task.NO_REQUIRED_RESOURCE_TYPES, p);
         availableTask.endsBefore(new Timespan(
         		LocalDateTime.of(2015, 5, 4, 10, 2),
         		LocalDateTime.of(2015, 5, 4, 11, 2)));
@@ -488,7 +491,7 @@ public class TaskTest {
     	assertTrue(t7.canBeFulfilled());
     	assertTrue(t8.canBeFulfilled());
     	//TODO: waarom stond daar null??? oorspronkelijk: new Task("description", new Duration(10), 30, Arrays.asList(t6), null)
-        assertFalse(new Task("description", new Duration(10), 30, Arrays.asList(t6), new HashMap<>(), null).canBeFulfilled());
+        assertFalse(new Task("description", new Duration(10), 30, Arrays.asList(t6), new HashMap<>(), p).canBeFulfilled());
     }
     /**
      * Test of canHaveAsAlternativeTask method, of class Task.

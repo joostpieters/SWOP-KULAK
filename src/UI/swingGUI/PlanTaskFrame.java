@@ -287,28 +287,29 @@ public class PlanTaskFrame extends javax.swing.JFrame {
             int pId = (int) taskModel.getValueAt(availableTaskTable.convertRowIndexToModel(availableTaskTable.getSelectedRow()), 4);
             handler.selectTask(pId, tId);
 
+            // init resource panel
+            for (DetailedResourceType type : handler.getRequiredResourcesCurrenTask().keySet()) {
+                for (int i = 0; i < handler.getRequiredResourcesCurrenTask().get(type); i++) {
+                    JComboBox comboBox = new JComboBox();
+                    comboBox.setModel(new javax.swing.DefaultComboBoxModel(type.getResources().toArray()));
+                    comboBox.setPreferredSize(new java.awt.Dimension(200, 30));
+
+                    resourcePanel.add(comboBox, BorderLayout.SOUTH);
+                    resourcePanel.add(Box.createRigidArea(new Dimension(5, 15)), BorderLayout.SOUTH);
+                }
+
+            }
+
+            resourcePanel.revalidate();
+            resourcePanel.repaint();
+
             CardLayout card = (CardLayout) mainPanel.getLayout();
             card.show(mainPanel, "updateTask");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(rootPane, "Please select a task.", null, JOptionPane.ERROR_MESSAGE);
         }
 
-        // init resource panel
-        for (DetailedResourceType type : handler.getRequiredResourcesCurrenTask().keySet()) {
 
-            for (int i = 0; i < handler.getRequiredResourcesCurrenTask().get(type); i++) {
-                JComboBox comboBox = new JComboBox();
-                comboBox.setModel(new javax.swing.DefaultComboBoxModel(type.getResources().toArray()));
-                comboBox.setPreferredSize(new java.awt.Dimension(200, 30));
-
-                resourcePanel.add(comboBox, BorderLayout.SOUTH);
-                resourcePanel.add(Box.createRigidArea(new Dimension(5, 15)), BorderLayout.SOUTH);
-            }
-
-        }
-
-        resourcePanel.revalidate();
-        resourcePanel.repaint();
     }//GEN-LAST:event_selectTaskButtonActionPerformed
 
     /**

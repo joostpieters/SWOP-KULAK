@@ -59,7 +59,7 @@ public class PlanTaskHandler extends Handler{
     public Map<DetailedResourceType, Integer> getRequiredResourcesCurrenTask() {
         if (currentTask == null || currentProject == null) {
             throw new IllegalStateException("No task currently selected.");
-    }
+        }
         return new HashMap<>(currentTask.getRequiredResources());
     }
 

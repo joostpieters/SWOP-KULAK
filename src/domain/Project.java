@@ -274,7 +274,7 @@ public class Project implements DetailedProject {
 		
 		Task t;
 		if(prereqs.equals(Project.NO_DEPENDENCIES)) {
-			t = new Task(descr, estdur, accdev, this);
+			t = new Task(descr, estdur, accdev, requiredResources, this);
 		} else {
 			List<Task> taskList = new ArrayList<>();
 			for(Integer tId : prereqs) {

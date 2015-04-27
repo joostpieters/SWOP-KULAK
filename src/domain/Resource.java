@@ -1,16 +1,14 @@
 package domain;
 
 
+import domain.time.Timespan;
 import exception.ConflictException;
-
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import domain.time.Timespan;
 
 public class Resource implements ClockObserver, DetailedResource {
 
@@ -292,5 +290,14 @@ public class Resource implements ClockObserver, DetailedResource {
          */
     public void makeReservation(Reservation reservation) throws ConflictException {
         makeReservation(reservation.getTask(), reservation.getTimespan());
+    }
+    
+    /**
+     * 
+     * @return The name of this resource
+     */
+    @Override
+    public String toString(){
+        return getName();
     }
 }

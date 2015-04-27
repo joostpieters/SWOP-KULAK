@@ -164,4 +164,12 @@ public abstract class Status {
         return hash;
     }
     
+    /**
+     * 
+     * @return The name of this class, which equals the name of the status
+     */
+    @Override
+    public String toString(){
+        return getClass().getSimpleName();
+    }
 }
