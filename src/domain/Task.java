@@ -49,10 +49,6 @@ public class Task implements DetailedTask {
      * @param The project this task belongsto
      */
     Task(String description, Duration duration, int accDev, List<Task> prereq, Map<ResourceType, Integer> resources, Project project) {
-        requiredResources = new HashMap<>();
-        if(!canHaveAsResourceTypes(resources))
-            throw new IllegalArgumentException("This combination of resourcetypes is not valid.");
-        this.requiredResources.putAll(resources);
         this.id = generateId();
         setDescription(description);
         this.estimatedDuration = duration;

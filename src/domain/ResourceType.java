@@ -20,22 +20,71 @@ public class ResourceType implements DetailedResourceType {
     private final Timespan availability;
     private final Set<Resource> resources;
     
-    //TODO availability + null arguments
-    public ResourceType(String name, List<ResourceType> requirements, List<ResourceType> conflicts) {
+    /**
+     * Initialize a resource type with given name, required and 
+     * conflicting types and a daily availability.
+     * 
+     * @param 	name
+     *       	The name for this type.
+     * @param 	requirements
+     *       	The required types for this type.
+     * @param 	conflicts
+     *       	The conflicting types for this type.
+     * @param 	availability
+     *      	The daily availability for this type.
+     */
+    public ResourceType(String name, List<ResourceType> requirements, List<ResourceType> conflicts, Timespan availability) {
+    	if(!canHaveAsName(name))
+    		throw new IllegalArgumentException("The given name was incorrect.");
+    	if(!canHaveAsRequirements(requirements))
+    		throw new IllegalArgumentException("The given set of requirements is invalid.");
+    	if(!canHaveAsConflicts(conflicts))
+    		throw new IllegalArgumentException("The given set of conflicts is invalid.");
+    	if(!canHaveAsAvailability(availability))
+    		throw new IllegalArgumentException("The given availability is invalid.");
         this.name = name;
         this.requirements = requirements;
         this.conflicts = conflicts;
-        availability = null;
+        this.availability = availability;
         resources = new HashSet<>();
     }
     
     /**
+     * Initialize a resource type with given name, requirements and conflicting types.
+     * 
+     * @param 	name
+     *       	The name for this type.
+     * @param 	requirements
+     *       	The required types for this type.
+     * @param 	conflicts
+     *       	The conflicting types for this type.
+     */
+    public ResourceType(String name, List<ResourceType> requirements, List<ResourceType> conflicts) {
+    	this(name, requirements, conflicts, null);
+    }
+
+	/****************************************************
+	 * Getters & Setters                                *
+	 ****************************************************/
+
+	/**
      * @return the name
      */
     @Override
     public String getName() {
         return name;
     }
+
+    /**
+     * Check whether a given name can be the name of this type.
+     * 
+     * @param 	name
+     *       	The name to be checked.
+     * @return	{@code true} if this name consists of at least 1 character.
+     */
+	public boolean canHaveAsName(String name) {
+		return name != null && name.length() > 0;
+	}
 
     /**
      * @return the requirements
@@ -45,11 +94,33 @@ public class ResourceType implements DetailedResourceType {
     }
 
     /**
+     * Check whether a given set of resources can represent requirements.
+     * 
+     * @param 	requirements
+     *       	The set of resources to be checked.
+     * @return	{@code true} if not null.
+     */
+	public boolean canHaveAsRequirements(List<ResourceType> requirements) {
+		return requirements != null;
+	}
+
+    /**
      * @return the conflicts
      */
     public List<ResourceType> getConflicts() {
         return new ArrayList<>(conflicts);
     }
+    
+    /**
+     * Check whether a given set of resources can represent conflicts.
+     * 
+     * @param 	conflicts
+     *       	The set of resources to be checked.
+     * @return	{@code true} if not null.
+     */
+    public boolean canHaveAsConflicts(List<ResourceType> conflicts) {
+		return conflicts != null;
+	}
 
     /**
      * @return the availability
@@ -59,6 +130,17 @@ public class ResourceType implements DetailedResourceType {
     }
 
     /**
+     * Check whether the availability
+     * 
+     * @param 	availability
+     *       	The availability to check.
+     * @return	{@code true} if the given timespan is finite.
+     */
+	public boolean canHaveAsAvailability(Timespan availability) {
+		return availability == null || !availability.isInfinite();
+	}
+
+    /**
      * @return the resources
      */
     @Override
@@ -66,6 +148,13 @@ public class ResourceType implements DetailedResourceType {
         return new HashSet<>(resources);
     }
 
+    /**
+     * Check whether a given resource can be added to this type.
+     * 
+     * @param 	resource
+     *       	The resource to be checked.
+     * @return	{@code true} if not null.
+     */
     public boolean canHaveAsResource(Resource resource) {
 		return resource != null;
 	}
@@ -81,6 +170,10 @@ public class ResourceType implements DetailedResourceType {
     	
         resources.add(resource);
     }
+
+	/****************************************************
+	 * Others                                           *
+	 ****************************************************/
 
 	/**
      * Get the set of available resources of this type.
@@ -117,6 +210,20 @@ public class ResourceType implements DetailedResourceType {
         return result;
     }
     
+    /**
+     * Reserve a certain amount of resources of this type 
+     * for a given task during a given time span.
+     * 
+     * @param 	task
+     *       	The task to make the reservation for.
+     * @param 	span
+     *       	The time span during which it should be reserved.
+     * @param 	quantity
+     *       	The number of resources to be reserved.
+     * @return	the set of resources that got reserved.
+     * @throws 	ConflictException
+     *        	if the reservation conflicted with other tasks.
+     */
     public Set<Resource> makeReservation(Task task, Timespan span, int quantity) throws ConflictException {
         Set<Resource> availableResources = getAvailableResources(span);
         if (availableResources.size() < quantity) {
@@ -134,6 +241,15 @@ public class ResourceType implements DetailedResourceType {
         return result;
     }
     
+    /**
+     * Get the time spans the resources of this type are available from a certain point in time.
+     * 
+     * @param 	from
+     *       	The time stamp to start looking for free time spans.
+     * @return	a sorted set of time spans in which the resources of this type are free.
+	 *        	This set contains as many infinite time spans as there are resources.
+	 * @see  	Resource#nextAvailableTimespans(LocalDateTime)
+     */
     public SortedSet<Timespan> nextAvailableTimespans(LocalDateTime from) {
     	SortedSet<Timespan> result = new TreeSet<>();
     	
