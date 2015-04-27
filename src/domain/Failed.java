@@ -47,6 +47,7 @@ public class Failed extends Status {
      * @param task The task to check if it is fulfilled.
      * @return True if and only if the given task has an alternative task and the alternative task is fulfilled.
      */
+    @Override
     boolean isFulfilled(Task task) {
         if (task.getAlternativeTask() != null) {
             return task.getAlternativeTask().isFulfilled();

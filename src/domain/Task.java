@@ -4,7 +4,6 @@ import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
 import exception.ConflictException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +31,7 @@ public class Task implements DetailedTask {
     private Status status;
     private LocalDateTime plannedStartTime;
     private final Map<ResourceType, Integer> requiredResources;
+    private final Project project;
 
     /****************************************
      * Constructors							*
@@ -46,8 +46,9 @@ public class Task implements DetailedTask {
      * integer between 0 and 100.
      * @param prereq The list of prerequisite tasks for this task.
      * @param resources The resources this task requires to be performed
+     * @param The project this task belongsto
      */
-    Task(String description, Duration duration, int accDev, List<Task> prereq, Map<ResourceType, Integer> resources) {
+    Task(String description, Duration duration, int accDev, List<Task> prereq, Map<ResourceType, Integer> resources, Project project) {
         requiredResources = new HashMap<>();
         if(!canHaveAsResourceTypes(resources))
             throw new IllegalArgumentException("This combination of resourcetypes is not valid.");
@@ -65,6 +66,8 @@ public class Task implements DetailedTask {
         Status initStatus = new Available();
         setStatus(initStatus);
         initStatus.update(this);
+        this.project = project;
+        project.addTask(this);
     }
 
     /**
@@ -75,9 +78,10 @@ public class Task implements DetailedTask {
      * @param duration The estimated duration of this task
      * @param accDev The acceptable deviation of this task expressed as an
      * integer between 0 and 100.
+     * @param The project this task belongs to
      */
-    Task(String description, Duration duration, int accDev) {
-        this(description, duration, accDev, null, new HashMap<>());
+    Task(String description, Duration duration, int accDev, Project project) {
+        this(description, duration, accDev, null, new HashMap<>(), project);
     }
 
     /**
@@ -213,13 +217,11 @@ public class Task implements DetailedTask {
      * Sets the alternative task of this task to the given alternative task.
      *
      * @param alternativeTask The alternative task for this task.
-     * @param project The project to which this task and the given alternative
-     * task belong to.
      * @throws IllegalStateException
      * @see Status#setAlternativeTask(domain.Task, domain.Project)
      * @see canHaveAsAlternativeTask
      */
-    public void setAlternativeTask(Task alternativeTask, Project project) throws IllegalStateException, IllegalArgumentException {
+    public void setAlternativeTask(Task alternativeTask) throws IllegalStateException, IllegalArgumentException {
         status.setAlternativeTask(this, alternativeTask, project);
     }
     
@@ -433,10 +435,14 @@ public class Task implements DetailedTask {
      * Fail this task
      * 
      * @param timespan The timespan of this failed task
+     * @param currentTime The current time when this task is changed to finished
      * 
      */
-    void fail(Timespan timespan, LocalDateTime currentTime)
+    public void fail(Timespan timespan, LocalDateTime currentTime)
     {
+        if (timespan == null) {
+            throw new IllegalArgumentException("The given timespan are not initialized.");
+        }
     	getStatus().fail(this, timespan);
     	clearFutureReservations(currentTime);
     }
@@ -445,12 +451,28 @@ public class Task implements DetailedTask {
      * Finish this task
      * 
      * @param timespan The timespan of this finished task
+     * @param currentTime The current time when this task is changed to finished
      * 
     */
-    void finish(Timespan timespan, LocalDateTime currentTime)
+    public void finish(Timespan timespan, LocalDateTime currentTime)
     {
+        if (timespan == null) {
+            throw new IllegalArgumentException("The given timespan are not initialized.");
+        }
+        
+        if(!timespan.endsAfter(currentTime)){
+            throw new IllegalArgumentException("The given timespan is after the current time.");
+        }
     	getStatus().finish(this, timespan);
-    	clearFutureReservations(currentTime);
+    	clearFutureReservations(timespan.getEndTime());
+    }
+    
+     /**
+     * Move this task to the executing state
+     * @param currentTime The current time when this task is changed to executing
+     */
+    public void execute(LocalDateTime currentTime){
+        getStatus().execute(this);
     }
     // TODO verplaatsen
     public void clearFutureReservations(LocalDateTime currentTime)
@@ -458,6 +480,7 @@ public class Task implements DetailedTask {
     	for(ResourceType resourceType : getRequiredResources().keySet())
     		resourceType.clearFutureReservations(currentTime, this);
     }
+    
     /**
      * Checks whether this task is available.
      *
@@ -613,12 +636,7 @@ public class Task implements DetailedTask {
         return estimatedWorkTimeNeeded().getEndTimeFrom(clock.getTime());
     }
     
-    /**
-     * Move this task to the executing state
-     */
-    public void execute(){
-        getStatus().execute(this);
-    }
+   
     
     /**
      * Check whether this task is planned
@@ -659,5 +677,13 @@ public class Task implements DetailedTask {
     	}
     	
     	return result;
+    }
+    
+    /**
+     * 
+     * @return The project this task belongs to 
+     */
+    public Project getProject() {
+        return project;
     }
 }

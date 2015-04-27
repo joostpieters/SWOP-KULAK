@@ -6,9 +6,9 @@ import domain.DetailedProject;
 import domain.DetailedTask;
 import domain.Project;
 import domain.ProjectContainer;
-import domain.Status;
 import domain.Task;
 import domain.time.Clock;
+import domain.time.Timespan;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  *
  * @author Frederic, Mathias, Pieter-Jan
  */
-public class UpdateTaskStatusHandler extends Handler{
+public class UpdateTaskStatusHandler extends Handler {
 
     private final ProjectContainer manager;
 
@@ -43,8 +43,8 @@ public class UpdateTaskStatusHandler extends Handler{
     }
 
     /**
-     * Returns a map with all available tasks in this projectContainer ascociated
-     * with their project.
+     * Returns a map with all available tasks in this projectContainer
+     * ascociated with their project.
      *
      * @return All available tasks in the projectContainer of this handler.
      */
@@ -78,20 +78,15 @@ public class UpdateTaskStatusHandler extends Handler{
         if (currentTask == null || currentProject == null) {
             throw new IllegalStateException("No task currently selected.");
         }
-
-        Status taskStatus;
-
         try {
-            Class<?> statusClass = Class.forName("domain." + status);
-            taskStatus = (Status) statusClass.newInstance();
-            
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            throw new IllegalArgumentException("The given status doesn't exist.");
-        }
+            if (status.equalsIgnoreCase("finished")) {
+                currentTask.finish(new Timespan(startTime, endTime), clock.getTime());
+            } else if (status.equalsIgnoreCase("failed")) {
+                currentTask.fail(new Timespan(startTime, endTime), clock.getTime());
+            } else {
+                throw new IllegalArgumentException("The given status doesn't exist.");
+            }
 
-        try {
-            // TODO idee: hier fail/execute/finish gebruiken, want timespan is niet relevant voor executing en klok niet voor finished/failed
-           currentProject.updateTask(currentTask.getId(), startTime, endTime, taskStatus, clock.getTime());
         } catch (IllegalArgumentException | IllegalStateException e) {
             throw e;
         } catch (Exception e) {
@@ -101,6 +96,19 @@ public class UpdateTaskStatusHandler extends Handler{
 
         }
 
+    }
+    
+    /**
+     * Execute the currently selected task
+     */
+    public void executeCurrentTask(){
+        
+        if (currentTask == null || currentProject == null) {
+            throw new IllegalStateException("No task currently selected.");
+        }
+        //TODO developer assigned checking
+        currentTask.execute(clock.getTime());
+         
     }
 
 }

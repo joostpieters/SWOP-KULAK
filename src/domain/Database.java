@@ -26,7 +26,7 @@ public class Database {
      * @return The resourcetypes stored in this database
      */
     public List<ResourceType> getResourceTypes(){
-        return resourceTypes;
+        return new ArrayList<>(resourceTypes);
     }
     
     /**
@@ -42,7 +42,7 @@ public class Database {
      * @return The users stored in this database
      */
     public List<User> getUsers(){
-        return users;
+        return new ArrayList<>(users);
     }
     
     /**

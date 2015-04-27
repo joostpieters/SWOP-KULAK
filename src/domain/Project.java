@@ -195,13 +195,14 @@ public class Project implements DetailedProject {
 	 * 
 	 * @return	true if t is not null and is not in this project already,
 	 *			and if the alternative tasks for t are in this project,
+         * and if the project of the given task is the same as this project
 	 *			and if the prerequisite tasks for t are in this project,
 	 *			false otherwise.
 	 */
 	public boolean canHaveAsTask(Task t) {
 		if(t == null)
 			return false;
-		boolean taskCheck = !tasks.containsKey(t.getId()) && !t.isFulfilled();
+		boolean taskCheck = !tasks.containsKey(t.getId()) && !t.isFulfilled() &&  t.getProject()== (this);
 		boolean altTaskCheck = t.getAlternativeTask() == null || tasks.containsKey(t.getAlternativeTask().getId());
 		boolean prereqTaskCheck = true;
 		for(Task x : t.getPrerequisiteTasks())
@@ -209,7 +210,7 @@ public class Project implements DetailedProject {
 				prereqTaskCheck = false;
 				break;
 			}
-		
+                		
 		return taskCheck && altTaskCheck && prereqTaskCheck;
 	}
     
@@ -232,7 +233,7 @@ public class Project implements DetailedProject {
 	 * 
 	 * @see		#canHaveAsTask(Task)
 	 */
-	private void addTask(Task t) {
+	void addTask(Task t) {
 		if(isFinished())
 			throw new IllegalStateException("This project has already been finished.");
 		if(!canHaveAsTask(t))
@@ -273,47 +274,22 @@ public class Project implements DetailedProject {
 		
 		Task t;
 		if(prereqs.equals(Project.NO_DEPENDENCIES)) {
-			t = new Task(descr, estdur, accdev);
+			t = new Task(descr, estdur, accdev, this);
 		} else {
 			List<Task> taskList = new ArrayList<>();
 			for(Integer tId : prereqs) {
 				taskList.add(getTask(tId));
 			}
 			
-			t = new Task(descr, estdur, accdev, taskList, requiredResources);
+			t = new Task(descr, estdur, accdev, taskList, requiredResources, this);
 		}
 		
-		addTask(t);
+		
 		
 		if(altFor != Project.NO_ALTERNATIVE)
-			getTask(altFor).setAlternativeTask(t, this);
+			getTask(altFor).setAlternativeTask(t);
 		
 		return t;
-	}
-	
-	/**
-	 * Update the task with a given id and update parameters.
-	 * 
-	 * @param 	tid
-	 * 			The id of the task to be updated.
-	 * @param 	start
-	 *        	The beginning of the time span for the task.
-	 * @param 	end
-	 *        	The end of the time span for the task.
-	 * @param 	status
-	 *        	The new status for the task.
-	 *        
-	 * @throws	IllegalArgumentException
-	 * 			if the given start time was before the creation time of this project
-	 * 			or if the given end time is after {@link #getSystemTime()}.
-	 * 
-	 * @see		Task#update(LocalDateTime, LocalDateTime, Status, Project)
-	 */
-	public void updateTask(int tid, LocalDateTime start, LocalDateTime end, Status status, LocalDateTime now) {
-		if(start.isBefore(getCreationTime()))
-			throw new IllegalArgumentException("A task can't have started before its project.");
-		
-		getTask(tid).update(start, end, status, this, now);
 	}
 	
 	/**
