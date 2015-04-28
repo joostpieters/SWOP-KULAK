@@ -1,9 +1,11 @@
 package domain;
 
+import domain.memento.MementoTask;
 import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
 import exception.ConflictException;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +26,7 @@ public class Task implements DetailedTask {
     private final int id;
     private String description;
     private int acceptableDeviation;
-    private Timespan timeSpan;
+    private Timespan timespan;
     private final Duration estimatedDuration;
     private Task alternativeTask;
     private List<Task> prerequisiteTasks;
@@ -162,7 +164,7 @@ public class Task implements DetailedTask {
      */
     @Override
     public Timespan getTimeSpan() {
-        return this.timeSpan;
+        return this.timespan;
     }
 
     /**
@@ -171,8 +173,8 @@ public class Task implements DetailedTask {
      * 
      * @param timeSpan The new time span of this task.
      */
-    void setTimeSpan(Timespan timeSpan) throws IllegalArgumentException {
-        this.timeSpan = timeSpan;
+    void setTimeSpan(Timespan timeSpan) {
+        this.timespan = timeSpan;
     }
     
     /**
@@ -664,7 +666,7 @@ public class Task implements DetailedTask {
      * another task
      */
     public void plan(LocalDateTime startTime, List<Resource> resources) throws ConflictException {
-        PlanCommand planCommand = new PlanCommand(timeSpan, resources, this);
+        PlanCommand planCommand = new PlanCommand(timespan, resources, this);
         planCommand.execute();
         plannedStartTime = startTime;
     }
@@ -723,10 +725,35 @@ public class Task implements DetailedTask {
     }
     
     /**
+     * Creates a memento for this task.
+     * 
+     * @return A memento which stores the the state of this task.
+     */
+    public MementoTask createMemento()
+    {
+    	return new MementoTask(timespan, alternativeTask, prerequisiteTasks, status, plannedStartTime);
+    }
+    
+    /**
+     * Sets the state of this task to the state stored inside the given memento.
+     * 
+     * @param memento The memento containing the new state of this task.
+     */
+    public void setMemento(MementoTask memento)
+    {
+    	this.timespan = memento.getTimespan();
+    	this.alternativeTask = memento.getAlternativeTask();
+		this.prerequisiteTasks = memento.getPrerequisiteTasks();
+		this.status = memento.getStatus();
+		this.plannedStartTime = memento.GetPlannedStartTime();
+    }
+    
+    /**
      * 
      * @return The project this task belongs to 
      */
     public Project getProject() {
         return project;
     }
+
 }
