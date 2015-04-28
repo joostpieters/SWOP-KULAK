@@ -5,6 +5,7 @@ import exception.ConflictException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import domain.time.Timespan;
 
@@ -17,18 +18,16 @@ public class PlanCommand {
 
     private final Task task;
     private final List<Resource> resources;
-    private final Timespan timespan;
     private List<ReservationCommand> reservations;
-    private Map<Resource, Reservation> oldReservations;
+    private Map<Resource, Resource.Memento> oldReservations;
 
     public PlanCommand(Timespan timespan, List<Resource> resources, Task task) {
         this.task = task;
         this.resources = resources;
-        this.timespan = timespan;
         for (Resource resource : resources) {
             reservations.add(new ReservationCommand(timespan, resource, task));
         }
-        oldReservations = new HashMap<Resource, Reservation>();
+        oldReservations = new HashMap<Resource, Resource.Memento>();
     }
 
     public void execute() throws ConflictException {
@@ -40,8 +39,9 @@ public class PlanCommand {
     }
 
     private void moveTask() throws ConflictException {
+    	oldReservations.clear();
         for(Resource res : resources){
-            oldReservations.put(res, res.getReservation(task));
+        	oldReservations.put(res, res.createMemento());
         }
         
         try {
@@ -64,7 +64,6 @@ public class PlanCommand {
             }
         } catch (ConflictException ex) {
             revert();
-            
             throw ex;
         }
     }
@@ -76,19 +75,7 @@ public class PlanCommand {
     }
     
     private void revertMove() {
-        int i =0;
-        for(Resource res : oldReservations.keySet()){
-        	try
-        	{
-            	res.makeReservation(oldReservations.get(res));
-        	}
-        	catch(Exception e) {}
-        }
-        /*for(Resource res : resources){
-        	Reservation oldReservation = oldReservations.get(i);
-        	if(oldReservation != null)
-        		res.makeReservation(oldReservation);
-            i++;
-        }*/
+        for(Entry<Resource, Resource.Memento> entry : oldReservations.entrySet())
+            	entry.getKey().setMemento(entry.getValue());
     }
 }
