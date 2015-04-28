@@ -1,5 +1,6 @@
 package domain;
 
+import domain.memento.MementoResource;
 import domain.time.Timespan;
 import exception.ConflictException;
 
@@ -11,6 +12,7 @@ import exception.ConflictException;
 public class ReservationCommand {
     private final Task task;
     private final Resource resource;
+    private MementoResource resourceMemento;
     private final Timespan timespan;
     private Reservation reservation;
     
@@ -22,12 +24,12 @@ public class ReservationCommand {
     
     
     public void execute() throws ConflictException{
+    	resourceMemento = resource.createMemento();
         reservation = resource.makeReservation(task, timespan);
     }
     
     public void revert(){
-        if(reservation != null){
-            resource.removeReservation(reservation);
-        }        
+        if(reservation != null && resourceMemento != null)
+            resource.setMemento(resourceMemento);
     }
 }

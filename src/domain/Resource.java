@@ -1,8 +1,11 @@
 package domain;
 
 
+import domain.memento.MementoResource;
+import domain.memento.MementoTask;
 import domain.time.Timespan;
 import exception.ConflictException;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -292,6 +295,30 @@ public class Resource implements ClockObserver, DetailedResource {
          */
     public void makeReservation(Reservation reservation) throws ConflictException {
         makeReservation(reservation.getTask(), reservation.getTimespan());
+    }
+    
+    /**
+     * Creates a memento for this resource.
+     * 
+     * @return A memento which stores the the state of this resource.
+     */
+    public MementoResource createMemento()
+    {
+    	return new MementoResource(reservations, previousReservations);
+    }
+    
+    /**
+     * Sets the state of this task to the state stored inside the given memento.
+     * 
+     * @param memento The memento containing the new state of this task.
+     */
+    public void setMemento(MementoResource memento)
+    {
+    	this.reservations.clear();
+    	this.reservations.addAll(memento.getReservations());
+    	
+    	this.previousReservations.clear();
+    	this.previousReservations.addAll(memento.getPreviousReservations());
     }
     
     /**
