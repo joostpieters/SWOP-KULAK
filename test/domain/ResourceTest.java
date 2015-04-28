@@ -14,30 +14,32 @@ import org.junit.Test;
 
 import domain.time.Duration;
 import domain.time.Timespan;
+import exception.ConflictException;
 
 public class ResourceTest {
 	
+	private LocalDateTime startTime = LocalDateTime.of(2015, 1, 1, 14, 30);
+	private LocalDateTime dueTime = LocalDateTime.of(2015, 1, 15, 10, 0);
+	private Timespan reservedSpan = new Timespan(startTime, startTime.plusHours(2));
+	private Timespan justBefore = new Timespan(reservedSpan.getStartTime().minusDays(1), reservedSpan.getStartTime());
+	private Timespan justAfter = new Timespan(reservedSpan.getEndTime(), reservedSpan.getEndTime().plusDays(1));
+	
+	private ProjectContainer pc = new ProjectContainer();
+	private Project p = pc.createProject("name", "description", startTime, dueTime);
+	private Task t0, t1, t2;
+	Map<ResourceType, Integer> reqs1, reqs2;
 	private Resource r0, r1;
-	LocalDateTime startTime = LocalDateTime.of(2015, 1, 1, 14, 30);
-	LocalDateTime dueTime = LocalDateTime.of(2015, 1, 15, 10, 0);
-	Timespan reservedSpan = new Timespan(startTime, startTime.plusHours(2));
-	Timespan justBefore = new Timespan(reservedSpan.getStartTime().minusDays(1), reservedSpan.getStartTime());
-	Timespan justAfter = new Timespan(reservedSpan.getEndTime(), reservedSpan.getEndTime().plusDays(1));
-	Reservation reservation;
+	private Reservation reservation;
 
 	@Before
 	public void setUp() throws Exception {
+		t0 = p.createTask("task1", new Duration(120), 10, -1, new ArrayList<>(), new HashMap<>());
+		t1 = p.createTask("task2", new Duration(60), 20, -1, new ArrayList<>(), new HashMap<>());
+		t2 = p.createTask("task3", new Duration(150), 0, -1, new ArrayList<>(), new HashMap<>());
 		
-		ResourceType type = new ResourceType("type", new ArrayList<>(), new ArrayList<>());
-		Map<ResourceType, Integer> requirements = new HashMap<>();
-		requirements.put(type, 2);
-		
-		ProjectContainer pc = new ProjectContainer();
-		Project p = pc.createProject("name", "description", startTime, dueTime);
-		Task t = p.createTask("descr", new Duration(120), 10, -1, new ArrayList<>(), requirements);
 		r0 = new Resource("not reserved");
 		r1 = new Resource("reserved");
-		reservation = r1.makeReservation(t, reservedSpan);
+		reservation = r1.makeReservation(t0, reservedSpan);
 	}
 
 	@Test
@@ -131,8 +133,27 @@ public class ResourceTest {
 	}
 
 	@Test
-	public void testMakeReservationTaskTimespan() {
-		fail("Not yet implemented"); // TODO
+	public void testMakeReservationValid() throws ConflictException {
+		Reservation res = r0.makeReservation(t0, reservedSpan);
+		assertEquals(1, r0.getReservations().size());
+		assertTrue(r0.getReservations().contains(res));
+		
+		res = r1.makeReservation(t1, justAfter);
+		assertEquals(2, r1.getReservations().size());
+		assertTrue(r1.getReservations().contains(reservation));
+		assertTrue(r1.getReservations().contains(res));
+		Reservation res2 = r1.makeReservation(t2, justBefore);
+		assertEquals(3, r1.getReservations().size());
+		assertTrue(r1.getReservations().contains(res2));
 	}
-
+	
+	@Test(expected = ConflictException.class)
+	public void testMakeReservationConflict() throws ConflictException {
+		r1.makeReservation(t1, reservedSpan);
+	}
+	
+	@Test(expected = IllegalArgumentException.class) 
+	public void testMakeReservationSameTask() throws ConflictException {
+		r1.makeReservation(t0, justAfter);
+	}
 }
