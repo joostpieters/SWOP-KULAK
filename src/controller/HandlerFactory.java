@@ -78,7 +78,7 @@ public class HandlerFactory {
      * @return A new plan task handler, initialized with this manager.
      */
     public PlanTaskHandler getPlanTaskHandler(){
-        return new PlanTaskHandler(manager, auth, acl);
+        return new PlanTaskHandler(manager, clock,auth, acl);
     }
     
     /** 

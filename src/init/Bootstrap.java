@@ -75,10 +75,10 @@ public class Bootstrap {
         HandlerFactory factory = new HandlerFactory(manager, clock, auth, acl, db);
         
         // display uncaught exceptions
-        Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
-            JOptionPane.showMessageDialog(null, e.getMessage(), null, JOptionPane.WARNING_MESSAGE);
-        });
-        
+//        Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
+//            JOptionPane.showMessageDialog(null, e.getMessage(), null, JOptionPane.WARNING_MESSAGE);
+//        });
+//        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             new MainFrame(factory).setVisible(true);

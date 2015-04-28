@@ -2,42 +2,49 @@ package controller;
 
 import domain.Acl;
 import domain.Auth;
-import domain.datainterface.DetailedResourceType;
-import domain.datainterface.DetailedTask;
 import domain.Project;
 import domain.ProjectContainer;
-import domain.Status;
+import domain.Resource;
+import domain.ResourceType;
 import domain.Task;
+import domain.datainterface.DetailedResource;
+import domain.datainterface.DetailedResourceType;
+import domain.datainterface.DetailedTask;
+import domain.time.Clock;
+import domain.time.Timespan;
+import exception.ConflictException;
 import java.time.LocalDateTime;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * This handler, handles the update task use case
  *
  * @author Frederic, Mathias, Pieter-Jan
  */
-public class PlanTaskHandler extends Handler{
+public class PlanTaskHandler extends Handler {
 
     private final ProjectContainer manager;
 
     private Task currentTask;
     private Project currentProject;
+    private final Clock clock;
 
     /**
      * Initialize a new create task handler with the given projectContainer.
      *
      * @param manager The projectContainer to use in this handler.
+     * @param clock The clock to use in this handler
      * @param auth The authorization manager to use
      * @param acl The action control list to use
      */
-    public PlanTaskHandler(ProjectContainer manager, Auth auth, Acl acl) {
+    public PlanTaskHandler(ProjectContainer manager, Clock clock, Auth auth, Acl acl) {
         super(auth, acl);
         this.manager = manager;
+        this.clock = clock;
     }
 
     /**
@@ -49,18 +56,32 @@ public class PlanTaskHandler extends Handler{
 
         return new ArrayList<>(manager.getAllUnplannedTasks());
     }
-    
+
     /**
-     * Returns a map with all available tasks in this projectContainer ascociated
-     * with their project.
      *
-     * @return All available tasks in the projectContainer of this handler.
+     * @param start The start time at which the resources should be available 
+     * @return A list of proposed required resources, ascociated with their resourcetype.
      */
-    public Map<DetailedResourceType, Integer> getRequiredResourcesCurrenTask() {
+    public List<Entry<DetailedResourceType, DetailedResource>> getRequiredResourcesCurrenTask(LocalDateTime start) {
         if (currentTask == null || currentProject == null) {
             throw new IllegalStateException("No task currently selected.");
         }
-        return new HashMap<>(currentTask.getRequiredResources());
+        List<Entry<DetailedResourceType, DetailedResource>> resources = new ArrayList<>();
+        for (Entry<ResourceType, Integer> entry : currentTask.getRequiredResources().entrySet()) {
+            List<Resource> availableResources = new ArrayList<>();
+            availableResources.addAll(entry.getKey().getAvailableResources(new Timespan(start, currentTask.getEstimatedDuration())));
+            for (int i = 0; i < entry.getValue(); i++) {
+                    // if there are not enough resources available add same resource
+                // multiple times
+                if (i == availableResources.size()) {
+                    resources.add(new SimpleEntry<>(entry.getKey(), availableResources.get(availableResources.size() - 1)));
+                } else {
+                    resources.add(new SimpleEntry<>(entry.getKey(), availableResources.get(i)));
+                }
+            }
+
+        }
+        return resources;
     }
 
     /**
@@ -76,39 +97,33 @@ public class PlanTaskHandler extends Handler{
     }
 
     /**
+     *
+     * @return A set containing hours at which the task currently being planned
+     * could posiible be started
+     */
+    public Set<LocalDateTime> getPossibleStartTimesCurrentTask() {
+        if (currentTask == null || currentProject == null) {
+            throw new IllegalStateException("No task currently selected.");
+        }
+        return currentTask.nextAvailableStartingTimes(clock.getTime());
+    }
+
+    /**
      * Update the start and end time and status of this current task.
      *
      * @param startTime The start time of the task (yyyy-MM-dd HH:mm)
-     * @param endTime The end time of the task (yyyy-MM-dd HH:mm)
-     * @param status The status of the task @see domain.Status
+     * @param resources
+     * @throws exception.ConflictException The plainning of this task conflicts with
+     * at least one other task
      * @throws RuntimeException An error occured whilte updating the currently
      * selected task.
      */
-    public void updateCurrentTask(LocalDateTime startTime, LocalDateTime endTime, String status) throws RuntimeException {
+    public void planCurrentTask(LocalDateTime startTime, List<Resource> resources) throws ConflictException, RuntimeException {
         if (currentTask == null || currentProject == null) {
             throw new IllegalStateException("No task currently selected.");
         }
 
-        Status taskStatus;
-
-        try {
-            Class<?> statusClass = Class.forName("domain." + status);
-            taskStatus = (Status) statusClass.newInstance();
-            
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            throw new IllegalArgumentException("The given status doesn't exist.");
-        }
-
-        try {
-//            currentProject.updateTask(currentTask.getId(), startTime, endTime, taskStatus);
-        } catch (IllegalArgumentException | IllegalStateException e) {
-            throw e;
-        } catch (Exception e) {
-            // log for further review
-            Logger.getLogger(CreateProjectHandler.class.getName()).log(Level.SEVERE, null, e);
-            throw new RuntimeException("An unexpected error occured, please contact the system admin.");
-
-        }
+        currentTask.plan(startTime, null);
 
     }
 
