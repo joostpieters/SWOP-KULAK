@@ -64,7 +64,6 @@ public class PlanCommand {
             }
         } catch (ConflictException ex) {
             revert();
-            
             throw ex;
         }
     }
