@@ -1,8 +1,11 @@
 package domain;
 
 
+import domain.memento.MementoResource;
+import domain.memento.MementoTask;
 import domain.time.Timespan;
 import exception.ConflictException;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -157,7 +160,7 @@ public class Resource implements ClockObserver, DetailedResource {
 	 */
 	public SortedSet<Reservation> getReservations(LocalDateTime from) {
 		SortedSet<Reservation> result = new TreeSet<>(Reservation.timespanComparator());
-		for(Reservation r : reservations) {
+		for(Reservation r : getReservations()) {
 			if(!r.expiredBefore(from))
 				result.add(r);
 		}
@@ -182,6 +185,8 @@ public class Resource implements ClockObserver, DetailedResource {
 		
 		Iterator<Reservation> it = reservations.iterator();
 		Reservation r1, r2 = it.next();
+		if(r2.startsAfter(from))
+			result.add(new Timespan(from, r2.getStartTime()));
 		
 		while(it.hasNext()) {
 			r1 = r2;
@@ -290,6 +295,30 @@ public class Resource implements ClockObserver, DetailedResource {
          */
     public void makeReservation(Reservation reservation) throws ConflictException {
         makeReservation(reservation.getTask(), reservation.getTimespan());
+    }
+    
+    /**
+     * Creates a memento for this resource.
+     * 
+     * @return A memento which stores the the state of this resource.
+     */
+    public MementoResource createMemento()
+    {
+    	return new MementoResource(reservations, previousReservations);
+    }
+    
+    /**
+     * Sets the state of this task to the state stored inside the given memento.
+     * 
+     * @param memento The memento containing the new state of this task.
+     */
+    public void setMemento(MementoResource memento)
+    {
+    	this.reservations.clear();
+    	this.reservations.addAll(memento.getReservations());
+    	
+    	this.previousReservations.clear();
+    	this.previousReservations.addAll(memento.getPreviousReservations());
     }
     
     /**

@@ -113,7 +113,21 @@ public class ResourceTest {
 		Set<Timespan> available0 = r0.nextAvailableTimespans(startTime);
 		assertEquals(1, available0.size());
 		assertTrue(available0.contains(new Timespan(startTime)));
-		fail("further implementation needed");
+		
+		Set<Timespan> available1 = r1.nextAvailableTimespans(dueTime);
+		assertEquals(1, available1.size());
+		assertTrue(available1.contains(new Timespan(dueTime)));
+		
+		LocalDateTime afterStartTime = reservedSpan.getStartTime().plusMinutes(30);
+		Set<Timespan> available2 = r1.nextAvailableTimespans(afterStartTime);
+		assertEquals(1, available2.size());
+		assertTrue(available2.contains(new Timespan(reservedSpan.getEndTime())));
+		
+		LocalDateTime beforeStartTime = reservedSpan.getStartTime().minusDays(2);
+		Set<Timespan> available3 = r1.nextAvailableTimespans(beforeStartTime);
+		assertEquals(2, available3.size());
+		assertTrue(available3.contains(new Timespan(reservedSpan.getEndTime())));
+		assertTrue(available3.contains(new Timespan(beforeStartTime, reservedSpan.getStartTime())));
 	}
 
 	@Test

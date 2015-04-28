@@ -1,6 +1,9 @@
 package domain;
 
+import domain.memento.MementoProject;
+import domain.memento.MementoProjectContainer;
 import exception.ObjectNotFoundException;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -148,4 +151,25 @@ public class ProjectContainer {
 
         return unplannedTasks;
     }
+    
+    /**
+     * Creates a memento for this project container.
+     * 
+     * @return A memento which stores the state of this project container.
+     */
+	public MementoProjectContainer createMemento()
+	{
+		return new MementoProjectContainer(this.projects);
+	}
+	
+    /**
+     * Sets the state of this project container to the state stored inside the given memento.
+     * 
+     * @param memento The memento containing the new state of this project container.
+     */
+	public void setMemento(MementoProjectContainer memento)
+	{
+		this.projects.clear();
+		this.projects.putAll(memento.getProjects());
+	}
 }

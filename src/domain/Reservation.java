@@ -92,4 +92,8 @@ public class Reservation {
 	public boolean expiredBefore(LocalDateTime time) {
 		return getEndTime().isBefore(time);
 	}
+
+	public boolean startsAfter(LocalDateTime time) {
+		return getTimespan().startsAfter(time);
+	}
 }
