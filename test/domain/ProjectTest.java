@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import domain.command.CreateTaskCommand;
 import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.WorkWeekConfiguration;
