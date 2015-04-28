@@ -228,7 +228,8 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_planTask
 
     private void runSimulation(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runSimulation
-        (new RunSimulationFrame(controller.getSimulationHandler())).setVisible(true);
+        this.setVisible(false);
+        (new RunSimulationFrame(controller)).setVisible(true);
     }//GEN-LAST:event_runSimulation
 
     

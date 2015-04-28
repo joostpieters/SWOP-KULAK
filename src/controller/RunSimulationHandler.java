@@ -16,6 +16,7 @@ public class RunSimulationHandler extends Handler{
     
     private final ProjectContainer manager;
     
+    
     /**
      * Initialize this createprojecthandler with the given projectContainer.
      * 
@@ -26,6 +27,7 @@ public class RunSimulationHandler extends Handler{
     public RunSimulationHandler(ProjectContainer manager, Auth auth, Acl acl){
         super(auth, acl);
         this.manager = manager;
+        
     }
     
     /**
@@ -50,7 +52,34 @@ public class RunSimulationHandler extends Handler{
             
         }
         
-        
+    } 
+    
+    /**
+     * 
+     * @return A handler to simulate the creation of a task.
+     */
+    public CreateTaskHandler getCreateTaskSimulatorHandler() {
+       
+        //TODO
+        return null;
         
     } 
+    
+    /**
+     * 
+     * @return A handler to simulate the planning of a task.
+     */
+    public PlanTaskHandler getPlanTaskSimulatorHandler() {
+       
+        //TODO
+        return null;
+        
+    } 
+    
+    /**
+     * Cancel the simulation and leave the system unchanged
+     */
+    public void cancelSimulation(){
+        //TODO 
+    }
 }
