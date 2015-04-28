@@ -1,8 +1,8 @@
 package UI.swingGUI;
 
 import controller.ShowProjectHandler;
-import domain.DetailedProject;
-import domain.DetailedTask;
+import domain.datainterface.DetailedProject;
+import domain.datainterface.DetailedTask;
 import java.awt.CardLayout;
 import java.time.format.DateTimeFormatter;
 import java.util.List;

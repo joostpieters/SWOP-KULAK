@@ -1,11 +1,10 @@
 package domain;
 
-import domain.memento.MementoTask;
+import domain.datainterface.DetailedTask;
 import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
 import exception.ConflictException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -729,9 +728,9 @@ public class Task implements DetailedTask {
      * 
      * @return A memento which stores the the state of this task.
      */
-    public MementoTask createMemento()
+    public Memento createMemento()
     {
-    	return new MementoTask(timespan, alternativeTask, prerequisiteTasks, status, plannedStartTime);
+    	return new Memento(timespan, alternativeTask, prerequisiteTasks, status, plannedStartTime);
     }
     
     /**
@@ -739,7 +738,7 @@ public class Task implements DetailedTask {
      * 
      * @param memento The memento containing the new state of this task.
      */
-    public void setMemento(MementoTask memento)
+    public void setMemento(Memento memento)
     {
     	this.timespan = memento.getTimespan();
     	this.alternativeTask = memento.getAlternativeTask();
@@ -752,8 +751,60 @@ public class Task implements DetailedTask {
      * 
      * @return The project this task belongs to 
      */
+    @Override
     public Project getProject() {
         return project;
     }
 
+    public class Memento {
+	
+	private final Timespan timespan;
+	private final Task alternativeTask;
+	private final List<Task> prerequisiteTasks;
+	private final Status status;
+	private final LocalDateTime plannedStartTime;
+	
+	private Timespan getTimespan()
+	{
+		return this.timespan;
+	}
+	
+	private Task getAlternativeTask()
+	{
+		return this.alternativeTask;
+	}
+	
+	private List<Task> getPrerequisiteTasks()
+	{
+		return new ArrayList<>(this.prerequisiteTasks);
+	}
+	
+	private Status getStatus()
+	{
+		return this.status;
+	}
+	
+	private LocalDateTime GetPlannedStartTime()
+	{
+		return this.plannedStartTime;
+	}
+	
+	/**
+	 * Initializes this memento based on the given state.
+	 * 
+	 * @param timespan The time span of the originator task.
+	 * @param alternativeTask The alternative task of the originator task.
+	 * @param prerequisiteTasks The list of prerequisite tasks of the originator task.
+	 * @param status The status of the originator task.
+	 * @param plannedStartTime The planned start time of the originator task.
+	 */
+	private Memento(Timespan timespan, Task alternativeTask, List<Task> prerequisiteTasks, Status status, LocalDateTime plannedStartTime)
+	{
+		this.timespan = timespan;
+		this.alternativeTask = alternativeTask;
+		this.prerequisiteTasks = new ArrayList<>(prerequisiteTasks);
+		this.status = status;
+		this.plannedStartTime = plannedStartTime;
+	}
+    }
 }

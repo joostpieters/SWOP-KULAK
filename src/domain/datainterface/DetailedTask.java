@@ -1,5 +1,6 @@
-package domain;
+package domain.datainterface;
 
+import domain.Status;
 import domain.time.Duration;
 import domain.time.Timespan;
 import java.util.List;

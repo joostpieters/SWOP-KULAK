@@ -19,7 +19,7 @@ import org.junit.Test;
  * 
  * @author Mathias Benoit
  */
-public class ProjectContainerTest {
+public class MementoTest {
 	
 	private static Clock clock;
     private static Project p1, p2, p3;

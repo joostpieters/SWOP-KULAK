@@ -1,8 +1,8 @@
 package controller;
 
 
-import domain.DetailedProject;
-import domain.DetailedTask;
+import domain.datainterface.DetailedProject;
+import domain.datainterface.DetailedTask;
 import domain.Project;
 import domain.ProjectContainer;
 

@@ -1,11 +1,9 @@
 package domain;
 
 
-import domain.memento.MementoResource;
-import domain.memento.MementoTask;
+import domain.datainterface.DetailedResource;
 import domain.time.Timespan;
 import exception.ConflictException;
-
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -302,9 +300,9 @@ public class Resource implements ClockObserver, DetailedResource {
      * 
      * @return A memento which stores the the state of this resource.
      */
-    public MementoResource createMemento()
+    public Memento createMemento()
     {
-    	return new MementoResource(reservations, previousReservations);
+    	return new Memento(reservations, previousReservations);
     }
     
     /**
@@ -312,7 +310,7 @@ public class Resource implements ClockObserver, DetailedResource {
      * 
      * @param memento The memento containing the new state of this task.
      */
-    public void setMemento(MementoResource memento)
+    public void setMemento(Memento memento)
     {
     	this.reservations.clear();
     	this.reservations.addAll(memento.getReservations());
@@ -328,5 +326,26 @@ public class Resource implements ClockObserver, DetailedResource {
     @Override
     public String toString(){
         return getName();
+    }
+    
+    public class Memento {
+	private final Set<Reservation> reservations;
+	private final Set<Reservation> previousReservations;
+	
+	public Set<Reservation> getReservations()
+	{
+		return new HashSet<>(this.reservations);
+	}
+	
+	public Set<Reservation> getPreviousReservations()
+	{
+		return new HashSet<>(this.previousReservations);
+	}
+	
+	public Memento(Set<Reservation> reservations, Set<Reservation> previousReservations)
+	{
+		this.reservations = new HashSet<>(reservations);
+		this.previousReservations = new HashSet<>(previousReservations);
+	}
     }
 }

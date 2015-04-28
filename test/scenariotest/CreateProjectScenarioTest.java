@@ -6,7 +6,7 @@ import controller.HandlerFactory;
 import domain.Acl;
 import domain.Auth;
 import domain.Database;
-import domain.DetailedProject;
+import domain.datainterface.DetailedProject;
 import domain.Project;
 import domain.ProjectContainer;
 

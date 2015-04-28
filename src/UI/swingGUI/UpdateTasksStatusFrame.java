@@ -1,8 +1,8 @@
 package UI.swingGUI;
 
 import controller.UpdateTaskStatusHandler;
-import domain.DetailedProject;
-import domain.DetailedTask;
+import domain.datainterface.DetailedProject;
+import domain.datainterface.DetailedTask;
 import java.awt.CardLayout;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;

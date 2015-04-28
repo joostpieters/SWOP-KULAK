@@ -1,4 +1,4 @@
-package domain;
+package domain.datainterface;
 
 /**
  * This interface provides access to the properties of resourcetype, without 

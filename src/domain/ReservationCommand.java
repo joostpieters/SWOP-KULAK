@@ -1,6 +1,5 @@
 package domain;
 
-import domain.memento.MementoResource;
 import domain.time.Timespan;
 import exception.ConflictException;
 
@@ -12,7 +11,7 @@ import exception.ConflictException;
 public class ReservationCommand {
     private final Task task;
     private final Resource resource;
-    private MementoResource resourceMemento;
+    private Resource.Memento resourceMemento;
     private final Timespan timespan;
     private Reservation reservation;
     

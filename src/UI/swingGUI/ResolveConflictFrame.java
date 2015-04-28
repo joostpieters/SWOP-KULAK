@@ -1,7 +1,7 @@
 package UI.swingGUI;
 
-import domain.DetailedProject;
-import domain.DetailedTask;
+import domain.datainterface.DetailedProject;
+import domain.datainterface.DetailedTask;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;

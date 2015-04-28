@@ -2,8 +2,8 @@ package controller;
 
 import domain.Acl;
 import domain.Auth;
-import domain.DetailedResourceType;
-import domain.DetailedTask;
+import domain.datainterface.DetailedResourceType;
+import domain.datainterface.DetailedTask;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.Status;

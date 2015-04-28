@@ -1,8 +1,8 @@
 package UI.swingGUI;
 
 import controller.PlanTaskHandler;
-import domain.DetailedResourceType;
-import domain.DetailedTask;
+import domain.datainterface.DetailedResourceType;
+import domain.datainterface.DetailedTask;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;

@@ -19,7 +19,7 @@ import domain.time.TimespanTest;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ClockTest.class,
-                     ProjectContainerTest.class,
+                     MementoTest.class,
                     ProjectTest.class,
                     TaskTest.class,
                     TimespanTest.class, 
