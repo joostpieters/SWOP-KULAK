@@ -1,6 +1,6 @@
 package domain;
 
-import domain.command.PlanCommand;
+import domain.command.PlanTaskCommand;
 import domain.datainterface.DetailedTask;
 import domain.time.Clock;
 import domain.time.Duration;
@@ -624,8 +624,8 @@ public class Task implements DetailedTask {
      * @throws exception.ConflictException The task's reservations conflict with
      * another task
      */
-    public PlanCommand plan(LocalDateTime startTime, List<Resource> resources) throws ConflictException {
-        PlanCommand planCommand = new PlanCommand(timespan, resources, this);
+    public PlanTaskCommand plan(LocalDateTime startTime, List<Resource> resources) throws ConflictException {
+        PlanTaskCommand planCommand = new PlanTaskCommand(timespan, resources, this);
         planCommand.execute();
         plannedStartTime = startTime;
         return planCommand;

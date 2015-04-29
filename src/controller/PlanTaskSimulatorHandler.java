@@ -9,16 +9,16 @@ import domain.Acl;
 import domain.Auth;
 import domain.ProjectContainer;
 import domain.Resource;
-import domain.command.Command;
+import domain.command.ICommand;
 import domain.time.Clock;
 import exception.ConflictException;
 
 public class PlanTaskSimulatorHandler extends PlanTaskHandler {
 
-	private Stack<Command> commandStack;
+	private Stack<ICommand> commandStack;
 	
 	public PlanTaskSimulatorHandler(ProjectContainer manager, Clock clock,
-			Auth auth, Acl acl, Stack<Command> commandStack) {
+			Auth auth, Acl acl, Stack<ICommand> commandStack) {
 		super(manager, clock, auth, acl);
 		this.commandStack = commandStack;
 	}

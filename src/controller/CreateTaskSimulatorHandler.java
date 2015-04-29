@@ -14,13 +14,13 @@ import domain.Project;
 import domain.ProjectContainer;
 import domain.ResourceType;
 import domain.Task;
-import domain.command.Command;
+import domain.command.ICommand;
 import domain.command.CreateTaskCommand;
 import domain.time.Duration;
 
 public class CreateTaskSimulatorHandler extends CreateTaskHandler {
 
-	private final Stack<Command> commandStack;
+	private final Stack<ICommand> commandStack;
 	/**TODO
 	 * 
 	 * @param manager
@@ -30,7 +30,7 @@ public class CreateTaskSimulatorHandler extends CreateTaskHandler {
 	 * @param commandStack
 	 */
 	public CreateTaskSimulatorHandler(ProjectContainer manager, Auth auth,
-			Acl acl, Database db, Stack<Command> commandStack) {
+			Acl acl, Database db, Stack<ICommand> commandStack) {
 		super(manager, auth, acl, db);
 		this.commandStack = commandStack;
 	}

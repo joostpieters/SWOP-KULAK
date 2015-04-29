@@ -3,7 +3,7 @@ package controller;
 import domain.Acl;
 import domain.Auth;
 import domain.Database;
-import domain.command.Command;
+import domain.command.ICommand;
 import domain.time.Clock;
 import domain.ProjectContainer;
 
@@ -21,7 +21,7 @@ public class RunSimulationHandler extends Handler{
     private final ProjectContainer manager;
     private final Clock clock;
     private final Database db;
-    private final Stack<Command> commandStack;
+    private final Stack<ICommand> commandStack;
     
     
     /**

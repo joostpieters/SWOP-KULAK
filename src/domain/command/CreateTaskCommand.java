@@ -10,7 +10,7 @@ import domain.ResourceType;
 import domain.Task;
 import domain.time.Duration;
 
-public class CreateTaskCommand implements Command {
+public class CreateTaskCommand implements ICommand {
 	
 	private Project project;
 	private String description;

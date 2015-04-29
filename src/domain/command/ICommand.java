@@ -5,7 +5,7 @@ package domain.command;
  * @author Frederic
  *
  */
-public interface Command {
+public interface ICommand {
 	/**
 	 * Executes this command.
 	 */

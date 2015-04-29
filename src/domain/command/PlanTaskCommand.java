@@ -1,38 +1,36 @@
 package domain.command;
 
-import domain.ReservationCommand;
 import domain.Resource;
 import domain.Task;
-import domain.Resource.Memento;
 import domain.time.Timespan;
 import exception.ConflictException;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Stack;
 
 /**
  * This class represents the action of doing a reservation
  *
  * @author Mathias, Frederic, Pieter-Jan
  */
-public class PlanCommand implements Command {
+public class PlanTaskCommand implements ICommand {
 
     private final Task task;
     private final List<Resource> resources;
     private final List<ReservationCommand> reservations;
-    private final Map<Resource, Resource.Memento> oldReservations;
+    private final Stack<Entry<Resource, Resource.Memento>> oldReservations;
 
-    public PlanCommand(Timespan timespan, List<Resource> resources, Task task) {
+    public PlanTaskCommand(Timespan timespan, List<Resource> resources, Task task) {
         this.task = task;
         this.resources = resources;
         reservations = new ArrayList<>();
         for (Resource resource : resources) {
             reservations.add(new ReservationCommand(timespan, resource, task));
         }
-        oldReservations = new HashMap<>();
+        oldReservations = new Stack<>();
     }
 
     public void execute() {
@@ -50,7 +48,7 @@ public class PlanCommand implements Command {
     private void moveTask() throws ConflictException {
     	oldReservations.clear();
         for(Resource res : resources){
-        	oldReservations.put(res, res.createMemento());
+        	oldReservations.push(new SimpleEntry<Resource, Resource.Memento>(res, res.createMemento()));
         }
         
         try {
@@ -84,7 +82,10 @@ public class PlanCommand implements Command {
     }
     
     private void revertMove() {
-        for(Entry<Resource, Resource.Memento> entry : oldReservations.entrySet())
-            	entry.getKey().setMemento(entry.getValue());
+    	while(!oldReservations.isEmpty())
+    	{
+    		Entry<Resource, Resource.Memento> entry = oldReservations.pop();
+    		entry.getKey().setMemento(entry.getValue());
+    	}
     }
 }
