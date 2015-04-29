@@ -2,15 +2,13 @@ package domain;
 
 import domain.time.Clock;
 import domain.time.Duration;
+import domain.time.Timespan;
 import exception.ObjectNotFoundException;
-
 import java.time.LocalDateTime;
 import java.util.Arrays;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -42,7 +40,7 @@ public class MementoTest {
         //available
         t3 =  p2.createTask("Another difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, null);
         
-        t3.update(p2.getCreationTime(), p2.getDueTime(), new Finished(), clock.getTime());
+        t3.finish(new Timespan(p2.getCreationTime(), p2.getDueTime()), clock.getTime());
         p3 = container.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
     }
 

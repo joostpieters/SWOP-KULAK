@@ -398,48 +398,6 @@ public class Task implements DetailedTask {
         return getEstimatedDuration().multiplyBy((100d + getAcceptableDeviation()) / 100d);
     }
 
-    /**
-     * The methods fail, finish and execute should be used in favour of this method
-     * Updates the status and the time span of this task.
-     * 
-     *
-     * @param start The beginning of the time span of this task.
-     * @param end The end of the time span of this task.
-     * @param status The new status of this task.
-     * @throws IllegalArgumentException The given status is neither FAILED nor
-     * FINISHED and is therefore not a valid status that can be assigned to this
-     * task.
-     * @throws IllegalArgumentException If the start and/or end time are not
-     * initialized.
-     * @throws IllegalArgumentException If the given project doesn't contain
-     * this task.
-     * @throws IllegalArgumentException If The given project's creation time is
-     * before the given start time.
-     */
-    @Deprecated
-    public final void update(LocalDateTime start, LocalDateTime end, Status status, LocalDateTime currentTime) throws IllegalArgumentException {
-        if (start == null || end == null) {
-            throw new IllegalArgumentException("The given start and/or end time are not initialized.");
-        }
-        if (project.getTask(getId()) == null) {
-            throw new IllegalArgumentException("The given project doesn't contain this task.");
-        }
-        if (project.getCreationTime().compareTo(start) > 0) {
-            throw new IllegalArgumentException("A task can't have started before its project.");
-        }
-        
-        //TODO
-        Timespan timespan = new Timespan(start, end);
-        if(status instanceof Failed){
-            getStatus().fail(this, timespan);
-        }else if(status instanceof Finished){
-            getStatus().finish(this, timespan);
-        }else{
-            throw new IllegalArgumentException("Invalid status");
-        }
-        
-        
-    }
     /** TODO: clear future reservations
      * Fail this task
      * 

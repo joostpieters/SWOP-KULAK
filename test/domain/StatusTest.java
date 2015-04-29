@@ -1,17 +1,14 @@
 package domain;
 
-import static org.junit.Assert.*;
-
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashMap;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
@@ -47,15 +44,15 @@ public class StatusTest {
     			LocalDateTime.of(2015, 3, 5, 14, 20));
     	//pm.advanceSystemTime(t3ts.getEndTime());
     	t3 = p.createTask("t3 finished", new Duration(30), 40, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
-    	t3.update(ts0.getStartTime(), ts0.getEndTime(), new Failed(), clock.getTime());
+    	t3.fail(new Timespan(ts0.getStartTime(), ts0.getEndTime()), clock.getTime());
     	t4 = p.createTask("t4", new Duration(30), 10, Project.NO_ALTERNATIVE, Arrays.asList(t3.getId()), new HashMap<>());
     	t5 = p.createTask("t5", new Duration(20), 5, Project.NO_ALTERNATIVE, Arrays.asList(t3.getId(), t2.getId()), new HashMap<>());
 
     	//pm.advanceSystemTime(t6ts.getEndTime());
     	t6 = p.createTask("t6", new Duration(10), 3, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
-    	t6.update(ts1.getStartTime(), ts1.getEndTime(), new Finished(), clock.getTime());
+    	t6.finish(new Timespan(ts1.getStartTime(), ts1.getEndTime()), clock.getTime());
     	t7 = p.createTask("t7", new Duration(15), 4, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
-    	t7.update(ts1.getStartTime(), ts1.getEndTime(), new Failed(), clock.getTime());
+    	t7.fail(new Timespan(ts1.getStartTime(), ts1.getEndTime()), clock.getTime());
     	t7alternative = p.createTask("alternative for t7", new Duration(10), 2, t7.getId(), Project.NO_DEPENDENCIES, new HashMap<>());
     	t8 = p.createTask("depends on t7", new Duration(33), 3, Project.NO_ALTERNATIVE, Arrays.asList(t7.getId()), new HashMap<>());
     }
