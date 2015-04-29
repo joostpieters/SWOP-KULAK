@@ -1,7 +1,12 @@
-package domain;
+package domain.command;
 
+import domain.ReservationCommand;
+import domain.Resource;
+import domain.Task;
+import domain.Resource.Memento;
 import domain.time.Timespan;
 import exception.ConflictException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +18,7 @@ import java.util.Map.Entry;
  *
  * @author Mathias, Frederic, Pieter-Jan
  */
-public class PlanCommand {
+public class PlanCommand implements Command {
 
     private final Task task;
     private final List<Resource> resources;
@@ -30,12 +35,16 @@ public class PlanCommand {
         oldReservations = new HashMap<>();
     }
 
-    public void execute() throws ConflictException {
-        if (task.isPlanned()) {
-            moveTask();
-        } else {
-            planTask();
-        }
+    public void execute() {
+    	// TODO deze exception werkelijk behandelen
+    	try {
+    		if (task.isPlanned()) {
+            	moveTask();
+        	} else {
+            	planTask();
+        	}
+    	} catch (Exception e) {}
+    	
     }
 
     private void moveTask() throws ConflictException {
@@ -68,7 +77,7 @@ public class PlanCommand {
         }
     }
 
-    private void revert() {
+    public void revert() {
         for (ReservationCommand command : reservations) {
             command.revert();
         }

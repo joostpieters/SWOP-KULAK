@@ -1,10 +1,12 @@
 package domain;
 
+import domain.command.PlanCommand;
 import domain.datainterface.DetailedTask;
 import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
 import exception.ConflictException;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -622,10 +624,11 @@ public class Task implements DetailedTask {
      * @throws exception.ConflictException The task's reservations conflict with
      * another task
      */
-    public void plan(LocalDateTime startTime, List<Resource> resources) throws ConflictException {
+    public PlanCommand plan(LocalDateTime startTime, List<Resource> resources) throws ConflictException {
         PlanCommand planCommand = new PlanCommand(timespan, resources, this);
         planCommand.execute();
         plannedStartTime = startTime;
+        return planCommand;
     }
     
     /**

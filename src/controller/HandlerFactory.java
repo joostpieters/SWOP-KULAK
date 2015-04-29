@@ -85,6 +85,6 @@ public class HandlerFactory {
      * @return A new run simulation handler, initialized with this manager.
      */
     public RunSimulationHandler getSimulationHandler(){
-        return new RunSimulationHandler(manager, auth, acl, db);
+        return new RunSimulationHandler(manager, clock, auth, acl, db);
     }
 }

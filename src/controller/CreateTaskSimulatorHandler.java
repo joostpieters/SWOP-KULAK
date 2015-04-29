@@ -21,16 +21,28 @@ import domain.time.Duration;
 public class CreateTaskSimulatorHandler extends CreateTaskHandler {
 
 	private final Stack<Command> commandStack;
-
+	/**TODO
+	 * 
+	 * @param manager
+	 * @param auth
+	 * @param acl
+	 * @param db
+	 * @param commandStack
+	 */
 	public CreateTaskSimulatorHandler(ProjectContainer manager, Auth auth,
 			Acl acl, Database db, Stack<Command> commandStack) {
 		super(manager, auth, acl, db);
 		this.commandStack = commandStack;
 	}
-
+	
+	/**
+	 * @see controller.CreateTaskHandler#createTask(int, java.lang.String, int, java.util.List, int, int, java.util.Map)
+	 */
 	@Override
 	public void createTask(int pId, String description, int accDev, List<Integer> prereq, int estDurMinutes, int altfor, Map<Integer, Integer> requiredResources)
 	{
+		// TODO code duplicatie
+		// TODO misschien zijn deze simulator handlers niet nodig, alternatieve methode is zorgen dat CreateTaskHandler.CreateTask een Command returned
         if(prereq == null){
             prereq = Project.NO_DEPENDENCIES;
         }

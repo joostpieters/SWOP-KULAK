@@ -4,6 +4,7 @@ import domain.Acl;
 import domain.Auth;
 import domain.Database;
 import domain.command.Command;
+import domain.time.Clock;
 import domain.ProjectContainer;
 
 import java.time.LocalDateTime;
@@ -18,6 +19,7 @@ import java.util.logging.Logger;
  */
 public class RunSimulationHandler extends Handler{
     private final ProjectContainer manager;
+    private final Clock clock;
     private final Database db;
     private final Stack<Command> commandStack;
     
@@ -30,9 +32,10 @@ public class RunSimulationHandler extends Handler{
      * @param acl The action control list to use
      * @param db The database to use in conjunction with this handler
      */
-    public RunSimulationHandler(ProjectContainer manager, Auth auth, Acl acl, Database db){
+    public RunSimulationHandler(ProjectContainer manager, Clock clock, Auth auth, Acl acl, Database db){
         super(auth, acl);
         this.manager = manager;
+        this.clock = clock;
         this.db = db;
         this.commandStack = new Stack<>();
         
@@ -67,9 +70,7 @@ public class RunSimulationHandler extends Handler{
      * @return A handler to simulate the creation of a task.
      */
     public CreateTaskHandler getCreateTaskSimulatorHandler() {
-       
         return new CreateTaskSimulatorHandler(manager, auth, acl, db, commandStack);
-        
     } 
     
     /**
@@ -77,10 +78,7 @@ public class RunSimulationHandler extends Handler{
      * @return A handler to simulate the planning of a task.
      */
     public PlanTaskHandler getPlanTaskSimulatorHandler() {
-       
-        //TODO
-        return null;
-        
+    	return new PlanTaskSimulatorHandler(manager, clock, auth, acl, commandStack);
     } 
     
     /**
