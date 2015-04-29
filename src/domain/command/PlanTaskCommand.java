@@ -22,19 +22,29 @@ public class PlanTaskCommand implements ICommand {
 
     private final Task task;
     private final List<Resource> resources;
-    private final List<ReservationCommand> reservations;
-    private final Map<Resource, Resource.Memento> oldReservations;
+    private final List<CreateReservationCommand> reservations;
+    private final Map<Resource, Resource.Memento> oldResourceStates;
 
+    
+    /**
+     * Creates a new plan task command representing the action of planning a task based on the given parameters.
+     * 
+     * @param timespan The timespan during which the task is planned.
+     * @param resources The resources belonging to the task.
+     * @param task The task to be planned.
+     */
     public PlanTaskCommand(Timespan timespan, List<Resource> resources, Task task) {
         this.task = task;
         this.resources = resources;
         reservations = new ArrayList<>();
         for (Resource resource : resources) {
-            reservations.add(new ReservationCommand(timespan, resource, task));
+            reservations.add(new CreateReservationCommand(timespan, resource, task));
         }
-        oldReservations = new HashMap<>();
+        oldResourceStates = new HashMap<>();
     }
-
+    /**
+     * TODO commentaar
+     */
     public void execute() throws ConflictException {
 		if (task.isPlanned()) {
         	moveTask();
@@ -44,13 +54,16 @@ public class PlanTaskCommand implements ICommand {
     }
 
     private void moveTask() throws ConflictException {
-    	oldReservations.clear();
+    	// TODO klopt het dat de bedoeling is de oorspronkelijke reservations horende bij deze taak te verwijderen
+    	// TODO en daarna simpelweg nieuwe reservations aanmaken
+    	//save the states of the old reservations belonging
+    	oldResourceStates.clear();
         for(Resource res : resources){
-        	oldReservations.put(res,  res.createMemento());
+        	oldResourceStates.put(res,  res.createMemento());
         }
         
         try {
-            for (ReservationCommand command : reservations) {
+            for (CreateReservationCommand command : reservations) {
                 command.execute();
             }
         } catch (ConflictException ex) {
@@ -64,7 +77,7 @@ public class PlanTaskCommand implements ICommand {
 
     private void planTask() throws ConflictException {
         try {
-            for (ReservationCommand command : reservations) {
+            for (CreateReservationCommand command : reservations) {
                 command.execute();
             }
         } catch (ConflictException ex) {
@@ -74,13 +87,13 @@ public class PlanTaskCommand implements ICommand {
     }
 
     public void revert() {
-        for (ReservationCommand command : reservations) {
+        for (CreateReservationCommand command : reservations) {
             command.revert();
         }
     }
     
     private void revertMove() {
-    	for(Entry<Resource, Resource.Memento> entry : oldReservations.entrySet())
+    	for(Entry<Resource, Resource.Memento> entry : oldResourceStates.entrySet())
     		entry.getKey().setMemento(entry.getValue());
     }
 }

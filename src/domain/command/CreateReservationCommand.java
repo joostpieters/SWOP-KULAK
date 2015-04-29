@@ -12,7 +12,7 @@ import exception.ConflictException;
  * 
  * @author Mathias, Frederic, Pieter-Jan
  */
-public class ReservationCommand implements ICommand {
+public class CreateReservationCommand implements ICommand {
     private final Task task;
     private final Resource resource;
     private Resource.Memento resourceMemento;
@@ -25,7 +25,7 @@ public class ReservationCommand implements ICommand {
      * @param resource The resource of the reservation
      * @param task The task of the reservation
      */
-    public ReservationCommand(Timespan timespan, Resource resource, Task task){
+    public CreateReservationCommand(Timespan timespan, Resource resource, Task task){
         this.task = task;
         this.resource = resource;
         this.timespan = timespan;
