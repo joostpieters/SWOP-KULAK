@@ -5,19 +5,18 @@ import controller.UpdateTaskStatusHandler;
 import domain.Acl;
 import domain.Auth;
 import domain.Database;
+import domain.Manager;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.Task;
-
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import domain.time.Clock;
 import domain.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 
 
@@ -54,6 +53,9 @@ public class UpdateTaskStatusScenarioTest {
         clock = new Clock();
         auth = new Auth(db);
         acl = new Acl();
+        db.addUser(new Manager("John"));
+        acl.addEntry("manager", new ArrayList<>(Arrays.asList("UpdateTaskStatus")));
+        auth.login("John");
         HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
         handler = controller.getUpdateTaskHandler();
         clock.advanceTime(LocalDateTime.of(2015,03,17,14,10));

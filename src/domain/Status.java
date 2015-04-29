@@ -103,7 +103,7 @@ public abstract class Status {
     */
     void finish(Task task, Timespan timespan) throws IllegalStateException
     {
-        throw new IllegalStateException("This status can't transition to finished.");
+        throw new IllegalStateException("This status ("+getClass().getSimpleName() + ") can't transition to finished.");
     }
     
     /**

@@ -55,7 +55,7 @@ public class ProjectTest {
     	assertTrue(!end.isAfter(due));
     	
     	pc = new ProjectContainer();
-    	clock = new Clock(create);
+    	clock = new Clock(end);
     	
     	wwc_default = new WorkWeekConfiguration(1, 5, LocalTime.of(9, 0), LocalTime.of(18, 0), LocalTime.of(12, 0), LocalTime.of(13, 0));
     	
