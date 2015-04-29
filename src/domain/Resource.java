@@ -332,17 +332,17 @@ public class Resource implements ClockObserver, DetailedResource {
 		private final Set<Reservation> reservations;
 		private final Set<Reservation> previousReservations;
 		
-		public Set<Reservation> getReservations()
+		private Set<Reservation> getReservations()
 		{
 			return new HashSet<>(this.reservations);
 		}
 		
-		public Set<Reservation> getPreviousReservations()
+		private Set<Reservation> getPreviousReservations()
 		{
 			return new HashSet<>(this.previousReservations);
 		}
 		
-		public Memento(Set<Reservation> reservations, Set<Reservation> previousReservations)
+		private Memento(Set<Reservation> reservations, Set<Reservation> previousReservations)
 		{
 			this.reservations = new HashSet<>(reservations);
 			this.previousReservations = new HashSet<>(previousReservations);

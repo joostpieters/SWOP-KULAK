@@ -14,23 +14,35 @@ import domain.Project;
 import domain.ProjectContainer;
 import domain.ResourceType;
 import domain.Task;
-import domain.command.Command;
+import domain.command.ICommand;
 import domain.command.CreateTaskCommand;
 import domain.time.Duration;
 
 public class CreateTaskSimulatorHandler extends CreateTaskHandler {
 
-	private final Stack<Command> commandStack;
-
+	private final Stack<ICommand> commandStack;
+	/**TODO
+	 * 
+	 * @param manager
+	 * @param auth
+	 * @param acl
+	 * @param db
+	 * @param commandStack
+	 */
 	public CreateTaskSimulatorHandler(ProjectContainer manager, Auth auth,
-			Acl acl, Database db, Stack<Command> commandStack) {
+			Acl acl, Database db, Stack<ICommand> commandStack) {
 		super(manager, auth, acl, db);
 		this.commandStack = commandStack;
 	}
-
+	
+	/**
+	 * @see controller.CreateTaskHandler#createTask(int, java.lang.String, int, java.util.List, int, int, java.util.Map)
+	 */
 	@Override
 	public void createTask(int pId, String description, int accDev, List<Integer> prereq, int estDurMinutes, int altfor, Map<Integer, Integer> requiredResources)
 	{
+		// TODO code duplicatie
+		// TODO misschien zijn deze simulator handlers niet nodig, alternatieve methode is zorgen dat CreateTaskHandler.CreateTask een Command returned
         if(prereq == null){
             prereq = Project.NO_DEPENDENCIES;
         }
