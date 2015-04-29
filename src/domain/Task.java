@@ -625,6 +625,11 @@ public class Task implements DetailedTask {
      * another task
      */
     public PlanTaskCommand plan(LocalDateTime startTime, List<Resource> resources) throws ConflictException {
+    	Map<ResourceType, Integer> required = getRequiredResources();
+    	for(ResourceType type : required.keySet())
+    		if(type.numberOfResources(resources) < required.get(type))
+    			throw new IllegalArgumentException("The given set of resources does not match the requirements.");
+    		
         PlanTaskCommand planCommand = new PlanTaskCommand(timespan, resources, this);
         planCommand.execute();
         plannedStartTime = startTime;

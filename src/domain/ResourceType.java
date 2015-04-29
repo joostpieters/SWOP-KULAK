@@ -3,6 +3,7 @@ package domain;
 import domain.datainterface.DetailedResourceType;
 import domain.time.Timespan;
 import exception.ConflictException;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -308,5 +309,13 @@ public class ResourceType implements DetailedResourceType {
     		resource.clearFutureReservations(currentTime, task);
     	}
     }
+
+	public int numberOfResources(List<Resource> resources) {
+		int result = 0;
+		for(Resource r : resources)
+			if(getResources().contains(r))
+				result++;
+		return result;
+	}
 
 }
