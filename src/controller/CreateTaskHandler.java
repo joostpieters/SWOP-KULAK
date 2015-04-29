@@ -25,8 +25,8 @@ import java.util.logging.Logger;
  */
 public class CreateTaskHandler extends Handler{
     
-    private final ProjectContainer manager;
-    private final Database db;
+    protected final ProjectContainer manager;
+    protected final Database db;
     
     /**
      * Initialize a new create task handler with the given projectContainer.

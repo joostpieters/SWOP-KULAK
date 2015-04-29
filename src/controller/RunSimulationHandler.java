@@ -3,8 +3,11 @@ package controller;
 import domain.Acl;
 import domain.Auth;
 import domain.Database;
+import domain.command.Command;
 import domain.ProjectContainer;
+
 import java.time.LocalDateTime;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,9 +17,9 @@ import java.util.logging.Logger;
  * @author Frederic, Mathias, Pieter-Jan
  */
 public class RunSimulationHandler extends Handler{
-    
     private final ProjectContainer manager;
     private final Database db;
+    private final Stack<Command> commandStack;
     
     
     /**
@@ -31,6 +34,7 @@ public class RunSimulationHandler extends Handler{
         super(auth, acl);
         this.manager = manager;
         this.db = db;
+        this.commandStack = new Stack<>();
         
     }
     
@@ -64,7 +68,7 @@ public class RunSimulationHandler extends Handler{
      */
     public CreateTaskHandler getCreateTaskSimulatorHandler() {
        
-        return new CreateTaskSimulatorHandler(manager, auth, acl, db);
+        return new CreateTaskSimulatorHandler(manager, auth, acl, db, commandStack);
         
     } 
     
@@ -83,6 +87,7 @@ public class RunSimulationHandler extends Handler{
      * Cancel the simulation and leave the system unchanged
      */
     public void cancelSimulation(){
-        //TODO 
+    	while(!commandStack.isEmpty())
+    		commandStack.pop().revert();
     }
 }
