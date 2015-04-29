@@ -3,10 +3,9 @@ package controller;
 import domain.Acl;
 import domain.Auth;
 import domain.Database;
+import domain.ProjectContainer;
 import domain.command.ICommand;
 import domain.time.Clock;
-import domain.ProjectContainer;
-
 import java.time.LocalDateTime;
 import java.util.Stack;
 import java.util.logging.Level;
@@ -78,7 +77,7 @@ public class RunSimulationHandler extends Handler{
      * @return A handler to simulate the planning of a task.
      */
     public PlanTaskHandler getPlanTaskSimulatorHandler() {
-    	return new PlanTaskSimulatorHandler(manager, clock, auth, acl, commandStack);
+    	return new PlanTaskSimulatorHandler(manager, clock, auth, acl, db, commandStack);
     } 
     
     /**

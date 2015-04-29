@@ -27,7 +27,7 @@ import java.util.Set;
  */
 public class PlanTaskHandler extends Handler {
 
-    private final ProjectContainer manager;
+    protected final ProjectContainer manager;
     private final Clock clock;
     private final Database db;
 
