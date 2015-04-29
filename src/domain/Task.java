@@ -6,7 +6,6 @@ import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
 import exception.ConflictException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;

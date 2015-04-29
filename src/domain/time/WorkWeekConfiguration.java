@@ -9,7 +9,7 @@ import java.time.temporal.ChronoUnit;
  *
  * @author Frederic, Mathias, Pieter-Jan
  */
-public class WorkWeekConfiguration {
+public class WorkWeekConfiguration implements Comparable<WorkWeekConfiguration>{
 
 
     private final int beginWorkWeek;
@@ -276,6 +276,26 @@ public class WorkWeekConfiguration {
             }
         } else {
             return nextValidWorkTime(time.plusDays(1).toLocalDate().atTime(getBeginWorkDay()));
+        }
+    }
+    
+    /**
+     * Compares this workweekconfiguration to the given workweekconfiguration,
+     * in terms of the daily availability
+     * 
+     * @param o The workweekconfiguration to compare with
+     * @return 1 if this workweekconfiguration has a longer daily availability
+     *        -1 if this workweekconfiguration has a shorter daily availability
+     *        0 if this workweekconfiguration has an equal daily availability
+     */
+    @Override
+    public int compareTo(WorkWeekConfiguration o) {
+        if(this.getMinutesOfWorkDay() > o.getMinutesOfWorkDay()){
+            return 1;
+        } else if(this.getMinutesOfWorkDay() < o.getMinutesOfWorkDay()){
+            return -1;
+        } else {
+            return 0;
         }
     }
 }

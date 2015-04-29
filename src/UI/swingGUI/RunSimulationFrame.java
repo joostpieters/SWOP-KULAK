@@ -60,6 +60,11 @@ public class RunSimulationFrame extends javax.swing.JFrame {
         });
 
         PlanTaskButton.setText("Plan Task");
+        PlanTaskButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PlanTaskButtonActionPerformed(evt);
+            }
+        });
 
         showProjectsSimulator.setText("Show Projects");
         showProjectsSimulator.addActionListener(new java.awt.event.ActionListener() {
@@ -178,6 +183,10 @@ public class RunSimulationFrame extends javax.swing.JFrame {
                 
         }
     }//GEN-LAST:event_endSimulationButtonActionPerformed
+
+    private void PlanTaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlanTaskButtonActionPerformed
+        new PlanTaskFrame(handler.getPlanTaskSimulatorHandler()).setVisible(true);
+    }//GEN-LAST:event_PlanTaskButtonActionPerformed
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
