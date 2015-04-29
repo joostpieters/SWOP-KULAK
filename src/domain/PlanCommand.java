@@ -1,13 +1,12 @@
 package domain;
 
+import domain.time.Timespan;
 import exception.ConflictException;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import domain.time.Timespan;
 
 /**
  * This class represents the action of doing a reservation
@@ -18,16 +17,17 @@ public class PlanCommand {
 
     private final Task task;
     private final List<Resource> resources;
-    private List<ReservationCommand> reservations;
-    private Map<Resource, Resource.Memento> oldReservations;
+    private final List<ReservationCommand> reservations;
+    private final Map<Resource, Resource.Memento> oldReservations;
 
     public PlanCommand(Timespan timespan, List<Resource> resources, Task task) {
         this.task = task;
         this.resources = resources;
+        reservations = new ArrayList<>();
         for (Resource resource : resources) {
             reservations.add(new ReservationCommand(timespan, resource, task));
         }
-        oldReservations = new HashMap<Resource, Resource.Memento>();
+        oldReservations = new HashMap<>();
     }
 
     public void execute() throws ConflictException {

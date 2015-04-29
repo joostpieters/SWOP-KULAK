@@ -11,6 +11,7 @@ import java.awt.Dimension;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import javax.swing.Box;
@@ -32,6 +33,7 @@ public class PlanTaskFrame extends javax.swing.JFrame {
     private DefaultTableModel taskModel;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private LocalDateTime start;
+    private int selectedTaskId, selectedProjectId;
 
     /**
      * Creates new form ListProjectsFrame
@@ -330,26 +332,29 @@ public class PlanTaskFrame extends javax.swing.JFrame {
      */
     private void selectTaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectTaskButtonActionPerformed
         try {
-            int tId = (int) taskModel.getValueAt(availableTaskTable.convertRowIndexToModel(availableTaskTable.getSelectedRow()), 0);
-            int pId = (int) taskModel.getValueAt(availableTaskTable.convertRowIndexToModel(availableTaskTable.getSelectedRow()), 4);
-            handler.selectTask(pId, tId);
-
+            selectedTaskId = (int) taskModel.getValueAt(availableTaskTable.convertRowIndexToModel(availableTaskTable.getSelectedRow()), 0);
+            selectedProjectId = (int) taskModel.getValueAt(availableTaskTable.convertRowIndexToModel(availableTaskTable.getSelectedRow()), 4);
+            
         } catch (Exception e) {
             JOptionPane.showMessageDialog(rootPane, "Please select a task.", null, JOptionPane.ERROR_MESSAGE);
         }
 
-        // init possible start times
-        DefaultListModel listModel = new DefaultListModel();
-        for (LocalDateTime time : handler.getPossibleStartTimesCurrentTask()) {
-            listModel.addElement(time.format(formatter));
-        }
-
-        timeList.setModel(listModel);
+        initTimeList();
         CardLayout card = (CardLayout) mainPanel.getLayout();
         card.show(mainPanel, "selectTime");
 
 
     }//GEN-LAST:event_selectTaskButtonActionPerformed
+
+    protected void initTimeList() {
+        // init possible start times
+        DefaultListModel listModel = new DefaultListModel();
+        for (LocalDateTime time : handler.getPossibleStartTimesCurrentTask(selectedProjectId, selectedTaskId)) {
+            listModel.addElement(time.format(formatter));
+        }
+        
+        timeList.setModel(listModel);
+    }
 
     /**
      * The update task button is pressed in the task update form
@@ -367,7 +372,7 @@ public class PlanTaskFrame extends javax.swing.JFrame {
             }
 
             // init resource panel
-            for (Map.Entry<DetailedResourceType, DetailedResource> entry : handler.getRequiredResourcesCurrenTask(start)) {
+            for (Map.Entry<DetailedResourceType, DetailedResource> entry : handler.getRequiredResources(selectedProjectId, selectedTaskId, start)) {
 
                 JComboBox comboBox = new JComboBox();
                 comboBox.setModel(new javax.swing.DefaultComboBoxModel(entry.getKey().getResources().toArray()));
@@ -395,17 +400,22 @@ public class PlanTaskFrame extends javax.swing.JFrame {
      * @param evt
      */
     private void planTaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_planTaskButtonActionPerformed
-        ResolveConflictFrame resolveConflictFrame = new ResolveConflictFrame(this);
-        resolveConflictFrame.setVisible(true);
-        this.setVisible(false);
+         ResolveConflictFrame resolveConflictFrame = new ResolveConflictFrame(this, new HashSet<>(handler.getUnplannedTasks()), handler);
+            resolveConflictFrame.setVisible(true);
+            this.setVisible(false);
         // TODO resources
         try {
-            handler.planCurrentTask(start, null);
+            handler.planTask(selectedProjectId, selectedTaskId, start, null);
             dispose();
         } catch (DateTimeException e) {
             JOptionPane.showMessageDialog(rootPane, "The given time is not in the right format.", null, JOptionPane.ERROR_MESSAGE);
-        } catch (ConflictException | RuntimeException e) {
-            JOptionPane.showMessageDialog(rootPane, e.getMessage(), null, JOptionPane.ERROR_MESSAGE);
+        } catch (ConflictException e){
+//            ResolveConflictFrame resolveConflictFrame = new ResolveConflictFrame(this, new HashSet<>(e.getConflictingTasks()), handler);
+//            resolveConflictFrame.setVisible(true);
+//            this.setVisible(false);
+            
+        } catch (RuntimeException e) {
+            JOptionPane.showMessageDialog(rootPane, e.getStackTrace(), null, JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_planTaskButtonActionPerformed
 
@@ -438,4 +448,24 @@ public class PlanTaskFrame extends javax.swing.JFrame {
     private javax.swing.JTextField specificTimeTextField;
     private javax.swing.JList timeList;
     // End of variables declaration//GEN-END:variables
+
+    public int getSelectedTaskId() {
+        return selectedTaskId;
+    }
+
+    public void setSelectedTaskId(int selectedTaskId) {
+        this.selectedTaskId = selectedTaskId;
+    }
+
+    public int getSelectedProjectId() {
+        return selectedProjectId;
+    }
+
+    public void setSelectedProjectId(int selectedProjectId) {
+        this.selectedProjectId = selectedProjectId;
+    }
+
+    public javax.swing.JPanel getMainPanel() {
+        return mainPanel;
+    }
 }

@@ -1,11 +1,10 @@
 package UI.swingGUI;
 
-import domain.datainterface.DetailedProject;
+import controller.PlanTaskHandler;
 import domain.datainterface.DetailedTask;
+import java.awt.CardLayout;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -20,35 +19,39 @@ public class ResolveConflictFrame extends javax.swing.JFrame {
     private DefaultTableModel taskModel;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private final PlanTaskFrame originator;
+    private final PlanTaskHandler planHandler;
 
     /**
      * Creates new form ListProjectsFrame
      *
      * @param originator The frame from which the error came 
+     * @param conflictingTasks 
+     * @param planHandler 
      */
-    public ResolveConflictFrame(PlanTaskFrame originator) {
+    public ResolveConflictFrame(PlanTaskFrame originator, Set<DetailedTask> conflictingTasks, PlanTaskHandler planHandler) {
         this.originator = originator;
         initComponents();
-        initAvailableTaskTable();
+        initConflictingTaskTable(conflictingTasks);
+        this.planHandler = planHandler;
     }
 
     /**
      * Fills the available task table with the appropriate data
      */
-    private void initAvailableTaskTable() {
+    private void initConflictingTaskTable(Set<DetailedTask> conflictingTasks) {
         String[] columnNames = {"Id", "Description", "Estimated Duration", "Acceptable Deviation", "Project id", "Project"};
-        Map<DetailedTask, DetailedProject> tasks = new HashMap<>();
-        Object[][] data = new Object[tasks.size()][];
+        
+        Object[][] data = new Object[conflictingTasks.size()][];
 
         int i = 0;
-        for (Entry<DetailedTask, DetailedProject> pair : tasks.entrySet()) {
+        for (DetailedTask task : conflictingTasks) {
             data[i] = new Object[]{
-                pair.getKey().getId(),
-                pair.getKey().getDescription(),
-                pair.getKey().getEstimatedDuration().getHours() + "h " + pair.getKey().getEstimatedDuration().getMinutes() + " min",
-                pair.getKey().getAcceptableDeviation() + "%",
-                pair.getValue().getId(),
-                pair.getValue().getName()
+                task.getId(),
+                task.getDescription(),
+                task.getEstimatedDuration(),
+                task.getAcceptableDeviation() + "%",
+                task.getProject().getId(),
+                task.getProject().getName()
             };
             i++;
         }
@@ -190,7 +193,17 @@ public class ResolveConflictFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_MoveCurrentTaskButtonActionPerformed
 
     private void selectTaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectTaskButtonActionPerformed
-         //TODO
+        
+        
+        int tId = (int) taskModel.getValueAt(conflictingTaskTable.convertRowIndexToModel(conflictingTaskTable.getSelectedRow()), 0);
+        int pId = (int) taskModel.getValueAt(conflictingTaskTable.convertRowIndexToModel(conflictingTaskTable.getSelectedRow()), 4);
+        PlanTaskFrame planTaskFrame = new PlanTaskFrame(planHandler);
+        planTaskFrame.setSelectedProjectId(pId);
+        planTaskFrame.setSelectedTaskId(tId);
+        planTaskFrame.initTimeList();
+         CardLayout card = (CardLayout) planTaskFrame.getMainPanel().getLayout();
+        card.show(planTaskFrame.getMainPanel(), "selectTime");
+        planTaskFrame.setVisible(true);
     }//GEN-LAST:event_selectTaskButtonActionPerformed
 
 

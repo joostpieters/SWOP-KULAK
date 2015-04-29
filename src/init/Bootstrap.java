@@ -71,7 +71,7 @@ public class Bootstrap {
         
         Acl acl = new Acl();
         acl.addEntry("developer", Arrays.asList("UpdateTaskStatus"));
-        acl.addEntry("manager", Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation"));
+        acl.addEntry("manager", Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator"));
         HandlerFactory factory = new HandlerFactory(manager, clock, auth, acl, db);
         
         // display uncaught exceptions

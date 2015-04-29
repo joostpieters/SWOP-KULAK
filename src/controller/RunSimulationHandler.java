@@ -2,6 +2,7 @@ package controller;
 
 import domain.Acl;
 import domain.Auth;
+import domain.Database;
 import domain.ProjectContainer;
 import java.time.LocalDateTime;
 import java.util.logging.Level;
@@ -15,6 +16,7 @@ import java.util.logging.Logger;
 public class RunSimulationHandler extends Handler{
     
     private final ProjectContainer manager;
+    private final Database db;
     
     
     /**
@@ -23,10 +25,12 @@ public class RunSimulationHandler extends Handler{
      * @param manager The projectContainer to use in this handler. 
      * @param auth The authorization manager to use
      * @param acl The action control list to use
+     * @param db The database to use in conjunction with this handler
      */
-    public RunSimulationHandler(ProjectContainer manager, Auth auth, Acl acl){
+    public RunSimulationHandler(ProjectContainer manager, Auth auth, Acl acl, Database db){
         super(auth, acl);
         this.manager = manager;
+        this.db = db;
         
     }
     
@@ -60,8 +64,7 @@ public class RunSimulationHandler extends Handler{
      */
     public CreateTaskHandler getCreateTaskSimulatorHandler() {
        
-        //TODO
-        return null;
+        return new CreateTaskSimulatorHandler(manager, auth, acl, db);
         
     } 
     

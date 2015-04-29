@@ -68,6 +68,8 @@ public class RunSimulationFrame extends javax.swing.JFrame {
             }
         });
 
+        carryOutSimulationButton.setBackground(new java.awt.Color(153, 255, 102));
+        carryOutSimulationButton.setForeground(new java.awt.Color(0, 153, 51));
         carryOutSimulationButton.setText("Carry out simulation");
         carryOutSimulationButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -75,6 +77,8 @@ public class RunSimulationFrame extends javax.swing.JFrame {
             }
         });
 
+        endSimulationButton.setBackground(new java.awt.Color(255, 102, 102));
+        endSimulationButton.setForeground(new java.awt.Color(255, 51, 51));
         endSimulationButton.setText("End simulation");
         endSimulationButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -97,11 +101,11 @@ public class RunSimulationFrame extends javax.swing.JFrame {
                                 .addGap(205, 205, 205)
                                 .addComponent(jLabel2))
                             .addGroup(layout.createSequentialGroup()
-                                .addContainerGap(184, Short.MAX_VALUE)
+                                .addContainerGap(174, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(endSimulationButton)
-                                        .addGap(43, 43, 43)
+                                        .addComponent(endSimulationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(28, 28, 28)
                                         .addComponent(carryOutSimulationButton))
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

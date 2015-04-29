@@ -29,7 +29,6 @@ public class PlanTaskHandler extends Handler {
 
     private final ProjectContainer manager;
 
-    private Task currentTask;
     private Project currentProject;
     private final Clock clock;
 
@@ -62,10 +61,8 @@ public class PlanTaskHandler extends Handler {
      * @param start The start time at which the resources should be available 
      * @return A list of proposed required resources, ascociated with their resourcetype.
      */
-    public List<Entry<DetailedResourceType, DetailedResource>> getRequiredResourcesCurrenTask(LocalDateTime start) {
-        if (currentTask == null || currentProject == null) {
-            throw new IllegalStateException("No task currently selected.");
-        }
+    public List<Entry<DetailedResourceType, DetailedResource>> getRequiredResources(int pId, int tId, LocalDateTime start) {
+        Task currentTask = manager.getProject(pId).getTask(tId);
         List<Entry<DetailedResourceType, DetailedResource>> resources = new ArrayList<>();
         for (Entry<ResourceType, Integer> entry : currentTask.getRequiredResources().entrySet()) {
             List<Resource> availableResources = new ArrayList<>();
@@ -85,27 +82,13 @@ public class PlanTaskHandler extends Handler {
     }
 
     /**
-     * Sets the task with given id in the project with the given id as this
-     * handlers current task.
-     *
-     * @param pId The id of the project, this task belongs to.
-     * @param tId The id of the task to select.
-     */
-    public void selectTask(int pId, int tId) {
-        currentTask = manager.getProject(pId).getTask(tId);
-        currentProject = manager.getProject(pId);
-    }
-
-    /**
      *
      * @return A set containing hours at which the task currently being planned
      * could posiible be started
      */
-    public Set<LocalDateTime> getPossibleStartTimesCurrentTask() {
-        if (currentTask == null || currentProject == null) {
-            throw new IllegalStateException("No task currently selected.");
-        }
-        return currentTask.nextAvailableStartingTimes(clock.getTime());
+    public Set<LocalDateTime> getPossibleStartTimesCurrentTask(int pId, int tId) {
+       
+        return manager.getProject(pId).getTask(tId).nextAvailableStartingTimes(clock.getTime());
     }
 
     /**
@@ -118,12 +101,8 @@ public class PlanTaskHandler extends Handler {
      * @throws RuntimeException An error occured whilte updating the currently
      * selected task.
      */
-    public void planCurrentTask(LocalDateTime startTime, List<Resource> resources) throws ConflictException, RuntimeException {
-        if (currentTask == null || currentProject == null) {
-            throw new IllegalStateException("No task currently selected.");
-        }
-
-        currentTask.plan(startTime, null);
+    public void planTask(int pId, int tId, LocalDateTime startTime, List<Resource> resources) throws ConflictException, RuntimeException {
+        manager.getProject(pId).getTask(tId).plan(startTime, new ArrayList<>());
 
     }
 
