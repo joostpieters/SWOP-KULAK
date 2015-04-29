@@ -31,7 +31,7 @@ public class TaskTest {
     
     @Before
     public void setUp() {
-    	clock = new Clock();
+    	clock = new Clock(LocalDateTime.of(2060, 3, 4, 11, 48));
     	pc = new ProjectContainer();
     	p = pc.createProject("Name", "Description", LocalDateTime.of(2001, 1, 9, 8, 0), LocalDateTime.of(2072, 10, 9, 8, 0));
     	t0 = p.createTask("description!", new Duration(10), 20, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());

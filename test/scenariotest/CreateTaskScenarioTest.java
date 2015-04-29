@@ -6,6 +6,7 @@ import controller.HandlerFactory;
 import domain.Acl;
 import domain.Auth;
 import domain.Database;
+import domain.Manager;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.Task;
@@ -14,6 +15,7 @@ import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +56,9 @@ public class CreateTaskScenarioTest {
         clock = new Clock();
         auth = new Auth(db);
         acl = new Acl();
+        db.addUser(new Manager("John"));
+        acl.addEntry("manager", new ArrayList<>(Arrays.asList("CreateTask")));
+        auth.login("John");
         HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
         handler = controller.getCreateTaskHandler();
     }
@@ -78,7 +83,6 @@ public class CreateTaskScenarioTest {
             if (t.getDescription().equals("Fun task")) {
                 foundTask = true;
                 assertEquals(50, t.getAcceptableDeviation());
-                assertEquals(10, t.getEstimatedDuration().getHours());
                 assertEquals(20, t.getEstimatedDuration().getMinutes());
                 assertEquals(t, t2.getAlternativeTask());
                 

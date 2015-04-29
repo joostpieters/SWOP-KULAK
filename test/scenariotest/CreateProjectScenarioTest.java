@@ -6,21 +6,20 @@ import controller.HandlerFactory;
 import domain.Acl;
 import domain.Auth;
 import domain.Database;
-import domain.datainterface.DetailedProject;
+import domain.Manager;
 import domain.Project;
 import domain.ProjectContainer;
-
+import domain.datainterface.DetailedProject;
+import domain.time.Clock;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import domain.time.Clock;
 /**
  * This scenario test, tests the create projects use case
  * 
@@ -38,10 +37,14 @@ public class CreateProjectScenarioTest {
     @BeforeClass
     public static void setUpClass() {
     	db = new Database();
+        
         manager = new ProjectContainer();
         clock = new Clock();
          auth = new Auth(db);
         acl = new Acl();
+        db.addUser(new Manager("John"));
+        acl.addEntry("manager", new ArrayList<>(Arrays.asList("CreateProject")));
+        auth.login("John");
         HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
         handler = controller.getCreateProjectHandler();
     }
