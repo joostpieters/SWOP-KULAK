@@ -7,7 +7,9 @@ import exception.ConflictException;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Stack;
 
@@ -21,7 +23,7 @@ public class PlanTaskCommand implements ICommand {
     private final Task task;
     private final List<Resource> resources;
     private final List<ReservationCommand> reservations;
-    private final Stack<Entry<Resource, Resource.Memento>> oldReservations;
+    private final Map<Resource, Resource.Memento> oldReservations;
 
     public PlanTaskCommand(Timespan timespan, List<Resource> resources, Task task) {
         this.task = task;
@@ -30,25 +32,21 @@ public class PlanTaskCommand implements ICommand {
         for (Resource resource : resources) {
             reservations.add(new ReservationCommand(timespan, resource, task));
         }
-        oldReservations = new Stack<>();
+        oldReservations = new HashMap<>();
     }
 
-    public void execute() {
-    	// TODO deze exception werkelijk behandelen
-    	try {
-    		if (task.isPlanned()) {
-            	moveTask();
-        	} else {
-            	planTask();
-        	}
-    	} catch (Exception e) {}
-    	
+    public void execute() throws ConflictException {
+		if (task.isPlanned()) {
+        	moveTask();
+    	} else {
+        	planTask();
+    	}
     }
 
     private void moveTask() throws ConflictException {
     	oldReservations.clear();
         for(Resource res : resources){
-        	oldReservations.push(new SimpleEntry<Resource, Resource.Memento>(res, res.createMemento()));
+        	oldReservations.put(res,  res.createMemento());
         }
         
         try {
@@ -82,10 +80,7 @@ public class PlanTaskCommand implements ICommand {
     }
     
     private void revertMove() {
-    	while(!oldReservations.isEmpty())
-    	{
-    		Entry<Resource, Resource.Memento> entry = oldReservations.pop();
+    	for(Entry<Resource, Resource.Memento> entry : oldReservations.entrySet())
     		entry.getKey().setMemento(entry.getValue());
-    	}
     }
 }
