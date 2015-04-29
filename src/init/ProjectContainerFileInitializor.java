@@ -231,6 +231,8 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             // add to resourcetype
             Resource res = new Resource(name);
             db.getResourceTypes().get(typeIndex).addResource(res);
+            // add to db
+            db.addResource(res);
             // add to temp list
             resourcesList.add(res);
         }

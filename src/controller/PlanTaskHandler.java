@@ -2,7 +2,7 @@ package controller;
 
 import domain.Acl;
 import domain.Auth;
-import domain.Project;
+import domain.Database;
 import domain.ProjectContainer;
 import domain.Resource;
 import domain.ResourceType;
@@ -28,9 +28,8 @@ import java.util.Set;
 public class PlanTaskHandler extends Handler {
 
     private final ProjectContainer manager;
-
-    private Project currentProject;
     private final Clock clock;
+    private final Database db;
 
     /**
      * Initialize a new create task handler with the given projectContainer.
@@ -39,11 +38,13 @@ public class PlanTaskHandler extends Handler {
      * @param clock The clock to use in this handler
      * @param auth The authorization manager to use
      * @param acl The action control list to use
+     * @param db The database to use in this handler
      */
-    public PlanTaskHandler(ProjectContainer manager, Clock clock, Auth auth, Acl acl) {
+    public PlanTaskHandler(ProjectContainer manager, Clock clock, Auth auth, Acl acl, Database db) {
         super(auth, acl);
         this.manager = manager;
         this.clock = clock;
+        this.db = db;
     }
 
     /**
@@ -57,7 +58,11 @@ public class PlanTaskHandler extends Handler {
     }
 
     /**
-     *
+     * Returns the required resources, with resource propostions
+     * of the task with the given id
+     * 
+     * @param pId The id of the projec the task belongs to
+     * @param tId The id of the task
      * @param start The start time at which the resources should be available 
      * @return A list of proposed required resources, ascociated with their resourcetype.
      */
@@ -94,6 +99,8 @@ public class PlanTaskHandler extends Handler {
     /**
      * Update the start and end time and status of this current task.
      *
+     * @param pId The id of the projec the task belongs to
+     * @param tId The id of the task
      * @param startTime The start time of the task (yyyy-MM-dd HH:mm)
      * @param resources
      * @throws exception.ConflictException The plainning of this task conflicts with
@@ -101,8 +108,13 @@ public class PlanTaskHandler extends Handler {
      * @throws RuntimeException An error occured whilte updating the currently
      * selected task.
      */
-    public void planTask(int pId, int tId, LocalDateTime startTime, List<Resource> resources) throws ConflictException, RuntimeException {
-        manager.getProject(pId).getTask(tId).plan(startTime, new ArrayList<>());
+    public void planTask(int pId, int tId, LocalDateTime startTime, List<Integer> resources) throws ConflictException, RuntimeException {
+        ArrayList<Resource> res = new ArrayList<>();
+        // id's to resources
+        for(int i : resources){
+            res.add(db.getResources().get(i));
+        }
+        manager.getProject(pId).getTask(tId).plan(startTime, res);
 
     }
 

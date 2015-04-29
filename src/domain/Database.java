@@ -10,13 +10,15 @@ import java.util.List;
  */
 public class Database {
 
-    List<ResourceType> resourceTypes;
-    List<User> users;
+    private final List<ResourceType> resourceTypes;
+    private final List<User> users;
+    private final List<Resource> resources;
     
     /**
      * Initializes this new database
      */
     public Database(){
+        resources = new ArrayList<>();
         resourceTypes = new ArrayList<>();
         users = new ArrayList<>();
     }
@@ -35,6 +37,22 @@ public class Database {
      */
     public void addResourceType(ResourceType type){
         resourceTypes.add(type);
+    }
+    
+    /**
+     * 
+     * @return The resources stored in this database
+     */
+    public List<Resource> getResources(){
+        return new ArrayList<>(resources);
+    }
+    
+    /**
+     * Adds the given resource to this database
+     * @param resource The resource to add
+     */
+    public void addResource(Resource resource){
+        resources.add(resource);
     }
     
     /**

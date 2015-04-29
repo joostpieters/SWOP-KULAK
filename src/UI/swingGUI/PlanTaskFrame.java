@@ -11,6 +11,7 @@ import java.awt.Dimension;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ public class PlanTaskFrame extends javax.swing.JFrame {
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private LocalDateTime start;
     private int selectedTaskId, selectedProjectId;
+    private List<JComboBox<DetailedResource>> selectedResources;
 
     /**
      * Creates new form ListProjectsFrame
@@ -370,17 +372,18 @@ public class PlanTaskFrame extends javax.swing.JFrame {
             } else {
                 start = LocalDateTime.parse(specificTimeTextField.getText(), formatter);
             }
-
+            selectedResources = new ArrayList<>();
             // init resource panel
             for (Map.Entry<DetailedResourceType, DetailedResource> entry : handler.getRequiredResources(selectedProjectId, selectedTaskId, start)) {
 
-                JComboBox comboBox = new JComboBox();
+                JComboBox<DetailedResource> comboBox = new JComboBox();
                 comboBox.setModel(new javax.swing.DefaultComboBoxModel(entry.getKey().getResources().toArray()));
                 comboBox.setSelectedItem(entry.getValue());
                 comboBox.setPreferredSize(new java.awt.Dimension(200, 30));
                 
                 resourcePanel.add(comboBox, BorderLayout.SOUTH);
                 resourcePanel.add(Box.createRigidArea(new Dimension(5, 15)), BorderLayout.SOUTH);
+                selectedResources.add(comboBox);
 
             }
 
@@ -400,19 +403,21 @@ public class PlanTaskFrame extends javax.swing.JFrame {
      * @param evt
      */
     private void planTaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_planTaskButtonActionPerformed
-         ResolveConflictFrame resolveConflictFrame = new ResolveConflictFrame(this, new HashSet<>(handler.getUnplannedTasks()), handler);
-            resolveConflictFrame.setVisible(true);
-            this.setVisible(false);
-        // TODO resources
+        //retrieve resources
+        ArrayList<Integer> resourceIds = new ArrayList<>();
+        for(JComboBox<DetailedResource> combobox : selectedResources){
+            resourceIds.add((combobox.getItemAt(combobox.getSelectedIndex())).getId());
+        }
+        
         try {
-            handler.planTask(selectedProjectId, selectedTaskId, start, null);
+            handler.planTask(selectedProjectId, selectedTaskId, start, resourceIds);
             dispose();
         } catch (DateTimeException e) {
             JOptionPane.showMessageDialog(rootPane, "The given time is not in the right format.", null, JOptionPane.ERROR_MESSAGE);
         } catch (ConflictException e){
-//            ResolveConflictFrame resolveConflictFrame = new ResolveConflictFrame(this, new HashSet<>(e.getConflictingTasks()), handler);
-//            resolveConflictFrame.setVisible(true);
-//            this.setVisible(false);
+            ResolveConflictFrame resolveConflictFrame = new ResolveConflictFrame(this, new HashSet<>(e.getConflictingTasks()), handler);
+            resolveConflictFrame.setVisible(true);
+            this.setVisible(false);
             
         } catch (RuntimeException e) {
             JOptionPane.showMessageDialog(rootPane, e.getStackTrace(), null, JOptionPane.ERROR_MESSAGE);
