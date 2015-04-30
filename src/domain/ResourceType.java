@@ -2,6 +2,7 @@ package domain;
 
 import domain.datainterface.DetailedResourceType;
 import domain.time.Timespan;
+import domain.time.WorkWeekConfiguration;
 import exception.ConflictException;
 
 import java.time.LocalDateTime;
@@ -18,7 +19,7 @@ public class ResourceType implements DetailedResourceType {
     private final String name;
     private final List<ResourceType> requirements;
     private final List<ResourceType> conflicts;
-    private final Timespan availability;
+    private final WorkWeekConfiguration availability;
     private final Set<Resource> resources;
     
     /**
@@ -34,7 +35,7 @@ public class ResourceType implements DetailedResourceType {
      * @param 	availability
      *      	The daily availability for this type.
      */
-    public ResourceType(String name, List<ResourceType> requirements, List<ResourceType> conflicts, Timespan availability) {
+    public ResourceType(String name, List<ResourceType> requirements, List<ResourceType> conflicts, WorkWeekConfiguration availability) {
     	if(!canHaveAsName(name))
     		throw new IllegalArgumentException("The given name was incorrect.");
     	if(!canHaveAsRequirements(requirements))
@@ -43,6 +44,7 @@ public class ResourceType implements DetailedResourceType {
     		throw new IllegalArgumentException("The given set of conflicts is invalid.");
     	if(!canHaveAsAvailability(availability))
     		throw new IllegalArgumentException("The given availability is invalid.");
+    	
         this.name = name;
         this.requirements = requirements;
         this.conflicts = conflicts;
@@ -61,7 +63,7 @@ public class ResourceType implements DetailedResourceType {
      *       	The conflicting types for this type.
      */
     public ResourceType(String name, List<ResourceType> requirements, List<ResourceType> conflicts) {
-    	this(name, requirements, conflicts, null);
+    	this(name, requirements, conflicts, WorkWeekConfiguration.ALWAYS);
     }
     
      /**
@@ -136,19 +138,19 @@ public class ResourceType implements DetailedResourceType {
     /**
      * @return the availability
      */
-    public Timespan getAvailability() {
+    public WorkWeekConfiguration getAvailability() {
         return availability;
     }
 
     /**
      * Check whether the availability
      * 
-     * @param 	availability
+     * @param 	availability2
      *       	The availability to check.
      * @return	{@code true} if the given timespan is finite.
      */
-	public boolean canHaveAsAvailability(Timespan availability) {
-		return availability == null || !availability.isInfinite();
+	public boolean canHaveAsAvailability(WorkWeekConfiguration availability) {
+		return availability != null;
 	}
 
     /**
