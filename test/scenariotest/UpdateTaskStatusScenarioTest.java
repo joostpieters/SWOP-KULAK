@@ -5,7 +5,7 @@ import controller.UpdateTaskStatusHandler;
 import domain.Acl;
 import domain.Auth;
 import domain.Database;
-import domain.Manager;
+import domain.GenericUser;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.Task;
@@ -53,7 +53,7 @@ public class UpdateTaskStatusScenarioTest {
         clock = new Clock();
         auth = new Auth(db);
         acl = new Acl();
-        db.addUser(new Manager("John"));
+        db.addUser(new GenericUser("John", "manager"));
         acl.addEntry("manager", new ArrayList<>(Arrays.asList("UpdateTaskStatus")));
         auth.login("John");
         HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);

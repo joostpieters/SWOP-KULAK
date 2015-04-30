@@ -7,16 +7,20 @@ import domain.ProjectContainer;
 import domain.Resource;
 import domain.ResourceType;
 import domain.Task;
+import domain.command.ICommand;
+import domain.command.SimulatorCommand;
 import domain.datainterface.DetailedResource;
 import domain.datainterface.DetailedResourceType;
 import domain.datainterface.DetailedTask;
 import domain.time.Clock;
 import domain.time.Timespan;
 import exception.ConflictException;
+
 import java.time.LocalDateTime;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -30,6 +34,8 @@ public class PlanTaskHandler extends Handler {
     protected final ProjectContainer manager;
     private final Clock clock;
     private final Database db;
+    
+	private SimulatorCommand simulatorCommand;
 
     /**
      * Initialize a new create task handler with the given projectContainer.
@@ -41,6 +47,21 @@ public class PlanTaskHandler extends Handler {
      * @param db The database to use in this handler
      */
     public PlanTaskHandler(ProjectContainer manager, Clock clock, Auth auth, Acl acl, Database db) {
+    	this(manager, clock, auth, acl, db, new SimulatorCommand());
+    }
+    
+    /**
+     * Initialize a new create task handler with the given projectContainer.
+     *
+     * @param manager The projectContainer to use in this handler.
+     * @param clock The clock to use in this handler
+     * @param auth The authorization manager to use
+     * @param acl The action control list to use
+     * @param db The database to use in this handler
+     * @param simulatorCommand The simulator command to which commands are added.
+     */
+    public PlanTaskHandler(ProjectContainer manager, Clock clock, Auth auth, Acl acl, Database db, SimulatorCommand simulatorCommand)
+    {
         super(auth, acl);
         this.manager = manager;
         this.clock = clock;
@@ -114,8 +135,8 @@ public class PlanTaskHandler extends Handler {
         for(int i : resources){
             res.add(db.getResources().get(i));
         }
-        manager.getProject(pId).getTask(tId).plan(startTime, res);
-
+        
+        simulatorCommand.addAndExecute(manager.getProject(pId).getTask(tId).plan(startTime, res));
     }
-
+    
 }

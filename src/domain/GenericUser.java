@@ -5,8 +5,8 @@ package domain;
  * 
  * @author Mathias, Frederic, Pieter-Jan
  */
-public class Manager implements User {
-     private String name;
+public class GenericUser implements User {
+    private String name;
     private String role;
 
     /**
@@ -14,9 +14,9 @@ public class Manager implements User {
      * 
      * @param name The name of the manager
      */
-    public Manager(String name) {
+    public GenericUser(String name, String role) {
         this.name = name;
-        this.role = "manager";
+        this.role = role;
        
     }
     

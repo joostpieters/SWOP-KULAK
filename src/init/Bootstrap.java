@@ -5,7 +5,7 @@ import controller.HandlerFactory;
 import domain.Acl;
 import domain.Auth;
 import domain.Database;
-import domain.Manager;
+import domain.GenericUser;
 import domain.ProjectContainer;
 import domain.time.Clock;
 import java.io.FileReader;
@@ -54,7 +54,7 @@ public class Bootstrap {
         
         Auth auth = new Auth(db);
         
-        auth.registerUser(new Manager("lol"));
+        auth.registerUser(new GenericUser("root", "admin"));
         String username;
         while(true){
             username = JOptionPane.showInputDialog("Enter your username");
@@ -70,15 +70,16 @@ public class Bootstrap {
         
         
         Acl acl = new Acl();
+        acl.addEntry("admin", Arrays.asList("UpdateTaskStatus", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "updateTaskStatus"));
         acl.addEntry("developer", Arrays.asList("UpdateTaskStatus"));
         acl.addEntry("manager", Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator"));
         HandlerFactory factory = new HandlerFactory(manager, clock, auth, acl, db);
         
-        // display uncaught exceptions
-//        Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
-//            JOptionPane.showMessageDialog(null, e.getMessage(), null, JOptionPane.WARNING_MESSAGE);
-//        });
-//        
+         //display uncaught exceptions
+        Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
+            JOptionPane.showMessageDialog(null, e.getMessage(), null, JOptionPane.WARNING_MESSAGE);
+        });
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             new MainFrame(factory).setVisible(true);

@@ -35,8 +35,10 @@ public class AuthTest {
     public void setUp() {
         clock = new Clock();
         auth = new Auth(new Database());
-        user1 = new Manager("John");
+        
+		user1 = new GenericUser("John", "manager");
         user2 = new Developer("Fred", clock);
+        
         auth.registerUser(user1);
         auth.registerUser(user2);
     }

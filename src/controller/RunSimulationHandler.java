@@ -4,10 +4,10 @@ import domain.Acl;
 import domain.Auth;
 import domain.Database;
 import domain.ProjectContainer;
-import domain.command.ICommand;
+import domain.command.SimulatorCommand;
 import domain.time.Clock;
+
 import java.time.LocalDateTime;
-import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,8 +20,8 @@ public class RunSimulationHandler extends Handler{
     private final ProjectContainer manager;
     private final Clock clock;
     private final Database db;
-    private final Stack<ICommand> commandStack;
     
+    private final SimulatorCommand simulatorCommand;
     
     /**
      * Initialize this createprojecthandler with the given projectContainer.
@@ -36,8 +36,7 @@ public class RunSimulationHandler extends Handler{
         this.manager = manager;
         this.clock = clock;
         this.db = db;
-        this.commandStack = new Stack<>();
-        
+        this.simulatorCommand = new SimulatorCommand();
     }
     
     /**
@@ -69,7 +68,7 @@ public class RunSimulationHandler extends Handler{
      * @return A handler to simulate the creation of a task.
      */
     public CreateTaskHandler getCreateTaskSimulatorHandler() {
-        return new CreateTaskSimulatorHandler(manager, auth, acl, db, commandStack);
+    	return new CreateTaskHandler(manager, auth, acl, db, simulatorCommand);
     } 
     
     /**
@@ -77,14 +76,21 @@ public class RunSimulationHandler extends Handler{
      * @return A handler to simulate the planning of a task.
      */
     public PlanTaskHandler getPlanTaskSimulatorHandler() {
-    	return new PlanTaskSimulatorHandler(manager, clock, auth, acl, db, commandStack);
+    	return new PlanTaskHandler(manager, clock, auth, acl, db, simulatorCommand);
     } 
     
     /**
      * Cancel the simulation and leave the system unchanged
      */
     public void cancelSimulation(){
-    	while(!commandStack.isEmpty())
-    		commandStack.pop().revert();
+    	simulatorCommand.revert();
+    }
+    
+    /**
+     * Keeps the changes that were made
+     */
+    public void carryOutSimulation()
+    {
+    	
     }
 }

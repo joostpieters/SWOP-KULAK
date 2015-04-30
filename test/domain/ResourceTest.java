@@ -33,6 +33,7 @@ public class ResourceTest {
 	@Before
 	public void setUp() throws Exception {
 		Project p = new Project("name", "description", startTime, dueTime);
+		clock = new Clock();
 		t0 = p.createTask("task1", new Duration(120), 10, -1, new ArrayList<>(), new HashMap<>());
 		t1 = p.createTask("task2", new Duration(60), 20, -1, new ArrayList<>(), new HashMap<>());
 		t2 = p.createTask("task3", new Duration(150), 0, -1, new ArrayList<>(), new HashMap<>());

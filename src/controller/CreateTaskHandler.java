@@ -3,6 +3,8 @@ package controller;
 import domain.Acl;
 import domain.Auth;
 import domain.Database;
+import domain.command.CreateTaskCommand;
+import domain.command.SimulatorCommand;
 import domain.datainterface.DetailedProject;
 import domain.datainterface.DetailedResourceType;
 import domain.datainterface.DetailedTask;
@@ -11,6 +13,7 @@ import domain.ProjectContainer;
 import domain.ResourceType;
 import domain.Task;
 import domain.time.Duration;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +31,8 @@ public class CreateTaskHandler extends Handler{
     protected final ProjectContainer manager;
     protected final Database db;
     
+    protected final SimulatorCommand simulatorCommand;
+    
     /**
      * Initialize a new create task handler with the given projectContainer.
      * 
@@ -36,10 +41,23 @@ public class CreateTaskHandler extends Handler{
      * @param acl The action control list to use
      * @param db The database to use
      */   
-    public CreateTaskHandler(ProjectContainer manager, Auth auth, Acl acl, Database db){
+    public CreateTaskHandler(ProjectContainer manager, Auth auth, Acl acl, Database db, SimulatorCommand simulatorCommand){
         super(auth, acl);
         this.manager = manager;
         this.db = db;
+        this.simulatorCommand = simulatorCommand;
+    }
+    
+    /**
+     * Initialize a new create task handler with the given projectContainer.
+     * 
+     * @param manager The projectContainer to use in this handler. 
+     * @param auth The authorization manager to use
+     * @param acl The action control list to use
+     * @param db The database to use
+     */   
+    public CreateTaskHandler(ProjectContainer manager, Auth auth, Acl acl, Database db) {
+        this(manager, auth, acl, db, new SimulatorCommand());
     }
     
     
@@ -83,8 +101,8 @@ public class CreateTaskHandler extends Handler{
                 resources.put(db.getResourceTypes().get(id), requiredResources.get(id));
             }
             
-            Task createTask = project.createTask(description, duration, accDev, altfor, prereq, resources);
-                        
+            simulatorCommand.addAndExecute(new CreateTaskCommand(project, description, duration, accDev, altfor, prereq, resources));
+            
         } catch (IllegalArgumentException | IllegalStateException e) {
             throw e;
         }catch(Exception e){
