@@ -90,12 +90,12 @@ public class ResourceTypeTest {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testResourceTypeEmptyName() {
-		new ResourceType("", new ArrayList<>(), new ArrayList<>(), null);
+		new ResourceType("");
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testResourceTypeInvalidRequirements() {
-		new ResourceType("name", Arrays.asList(type0), Arrays.asList(type0), null);
+		new ResourceType("name", Arrays.asList(type0), Arrays.asList(type0));
 	}
 	
 	@Test(expected=IllegalArgumentException.class)

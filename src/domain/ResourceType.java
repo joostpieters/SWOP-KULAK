@@ -38,10 +38,8 @@ public class ResourceType implements DetailedResourceType {
     public ResourceType(String name, List<ResourceType> requirements, List<ResourceType> conflicts, WorkWeekConfiguration availability) {
     	if(!canHaveAsName(name))
     		throw new IllegalArgumentException("The given name was incorrect.");
-    	if(!canHaveAsRequirements(requirements))
-    		throw new IllegalArgumentException("The given set of requirements is invalid.");
-    	if(!canHaveAsConflicts(conflicts))
-    		throw new IllegalArgumentException("The given set of conflicts is invalid.");
+    	if(!canHaveAsRequirementsAndConflicts(requirements, conflicts))
+    		throw new IllegalArgumentException("The given sets of requirements and conflicts are invalid.");
     	if(!canHaveAsAvailability(availability))
     		throw new IllegalArgumentException("The given availability is invalid.");
     	
@@ -107,14 +105,18 @@ public class ResourceType implements DetailedResourceType {
     }
 
     /**
-     * Check whether a given set of resources can represent requirements.
+     * Check whether a given set of resources can have the given requirements and conflicts.
      * 
      * @param 	requirements
-     *       	The set of resources to be checked.
-     * @return	{@code true} if not null.
+     *       	The set of requirements to be checked.
+     * @param 	conflicts
+     *       	The set of conflicts to be checked.
+     * @return	{@code true} if both are not null and there is no element in the intersection.
      */
-	public boolean canHaveAsRequirements(List<ResourceType> requirements) {
-		return requirements != null;
+	public boolean canHaveAsRequirementsAndConflicts(List<ResourceType> requirements, List<ResourceType> conflicts) {
+		List<ResourceType> intersection = new ArrayList<>(requirements);
+		intersection.retainAll(conflicts);
+		return requirements != null && conflicts != null && intersection.isEmpty();
 	}
 
     /**
@@ -123,17 +125,6 @@ public class ResourceType implements DetailedResourceType {
     public List<ResourceType> getConflicts() {
         return new ArrayList<>(conflicts);
     }
-    
-    /**
-     * Check whether a given set of resources can represent conflicts.
-     * 
-     * @param 	conflicts
-     *       	The set of resources to be checked.
-     * @return	{@code true} if not null.
-     */
-    public boolean canHaveAsConflicts(List<ResourceType> conflicts) {
-		return conflicts != null;
-	}
 
     /**
      * @return the availability
