@@ -20,6 +20,10 @@ public class WorkWeekConfiguration implements Comparable<WorkWeekConfiguration>{
     public static final LocalTime END_LUNCHBREAK = LocalTime.of(13, 0);
 
     public static final LocalTime NO_LUNCHBREAK = LocalTime.of(12, 0);
+    /**
+     * A constant representing a workweek configuration that indicates 24/7
+     * availability
+     */
     public static final WorkWeekConfiguration ALWAYS = 
     		new WorkWeekConfiguration(1, 7, LocalTime.MIN, LocalTime.MAX, NO_LUNCHBREAK, NO_LUNCHBREAK);
 
@@ -88,16 +92,17 @@ public class WorkWeekConfiguration implements Comparable<WorkWeekConfiguration>{
     
     /**
      * Initialize this configuration with a standard workweek of monday
-     * to friday and workdays from 9 to 18h and the given lunchbreak
+     * to friday and workdays from the given hours and no lunchbreak
      * 
-     * @param beginLunch The time to begin lunch
-     * @param endLunch The time to end lunch
+     * @param beginWorkDay The time to begin the workday
+     * @param endWorkDay The time to end the workday
      * @throws IllegalArgumentException The given begin and end time of 
-     * a lunch don't form a valid interval.
+     * a day don't form a valid interval.
      */
-    public WorkWeekConfiguration(LocalTime beginLunch, LocalTime endLunch) throws IllegalArgumentException {
-        this(BEGIN_WORKDAY, END_WORKDAY, beginLunch, endLunch);
+    public WorkWeekConfiguration(LocalTime beginWorkDay, LocalTime endWorkDay) throws IllegalArgumentException {
+        this(BEGIN_WORKWEEK, END_WORKWEEK, beginWorkDay, endWorkDay, NO_LUNCHBREAK, NO_LUNCHBREAK);
     }   
+    
     
     /**
      * Initialize this configuration with a standard workweek of monday

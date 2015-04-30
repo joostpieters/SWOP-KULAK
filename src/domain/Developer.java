@@ -1,7 +1,6 @@
 package domain;
 
 import domain.time.Clock;
-import domain.time.WorkWeekConfiguration;
 
 /**
  * This class represents a developer in the system
@@ -11,7 +10,6 @@ import domain.time.WorkWeekConfiguration;
 public class Developer extends Resource implements User {
     
     private String name;
-    private WorkWeekConfiguration conf;
     private final String role;
     
     /**
@@ -24,8 +22,7 @@ public class Developer extends Resource implements User {
         super(name, clock);
         this.name = name;
         this.role = "developer";
-        // TODO wss moven naar resource
-        conf = new WorkWeekConfiguration();
+     
     }
     
     /**
@@ -55,22 +52,4 @@ public class Developer extends Resource implements User {
     public String getRole() {
         return role;
     }
-    
-       
-    /**
-     * 
-     * @return The workweek configuration of this user 
-     */
-    public WorkWeekConfiguration getWorkWeekConfiguration(){
-        return conf;
-    }
-    
-    /**
-     * Sets the wordkweek configuration of this user to the given configuration.
-     * 
-     * @param conf The configuration to set
-     */
-    public void setWorkWeekConfiguration(WorkWeekConfiguration conf){
-        this.conf = conf;
-    }  
 }

@@ -2,6 +2,7 @@ package domain;
 
 import domain.time.Duration;
 import domain.time.Timespan;
+import java.time.LocalDateTime;
 
 /**
  * This class represents an available status of a task.
@@ -136,9 +137,23 @@ public class Available extends Status {
      * Moves the given task to the executing state
      * 
      * @param task The task to adjust
+     * @param currentTime
      */
     @Override
-    public void execute(Task task){
-        task.setStatus(new Executing());
+    public void execute(Task task, LocalDateTime currentTime){
+        
+        if(task.isPlanned()){
+            if(!task.getPlannedStartTime().isBefore(currentTime)){
+                task.setStatus(new Executing());
+            }else{
+                // unplanned execution
+                // TODO
+                task.plan(currentTime, null);
+            }
+        }else{
+            throw new IllegalStateException("A task has to be planned before you can execute it!");
+        }
+        
+        
     }
 }

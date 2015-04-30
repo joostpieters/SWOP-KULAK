@@ -16,6 +16,7 @@ import domain.Task;
 import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
+import domain.time.WorkWeekConfiguration;
 import exception.ConflictException;
 import java.io.IOException;
 import java.io.Reader;
@@ -26,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProjectContainerFileInitializor extends StreamTokenizer {
 
@@ -34,6 +36,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
     private final ProjectContainer manager;
     private final Clock clock;
     private final Database db;
+    private WorkWeekConfiguration dailyAvailability;
 
     /**
      * Initialize this ProjectConainerFileInitializor with the given reader and
@@ -189,6 +192,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             expectChar('-');
             LocalTime creationTime = expectTimeField("startTime");
             LocalTime dueTime = expectTimeField("endTime");
+            dailyAvailability = new WorkWeekConfiguration(creationTime, dueTime);
         }
 
         expectLabel("resourceTypes");
@@ -200,8 +204,9 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             expectLabel("conflictsWith");
             List<Integer> conflictIds = expectIntList();
             expectLabel("dailyAvailability");
+            int availabilityIndex = 1;
             if (ttype == TT_NUMBER) {
-                int availabilityIndex = expectInt();
+                availabilityIndex = expectInt();
             }
 
             List<ResourceType> requirements = new ArrayList<>();
@@ -217,8 +222,14 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             for (Integer i : conflictIds) {
                 requirements.add(db.getResourceTypes().get(i - 1));
             }
-
-            db.addResourceType(new ResourceType(name, requirements, conflicts));
+            ResourceType resourceType;
+            if(availabilityIndex == 0){
+                resourceType = new ResourceType(name, requirements, conflicts, dailyAvailability);
+            }else{
+                // always available
+                resourceType = new ResourceType(name, requirements, conflicts);
+            }
+            db.addResourceType(resourceType);
         }
 
         expectLabel("resources");
@@ -238,13 +249,25 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
         }
 
         expectLabel("developers");
+        // new resourcetype for developers
+        ResourceType devType = new ResourceType("developer");
+        db.addResourceType(devType);
         while (ttype == '-') {
             expectChar('-');
             String name = expectStringField("name");
-            //TODO resourcetype voor developers?
-            db.addUser(new Developer(name, clock));
+            Developer dev =  new Developer(name, clock);
+            // add to type
+            // TODO workweek conf?
+            devType.addResource(dev);
+            db.addUser(dev);
             
         }
+        Map<ResourceType, Integer> hashMap = new HashMap<> ();
+        hashMap.put(devType, 1);
+        // dev is standard requirement
+        Task.setStandardRequiredResources(hashMap);
+        
+        
 
         expectLabel("projects");
 

@@ -36,6 +36,8 @@ public class Task implements DetailedTask {
     private LocalDateTime plannedStartTime;
     private final Map<ResourceType, Integer> requiredResources;
     private final Project project;
+    private static Map<ResourceType, Integer> standardRequiredResources = new HashMap<>();
+    
     /**
      * A constant to indicate that a task requires no resources
      */
@@ -345,6 +347,19 @@ public class Task implements DetailedTask {
         }
         return true;
     }
+    
+    /**
+     * Sets a map of resourcetypes acociated with their minimal quantity that
+     * are required for each task.
+     * 
+     * @param resourceTypes The resourceypes with their necessary quantity
+     */
+    public static void setStandardRequiredResources(Map<ResourceType, Integer> resourceTypes){
+        //TODO check met bestaande instantie resourcetypes
+        if(!canHaveAsResourceTypes(resourceTypes))
+            throw new IllegalArgumentException("This combination of resourcetypes is not valid.");
+        standardRequiredResources = new HashMap<>(resourceTypes);
+    }
 
     /**
      * @return The status of this task.
@@ -386,10 +401,13 @@ public class Task implements DetailedTask {
     }
 
     /**
-	 * @return the requiredResources
+	 * @return the requiredResources of this specific task, combined with
+         * the standard required resources that are equal for all classes.
 	 */
 	public Map<ResourceType, Integer> getRequiredResources() {
-            return requiredResources;
+            Map<ResourceType, Integer> allResourceTypes = new HashMap<>(requiredResources);
+            allResourceTypes.putAll(standardRequiredResources);
+            return allResourceTypes;
 	}
 
 	/**
@@ -444,7 +462,7 @@ public class Task implements DetailedTask {
      * @param currentTime The current time when this task is changed to executing
      */
     public void execute(LocalDateTime currentTime){
-        getStatus().execute(this);
+        getStatus().execute(this, currentTime);
     }
     // TODO verplaatsen
     public void clearFutureReservations(LocalDateTime currentTime)
@@ -702,7 +720,7 @@ public class Task implements DetailedTask {
     	this.alternativeTask = memento.getAlternativeTask();
 		this.prerequisiteTasks = memento.getPrerequisiteTasks();
 		this.status = memento.getStatus();
-		this.plannedStartTime = memento.GetPlannedStartTime();
+		this.plannedStartTime = memento.getPlannedStartTime();
     }
     
     /**
@@ -730,6 +748,16 @@ public class Task implements DetailedTask {
         
         estimatedDuration = new Duration(dur.getMinutes(), minconf);
     }
+    
+    /**
+     * 
+     * @return The planned start time of this task
+     */
+    public LocalDateTime getPlannedStartTime()
+    {
+        return this.plannedStartTime;
+    }
+    
     /**
      * This mememnto represents the internal state of this task
      */
@@ -761,7 +789,7 @@ public class Task implements DetailedTask {
 		return this.status;
 	}
 	
-	private LocalDateTime GetPlannedStartTime()
+	private LocalDateTime getPlannedStartTime()
 	{
 		return this.plannedStartTime;
 	}
