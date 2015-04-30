@@ -131,6 +131,7 @@ public class TaskTest {
     public void testUpdateInvalidStatus3() {
     	LocalDateTime startTime = LocalDateTime.of(1994, 10, 30, 0, 0);
     	LocalDateTime endTime = LocalDateTime.of(1994, 11, 30, 0, 0);
+        t0.finish(new Timespan(startTime, endTime), clock.getTime());
     	t0.fail(new Timespan(startTime, endTime), clock.getTime());
     	//t0.update(startTime, endTime, new Available());
     }

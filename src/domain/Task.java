@@ -437,7 +437,14 @@ public class Task implements DetailedTask {
      */
     public void fail(Timespan timespan, LocalDateTime currentTime) {
         if (timespan == null) {
-            throw new IllegalArgumentException("The given timespan are not initialized.");
+            throw new IllegalArgumentException("The given timespan is not initialized.");
+        }
+        
+        if (timespan.endsAfter(currentTime)) {
+            throw new IllegalArgumentException("The given timespan is after the current time.");
+        }
+        if (timespan.startsBefore(project.getCreationTime())) {
+            throw new IllegalArgumentException("The given timespan is before the project creation time.");
         }
         getStatus().fail(this, timespan);
         clearFutureReservations(currentTime);
@@ -452,12 +459,16 @@ public class Task implements DetailedTask {
      */
     public void finish(Timespan timespan, LocalDateTime currentTime) {
         if (timespan == null) {
-            throw new IllegalArgumentException("The given timespan are not initialized.");
+            throw new IllegalArgumentException("The given timespan is not initialized.");
         }
 
         if (timespan.endsAfter(currentTime)) {
             throw new IllegalArgumentException("The given timespan is after the current time.");
         }
+        if (timespan.startsBefore(project.getCreationTime())) {
+            throw new IllegalArgumentException("The given timespan is before the project creation time.");
+        }
+        
         getStatus().finish(this, timespan);
         clearFutureReservations(timespan.getEndTime());
     }
@@ -752,7 +763,7 @@ public class Task implements DetailedTask {
             }
         }
 
-        estimatedDuration = new Duration(dur.getMinutes(), minconf);
+        estimatedDuration = new Duration(dur.toMinutes(), minconf);
     }
 
     /**

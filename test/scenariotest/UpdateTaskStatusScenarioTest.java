@@ -2,15 +2,15 @@ package scenariotest;
 
 import controller.HandlerFactory;
 import controller.UpdateTaskStatusHandler;
-import domain.user.Acl;
-import domain.user.Auth;
 import domain.Database;
-import domain.user.GenericUser;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.Task;
 import domain.time.Clock;
 import domain.time.Duration;
+import domain.user.Acl;
+import domain.user.Auth;
+import domain.user.GenericUser;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;

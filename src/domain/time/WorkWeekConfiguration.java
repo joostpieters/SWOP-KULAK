@@ -110,7 +110,7 @@ public class WorkWeekConfiguration implements Comparable<WorkWeekConfiguration>{
      * 
      */
     public WorkWeekConfiguration() {
-        this(BEGIN_LUNCHBREAK, END_LUNCHBREAK);
+        this(BEGIN_WORKDAY, END_WORKDAY, BEGIN_LUNCHBREAK, END_LUNCHBREAK);
     }   
 
     /**
