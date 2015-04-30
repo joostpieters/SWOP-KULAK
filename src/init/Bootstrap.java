@@ -8,10 +8,12 @@ import domain.Database;
 import domain.user.GenericUser;
 import domain.ProjectContainer;
 import domain.time.Clock;
+
 import java.io.FileReader;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -97,6 +99,8 @@ public class Bootstrap {
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Task Man inputfile", "tman");
         chooser.setFileFilter(filter);
+        //Solve the chooser deadlock bug
+        try { Thread.sleep(10); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
         int returnVal = chooser.showOpenDialog(null);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
 
