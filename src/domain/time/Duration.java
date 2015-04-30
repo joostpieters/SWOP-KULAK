@@ -355,7 +355,7 @@ public class Duration implements Comparable<Duration> {
      */
     @Override
     public String toString() {
-        return getMinutes() + " minutes";
+        return toMinutes() + " minutes";
     }
 
     /**
@@ -372,7 +372,7 @@ public class Duration implements Comparable<Duration> {
             return false;
         }
         Duration other = (Duration) o;
-        return this.getHours() == other.getHours() && this.getMinutes() == other.getMinutes();
+        return this.toMinutes() == other.toMinutes();
     }
 
     /**

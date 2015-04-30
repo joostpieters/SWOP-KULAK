@@ -12,17 +12,23 @@ import java.time.temporal.ChronoUnit;
 public class WorkWeekConfiguration implements Comparable<WorkWeekConfiguration>{
 
 
-    private final int beginWorkWeek;
+	public static final int BEGIN_WORKWEEK = 1;
+	public static final int END_WORKWEEK = 5;
+	public static final LocalTime BEGIN_WORKDAY = LocalTime.of(9, 0);
+	public static final LocalTime END_WORKDAY = LocalTime.of(18, 0);
+	public static final LocalTime BEGIN_LUNCHBREAK = LocalTime.of(12, 0);
+    public static final LocalTime END_LUNCHBREAK = LocalTime.of(13, 0);
 
-    private final int endWorkWeek;
+    public static final LocalTime NO_LUNCHBREAK = LocalTime.of(12, 0);
+    public static final WorkWeekConfiguration ALWAYS = 
+    		new WorkWeekConfiguration(1, 7, LocalTime.MIN, LocalTime.MAX, NO_LUNCHBREAK, NO_LUNCHBREAK);
 
-    private final LocalTime beginWorkDay;
-
-    private final LocalTime endWorkDay;
-
-    private final LocalTime beginLunch;
-
-    private final LocalTime endLunch;
+	private final int beginWorkWeek;
+	private final int endWorkWeek;
+	private final LocalTime beginWorkDay;
+	private final LocalTime endWorkDay;
+	private final LocalTime beginLunch;
+	private final LocalTime endLunch;
 
     /**
      * **************************************
@@ -77,7 +83,7 @@ public class WorkWeekConfiguration implements Comparable<WorkWeekConfiguration>{
     public WorkWeekConfiguration(LocalTime beginWorkDay, 
             LocalTime endWorkDay, LocalTime beginLunch, LocalTime endLunch) throws IllegalArgumentException {
         
-        this(1, 5, beginWorkDay, endWorkDay, beginLunch, endLunch);
+        this(BEGIN_WORKWEEK, END_WORKWEEK, beginWorkDay, endWorkDay, beginLunch, endLunch);
     }
     
     /**
@@ -90,7 +96,7 @@ public class WorkWeekConfiguration implements Comparable<WorkWeekConfiguration>{
      * a lunch don't form a valid interval.
      */
     public WorkWeekConfiguration(LocalTime beginLunch, LocalTime endLunch) throws IllegalArgumentException {
-        this(1, 5, LocalTime.of(9, 0), LocalTime.of(18, 0), beginLunch, endLunch);
+        this(BEGIN_WORKDAY, END_WORKDAY, beginLunch, endLunch);
     }   
     
     /**
@@ -99,7 +105,7 @@ public class WorkWeekConfiguration implements Comparable<WorkWeekConfiguration>{
      * 
      */
     public WorkWeekConfiguration() {
-        this(1, 5, LocalTime.of(9, 0), LocalTime.of(18, 0), LocalTime.of(12, 0), LocalTime.of(13, 0));
+        this(BEGIN_LUNCHBREAK, END_LUNCHBREAK);
     }   
 
     /**
