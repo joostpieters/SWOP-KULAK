@@ -250,11 +250,11 @@ public class ResourceType implements DetailedResourceType {
         }
 
         Set<Resource> result = new HashSet<>();
-        while (result.size() < quantity) {
-            for (Resource r : availableResources) {
-                r.makeReservation(task, span);
-                result.add(r);
-            }
+        for (Resource r : availableResources) {
+            r.makeReservation(task, span);
+            result.add(r);
+            if(result.size() >= quantity)
+            	break;
         }
         return result;
     }

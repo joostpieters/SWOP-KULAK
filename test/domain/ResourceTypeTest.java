@@ -180,18 +180,24 @@ public class ResourceTypeTest {
 		SortedSet<Timespan> availableTimespans = type1.nextAvailableTimespans(startRes);
 		assertEquals(1, availableTimespans.size());
 		assertTrue(availableTimespans.contains(new Timespan(startRes)));
+		
 		availableTimespans = type2.nextAvailableTimespans(endRes);
 		assertEquals(1, availableTimespans.size());
 		assertTrue(availableTimespans.contains(new Timespan(endRes)));
+		
 		availableTimespans = type2.nextAvailableTimespans(startRes);
 		assertEquals(1, availableTimespans.size());
 		assertTrue(availableTimespans.contains(new Timespan(endRes)));
 		LocalDateTime beforeStart = startRes.minusDays(1);
+		
+		type2.addResource(res2);
+		
 		availableTimespans = type2.nextAvailableTimespans(beforeStart);
-		assertEquals(2, availableTimespans.size());
+		assertEquals(3, availableTimespans.size());
+		assertTrue(availableTimespans.contains(new Timespan(beforeStart)));
 		assertTrue(availableTimespans.contains(new Timespan(endRes)));
 		assertTrue(availableTimespans.contains(new Timespan(beforeStart, startRes)));
-		type2.addResource(res2);
+		
 		availableTimespans = type2.nextAvailableTimespans(startRes);
 		assertEquals(2, availableTimespans.size());
 		assertTrue(availableTimespans.contains(new Timespan(startRes)));
@@ -199,6 +205,7 @@ public class ResourceTypeTest {
 		try {
 			type2.makeReservation(t1, reserved, 1);
 		} catch (ConflictException e) { }
+		
 		availableTimespans = type2.nextAvailableTimespans(beforeStart);
 		assertEquals(2, availableTimespans.size());
 		assertTrue(availableTimespans.contains(new Timespan(endRes)));

@@ -3,6 +3,7 @@ package domain;
 import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
+import exception.ConflictException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,7 +26,14 @@ import org.junit.Test;
  */
 public class TaskTest {
 	
+	private static final int GAP = 3;
+	
 	private LocalDateTime from = LocalDateTime.of(2014, 2, 1, 16, 0);
+	private LocalDateTime to = from.plusDays(2);
+	private LocalDateTime from2 = to.plusHours(GAP);
+	private LocalDateTime to2 = from2.plusHours(1);
+	private Timespan reserved = new Timespan(from, to);
+	private Timespan reserved2 = new Timespan(from2, to2);
 	
 	private Clock clock;
     private Project p;
@@ -648,5 +656,24 @@ public class TaskTest {
     public void TestNextAvailableStartingTimes() {
     	SortedSet<LocalDateTime> nextAvailableStartingTimes = t10.nextAvailableStartingTimes(from);
     	assertEquals(1, nextAvailableStartingTimes.size());
+    	assertTrue(nextAvailableStartingTimes.contains(from));
+    	
+    	try {
+			type0.makeReservation(t10, reserved, 1);
+		} catch (ConflictException e) {	}
+    	nextAvailableStartingTimes = t10.nextAvailableStartingTimes(from);
+    	assertEquals(2, nextAvailableStartingTimes.size());
+    	assertTrue(nextAvailableStartingTimes.contains(from));
+    	assertTrue(nextAvailableStartingTimes.contains(to));
+    	
+    	try {
+    		type1.makeReservation(t10, reserved2, 1);
+    	} catch (ConflictException e) { }
+    	LocalDateTime tempFrom = from.minusHours(1);
+    	nextAvailableStartingTimes = t10.nextAvailableStartingTimes(tempFrom);
+    	assertEquals(4, nextAvailableStartingTimes.size());
+    	assertTrue(nextAvailableStartingTimes.contains(tempFrom));
+    	for(int i = 0; i < GAP; i++)
+    		assertTrue(nextAvailableStartingTimes.contains(to.plusHours(i)));
     }
 }
