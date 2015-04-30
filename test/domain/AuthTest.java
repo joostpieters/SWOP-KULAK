@@ -1,5 +1,6 @@
 package domain;
 
+import domain.time.Clock;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
@@ -16,6 +17,7 @@ public class AuthTest {
     private static Auth auth;
     private static User user1;
     private static User user2;
+    private Clock clock;
     
     public AuthTest() {
     }
@@ -31,9 +33,10 @@ public class AuthTest {
     
     @Before
     public void setUp() {
+        clock = new Clock();
         auth = new Auth(new Database());
         user1 = new Manager("John");
-        user2 = new Developer("Fred");
+        user2 = new Developer("Fred", clock);
         auth.registerUser(user1);
         auth.registerUser(user2);
     }

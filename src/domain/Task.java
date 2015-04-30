@@ -5,12 +5,14 @@ import domain.datainterface.DetailedTask;
 import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
+import domain.time.WorkWeekConfiguration;
 import exception.ConflictException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -27,7 +29,7 @@ public class Task implements DetailedTask {
     private String description;
     private int acceptableDeviation;
     private Timespan timespan;
-    private final Duration estimatedDuration;
+    private Duration estimatedDuration;
     private Task alternativeTask;
     private List<Task> prerequisiteTasks;
     private Status status;
@@ -58,7 +60,7 @@ public class Task implements DetailedTask {
     Task(String description, Duration duration, int accDev, List<Task> prereq, Map<ResourceType, Integer> resources, Project project) {
         this.id = generateId();
         setDescription(description);
-        this.estimatedDuration = duration;
+        initDuration();
         setAcceptableDeviation(accDev);
         if (prereq == null) {
             setPrerequisiteTasks(new ArrayList<>());
@@ -674,6 +676,9 @@ public class Task implements DetailedTask {
     				}
     			}
     		}
+                
+                if(result.isEmpty())
+                    result = temp;
 
     		if(result.last().isBefore(temp.last())) {
     			result.retainAll(temp);
@@ -719,6 +724,23 @@ public class Task implements DetailedTask {
     @Override
     public Project getProject() {
         return project;
+    }
+    
+    /**
+     * Init the estimated duration of a task with configuration of the least
+     * available resourcetype.
+     */
+    private void initDuration() {
+        WorkWeekConfiguration minconf = WorkWeekConfiguration.ALWAYS;
+        // TODO
+        for(Entry<ResourceType, Integer> entry : requiredResources.entrySet()){
+            if(entry.getKey().getAvailability().compareTo(minconf) < 0){
+                minconf = entry.getKey().getAvailability();
+            }
+        }
+        
+        
+        estimatedDuration = new Duration(estimatedDuration.getMinutes(), minconf);
     }
 
     public class Memento {

@@ -229,7 +229,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             expectLabel("type");
             int typeIndex = expectInt();
             // add to resourcetype
-            Resource res = new Resource(name);
+            Resource res = new Resource(name, clock);
             db.getResourceTypes().get(typeIndex).addResource(res);
             // add to db
             db.addResource(res);
@@ -242,7 +242,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             expectChar('-');
             String name = expectStringField("name");
             //TODO resourcetype voor developers?
-            db.addUser(new Developer(name));
+            db.addUser(new Developer(name, clock));
             
         }
 

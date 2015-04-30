@@ -1,5 +1,6 @@
 package domain;
 
+import domain.time.Clock;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +21,7 @@ public class AclTest {
     private static Acl acl;
     private static User user1;
     private static User user2;
+    private Clock clock;
     
     public AclTest() {
     }
@@ -35,13 +37,14 @@ public class AclTest {
     
     @Before
     public void setUp() {
+        clock = new Clock();
         acl = new Acl();
         
         acl.addEntry("manager", new ArrayList<>(Arrays.asList("edit", "remove", "view")));
         acl.addEntry("developer", new ArrayList<>(Arrays.asList("edit", "view")));
         
         user1 = new Manager("John");
-        user2 = new Developer("Fred");
+        user2 = new Developer("Fred", clock);
         
     }
     

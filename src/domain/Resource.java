@@ -2,6 +2,7 @@ package domain;
 
 
 import domain.datainterface.DetailedResource;
+import domain.time.Clock;
 import domain.time.Timespan;
 import exception.ConflictException;
 import java.time.LocalDateTime;
@@ -26,14 +27,18 @@ public class Resource implements ClockObserver, DetailedResource {
 	 * 
 	 * @param 	name
 	 *       	The name for this resource.
+     * @param clock The clock this resource has to observe
 	 */
-	public Resource(String name) {
+	public Resource(String name, Clock clock) {
 		if(!canHaveAsName(name))
 			throw new IllegalArgumentException("This resource can't have the given name as name.");
 		this.id = generateId();
 		this.name = name;
 		this.reservations = new HashSet<>();
 		this.previousReservations = new HashSet<>();
+                if(clock == null)
+                    throw new IllegalArgumentException("This resource can't observe the given clock.");
+                clock.attach(this);
 	}
 
 	/****************************************************
