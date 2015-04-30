@@ -1,20 +1,20 @@
 package domain;
 
-import static org.junit.Assert.*;
-
+import domain.time.Clock;
+import domain.time.Duration;
+import domain.time.Timespan;
+import exception.ConflictException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
-
-import domain.time.Duration;
-import domain.time.Timespan;
-import exception.ConflictException;
 
 public class ResourceTest {
 	
@@ -28,23 +28,28 @@ public class ResourceTest {
 	Map<ResourceType, Integer> reqs1, reqs2;
 	private Resource r0, r1;
 	private Reservation reservation;
+    private Clock clock;
 
 	@Before
 	public void setUp() throws Exception {
+<<<<<<< HEAD
 		Project p = new Project("name", "description", startTime, dueTime);
+=======
+             clock = new Clock();
+>>>>>>> branch 'master' of ssh://git@github.com/mrTsjolder/SWOP-KULAK.git
 		t0 = p.createTask("task1", new Duration(120), 10, -1, new ArrayList<>(), new HashMap<>());
 		t1 = p.createTask("task2", new Duration(60), 20, -1, new ArrayList<>(), new HashMap<>());
 		t2 = p.createTask("task3", new Duration(150), 0, -1, new ArrayList<>(), new HashMap<>());
 		
-		r0 = new Resource("not reserved");
-		r1 = new Resource("reserved");
+		r0 = new Resource("not reserved", clock);
+		r1 = new Resource("reserved", clock);
 		reservation = r1.makeReservation(t0, reservedSpan);
 	}
 
 	@Test
 	public void testConstructorValid() {
 		String name = "r";
-		Resource r = new Resource(name);
+		Resource r = new Resource(name, clock);
 		
 		assertEquals(name, r.getName());
 		assertTrue(r.getReservations().isEmpty());
@@ -53,12 +58,12 @@ public class ResourceTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructorNullName() {
-		new Resource(null);
+		new Resource(null, clock);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructorShortName() {
-		new Resource("");
+		new Resource("", clock);
 	}
 
 	@Test

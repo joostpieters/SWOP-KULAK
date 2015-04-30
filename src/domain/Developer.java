@@ -1,5 +1,6 @@
 package domain;
 
+import domain.time.Clock;
 import domain.time.WorkWeekConfiguration;
 
 /**
@@ -17,9 +18,10 @@ public class Developer extends Resource implements User {
      * Initializes a new developer with the given name and role
      * 
      * @param name The name of the developer
+     * @param clock The clock this developer should observe
      */
-    public Developer(String name) {
-        super(name);
+    public Developer(String name, Clock clock) {
+        super(name, clock);
         this.name = name;
         this.role = "developer";
         // TODO wss moven naar resource
