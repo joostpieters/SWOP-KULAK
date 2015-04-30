@@ -60,7 +60,7 @@ public class Task implements DetailedTask {
     Task(String description, Duration duration, int accDev, List<Task> prereq, Map<ResourceType, Integer> resources, Project project) {
         this.id = generateId();
         setDescription(description);
-        initDuration();
+        
         setAcceptableDeviation(accDev);
         if (prereq == null) {
             setPrerequisiteTasks(new ArrayList<>());
@@ -70,6 +70,8 @@ public class Task implements DetailedTask {
         if(!canHaveAsResourceTypes(resources))
             throw new IllegalArgumentException("This combination of resourcetypes is not valid.");
         this.requiredResources = new HashMap<>(resources);
+        
+        initDuration(duration);
         
         Status initStatus = new Available();
         setStatus(initStatus);
@@ -730,9 +732,9 @@ public class Task implements DetailedTask {
      * Init the estimated duration of a task with configuration of the least
      * available resourcetype.
      */
-    private void initDuration() {
+    private void initDuration(Duration dur) {
         WorkWeekConfiguration minconf = WorkWeekConfiguration.ALWAYS;
-        // TODO
+        
         for(Entry<ResourceType, Integer> entry : requiredResources.entrySet()){
             if(entry.getKey().getAvailability().compareTo(minconf) < 0){
                 minconf = entry.getKey().getAvailability();
@@ -740,7 +742,7 @@ public class Task implements DetailedTask {
         }
         
         
-        estimatedDuration = new Duration(estimatedDuration.getMinutes(), minconf);
+        estimatedDuration = new Duration(dur.getMinutes(), minconf);
     }
 
     public class Memento {
