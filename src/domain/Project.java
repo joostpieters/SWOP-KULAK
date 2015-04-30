@@ -1,6 +1,6 @@
 package domain;
 
-import domain.datainterface.DetailedProject;
+import domain.dto.DetailedProject;
 import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
@@ -73,8 +73,7 @@ public class Project implements DetailedProject {
 
     /**
      * **************************************
-     * Getters & setters	*
-	 ***************************************
+     * Getters & setters	* **************************************
      */
     /**
      * @return	a newly generated id for the next task.
@@ -214,8 +213,7 @@ public class Project implements DetailedProject {
 
     /**
      * **************************************
-     * Task-management	*
-	 ***************************************
+     * Task-management	* **************************************
      */
     /**
      * Add a task to the list of tasks for this project.
@@ -381,8 +379,7 @@ public class Project implements DetailedProject {
 
     /**
      * **************************************
-     * Time-management	*
-	 ***************************************
+     * Time-management	* **************************************
      */
     /**
      * Get the time details for this project.
@@ -487,7 +484,11 @@ public class Project implements DetailedProject {
     public String toString() {
         return this.name;
     }
+    
 
+    /**
+     * This memento represents the internal state of this project
+     */
     public class Memento {
 
         private final boolean isFinished;

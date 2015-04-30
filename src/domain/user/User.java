@@ -1,4 +1,4 @@
-package domain;
+package domain.user;
 
 /**
  *  This interface represents a user of the system

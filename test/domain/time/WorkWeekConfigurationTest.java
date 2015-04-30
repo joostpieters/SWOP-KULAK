@@ -1,14 +1,12 @@
 package domain.time;
 
-import static org.junit.Assert.*;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
-
-import domain.time.WorkWeekConfiguration;
 
 public class WorkWeekConfigurationTest {
 	private WorkWeekConfiguration wwc_default;
@@ -98,5 +96,21 @@ public class WorkWeekConfigurationTest {
         assertTrue(wwc_default.isValidWorkDay(sundayEvening.plusDays(1)));
         assertEquals(LocalDateTime.of(sundayEvening.toLocalDate().plusDays(1), wwc_default.getBeginWorkDay()),
         		wwc_default.nextValidWorkTime(sundayEvening));
+    }
+    
+      /**
+     * Test of compareTo method, of class WorkWeekConfiguration.
+     */
+    @Test
+    public void testCompareTo() {
+       
+        WorkWeekConfiguration o = new WorkWeekConfiguration(LocalTime.of(10, 00), LocalTime.of(15, 00));
+        WorkWeekConfiguration instance = new WorkWeekConfiguration();
+        
+        assertEquals(-1, instance.compareTo(o));
+        assertEquals(1, o.compareTo(instance));
+        
+        assertEquals(0, o.compareTo(o));
+        
     }
 }

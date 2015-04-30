@@ -7,7 +7,7 @@ package init;
  * @author Frederic, Mathias, Pieter-Jan
  */
 import domain.Database;
-import domain.Developer;
+import domain.user.Developer;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.Resource;

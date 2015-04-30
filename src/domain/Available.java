@@ -19,13 +19,7 @@ public class Available extends Status {
 
     }
 
-    @Override
-    public void setAlternativeTask(Task task, Task alternativeTask, Project project) throws IllegalStateException {
-        throw new IllegalStateException("Can't set an alternative task for this "
-                + "task because the status of this task is not equal to FAILED.");
-    }
-
-    /**
+     /**
      * Updates the status of this task to UNAVAILABLE if not all the
      * prerequisite tasks are fulfilled. Or if not  all resources are available
      * at current system time //TODO
@@ -148,7 +142,7 @@ public class Available extends Status {
             }else{
                 // unplanned execution
                 // TODO
-                task.plan(currentTime, null);
+               // task.plan(currentTime, null);
             }
         }else{
             throw new IllegalStateException("A task has to be planned before you can execute it!");

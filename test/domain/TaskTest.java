@@ -463,16 +463,16 @@ public class TaskTest {
     public void testCanHaveAsAlternativeTask()
     {
     	// null
-    	assertFalse(t0.canHaveAsAlternativeTask(null, p));
+    	assertFalse(t0.canHaveAsAlternativeTask(null));
     	// this
-    	assertFalse(t0.canHaveAsAlternativeTask(t0, p));
+    	assertFalse(t0.canHaveAsAlternativeTask(t0));
     	// depends on
-    	assertFalse(t0.canHaveAsAlternativeTask(t0, p)); 
-    	assertTrue(t5.canHaveAsAlternativeTask(t2, p));
-    	assertTrue(t5.canHaveAsAlternativeTask(t3, p));
-    	assertTrue(t5.canHaveAsAlternativeTask(t0, p));
+    	assertFalse(t0.canHaveAsAlternativeTask(t0)); 
+    	assertTrue(t5.canHaveAsAlternativeTask(t2));
+    	assertTrue(t5.canHaveAsAlternativeTask(t3));
+    	assertTrue(t5.canHaveAsAlternativeTask(t0));
     	// success
-    	assertTrue(t0.canHaveAsAlternativeTask(t1, p));
+    	assertTrue(t0.canHaveAsAlternativeTask(t1));
     }
     /**
      * Test of getDelay method, of class Task.

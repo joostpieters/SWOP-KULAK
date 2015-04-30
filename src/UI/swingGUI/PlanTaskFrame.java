@@ -1,9 +1,9 @@
 package UI.swingGUI;
 
 import controller.PlanTaskHandler;
-import domain.datainterface.DetailedResource;
-import domain.datainterface.DetailedResourceType;
-import domain.datainterface.DetailedTask;
+import domain.dto.DetailedResource;
+import domain.dto.DetailedResourceType;
+import domain.dto.DetailedTask;
 import exception.ConflictException;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;

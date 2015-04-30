@@ -169,7 +169,10 @@ public class ProjectContainer {
         this.projects.clear();
         this.projects.putAll(memento.getProjects());
     }
-
+    
+    /**
+     * This memento represents the internal state of this projectcontainer
+     */
     public class Memento {
 
         private final Map<Integer, Project> projects;

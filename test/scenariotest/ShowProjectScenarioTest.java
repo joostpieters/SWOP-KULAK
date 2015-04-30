@@ -2,11 +2,11 @@ package scenariotest;
 
 import controller.HandlerFactory;
 import controller.ShowProjectHandler;
-import domain.Acl;
-import domain.Auth;
+import domain.user.Acl;
+import domain.user.Auth;
 import domain.Database;
-import domain.datainterface.DetailedProject;
-import domain.datainterface.DetailedTask;
+import domain.dto.DetailedProject;
+import domain.dto.DetailedTask;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.Task;

@@ -1,23 +1,28 @@
 package domain;
 
+import domain.time.Timespan;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 
-import domain.time.Timespan;
-
+/**
+ * This class represents a reservation of a resource for a task
+ * over a certain timespan
+ * 
+ * @author Mathias, Pieter-Jan, Frederic
+ */
 public class Reservation {
 
 	private final Task task;
 	private final Timespan timespan;
 	
 	/**
-	 * 
-	 * @param t
-	 * @param period
-	 * @param needed
-	 */
-	public Reservation(Task t, Timespan period) {
-		task = t;
+         * Initializes a new reservation for the given task over the given timespan.
+         * 
+         * @param task The task to make the reservation for
+         * @param period The period over which to make the reservation
+         */
+	public Reservation(Task task, Timespan period) {
+		this.task = task;
 		timespan = period;
 	}
 
@@ -26,23 +31,31 @@ public class Reservation {
 	 ****************************************************/
 
 	/**
-	 * @return 	the task
+	 * @return 	The task this reservation is made for
 	 */
 	public Task getTask() {
 		return task;
 	}
 
 	/**
-	 * @return 	the timespan
+	 * @return 	The timespan over which this reservation is made
 	 */
 	public Timespan getTimespan() {
 		return timespan;
 	}
 	
+        /**
+         * //TODO wss overbodig
+         * @return The starttime of this reservation
+         */
 	public LocalDateTime getStartTime() {
 		return timespan.getStartTime();
 	}
 	
+        /**
+         * //TODO wss overbodig
+         * @return The end time of this reservation 
+         */
 	public LocalDateTime getEndTime() {
 		return timespan.getEndTime();
 	}
@@ -60,14 +73,16 @@ public class Reservation {
 	 * @see		Timespan#compareTo(Timespan)
 	 */
 	public static Comparator<Reservation> timespanComparator() {
-		return new Comparator<Reservation>() {
-
-			@Override
-			public int compare(Reservation o1, Reservation o2) {
-				return o1.getTimespan().compareTo(o2.getTimespan());
-			}
-			
-		};
+            //TODO dit is feller
+            return (Reservation o1, Reservation o2) -> o1.getTimespan().compareTo(o2.getTimespan());
+//		return new Comparator<Reservation>() {
+//
+//			@Override
+//			public int compare(Reservation o1, Reservation o2) {
+//				return o1.getTimespan().compareTo(o2.getTimespan());
+//			}
+//			
+//		};
 	}
 	
 	/****************************************************
@@ -85,14 +100,35 @@ public class Reservation {
 		return getTimespan().overlapsWith(span);
 	}
 	
+        /**
+         * Checks whether this reservation conflicts with another reservation
+         * 
+         * @param reservation The reservation to compare with
+         * @return True if and only if the timespan of this reservation
+         * overlaps with the timespan of the given reservation.
+         */
 	public boolean conflictsWith(Reservation reservation) {
 		return conflictsWith(reservation.getTimespan());
 	}
 	
+        /**
+         * Checks whether this reservation expires before the given time
+         * 
+         * @param time The time to check
+         * @return True if and only if the timespan of this reservation end
+         * strictly before the given time.
+         */
 	public boolean expiredBefore(LocalDateTime time) {
 		return getEndTime().isBefore(time);
 	}
-
+        
+        /**
+         * Checks whether this reservation starts after the given time
+         * 
+         * @param time The time to check
+         * @return True if and only if the timespan of this reservation starts
+         * strictly after the given time.
+         */
 	public boolean startsAfter(LocalDateTime time) {
 		return getTimespan().startsAfter(time);
 	}

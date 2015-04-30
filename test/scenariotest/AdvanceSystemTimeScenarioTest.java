@@ -2,8 +2,8 @@ package scenariotest;
 
 import controller.AdvanceSystemTimeHandler;
 import controller.HandlerFactory;
-import domain.Acl;
-import domain.Auth;
+import domain.user.Acl;
+import domain.user.Auth;
 import domain.Database;
 import domain.Project;
 import domain.ProjectContainer;

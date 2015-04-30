@@ -16,16 +16,20 @@ public class Failed extends Status {
     public Failed() {
        
     }
-
+    
+    /**
+     * @{inheritDoc}
+     * 
+     */
     @Override
-    public void setAlternativeTask(Task task, Task alternativeTask, Project project) throws IllegalStateException, IllegalArgumentException {
+    public void setAlternativeTask(Task task, Task alternativeTask) throws IllegalStateException, IllegalArgumentException {
         if (task.getAlternativeTask() != null) {
             throw new IllegalStateException(
                     "Can't set an alternative task for this task because "
                     + "this task already has an alternative task.");
         }
 
-        if (!task.canHaveAsAlternativeTask(alternativeTask, project)) {
+        if (!task.canHaveAsAlternativeTask(alternativeTask)) {
             throw new IllegalArgumentException(
                     "This task can't have the given task as its alternative task.");
         }

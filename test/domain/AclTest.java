@@ -1,5 +1,9 @@
 package domain;
 
+import domain.user.GenericUser;
+import domain.user.Developer;
+import domain.user.Acl;
+import domain.user.User;
 import domain.time.Clock;
 import java.util.ArrayList;
 import java.util.Arrays;

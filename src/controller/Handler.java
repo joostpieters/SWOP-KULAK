@@ -1,7 +1,7 @@
 package controller;
 
-import domain.Acl;
-import domain.Auth;
+import domain.user.Acl;
+import domain.user.Auth;
 import exception.NoAccessException;
 
 /**

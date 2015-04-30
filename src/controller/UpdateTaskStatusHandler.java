@@ -1,9 +1,9 @@
 package controller;
 
-import domain.Acl;
-import domain.Auth;
-import domain.datainterface.DetailedProject;
-import domain.datainterface.DetailedTask;
+import domain.user.Acl;
+import domain.user.Auth;
+import domain.dto.DetailedProject;
+import domain.dto.DetailedTask;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.Resource;

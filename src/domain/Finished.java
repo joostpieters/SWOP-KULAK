@@ -17,12 +17,6 @@ public class Finished extends Status {
     public Finished() {
     }
 
-    @Override
-    public void setAlternativeTask(Task task, Task alternativeTask, Project project) throws IllegalStateException, IllegalArgumentException {
-        throw new IllegalStateException("Can't set an alternative task for this "
-                + "task because the status of this task is not equal to FAILED.");
-    }
-
     /**
      * The status is finished, so there's nothing to update
      *

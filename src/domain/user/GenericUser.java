@@ -1,4 +1,4 @@
-package domain;
+package domain.user;
 
 /**
  * This class represents a developer in the system

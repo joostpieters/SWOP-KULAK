@@ -1,13 +1,13 @@
 package controller;
 
-import domain.Acl;
-import domain.Auth;
+import domain.user.Acl;
+import domain.user.Auth;
 import domain.Database;
 import domain.command.CreateTaskCommand;
 import domain.command.SimulatorCommand;
-import domain.datainterface.DetailedProject;
-import domain.datainterface.DetailedResourceType;
-import domain.datainterface.DetailedTask;
+import domain.dto.DetailedProject;
+import domain.dto.DetailedResourceType;
+import domain.dto.DetailedTask;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.ResourceType;

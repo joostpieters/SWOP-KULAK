@@ -3,13 +3,13 @@ package scenariotest;
 
 import controller.CreateProjectHandler;
 import controller.HandlerFactory;
-import domain.Acl;
-import domain.Auth;
+import domain.user.Acl;
+import domain.user.Auth;
 import domain.Database;
-import domain.GenericUser;
+import domain.user.GenericUser;
 import domain.Project;
 import domain.ProjectContainer;
-import domain.datainterface.DetailedProject;
+import domain.dto.DetailedProject;
 import domain.time.Clock;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;

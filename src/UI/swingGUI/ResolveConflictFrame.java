@@ -1,7 +1,7 @@
 package UI.swingGUI;
 
 import controller.PlanTaskHandler;
-import domain.datainterface.DetailedTask;
+import domain.dto.DetailedTask;
 import java.awt.CardLayout;
 import java.time.format.DateTimeFormatter;
 import java.util.Set;

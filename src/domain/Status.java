@@ -21,18 +21,18 @@ public abstract class Status {
      *
      * @param task The task to set the alternative for.
      * @param alternativeTask The alternative task for this task.
-     * @param project The project to which this task and the given alternative
-     * task belong to.
      * @throws IllegalStateException If the state of this task is not FAILED.
      * @throws IllegalStateException If this task already has an alternative
      * task.
      * @throws IllegalArgumentException If this task can't have the given task
      * as its alternative task.
-     * @throws IllegalArgumentException If this task and the given alternative
-     * task don't both belong to the given project
      * @see canHaveAsAlternativeTask
      */
-    abstract void setAlternativeTask(Task task, Task alternativeTask, Project project) throws IllegalStateException, IllegalArgumentException;
+    public void setAlternativeTask(Task task, Task alternativeTask) throws IllegalStateException {
+        throw new IllegalStateException("Can't set an alternative task for this "
+                + "task because the status of this task is not equal to FAILED.");
+    }
+
 
     /**
      * Update the status of the given task to based on the changes made in this

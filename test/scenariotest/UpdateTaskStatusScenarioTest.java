@@ -2,10 +2,10 @@ package scenariotest;
 
 import controller.HandlerFactory;
 import controller.UpdateTaskStatusHandler;
-import domain.Acl;
-import domain.Auth;
+import domain.user.Acl;
+import domain.user.Auth;
 import domain.Database;
-import domain.GenericUser;
+import domain.user.GenericUser;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.Task;

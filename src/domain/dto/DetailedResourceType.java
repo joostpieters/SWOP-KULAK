@@ -1,4 +1,4 @@
-package domain.datainterface;
+package domain.dto;
 
 import java.util.Set;
 

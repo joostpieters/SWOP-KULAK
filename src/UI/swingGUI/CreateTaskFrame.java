@@ -1,9 +1,9 @@
 package UI.swingGUI;
 
 import controller.CreateTaskHandler;
-import domain.datainterface.DetailedProject;
-import domain.datainterface.DetailedResourceType;
-import domain.datainterface.DetailedTask;
+import domain.dto.DetailedProject;
+import domain.dto.DetailedResourceType;
+import domain.dto.DetailedTask;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

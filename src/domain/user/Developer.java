@@ -1,5 +1,6 @@
-package domain;
+package domain.user;
 
+import domain.Resource;
 import domain.time.Clock;
 
 /**

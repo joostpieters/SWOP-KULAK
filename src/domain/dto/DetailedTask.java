@@ -1,4 +1,4 @@
-package domain.datainterface;
+package domain.dto;
 
 import domain.Status;
 import domain.time.Duration;

@@ -1,4 +1,6 @@
-package domain;
+package domain.user;
+
+import domain.Database;
 
 /**
  * This class handles the authorization of user and keeps track of the logged

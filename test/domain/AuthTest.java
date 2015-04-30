@@ -1,5 +1,9 @@
 package domain;
 
+import domain.user.Auth;
+import domain.user.GenericUser;
+import domain.user.Developer;
+import domain.user.User;
 import domain.time.Clock;
 import org.junit.After;
 import org.junit.AfterClass;

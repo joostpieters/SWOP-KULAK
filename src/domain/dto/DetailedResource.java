@@ -1,4 +1,4 @@
-package domain.datainterface;
+package domain.dto;
 
 /**
  * This interface provides access to the properties of resourcetype, without 

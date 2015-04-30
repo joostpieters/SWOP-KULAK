@@ -1,4 +1,4 @@
-package domain.datainterface;
+package domain.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;

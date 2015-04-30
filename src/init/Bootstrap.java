@@ -2,10 +2,10 @@ package init;
 
 import UI.swingGUI.MainFrame;
 import controller.HandlerFactory;
-import domain.Acl;
-import domain.Auth;
+import domain.user.Acl;
+import domain.user.Auth;
 import domain.Database;
-import domain.GenericUser;
+import domain.user.GenericUser;
 import domain.ProjectContainer;
 import domain.time.Clock;
 import java.io.FileReader;

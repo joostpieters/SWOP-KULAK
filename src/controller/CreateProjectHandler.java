@@ -1,7 +1,7 @@
 package controller;
 
-import domain.Acl;
-import domain.Auth;
+import domain.user.Acl;
+import domain.user.Auth;
 import domain.ProjectContainer;
 import java.time.LocalDateTime;
 import java.util.logging.Level;

@@ -1,7 +1,7 @@
 package controller;
 
-import domain.Acl;
-import domain.Auth;
+import domain.user.Acl;
+import domain.user.Auth;
 import domain.Database;
 import domain.ProjectContainer;
 import domain.Resource;
@@ -9,9 +9,9 @@ import domain.ResourceType;
 import domain.Task;
 import domain.command.ICommand;
 import domain.command.SimulatorCommand;
-import domain.datainterface.DetailedResource;
-import domain.datainterface.DetailedResourceType;
-import domain.datainterface.DetailedTask;
+import domain.dto.DetailedResource;
+import domain.dto.DetailedResourceType;
+import domain.dto.DetailedTask;
 import domain.time.Clock;
 import domain.time.Timespan;
 import exception.ConflictException;
