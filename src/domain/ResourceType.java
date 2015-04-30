@@ -205,7 +205,7 @@ public class ResourceType implements DetailedResourceType {
     }
     
     public boolean hasAvailableResources(Timespan span, int quantity) {
-    	return getAvailableResources(span).size() >= quantity;
+    	return (quantity < 0) ? false : getAvailableResources(span).size() >= quantity;
     }
 
     /**
@@ -238,6 +238,10 @@ public class ResourceType implements DetailedResourceType {
      *        	if the reservation conflicted with other tasks.
      */
     public Set<Resource> makeReservation(Task task, Timespan span, int quantity) throws ConflictException {
+    	if(quantity < 1)
+    		throw new IllegalArgumentException("At least 1 resource should be reserved.");
+    	if(getResources().size() < quantity)
+    		throw new IllegalArgumentException("There are less resources of this type than you want to reserve.");
         Set<Resource> availableResources = getAvailableResources(span);
         if (availableResources.size() < quantity) {
             Set<Task> confl = findConflictingTasks(span);

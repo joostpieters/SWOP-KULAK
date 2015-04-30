@@ -6,12 +6,17 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import domain.time.Duration;
+import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
+import exception.ConflictException;
 
 public class ResourceTypeTest {
 	
@@ -19,12 +24,28 @@ public class ResourceTypeTest {
 	private LocalTime availableTo = LocalTime.of(17, 0);
 	private WorkWeekConfiguration available = new WorkWeekConfiguration(availableFrom, availableTo, 
 			WorkWeekConfiguration.NO_LUNCHBREAK, WorkWeekConfiguration.NO_LUNCHBREAK);
+	private LocalDateTime startRes = LocalDateTime.of(2015, 1, 1, 14, 0);
+	private LocalDateTime endRes = LocalDateTime.of(2015, 1, 3, 15, 0);
+	private Timespan reserved = new Timespan(startRes, endRes);
 	
-	private ResourceType type0;
+	private ResourceType type0, type1, type2;
+	private Resource res0, res1;
+	private Task t0, t1;
 
 	@Before
 	public void setUp() throws Exception {
+		Project p = new Project("name", "description", startRes, endRes);
+		t0 = p.createTask("descr", new Duration(60), 10, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
+		t1 = p.createTask("task1", new Duration(120), 10, -1, new ArrayList<>(), new HashMap<>());
+		res0 = new Resource("tic");
+		res1 = new Resource("tac");
+		res1.makeReservation(t0, reserved);
+		
 		type0 = new ResourceType("very simple");
+		type1 = new ResourceType("still simple", Arrays.asList(type0), new ArrayList<>());
+		type1.addResource(res0);
+		type2 = new ResourceType("limited", new ArrayList<>(), new ArrayList<>(), available);
+		type2.addResource(res1);
 	}
 
 	@Test
@@ -81,48 +102,70 @@ public class ResourceTypeTest {
 	}
 
 	@Test
-	public void testCanHaveAsName() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	@Test
-	public void testCanHaveAsRequirements() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	@Test
-	public void testCanHaveAsConflicts() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	@Test
-	public void testCanHaveAsAvailability() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	@Test
-	public void testCanHaveAsResource() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	@Test
 	public void testGetAvailableResources() {
-		fail("Not yet implemented"); // TODO
+		assertTrue(type0.getAvailableResources(reserved).isEmpty());
+		
+		Set<Resource> availableResources = type1.getAvailableResources(reserved);
+		assertEquals(1, availableResources.size());
+		assertTrue(availableResources.contains(res0));
+		
+		assertTrue(type2.getAvailableResources(reserved).isEmpty());
+		availableResources = type2.getAvailableResources(new Timespan(endRes));
+		assertEquals(1, availableResources.size());
+		assertTrue(availableResources.contains(res1));
 	}
 
 	@Test
 	public void testHasAvailableResources() {
-		fail("Not yet implemented"); // TODO
+		assertFalse(type0.hasAvailableResources(reserved, -1));
+		assertTrue(type0.hasAvailableResources(reserved, 0));
+		assertFalse(type0.hasAvailableResources(reserved, 1));
+		assertTrue(type1.hasAvailableResources(reserved, 0));
+		assertTrue(type1.hasAvailableResources(reserved, 1));
+		assertFalse(type1.hasAvailableResources(reserved, 2));
+		assertTrue(type2.hasAvailableResources(reserved, 0));
+		assertFalse(type2.hasAvailableResources(reserved, 1));
+		assertTrue(type2.hasAvailableResources(new Timespan(endRes), 1));
+		assertFalse(type2.hasAvailableResources(new Timespan(endRes), 2));
 	}
 
 	@Test
 	public void testFindConflictingTasks() {
-		fail("Not yet implemented"); // TODO
+		assertTrue(type0.findConflictingTasks(reserved).isEmpty());
+		assertTrue(type1.findConflictingTasks(reserved).isEmpty());
+		Set<Task> conflictingTasks = type2.findConflictingTasks(reserved);
+		assertEquals(1, conflictingTasks.size());
+		assertTrue(conflictingTasks.contains(t0));
 	}
 
 	@Test
-	public void testMakeReservation() {
-		fail("Not yet implemented"); // TODO
+	public void testMakeReservationValid() throws ConflictException {
+		Set<Resource> reservations = type1.makeReservation(t0, reserved, 1);
+		assertEquals(1, reservations.size());
+		assertTrue(reservations.contains(res0));
+		reservations = type2.makeReservation(t1, new Timespan(endRes, endRes.plusDays(1)), 1);
+		assertEquals(1, reservations.size());
+		assertTrue(reservations.contains(res1));
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testMakeReservationNoResources() throws ConflictException {
+		type0.makeReservation(t0, reserved, 1);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testMakeEmptyReservation() throws ConflictException {
+		type1.makeReservation(t0, reserved, 0);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testMakeReservationSameTask() throws ConflictException {
+		type2.makeReservation(t0, new Timespan(endRes, endRes.plusDays(1)), 1);
+	}
+	
+	@Test(expected=ConflictException.class)
+	public void testMakeReservationOverlappingTime() throws ConflictException {
+		type2.makeReservation(t1, reserved, 1);
 	}
 
 	@Test
