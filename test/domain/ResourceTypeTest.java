@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +30,7 @@ public class ResourceTypeTest {
 	private Timespan reserved = new Timespan(startRes, endRes);
 	
 	private ResourceType type0, type1, type2;
-	private Resource res0, res1;
+	private Resource res0, res1, res2;
 	private Task t0, t1;
 
 	@Before
@@ -40,6 +41,7 @@ public class ResourceTypeTest {
 		res0 = new Resource("tic");
 		res1 = new Resource("tac");
 		res1.makeReservation(t0, reserved);
+		res2 = new Resource("bla");
 		
 		type0 = new ResourceType("very simple");
 		type1 = new ResourceType("still simple", Arrays.asList(type0), new ArrayList<>());
@@ -146,6 +148,10 @@ public class ResourceTypeTest {
 		reservations = type2.makeReservation(t1, new Timespan(endRes, endRes.plusDays(1)), 1);
 		assertEquals(1, reservations.size());
 		assertTrue(reservations.contains(res1));
+		type2.addResource(res2);
+		reservations = type2.makeReservation(t1, reserved, 1);
+		assertEquals(1, reservations.size());
+		assertTrue(reservations.contains(res2));
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -170,7 +176,33 @@ public class ResourceTypeTest {
 
 	@Test
 	public void testNextAvailableTimespans() {
-		fail("Not yet implemented"); // TODO
+		assertTrue(type0.nextAvailableTimespans(startRes).isEmpty());
+		SortedSet<Timespan> availableTimespans = type1.nextAvailableTimespans(startRes);
+		assertEquals(1, availableTimespans.size());
+		assertTrue(availableTimespans.contains(new Timespan(startRes)));
+		availableTimespans = type2.nextAvailableTimespans(endRes);
+		assertEquals(1, availableTimespans.size());
+		assertTrue(availableTimespans.contains(new Timespan(endRes)));
+		availableTimespans = type2.nextAvailableTimespans(startRes);
+		assertEquals(1, availableTimespans.size());
+		assertTrue(availableTimespans.contains(new Timespan(endRes)));
+		LocalDateTime beforeStart = startRes.minusDays(1);
+		availableTimespans = type2.nextAvailableTimespans(beforeStart);
+		assertEquals(2, availableTimespans.size());
+		assertTrue(availableTimespans.contains(new Timespan(endRes)));
+		assertTrue(availableTimespans.contains(new Timespan(beforeStart, startRes)));
+		type2.addResource(res2);
+		availableTimespans = type2.nextAvailableTimespans(startRes);
+		assertEquals(2, availableTimespans.size());
+		assertTrue(availableTimespans.contains(new Timespan(startRes)));
+		assertTrue(availableTimespans.contains(new Timespan(endRes)));
+		try {
+			type2.makeReservation(t1, reserved, 1);
+		} catch (ConflictException e) { }
+		availableTimespans = type2.nextAvailableTimespans(beforeStart);
+		assertEquals(2, availableTimespans.size());
+		assertTrue(availableTimespans.contains(new Timespan(endRes)));
+		assertTrue(availableTimespans.contains(new Timespan(beforeStart, startRes)));
 	}
 
 	@Test
