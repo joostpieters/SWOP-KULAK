@@ -23,6 +23,7 @@ public class PlanTaskCommand implements ICommand {
     private final Task task;
     private final List<Resource> resources;
     private final List<CreateReservationCommand> reservations;
+    
     private final Map<Resource, Resource.Memento> oldResourceStates;
 
     
@@ -52,16 +53,23 @@ public class PlanTaskCommand implements ICommand {
         	planTask();
     	}
     }
-
-    private void moveTask() throws ConflictException {
-    	// TODO klopt het dat de bedoeling is de oorspronkelijke reservations horende bij deze taak te verwijderen
-    	// TODO en daarna simpelweg nieuwe reservations aanmaken
-    	//save the states of the old reservations belonging
+    /**
+     * Overwrites the mementos saved in oldResourceStates
+     * with the mementos belonging to the current states of the resources.
+     */
+    private void saveResourceStates()
+    {
     	oldResourceStates.clear();
         for(Resource res : resources){
         	oldResourceStates.put(res,  res.createMemento());
         }
-        
+    }
+    private void moveTask() throws ConflictException {
+    	// TODO klopt het dat de bedoeling is de oorspronkelijke reservations horende bij deze taak te verwijderen
+    	// TODO en daarna simpelweg nieuwe reservations aanmaken
+    	//save the states of the old reservations belonging
+
+        saveResourceStates();
         try {
             for (CreateReservationCommand command : reservations) {
                 command.execute();

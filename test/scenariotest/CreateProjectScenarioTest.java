@@ -6,7 +6,7 @@ import controller.HandlerFactory;
 import domain.Acl;
 import domain.Auth;
 import domain.Database;
-import domain.Manager;
+import domain.GenericUser;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.datainterface.DetailedProject;
@@ -42,7 +42,7 @@ public class CreateProjectScenarioTest {
         clock = new Clock();
          auth = new Auth(db);
         acl = new Acl();
-        db.addUser(new Manager("John"));
+        db.addUser(new GenericUser("John", "manager"));
         acl.addEntry("manager", new ArrayList<>(Arrays.asList("CreateProject")));
         auth.login("John");
         HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);

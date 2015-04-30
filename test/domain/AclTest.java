@@ -40,7 +40,7 @@ public class AclTest {
         acl.addEntry("manager", new ArrayList<>(Arrays.asList("edit", "remove", "view")));
         acl.addEntry("developer", new ArrayList<>(Arrays.asList("edit", "view")));
         
-        user1 = new Manager("John");
+        user1 = new GenericUser("John", "manager");
         user2 = new Developer("Fred");
         
     }
