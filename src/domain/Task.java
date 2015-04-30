@@ -672,10 +672,14 @@ public class Task implements DetailedTask {
      * The task is completely available after the last time in the result.
      */
     public SortedSet<LocalDateTime> nextAvailableStartingTimes(LocalDateTime from) {
-    	//TODO: bad smell?
-        //TODO: developers zijn nog niet in rekening gebracht!!!
         SortedSet<LocalDateTime> result = new TreeSet<>();
         Map<ResourceType, Integer> required = getRequiredResources();
+        //TODO: developers zijn nog niet in rekening gebracht!!!
+        if(required.isEmpty()) {
+        	result.add(from);
+        	return result;
+        }
+        
         SortedSet<Timespan> freeMoments;
         SortedSet<LocalDateTime> temp;
         LocalDateTime last = LocalDateTime.MIN;
@@ -702,6 +706,7 @@ public class Task implements DetailedTask {
                 }
             }
 
+        	//TODO: bad smell?
             if(result.isEmpty()) {
             	result = temp;
             } else if(temp.isEmpty()) {
