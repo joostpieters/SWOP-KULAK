@@ -240,5 +240,10 @@ public final class Timespan implements Comparable<Timespan>{
 	public boolean startsBefore(LocalDateTime time) {
 		return getStartTime().isBefore(time);
 	}
+	
+	@Override
+	public String toString() {
+		return "[" + startTime.toString() + " to " + endTime.toString() + "]";
+	}
     
 }

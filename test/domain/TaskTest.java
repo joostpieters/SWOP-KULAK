@@ -3,15 +3,19 @@ package domain;
 import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedSet;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,10 +25,14 @@ import org.junit.Test;
  */
 public class TaskTest {
 	
+	private LocalDateTime from = LocalDateTime.of(2014, 2, 1, 16, 0);
+	
 	private Clock clock;
     private Project p;
     private ProjectContainer pc;
-	private Task t0, t1, t2, t3, t4, t5, t6, t7, t7alternative, t8;
+	private Task t0, t1, t2, t3, t4, t5, t6, t7, t7alternative, t8, t10;
+	private ResourceType type0, type1, type2;
+	private Resource res00, res01, res02, res10, res20, res21;
 	
     public TaskTest() {
     }
@@ -58,6 +66,28 @@ public class TaskTest {
     	t7.fail(new Timespan(t6ts.getStartTime(), t6ts.getEndTime()), clock.getTime());
     	t7alternative = p.createTask("alternative for t7", new Duration(10), 2, t7.getId(), Project.NO_DEPENDENCIES, new HashMap<>());
     	t8 = p.createTask("depends on t7", new Duration(33), 3, Project.NO_ALTERNATIVE, Arrays.asList(t7.getId()), new HashMap<>());
+    	
+    	
+    	res00 = new Resource("V8");
+    	res01 = new Resource("V10");
+    	res02 = new Resource("V12");
+    	res10 = new Resource("Aston Martin");
+    	res20 = new Resource("hooded");
+    	res21 = new Resource("armless");
+    	type0 = new ResourceType("Engine");
+    	type0.addResource(res00);
+    	type0.addResource(res01);
+    	type0.addResource(res02);
+    	type1 = new ResourceType("Car", Arrays.asList(type0), new ArrayList<>());
+    	type1.addResource(res10);
+    	type2 = new ResourceType("Jacket");
+    	type2.addResource(res20);
+    	type2.addResource(res21);
+    	Map<ResourceType, Integer> requiredResources = new HashMap<>();
+    	requiredResources.put(type0, 1);
+    	requiredResources.put(type1, 1);
+    	requiredResources.put(type2, 2);
+		t10 = p.createTask("task with resources", new Duration(60), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, requiredResources);
     }
     
     /**
@@ -72,7 +102,7 @@ public class TaskTest {
     	int estDur = 10;
     	int accDev = 30;
     	ArrayList<Task> prereq = new ArrayList<>(Arrays.asList(t3));
-        Map<ResourceType, Integer> resources = new HashMap();
+        Map<ResourceType, Integer> resources = new HashMap<>();
             ResourceType resourceType = new ResourceType("test");
         resources.put(resourceType, 5);
     	Task task0 = new Task(description, new Duration(estDur), accDev,  prereq, resources, p);
@@ -612,5 +642,11 @@ public class TaskTest {
     	Task task = p.createTask("task abc", new Duration(33), 54, Project.NO_ALTERNATIVE, Arrays.asList(t0.getId()), new HashMap<>());
     	task.finish(new Timespan(LocalDateTime.of(2015, 3, 11, 10, 0), LocalDateTime.of(2015, 3, 11, 15, 30)), clock.getTime());
     	assertEquals(90+4*60+30, task.getTimeSpent().toMinutes());
+    }
+    
+    @Test
+    public void TestNextAvailableStartingTimes() {
+    	SortedSet<LocalDateTime> nextAvailableStartingTimes = t10.nextAvailableStartingTimes(from);
+    	assertEquals(1, nextAvailableStartingTimes.size());
     }
 }

@@ -702,11 +702,11 @@ public class Task implements DetailedTask {
                 }
             }
 
-            if (result.isEmpty()) {
-                result = temp;
-            }
-
-            if (result.last().isBefore(temp.last())) {
+            if(result.isEmpty()) {
+            	result = temp;
+            } else if(temp.isEmpty()) {
+            	continue;
+            } else if(result.last().isBefore(temp.last())) {
                 result.retainAll(temp);
                 result.addAll(temp.subSet(result.last(), temp.last()));
             } else {
