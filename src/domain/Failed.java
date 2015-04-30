@@ -97,5 +97,31 @@ public class Failed extends Status {
         return Duration.ZERO;
     }
     
+     /**
+     * Calculates the amount of time spent on this task.
+     *
+     * @return If this task has a time span then the result is equal to the sum
+     * of the maximum amount of time spent on a prerequisite task of this task
+     * and the alternative task if this task has an alternative task and the
+     * duration of the time span of this task. 
+     */
+    @Override
+    public Duration getTimeSpent(Task task) {
+        
+            Duration temp, max = Duration.ZERO;
+            for (Task t : task.getPrerequisiteTasks()) {
+                temp = t.getTimeSpent();
+                if (temp.compareTo(max) > 0) {
+                    max = temp;
+                }
+            }
+            temp = task.getTimeSpan().getDuration().add(max);
+            if (task.hasAlternativeTask()) {
+                return temp.add(task.getAlternativeTask().getTimeSpent());
+            }
+            return temp;
+        
+        
+    }
     
 }

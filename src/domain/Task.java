@@ -570,21 +570,7 @@ public class Task implements DetailedTask {
      * is returned.
      */
     public Duration getTimeSpent() {
-        if (hasTimeSpan()) {
-            Duration temp, max = Duration.ZERO;
-            for (Task t : getPrerequisiteTasks()) {
-                temp = t.getTimeSpent();
-                if (temp.compareTo(max) > 0) {
-                    max = temp;
-                }
-            }
-            temp = getTimeSpan().getDuration().add(max);
-            if (hasAlternativeTask()) {
-                return temp.add(getAlternativeTask().getTimeSpent());
-            }
-            return temp;
-        }
-        return new Duration(0);
+        return getStatus().getTimeSpent(this);
     }
 
     /**
@@ -744,7 +730,9 @@ public class Task implements DetailedTask {
         
         estimatedDuration = new Duration(dur.getMinutes(), minconf);
     }
-
+    /**
+     * This mememnto represents the internal state of this task
+     */
     public class Memento {
 	
 	private final Timespan timespan;

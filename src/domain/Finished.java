@@ -12,7 +12,7 @@ public class Finished extends Status {
 
     /**
      * Initializes this finished status.
-     * 
+     *
      */
     public Finished() {
     }
@@ -25,7 +25,7 @@ public class Finished extends Status {
 
     /**
      * The status is finished, so there's nothing to update
-     * 
+     *
      * @param task The task to update the status of
      */
     @Override
@@ -71,5 +71,29 @@ public class Finished extends Status {
     @Override
     Duration estimatedWorkTimeNeeded(Task task) {
         return Duration.ZERO;
-    }   
+    }
+
+    /**
+     * Calculates the amount of time spent on the given task.
+     *
+     * @param task The task to check
+     * @return The result is equal to the sum
+     * of the maximum amount of time spent on a prerequisite task of this task
+     * and the duration of the time span of this task.
+     */
+    @Override
+    public Duration getTimeSpent(Task task) {
+
+        Duration temp, max = Duration.ZERO;
+        for (Task t : task.getPrerequisiteTasks()) {
+            temp = t.getTimeSpent();
+            if (temp.compareTo(max) > 0) {
+                max = temp;
+            }
+        }
+        temp = task.getTimeSpan().getDuration().add(max);
+
+        return temp;
+
+    }
 }
