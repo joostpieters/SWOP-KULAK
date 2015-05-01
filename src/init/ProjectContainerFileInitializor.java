@@ -26,6 +26,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -284,14 +285,25 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
 
         expectLabel("plannings");
         List<HashMap<ResourceType, Integer>> requiredResourceMaps = new ArrayList<>();
+        LinkedHashMap<LocalDateTime, List<Resource>> plannings = new LinkedHashMap<>();
         while (ttype == '-') {
             expectChar('-');
             LocalDateTime dueTime = expectDateField("plannedStartTime");
             expectLabel("developers");
             List<Integer> developers = expectIntList();
+            // transform ids to objects
+            ArrayList<Resource> devs = new ArrayList<>();
+            ArrayList<Resource> devList = new ArrayList<>(devType.getResources());
+            for(int id : developers){
+                devs.add(devList.get(id));
+            }
+            
+            // store plannings with there resources
+            plannings.put(dueTime, devs);
+            
             expectLabel("resources");
             List<IntPair> resources = expectLabeledPairList("type", "quantity");
-            HashMap<ResourceType, Integer> resourceMap = new HashMap<>();
+            HashMap<ResourceType, Integer> resourceMap = new LinkedHashMap<>();
             for(IntPair pair : resources){
                 resourceMap.put(db.getResourceTypes().get(pair.first), pair.second);
             }
@@ -327,15 +339,17 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             expectLabel("planning");
             Integer planning;
             Task task;
+            ArrayList<LocalDateTime> arrayList = new ArrayList<>(plannings.keySet());
             if (ttype == TT_NUMBER) {
                 planning = expectInt();
                 task = manager.getProject(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, requiredResourceMaps.get(planning));
+                task.plan(arrayList.get(planning), plannings.get(arrayList.get(planning)), clock);
             }else{
                 task = manager.getProject(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, Task.NO_REQUIRED_RESOURCE_TYPES);
             }
             // add to temporary list
             taskList.add(task);
-
+            
             expectLabel("status");
             String status = "";
             if (isWord("finished")) {
@@ -370,7 +384,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             int task = expectIntField("task");
             LocalDateTime startTime = expectDateField("startTime");
             LocalDateTime endTime = expectDateField("endTime");
-            resourcesList.get(resource).makeReservation(taskList.get(task), new Timespan(startTime, endTime));
+            //resourcesList.get(resource).makeReservation(taskList.get(task), new Timespan(startTime, endTime));
         }
         if (ttype != TT_EOF) {
             error("End of file or '-' expected");
