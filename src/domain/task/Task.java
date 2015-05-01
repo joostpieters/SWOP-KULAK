@@ -562,7 +562,14 @@ public class Task implements DetailedTask {
     public Duration estimatedWorkTimeNeeded() {
         return getStatus().estimatedWorkTimeNeeded(this);
     }
-
+    
+    /**
+     * @see Status.isFulfilledBefore
+     */
+    public boolean isFulfilledBefore(Task task, Timespan timeSpan)
+    {
+    	return getStatus().isFulfilledBefore(task, timeSpan);
+    }
     /**
      * Checks whether this task can be fulfilled or already is fulfilled.
      *
@@ -617,8 +624,20 @@ public class Task implements DetailedTask {
     public boolean isPlanned() {
         return planning != null;
     }
-
+    
+    public boolean canBePlanned()
+    {
+    	return getStatus().canBePlanned();
+    }
     /**
+     * Checks whether this task is failed
+     * @return True if and only if this task is failed.
+     */
+    private boolean isFailed() {
+		return getStatus() instanceof Failed;
+	}
+
+	/**
      * Plan this task at the given start time
      *
      * @param startTime The time this task is planned to start
@@ -640,7 +659,7 @@ public class Task implements DetailedTask {
         planCommand.execute();
         return planCommand;
     }
-
+    
     /**
      * Get a set of certain number of possible starting times for this task from a certain
      * point in time.
