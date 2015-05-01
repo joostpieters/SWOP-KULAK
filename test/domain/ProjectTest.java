@@ -5,15 +5,18 @@ import domain.time.Duration;
 import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
 import exception.ObjectNotFoundException;
+
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse; 
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,6 +30,8 @@ public class ProjectTest {
 	private static final double EPS = 1e-15;
 	private static final int DAYDIF = 4;
 	private static final int HOURDIF = 2;
+    
+    private WorkWeekConfiguration week = new WorkWeekConfiguration();
 	
 	private String name = "Mobile Steps";
 	private String descr = "develop mobile app for counting steps using a specialized bracelet";
@@ -47,8 +52,6 @@ public class ProjectTest {
 	Task t1, t2, t3, tFin;
     private Clock clock;
     
-    private WorkWeekConfiguration wwc_default;
-    
     @Before
     public void setUp() {
     	assertTrue(!create.isAfter(start));
@@ -57,20 +60,18 @@ public class ProjectTest {
     	pc = new ProjectContainer();
     	clock = new Clock(create);
     	
-    	wwc_default = new WorkWeekConfiguration(1, 5, LocalTime.of(9, 0), LocalTime.of(18, 0), LocalTime.of(12, 0), LocalTime.of(13, 0));
-    	
     	p0 = pc.createProject(name, descr, create, due);
     	
     	p1 = pc.createProject(name, descr, create, due);
-    	t1 = p1.createTask("design system", new Duration(8, 0), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+    	t1 = p1.createTask("design system", new Duration(480), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
     	
     	p2 = pc.createProject(name, descr, create, due);
-    	t2 = p2.createTask("design system", new Duration(8, 0), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
-    	t3 = p2.createTask("implement system in native code", new Duration(16, 0), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+    	t2 = p2.createTask("design system", new Duration(480), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+    	t3 = p2.createTask("implement system in native code", new Duration(960), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
     	
     	LocalDateTime hist = create.minusDays(DAYDIF);
     	pFinished = pc.createProject(name, descr, hist, create);
-    	tFin = pFinished.createTask("design system", new Duration(8, 0), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+    	tFin = pFinished.createTask("design system", new Duration(480), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
     	tFin.finish(new Timespan(hist, hist.plusHours(HOURDIF)), clock.getTime());
     }
     
@@ -305,25 +306,32 @@ public class ProjectTest {
     public void testGetUnacceptablyOverdueTasksSimple() {
         
     	assertTrue(p0.getUnacceptablyOverdueTasks(clock.getTime()).isEmpty());
-    	assertTrue(p1.getUnacceptablyOverdueTasks(clock.getTime()).isEmpty());
+		assertTrue(p1.getUnacceptablyOverdueTasks(clock.getTime()).isEmpty());
     	assertTrue(p2.getUnacceptablyOverdueTasks(clock.getTime()).isEmpty());
     	assertTrue(pFinished.getUnacceptablyOverdueTasks(clock.getTime()).isEmpty());
     	
     	Task t = p1.createTask(taskdescr, new Duration(create, due.plusDays(DAYDIF)), accdev, altFor, prereqs, new HashMap<>());
-    	assertEquals(1, p1.getUnacceptablyOverdueTasks(clock.getTime()).size());
-    	assertTrue(p1.getUnacceptablyOverdueTasks(clock.getTime()).containsKey(t));
-    	assertEquals((double) (DAYDIF - 2) / DAYDIF, (double) p1.getUnacceptablyOverdueTasks(clock.getTime()).get(t), EPS); //weekend: -2
+    	System.out.println(new Duration(create, due.plusDays(DAYDIF)));
+    	System.out.println(t.estimatedWorkTimeNeeded());
+    	System.out.println(new Duration(create, due.plusDays(DAYDIF)).getEndTimeFrom(clock.getTime()));
+    	System.out.println(t.estimatedWorkTimeNeeded().getEndTimeFrom(clock.getTime()));
+    	System.out.println(new Duration(create, t.estimatedWorkTimeNeeded().getEndTimeFrom(clock.getTime())).getEndTimeFrom(clock.getTime()));
+    	Map<Task, Double> unacceptablyOverdueTasks = p1.getUnacceptablyOverdueTasks(clock.getTime());
+    	assertEquals(1, unacceptablyOverdueTasks.size());
+    	assertTrue(unacceptablyOverdueTasks.containsKey(t));
+    	assertEquals((double) (DAYDIF - 2) / DAYDIF, (double) unacceptablyOverdueTasks.get(t), EPS); //weekend: -2
     	
     	Task tt = p1.createTask(taskdescr, new Duration(create, due.plusDays(1)), accdev, altFor, prereqs, new HashMap<>());
-    	assertEquals(2, p1.getUnacceptablyOverdueTasks(clock.getTime()).size());
-    	assertTrue(p1.getUnacceptablyOverdueTasks(clock.getTime()).containsKey(t));
-    	assertTrue(p1.getUnacceptablyOverdueTasks(clock.getTime()).containsKey(tt));
-    	assertEquals((double) (DAYDIF - 2) / DAYDIF, (double) p1.getUnacceptablyOverdueTasks(clock.getTime()).get(t), EPS); //weekend: -2
-    	assertEquals((double) 1 / DAYDIF, (double) p1.getUnacceptablyOverdueTasks(clock.getTime()).get(tt), EPS);
+    	unacceptablyOverdueTasks = p1.getUnacceptablyOverdueTasks(clock.getTime());
+    	assertEquals(2, unacceptablyOverdueTasks.size());
+    	assertTrue(unacceptablyOverdueTasks.containsKey(t));
+    	assertTrue(unacceptablyOverdueTasks.containsKey(tt));
+    	assertEquals((double) (DAYDIF - 2) / DAYDIF, (double) unacceptablyOverdueTasks.get(t), EPS); //weekend: -2
+    	assertEquals((double) 1 / DAYDIF, (double) unacceptablyOverdueTasks.get(tt), EPS);
     	
     	clock.advanceTime(due);
     	assertTrue(p0.getUnacceptablyOverdueTasks(clock.getTime()).isEmpty());
-    	assertEquals(p1.getTasks().size(), p1.getUnacceptablyOverdueTasks(clock.getTime()).size());
+    	assertEquals(p1.getTasks().size(), unacceptablyOverdueTasks.size());
     	assertEquals(p2.getTasks().size(), p2.getUnacceptablyOverdueTasks(clock.getTime()).size());
     	assertTrue(pFinished.getUnacceptablyOverdueTasks(clock.getTime()).isEmpty());
     }
@@ -338,7 +346,7 @@ public class ProjectTest {
     	Task t = p1.createTask(taskdescr, new Duration(create, due), accdev, t1.getId(), prereqs, new HashMap<>());
     	assertEquals(1, p1.getUnacceptablyOverdueTasks(clock.getTime()).size());
     	assertTrue(p1.getUnacceptablyOverdueTasks(clock.getTime()).containsKey(t));
-    	assertEquals((double) new Duration(create, end).toMinutes() / (DAYDIF * wwc_default.getMinutesOfWorkDay()), 
+    	assertEquals((double) new Duration(create, end).toMinutes() / (DAYDIF * week.getMinutesOfWorkDay()), 
     			(double) p1.getUnacceptablyOverdueTasks(clock.getTime()).get(t), EPS);
     }
     
@@ -353,7 +361,8 @@ public class ProjectTest {
     	t1.finish(new Timespan(start, due), clock.getTime());
     	assertEquals(1, p1.getUnacceptablyOverdueTasks(clock.getTime()).size());
     	assertTrue(p1.getUnacceptablyOverdueTasks(clock.getTime()).containsKey(t));
-    	assertEquals((double) estdur.toMinutes() / (DAYDIF * wwc_default.getMinutesOfWorkDay()), (double) p1.getUnacceptablyOverdueTasks(clock.getTime()).get(t), EPS);
+    	assertEquals((double) estdur.toMinutes() / (DAYDIF * week.getMinutesOfWorkDay()), 
+    			(double) p1.getUnacceptablyOverdueTasks(clock.getTime()).get(t), EPS);
     } 
     
     /**
@@ -470,7 +479,8 @@ public class ProjectTest {
     	assertTrue(p1.isOnTime(clock.getTime()));
     	assertTrue(p2.isOnTime(clock.getTime()));
     	
-    	p1.createTask(taskdescr, new Duration(ProjectTest.DAYDIF*wwc_default.getMinutesOfWorkDay()).add(10), accdev, altFor, prereqs, new HashMap<>());
+    	p1.createTask(taskdescr, new Duration(ProjectTest.DAYDIF * week.getMinutesOfWorkDay()).add(10), 
+    			accdev, altFor, prereqs, new HashMap<>());
     	assertFalse(p1.isOnTime(clock.getTime()));
     	
     	clock.advanceTime(due);
@@ -514,7 +524,8 @@ public class ProjectTest {
     	
     	t2.fail(new Timespan(start, end), clock.getTime());
     	assertTrue(p2.isOnTime(clock.getTime()));
-    	p2.createTask(taskdescr, new Duration(ProjectTest.DAYDIF*wwc_default.getMinutesOfWorkDay()), accdev, t2.getId(), prereqs, new HashMap<>());
+    	p2.createTask(taskdescr, new Duration(ProjectTest.DAYDIF * week.getMinutesOfWorkDay()), 
+    			accdev, t2.getId(), prereqs, new HashMap<>());
     	assertFalse(p2.isOnTime(clock.getTime()));
     }
     
@@ -525,7 +536,8 @@ public class ProjectTest {
     public void testIsOnTimeUnFinishedPrereqs() {
     	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()), new HashMap<>());
     	assertTrue(p2.isOnTime(clock.getTime()));
-    	p2.createTask(taskdescr, new Duration(ProjectTest.DAYDIF*wwc_default.getMinutesOfWorkDay()), accdev, altFor, Arrays.asList(t.getId()), new HashMap<>());
+    	p2.createTask(taskdescr, new Duration(ProjectTest.DAYDIF * week.getMinutesOfWorkDay()), 
+    			accdev, altFor, Arrays.asList(t.getId()), new HashMap<>());
     	assertFalse(p2.isOnTime(clock.getTime()));
     }
     
