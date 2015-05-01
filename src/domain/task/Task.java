@@ -622,10 +622,14 @@ public class Task implements DetailedTask {
      * @return True if and only if this task has a planned start time.
      */
     public boolean isPlanned() {
-        return planning != null;
+        return !isFinished() || !isFailed();
     }
 
-    /**
+    private boolean isFailed() {
+		return getStatus() instanceof Failed;
+	}
+
+	/**
      * Plan this task at the given start time
      *
      * @param startTime The time this task is planned to start
