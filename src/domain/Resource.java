@@ -4,6 +4,7 @@ import domain.dto.DetailedResource;
 import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Timespan;
+import domain.time.WorkWeekConfiguration;
 import exception.ConflictException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -24,6 +25,7 @@ public class Resource implements ClockObserver, DetailedResource {
     private final String name;
     private final Set<Reservation> reservations;
     private final Set<Reservation> previousReservations;
+    private WorkWeekConfiguration availability;
 
     /**
      * Initialize a resource with a given name and clock to observe.
@@ -285,6 +287,29 @@ public class Resource implements ClockObserver, DetailedResource {
      */
     void archiveReservation(Reservation r) {
         previousReservations.add(r);
+    }
+    
+    /**
+     * Sets the availability of this resource
+     * 
+     * @param availability The availability to set
+     */
+    public void setAvailability(WorkWeekConfiguration availability){
+        this.availability = availability;
+    }
+    
+    /**
+     * Checks whether this resource is available, based on its workweekconfiguration.
+     * 
+     * @param time The time to check the availability on
+     * @return True if and only if the given time falls inside the working hours
+     * of this resource or if the resource has no workweekconfiguration
+     */
+    public boolean isAvailable(LocalDateTime time){
+        if(availability == null){
+            return true;
+        }
+        return availability.isValidWorkTime(time);
     }
 
     /**

@@ -65,6 +65,17 @@ public class ResourceType implements DetailedResourceType {
     public ResourceType(String name, List<ResourceType> requirements, List<ResourceType> conflicts) {
         this(name, requirements, conflicts, WorkWeekConfiguration.ALWAYS);
     }
+    
+    /**
+     * Initialize a resource type with given name, requirements and conflicting
+     * types.
+     *
+     * @param name The name for this type.
+     * @param availability The availability of this resourcetype
+     */
+    public ResourceType(String name, WorkWeekConfiguration availability) {
+        this(name, new ArrayList<>(), new ArrayList<>(), availability);
+    }
 
     /**
      * Initialize a resource type with given name.
@@ -164,6 +175,7 @@ public class ResourceType implements DetailedResourceType {
 
     /**
      * Add a resource to the list of resources of this type.
+     * And sets its workweekconfiguration to this configuration.
      *
      * @param resource The resource to be added.
      */
@@ -171,7 +183,7 @@ public class ResourceType implements DetailedResourceType {
         if (!canHaveAsResource(resource)) {
             throw new IllegalArgumentException("The given resource is not of the right type.");
         }
-
+        resource.setAvailability(availability);
         resources.add(resource);
     }
 
