@@ -59,6 +59,7 @@ public class Bootstrap {
         Auth auth = new Auth(db);
         
         auth.registerUser(new GenericUser("root", "admin"));
+        auth.registerUser(new GenericUser("manager", "manager"));
         String username;
         while(true){
             username = JOptionPane.showInputDialog("Enter your username");
@@ -70,7 +71,7 @@ public class Bootstrap {
             }           
         }
         
-        if(auth.getUser().getRole().equals("developer")){
+        if(auth.loggedIn() && auth.getUser().getRole().equals("developer")){
             
             
             try {

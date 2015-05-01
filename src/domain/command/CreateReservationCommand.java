@@ -35,12 +35,14 @@ public class CreateReservationCommand implements ICommand {
      * belonging to this reservation command.
      * @throws ConflictException 
      */
+    @Override
     public void execute() throws ConflictException{
     	
     	resourceMemento = resource.createMemento();
     	reservation = resource.makeReservation(task, timespan);
     }
     
+    @Override
     public void revert(){
         if(reservation != null && resourceMemento != null)
             resource.setMemento(resourceMemento);
