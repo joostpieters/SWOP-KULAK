@@ -1,17 +1,16 @@
 package domain.command;
 
 import domain.Resource;
+import domain.ResourceType;
 import domain.Task;
 import domain.time.Timespan;
 import exception.ConflictException;
-
-import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Stack;
+import java.util.Set;
 
 /**
  * This class represents the action of doing a reservation
@@ -25,6 +24,7 @@ public class PlanTaskCommand implements ICommand {
     private final List<CreateReservationCommand> reservations;
     
     private final Map<Resource, Resource.Memento> oldResourceStates;
+    private final Timespan timespan;
 
     
     /**
@@ -37,22 +37,47 @@ public class PlanTaskCommand implements ICommand {
     public PlanTaskCommand(Timespan timespan, List<Resource> resources, Task task) {
         this.task = task;
         this.resources = resources;
+        this.timespan = timespan;
         reservations = new ArrayList<>();
+        repleteResources();
+        
         for (Resource resource : resources) {
             reservations.add(new CreateReservationCommand(timespan, resource, task));
         }
         oldResourceStates = new HashMap<>();
     }
+    
+    /**
+     * Replete the list of resources to the point that all required resources are met
+     * @throws IllegalArgumentException 
+     */
+    private void repleteResources() throws IllegalArgumentException {
+        Map<ResourceType, Integer> required = task.getRequiredResources();
+        for (ResourceType type : required.keySet()) {
+            if (type.numberOfResources(resources) < required.get(type)) {
+                // remove the all ready selected resources from the available resources
+                Set<Resource> availableResources = type.getAvailableResources(timespan);
+                availableResources.removeAll(resources);
+                // chech whether the remaining resources can fulfill the still required quantity
+                if (availableResources.size() < (required.get(type) - type.numberOfResources(resources))) {
+                    throw new IllegalArgumentException("There are not enough resources available at this moment.");
+                } else {
+                    resources.addAll(availableResources);
+                }
+            }
+        }
+    }
     /**
      * TODO commentaar
      */
     public void execute() throws ConflictException {
-		if (task.isPlanned()) {
-        	moveTask();
+        if (task.isPlanned()) {
+            moveTask();
     	} else {
-        	planTask();
+            planTask();
     	}
     }
+    
     /**
      * Overwrites the mementos saved in oldResourceStates
      * with the mementos belonging to the current states of the resources.
