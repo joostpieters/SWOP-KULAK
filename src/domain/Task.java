@@ -2,14 +2,15 @@ package domain;
 
 import domain.command.PlanTaskCommand;
 import domain.dto.DetailedTask;
-import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
 import exception.ConflictException;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -623,12 +624,12 @@ public class Task implements DetailedTask {
     /**
      * Returns the etimated end time of this task
      *
-     * @param clock The clock to use to determine the start time of this task
+     * @param now The clock to use to determine the start time of this task
      * @return The time of the given clock + the estimated work time needed by
      * this task.
      */
-    public LocalDateTime getEstimatedEndTime(Clock clock) {
-        return estimatedWorkTimeNeeded().getEndTimeFrom(clock.getTime());
+    public LocalDateTime getEstimatedEndTime(LocalDateTime now) {
+        return estimatedWorkTimeNeeded().getEndTimeFrom(now);
     }
 
     /**
@@ -664,14 +665,15 @@ public class Task implements DetailedTask {
     }
 
     /**
-     * Get a set of times this task could possibly be started from a certain
+     * Get a set of certain number of possible starting times for this task from a certain
      * point in time.
      *
      * @param from The time after which the task should be started.
+     * @param n The number of starting times to be returned.
      * @return	a sorted set of possible points in time this task may be started.
-     * The task is completely available after the last time in the result.
+     *          The size of the set is defined n.
      */
-    public SortedSet<LocalDateTime> nextAvailableStartingTimes(LocalDateTime from) {
+    public SortedSet<LocalDateTime> nextAvailableStartingTimes(LocalDateTime from, int n) {
         SortedSet<LocalDateTime> result = new TreeSet<>();
         Map<ResourceType, Integer> required = getRequiredResources();
         //TODO: developers zijn nog niet in rekening gebracht!!!
@@ -713,12 +715,26 @@ public class Task implements DetailedTask {
             	continue;
             } else if(result.last().isBefore(temp.last())) {
                 result.retainAll(temp);
-                result.addAll(temp.subSet(result.last(), temp.last()));
+                result.addAll(temp.tailSet(result.last()));
             } else {
                 temp.retainAll(result);
-                temp.addAll(result.subSet(temp.last(), result.last()));
+                temp.addAll(result.tailSet(temp.last()));
                 result = temp;
             }
+        }
+        
+        if(result.size() > n) {
+        	int count = 1;
+        	Iterator<LocalDateTime> it = result.iterator();
+        	while(it.hasNext()) {
+        		it.next();
+        		if(count++ > n)
+        			it.remove();
+        	}
+        } else {
+        	int count = 1;
+        	while(result.size() < n)
+        		result.add(result.last().plusHours(count++));
         }
 
         return result;

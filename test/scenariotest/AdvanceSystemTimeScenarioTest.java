@@ -63,12 +63,12 @@ public class AdvanceSystemTimeScenarioTest {
     @Test
     public void testMainSuccessScenario() {
         // Step 4
-        assertTrue(p1.isOnTime(clock));
-        assertTrue(p1.getUnacceptablyOverdueTasks(clock).isEmpty());
+        assertTrue(p1.isOnTime(clock.getTime()));
+        assertTrue(p1.getUnacceptablyOverdueTasks(clock.getTime()).isEmpty());
         handler.advanceTime("2015-12-03 18:00");
-        assertFalse(p1.isOnTime(clock));
-        assertTrue(p1.getUnacceptablyOverdueTasks(clock).containsKey(t1));
-        assertTrue(p1.getUnacceptablyOverdueTasks(clock).containsKey(t2));
+        assertFalse(p1.isOnTime(clock.getTime()));
+        assertTrue(p1.getUnacceptablyOverdueTasks(clock.getTime()).containsKey(t1));
+        assertTrue(p1.getUnacceptablyOverdueTasks(clock.getTime()).containsKey(t2));
     }
 
     /**

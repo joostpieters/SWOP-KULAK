@@ -24,6 +24,8 @@ import domain.time.TimespanTest;
                     TaskTest.class,
                     TimespanTest.class, 
                     DurationTest.class,
+                    ResourceTest.class,
+                    ResourceTypeTest.class,
                     AdvanceSystemTimeScenarioTest.class,
                     CreateProjectScenarioTest.class,
                     CreateTaskScenarioTest.class,

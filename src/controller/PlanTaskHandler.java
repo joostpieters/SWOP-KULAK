@@ -114,7 +114,7 @@ public class PlanTaskHandler extends Handler {
      */
     public Set<LocalDateTime> getPossibleStartTimesCurrentTask(int pId, int tId) {
        
-        return manager.getProject(pId).getTask(tId).nextAvailableStartingTimes(clock.getTime());
+        return manager.getProject(pId).getTask(tId).nextAvailableStartingTimes(clock.getTime(), 3);
     }
 
     /**

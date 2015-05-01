@@ -90,10 +90,10 @@ public class ShowProjectScenarioTest {
         assertEquals(LocalDateTime.of(2015, 3, 12, 17, 30), p1Details.getCreationTime());
         assertEquals(LocalDateTime.of(2015, 3, 22, 17, 50), p1Details.getDueTime());
         assertFalse(p1Details.isFinished());
-        assertTrue(p1Details.isOnTime(clock));
+        assertTrue(p1Details.isOnTime(clock.getTime()));
         assertTrue(p1.getTasks().contains(t1));
         assertTrue(p1.getTasks().contains(t2));
-        assertEquals(Duration.ZERO, p1Details.getDelay(clock));
+        assertEquals(Duration.ZERO, p1Details.getDelay(clock.getTime()));
         
         //step 5 select task t2
         DetailedTask t2Details = handler.getTask(t2.getId());

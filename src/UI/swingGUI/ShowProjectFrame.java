@@ -85,17 +85,17 @@ public class ShowProjectFrame extends javax.swing.JFrame {
         descriptionLabel.setText(project.getDescription());
         String status;
         if(project.isFinished()){
-            status = "Finished, with a total delay of: " + project.getDelay(handler.getClock());
+            status = "Finished, with a total delay of: " + project.getDelay(handler.getClock().getTime());
         }else{
             status = "Ongoing, ";
-            status += project.isOnTime(handler.getClock()) ? "and will be delayed" : "and is on time";
+            status += project.isOnTime(handler.getClock().getTime()) ? "and will be delayed" : "and is on time";
         }
         statusLabel.setText(status);
         
         executionTimeLabel.setText(project.getTotalExecutionTime().toString());
         String[] columnNames = {"Id", "Description", "Estimated Duration", "Acceptable Deviation", "Status", "Percentage Overdue"};
         List<DetailedTask> tasks = (List<DetailedTask>) project.getTasks();
-        Map<DetailedTask, Double> overdueTasks = (Map<DetailedTask, Double>) project.getUnacceptablyOverdueTasks(handler.getClock());
+        Map<DetailedTask, Double> overdueTasks = (Map<DetailedTask, Double>) project.getUnacceptablyOverdueTasks(handler.getClock().getTime());
         
         Object[][] data = new Object[tasks.size()][];
 

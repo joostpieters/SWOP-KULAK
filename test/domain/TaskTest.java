@@ -654,26 +654,38 @@ public class TaskTest {
     
     @Test
     public void TestNextAvailableStartingTimes() {
-    	SortedSet<LocalDateTime> nextAvailableStartingTimes = t10.nextAvailableStartingTimes(from);
+    	SortedSet<LocalDateTime> nextAvailableStartingTimes = t10.nextAvailableStartingTimes(from, 1);
     	assertEquals(1, nextAvailableStartingTimes.size());
     	assertTrue(nextAvailableStartingTimes.contains(from));
     	
     	try {
 			type0.makeReservation(t10, reserved, 1);
 		} catch (ConflictException e) {	}
-    	nextAvailableStartingTimes = t10.nextAvailableStartingTimes(from);
-    	assertEquals(2, nextAvailableStartingTimes.size());
+    	nextAvailableStartingTimes = t10.nextAvailableStartingTimes(from, 3);
+    	assertEquals(3, nextAvailableStartingTimes.size());
     	assertTrue(nextAvailableStartingTimes.contains(from));
     	assertTrue(nextAvailableStartingTimes.contains(to));
+    	assertTrue(nextAvailableStartingTimes.contains(to.plusHours(1)));
+    	nextAvailableStartingTimes = t10.nextAvailableStartingTimes(from, 1);
+    	assertEquals(1, nextAvailableStartingTimes.size());
+    	assertTrue(nextAvailableStartingTimes.contains(from));
     	
     	try {
     		type1.makeReservation(t10, reserved2, 1);
     	} catch (ConflictException e) { }
     	LocalDateTime tempFrom = from.minusHours(1);
-    	nextAvailableStartingTimes = t10.nextAvailableStartingTimes(tempFrom);
-    	assertEquals(4, nextAvailableStartingTimes.size());
+    	nextAvailableStartingTimes = t10.nextAvailableStartingTimes(tempFrom, 3);
+    	assertEquals(3, nextAvailableStartingTimes.size());
     	assertTrue(nextAvailableStartingTimes.contains(tempFrom));
-    	for(int i = 0; i < GAP; i++)
-    		assertTrue(nextAvailableStartingTimes.contains(to.plusHours(i)));
+    	assertTrue(nextAvailableStartingTimes.contains(to));
+    	assertTrue(nextAvailableStartingTimes.contains(to.plusHours(1)));
+    	nextAvailableStartingTimes = t10.nextAvailableStartingTimes(tempFrom, 6);
+    	assertEquals(6, nextAvailableStartingTimes.size());
+    	assertTrue(nextAvailableStartingTimes.contains(tempFrom));
+    	assertTrue(nextAvailableStartingTimes.contains(to));
+    	assertTrue(nextAvailableStartingTimes.contains(to.plusHours(1)));
+    	assertTrue(nextAvailableStartingTimes.contains(to.plusHours(2)));
+    	assertTrue(nextAvailableStartingTimes.contains(to2));
+    	assertTrue(nextAvailableStartingTimes.contains(to2.plusHours(1)));
     }
 }

@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-import domain.time.Clock;
 import domain.time.Duration;
 
 /**
@@ -35,7 +34,7 @@ public interface DetailedProject {
      * @param clock The clock to reltively check the delay to.
      * @return The sum of the delays of the tasks within this project.
      */
-    public Duration getDelay(Clock clock);
+    public Duration getDelay(LocalDateTime now);
 
     /**
      * **************************************
@@ -69,7 +68,7 @@ public interface DetailedProject {
      * @return	true if this project finished on time or if this project is
      * estimated to finish on time, false otherwise.
      */
-    boolean isOnTime(Clock clock);
+    boolean isOnTime(LocalDateTime now);
 
     /**
      *
@@ -87,7 +86,7 @@ public interface DetailedProject {
      * percentage by which they are over time.
      *
      */
-    Map<? extends DetailedTask, Double> getUnacceptablyOverdueTasks(Clock clock); 
+    Map<? extends DetailedTask, Double> getUnacceptablyOverdueTasks(LocalDateTime now); 
     
     /**
      * Get the amount of working hours that have been put into this project thus far.

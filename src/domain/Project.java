@@ -1,7 +1,6 @@
 package domain;
 
 import domain.dto.DetailedProject;
-import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
 import exception.ObjectNotFoundException;
@@ -335,14 +334,14 @@ public class Project implements DetailedProject {
      * @see	Duration#percentageOver(Duration)
      */
     @Override
-    public Map<Task, Double> getUnacceptablyOverdueTasks(Clock clock) {
+    public Map<Task, Double> getUnacceptablyOverdueTasks(LocalDateTime now) {
         Map<Task, Double> result = new HashMap<>();
 
         for (Task t : getTasks()) {
             if (t.isFulfilled()) {
                 continue;
             }
-            LocalDateTime estFinTime = t.getEstimatedEndTime(clock);
+            LocalDateTime estFinTime = t.getEstimatedEndTime(now);
             if (estFinTime.isAfter(getDueTime())) {
                 result.put(t, new Duration(getCreationTime(), estFinTime).percentageOver(new Duration(getCreationTime(), getDueTime())));
             }
@@ -388,7 +387,7 @@ public class Project implements DetailedProject {
      * estimated to finish on time, false otherwise.
      */
     @Override
-    public boolean isOnTime(Clock clock) {
+    public boolean isOnTime(LocalDateTime now) {
         if (isFinished()) {
             for (Task t : getTasks()) {
                 if (t.getTimeSpan().endsAfter(this.getDueTime())) {
@@ -410,8 +409,8 @@ public class Project implements DetailedProject {
                 }
             }
             LocalDateTime end = max.add(max2).getEndTimeFrom(getCreationTime());
-            if (clock.isAfter(end)) {
-                end = clock.getTime();
+            if (now.isAfter(end)) {
+            	end = now;
             }
             return !end.isAfter(getDueTime());
         }
@@ -425,8 +424,8 @@ public class Project implements DetailedProject {
      * !{@link #isOnTime()}, null otherwise.
      */
     @Override
-    public Duration getDelay(Clock clock) {
-        if (isOnTime(clock)) {
+    public Duration getDelay(LocalDateTime now) {
+        if (isOnTime(now)) {
             return Duration.ZERO;
         }
         Duration totalDuration = Duration.ZERO;
