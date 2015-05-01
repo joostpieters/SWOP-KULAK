@@ -132,4 +132,18 @@ public class Planning implements ClockObserver{
         }
     }
     
+    /**
+     * Checks whether the resources belonging to this planning are available at the given time.
+     * 
+     * @param time The time at which to check whether all the resources belonging to this planning are available.
+     * @return True if and only if all resources belonging to this planning are available at the given time.
+     */
+    public boolean isAvailable(LocalDateTime time)
+    {
+    	for(Resource resource : resources)
+    		if(!resource.isAvailable(time))
+    			return false;
+    	return true;
+    }
+    
 }

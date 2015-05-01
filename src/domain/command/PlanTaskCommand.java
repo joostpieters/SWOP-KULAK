@@ -80,7 +80,11 @@ public class PlanTaskCommand implements ICommand {
     public void execute() throws ConflictException {
     	originalTaskPlanning = task.getPlanning();
     	if(originalTaskPlanning != null)
+    	{
     		originalTaskPlanningMemento = originalTaskPlanning.createMemento();
+    		originalTaskPlanning.clearFutureReservations(clock.getTime());
+    	}
+    	
     	Stack<CreateReservationCommand> executedCmds = new Stack<>();
         try {
             for (CreateReservationCommand command : reservations) {
