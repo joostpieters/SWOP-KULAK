@@ -250,7 +250,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
 
         expectLabel("developers");
         // new resourcetype for developers
-        ResourceType devType = new ResourceType("developer");
+        ResourceType devType = new ResourceType("developer", new WorkWeekConfiguration(LocalTime.of(8, 00), LocalTime.of(17,00)));
         db.addResourceType(devType);
         while (ttype == '-') {
             expectChar('-');
