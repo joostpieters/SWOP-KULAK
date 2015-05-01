@@ -84,7 +84,7 @@ public class Failed extends Status {
            return false;
         }
         
-        return task.getAlternativeTask().getStatus().isFulfilledBefore(task.getAlternativeTask(), timeSpan); 
+        return task.getAlternativeTask().isFulfilledBefore(task.getAlternativeTask(), timeSpan); 
     }
     
     /**
