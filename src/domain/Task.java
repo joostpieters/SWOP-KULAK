@@ -6,7 +6,6 @@ import domain.time.Duration;
 import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
 import exception.ConflictException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +33,6 @@ public class Task implements DetailedTask {
     private Task alternativeTask;
     private List<Task> prerequisiteTasks;
     private Status status;
-    private LocalDateTime plannedStartTime;
     private final Map<ResourceType, Integer> requiredResources;
     private final Project project;
     private static Map<ResourceType, Integer> standardRequiredResources = new HashMap<>();
@@ -43,6 +41,7 @@ public class Task implements DetailedTask {
      * A constant to indicate that a task requires no resources
      */
     public static Map<ResourceType, Integer> NO_REQUIRED_RESOURCE_TYPES = new HashMap<>();
+    private Planning planning;
 
     /**
      * **************************************
@@ -430,7 +429,7 @@ public class Task implements DetailedTask {
     }
 
     /**
-     * TODO: clear future reservations Fail this task
+     * Fail this task
      *
      * @param timespan The timespan of this failed task
      * @param currentTime The current time when this task is changed to finished
@@ -448,11 +447,13 @@ public class Task implements DetailedTask {
             throw new IllegalArgumentException("The given timespan is before the project creation time.");
         }
         getStatus().fail(this, timespan);
-        clearFutureReservations(currentTime);
+        if(isPlanned()){
+            planning.clearFutureReservations(timespan.getEndTime());
+        }
     }
 
     /**
-     * TODO: clear future reservations Finish this task
+     * Finish this task
      *
      * @param timespan The timespan of this finished task
      * @param currentTime The current time when this task is changed to finished
@@ -471,7 +472,10 @@ public class Task implements DetailedTask {
         }
         
         getStatus().finish(this, timespan);
-        clearFutureReservations(timespan.getEndTime());
+        if(isPlanned()){
+            planning.clearFutureReservations(timespan.getEndTime());
+        }
+        
     }
 
     /**
@@ -482,14 +486,6 @@ public class Task implements DetailedTask {
      */
     public void execute(LocalDateTime currentTime) {
         getStatus().execute(this, currentTime);
-    }
-
-    // TODO verplaatsen
-
-    public void clearFutureReservations(LocalDateTime currentTime) {
-        for (ResourceType resourceType : getRequiredResources().keySet()) {
-            resourceType.clearFutureReservations(currentTime, this);
-        }
     }
 
     /**
@@ -638,7 +634,7 @@ public class Task implements DetailedTask {
      * @return True if and only if this task has a planned start time.
      */
     public boolean isPlanned() {
-        return plannedStartTime != null;
+        return planning != null;
     }
 
     /**
@@ -658,9 +654,10 @@ public class Task implements DetailedTask {
             }
         }
 
-        PlanTaskCommand planCommand = new PlanTaskCommand(timespan, resources, this);
+        PlanTaskCommand planCommand = new PlanTaskCommand(new Timespan(startTime, estimatedDuration), resources, this);
         planCommand.execute();
-        plannedStartTime = startTime;
+        planning = planCommand.getResult();
+        
         return planCommand;
     }
 
@@ -746,7 +743,7 @@ public class Task implements DetailedTask {
      * @return A memento which stores the the state of this task.
      */
     public Memento createMemento() {
-        return new Memento(timespan, alternativeTask, prerequisiteTasks, status, plannedStartTime);
+        return new Memento(timespan, alternativeTask, prerequisiteTasks, status, planning);
     }
 
     /**
@@ -759,7 +756,7 @@ public class Task implements DetailedTask {
         this.alternativeTask = memento.getAlternativeTask();
         this.prerequisiteTasks = memento.getPrerequisiteTasks();
         this.status = memento.getStatus();
-        this.plannedStartTime = memento.getPlannedStartTime();
+        this.planning = memento.getPlanning();
     }
 
     /**
@@ -789,10 +786,10 @@ public class Task implements DetailedTask {
 
     /**
      *
-     * @return The planned start time of this task
+     * @return The planning of this task
      */
-    public LocalDateTime getPlannedStartTime() {
-        return this.plannedStartTime;
+    public Planning getPlanning() {
+        return this.planning;
     }
 
     /**
@@ -804,7 +801,7 @@ public class Task implements DetailedTask {
         private final Task alternativeTask;
         private final List<Task> prerequisiteTasks;
         private final Status status;
-        private final LocalDateTime plannedStartTime;
+        private final Planning planning;
 
         private Timespan getTimespan() {
             return this.timespan;
@@ -822,8 +819,8 @@ public class Task implements DetailedTask {
             return this.status;
         }
 
-        private LocalDateTime getPlannedStartTime() {
-            return this.plannedStartTime;
+        private Planning getPlanning() {
+            return this.planning;
         }
 
         /**
@@ -834,15 +831,15 @@ public class Task implements DetailedTask {
          * @param prerequisiteTasks The list of prerequisite tasks of the
          * originator task.
          * @param status The status of the originator task.
-         * @param plannedStartTime The planned start time of the originator
+         * @param planning The planning of the originator
          * task.
          */
-        private Memento(Timespan timespan, Task alternativeTask, List<Task> prerequisiteTasks, Status status, LocalDateTime plannedStartTime) {
+        private Memento(Timespan timespan, Task alternativeTask, List<Task> prerequisiteTasks, Status status, Planning planning) {
             this.timespan = timespan;
             this.alternativeTask = alternativeTask;
             this.prerequisiteTasks = new ArrayList<>(prerequisiteTasks);
             this.status = status;
-            this.plannedStartTime = plannedStartTime;
+            this.planning = planning;
         }
     }
 }

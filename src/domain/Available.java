@@ -2,7 +2,9 @@ package domain;
 
 import domain.time.Duration;
 import domain.time.Timespan;
+import exception.ConflictException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 /**
  * This class represents an available status of a task.
@@ -137,12 +139,15 @@ public class Available extends Status {
     public void execute(Task task, LocalDateTime currentTime){
         
         if(task.isPlanned()){
-            if(!task.getPlannedStartTime().isBefore(currentTime)){
+            if(!task.getPlanning().isBefore(currentTime)){
                 task.setStatus(new Executing());
             }else{
-                // unplanned execution
-                // TODO
-               // task.plan(currentTime, null);
+                try {
+                    // unplanned execution
+                    task.plan(currentTime, new ArrayList<>());
+                } catch (ConflictException ex) {
+                    throw new IllegalStateException("This task can't move to executing because there are not enough resources available");
+                }
             }
         }else{
             throw new IllegalStateException("A task has to be planned before you can execute it!");

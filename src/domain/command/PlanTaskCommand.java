@@ -1,5 +1,6 @@
 package domain.command;
 
+import domain.Planning;
 import domain.Resource;
 import domain.ResourceType;
 import domain.Task;
@@ -25,6 +26,7 @@ public class PlanTaskCommand implements ICommand {
     
     private final Map<Resource, Resource.Memento> oldResourceStates;
     private final Timespan timespan;
+    private Planning planning;
 
     
     /**
@@ -70,6 +72,7 @@ public class PlanTaskCommand implements ICommand {
     /**
      * TODO commentaar
      */
+    @Override
     public void execute() throws ConflictException {
         if (task.isPlanned()) {
             moveTask();
@@ -92,6 +95,7 @@ public class PlanTaskCommand implements ICommand {
     private void moveTask() throws ConflictException {
     	// TODO klopt het dat de bedoeling is de oorspronkelijke reservations horende bij deze taak te verwijderen
     	// TODO en daarna simpelweg nieuwe reservations aanmaken
+        // TODO bovenstaande correct implementeren
     	//save the states of the old reservations belonging
 
         saveResourceStates();
@@ -105,6 +109,8 @@ public class PlanTaskCommand implements ICommand {
             
             throw ex;
         }
+        
+        planning = new Planning(resources, timespan, task);
         
     }
 
@@ -128,5 +134,9 @@ public class PlanTaskCommand implements ICommand {
     private void revertMove() {
     	for(Entry<Resource, Resource.Memento> entry : oldResourceStates.entrySet())
     		entry.getKey().setMemento(entry.getValue());
+    }
+    
+    public Planning getResult(){
+        return planning;
     }
 }

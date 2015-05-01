@@ -28,5 +28,9 @@ public class Planning {
             resource.clearFutureReservations(currentTime, task);
         }
     }
+
+    boolean isBefore(LocalDateTime currentTime) {
+        return timespan.startsBefore(currentTime);
+    }
     
 }

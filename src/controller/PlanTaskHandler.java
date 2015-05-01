@@ -1,26 +1,23 @@
 package controller;
 
-import domain.user.Acl;
-import domain.user.Auth;
 import domain.Database;
 import domain.ProjectContainer;
 import domain.Resource;
 import domain.ResourceType;
 import domain.Task;
-import domain.command.ICommand;
 import domain.command.SimulatorCommand;
 import domain.dto.DetailedResource;
 import domain.dto.DetailedResourceType;
 import domain.dto.DetailedTask;
 import domain.time.Clock;
 import domain.time.Timespan;
+import domain.user.Acl;
+import domain.user.Auth;
 import exception.ConflictException;
-
 import java.time.LocalDateTime;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -66,6 +63,7 @@ public class PlanTaskHandler extends Handler {
         this.manager = manager;
         this.clock = clock;
         this.db = db;
+        this.simulatorCommand = simulatorCommand;
     }
 
     /**

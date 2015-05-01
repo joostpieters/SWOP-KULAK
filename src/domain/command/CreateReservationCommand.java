@@ -3,7 +3,6 @@ package domain.command;
 import domain.Reservation;
 import domain.Resource;
 import domain.Task;
-import domain.Resource.Memento;
 import domain.time.Timespan;
 import exception.ConflictException;
 

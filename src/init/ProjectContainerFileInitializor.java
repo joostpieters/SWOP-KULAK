@@ -7,7 +7,6 @@ package init;
  * @author Frederic, Mathias, Pieter-Jan
  */
 import domain.Database;
-import domain.user.Developer;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.Resource;
@@ -17,6 +16,7 @@ import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
+import domain.user.Developer;
 import exception.ConflictException;
 import java.io.IOException;
 import java.io.Reader;
@@ -259,7 +259,9 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             // add to type
             // TODO workweek conf?
             devType.addResource(dev);
+            // developer is user and resource at the same time
             db.addUser(dev);
+            db.addResource(dev);
             
         }
         Map<ResourceType, Integer> hashMap = new HashMap<> ();

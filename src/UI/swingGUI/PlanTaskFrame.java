@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
@@ -421,6 +423,7 @@ public class PlanTaskFrame extends javax.swing.JFrame {
             
         } catch (RuntimeException e) {
             JOptionPane.showMessageDialog(rootPane, e.getStackTrace(), null, JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(PlanTaskFrame.class.getName()).log(Level.SEVERE, null, e);
         }
     }//GEN-LAST:event_planTaskButtonActionPerformed
 
