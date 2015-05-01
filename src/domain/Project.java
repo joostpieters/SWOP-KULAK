@@ -21,9 +21,6 @@ import java.util.TreeMap;
  *
  * @author Frederic, Mathias, Pieter-Jan
  *
- * @see	projectContainer
- * @see	Task
- * @see	Clock
  */
 public class Project implements DetailedProject {
 
@@ -256,7 +253,7 @@ public class Project implements DetailedProject {
      * @return	The task that has been created.
      * @throws	IllegalStateException if this project is already finished.
      *
-     * @see	Task#Task(String, Duration, int, List)
+     *
      */
     public Task createTask(String descr, Duration estdur, int accdev, int altFor, List<Integer> prereqs, Map<ResourceType, Integer> requiredResources) {
         if (isFinished()) {
@@ -329,9 +326,8 @@ public class Project implements DetailedProject {
      * Return all tasks which can cause this project to get overdue and the
      * percentage the project will be late because of the task.
      *
-     * @param clock The clock to use to check overdue
-     * @return	a map of tasks for which the work time needed &gt;
-     * ({@link #getDueTime()} - {@link #getSystemTime()}) to their corresponding
+     * @param now The time to use to check overdue
+     * @return	a map of tasks for which the work time needed to their corresponding
      * percentage by which they are over time. If this project is finished, an
      * empty map is returned.
      *
@@ -424,9 +420,9 @@ public class Project implements DetailedProject {
     /**
      * Gets the total delay of this project.
      *
-     * @param clock The clock to reltively check the delay to.
+     * @param now The time to reltively check the delay to.
      * @return the sum of the delays of the tasks within this project if
-     * !{@link #isOnTime()}, null otherwise.
+     * not is on time, null otherwise.
      */
     @Override
     public Duration getDelay(LocalDateTime now) {

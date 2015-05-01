@@ -1,10 +1,9 @@
 package domain.dto;
 
+import domain.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-
-import domain.time.Duration;
 
 /**
  * This interface provides methods to retrieve all data from a project object.
@@ -31,7 +30,7 @@ public interface DetailedProject {
     /**
      * Gets the total delay of this project.
      *
-     * @param clock The clock to reltively check the delay to.
+     * @param now The time to reltively check the delay to.
      * @return The sum of the delays of the tasks within this project.
      */
     public Duration getDelay(LocalDateTime now);
@@ -64,7 +63,7 @@ public interface DetailedProject {
     /**
      * Get the time details for this project.
      *
-     * @param clock The clock to check to relatively check this project is on time.
+     * @param now The time to check to relatively check this project is on time.
      * @return	true if this project finished on time or if this project is
      * estimated to finish on time, false otherwise.
      */
@@ -80,7 +79,7 @@ public interface DetailedProject {
      * Return all tasks which can cause this project to get overdue and the
      * percentage the project will be late because of the task.
      *
-     * @param clock Clock to check overdue
+     * @param now The time of the current time
      * @return	a map of tasks for which the work time needed is greater than 
      * the due time of this project minus the system time  to their corresponding
      * percentage by which they are over time.
@@ -93,7 +92,7 @@ public interface DetailedProject {
      * 
      * @return	the sum of durations of the time spans of all tasks in this project.
      * 
-     * @see		Task#getTimeSpan()
+     * 
      */
     public Duration getTotalExecutionTime();
     

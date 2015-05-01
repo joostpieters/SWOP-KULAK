@@ -247,8 +247,7 @@ public class Task implements DetailedTask {
      *
      * @param alternativeTask The alternative task for this task.
      * @throws IllegalStateException
-     * @see Status#setAlternativeTask(domain.Task, domain.Project)
-     * @see canHaveAsAlternativeTask
+     *
      */
     public void setAlternativeTask(Task alternativeTask) throws IllegalStateException, IllegalArgumentException {
         status.setAlternativeTask(this, alternativeTask);
@@ -564,7 +563,7 @@ public class Task implements DetailedTask {
     }
     
     /**
-     * @see Status.isFulfilledBefore
+     * @see Status#isFulfilledBefore
      */
     public boolean isFulfilledBefore(Task task, Timespan timeSpan)
     {

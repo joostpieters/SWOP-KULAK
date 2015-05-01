@@ -26,7 +26,7 @@ public abstract class Status {
      * task.
      * @throws IllegalArgumentException If this task can't have the given task
      * as its alternative task.
-     * @see canHaveAsAlternativeTask
+     * 
      */
     public void setAlternativeTask(Task task, Task alternativeTask) throws IllegalStateException {
         throw new IllegalStateException("Can't set an alternative task for this "

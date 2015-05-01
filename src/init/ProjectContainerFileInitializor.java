@@ -343,7 +343,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             if (ttype == TT_NUMBER) {
                 planning = expectInt();
                 task = manager.getProject(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, requiredResourceMaps.get(planning));
-                task.plan(arrayList.get(planning), plannings.get(arrayList.get(planning)), clock);
+                //task.plan(arrayList.get(planning), plannings.get(arrayList.get(planning)), clock);
             }else{
                 task = manager.getProject(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, Task.NO_REQUIRED_RESOURCE_TYPES);
             }
