@@ -2,8 +2,13 @@ package domain;
 
 import domain.task.Task;
 import domain.time.Timespan;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * This class represents a planning for a task, containing the reservations and
@@ -17,8 +22,8 @@ public class Planning {
     private final Timespan timespan;
     private final Task task;
     
-    public Planning(List<Resource> reservations, Timespan timespan, Task task){
-        this.resources = reservations;
+    public Planning(List<Resource> resources, Timespan timespan, Task task){
+        this.resources = resources;
         this.timespan = timespan;
         this.task = task;
     }
@@ -32,6 +37,85 @@ public class Planning {
 
     public boolean isBefore(LocalDateTime currentTime) {
         return timespan.startsBefore(currentTime);
+    }
+    
+    /**
+     * Restores the state of this planning to the state described in the given memento.
+     * 
+     * @param memento The memento containing the new state of this planning.
+     */
+    public void setMemento(Memento memento)
+    {
+    	this.resources = memento.getResources();
+    	for(Entry<Resource, Resource.Memento> entry : memento.getResourceMementos().entrySet())
+    	{
+    		entry.getKey().setMemento(entry.getValue());
+    	}
+    	this.task.setMemento(memento.getTaskMemento());
+    }
+    
+    /**
+     * Creates a memento of this planning.
+     * 
+     * @return A memento representing the state of this planning.
+     */
+    public Memento createMemento()
+    {
+    	return new Memento(this.resources, this.task);
+    }
+    
+    /**
+     * Describes a memento for a planning
+     * 
+     * @author Frederic
+     *
+     */
+    private class Memento
+    {
+    	private final List<Resource> resources;
+    	private final Map<Resource, Resource.Memento> resourceMementos;
+    	private final Task.Memento taskMemento;
+    	
+    	/**
+    	 * @return The resources stored in this memento.
+    	 */
+    	private List<Resource> getResources()
+    	{
+    		return new ArrayList<>(this.resources);
+    	}
+    	
+    	/**
+    	 * @return A map linking the resources stored in this planning memento with resource mementos of those resources.
+    	 */
+    	private Map<Resource, Resource.Memento> getResourceMementos()
+    	{
+    		return this.resourceMementos;
+    	}
+    	
+    	/**
+    	 * @return The task memento stored in this planning memento.
+    	 */
+    	private Task.Memento getTaskMemento()
+    	{
+    		return this.taskMemento;
+    	}
+    	
+    	/**
+    	 * Creates a new memento which stores the given list of resources, their mementos and a memento of the given task.
+    	 * 
+    	 * @param resources The resources which need to be associated with the new planning memento.
+    	 * @param task The task associated with the new planning memento.
+    	 */
+    	private Memento(List<Resource> resources, Task task)
+    	{
+    		this.resources = new ArrayList<Resource>(resources);
+    		this.resourceMementos = new HashMap<>();
+    		for(Resource r : resources)
+    		{
+    			this.resourceMementos.put(r, r.createMemento());
+    		}
+    		this.taskMemento = task.createMemento();
+    	}
     }
     
 }
