@@ -134,7 +134,7 @@ public class PlanTaskHandler extends Handler {
             res.add(db.getResources().get(i));
         }
         
-        simulatorCommand.addAndExecute(manager.getProject(pId).getTask(tId).plan(startTime, res));
+        simulatorCommand.add(manager.getProject(pId).getTask(tId).plan(startTime, res));
     }
     
 }
