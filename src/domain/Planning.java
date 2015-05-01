@@ -64,12 +64,12 @@ public class Planning implements ClockObserver{
     }
     
     /**
-     * Describes a memento for a planning
+     * Describes a planning memento which can be used to save or load the state of a planning.
      * 
      * @author Frederic
      *
      */
-    private class Memento
+    public class Memento
     {
     	private final List<Resource> resources;
     	private final Map<Resource, Resource.Memento> resourceMementos;
@@ -130,6 +130,20 @@ public class Planning implements ClockObserver{
                 res.archiveOldReservations(currentTime);
             }
         }
+    }
+    
+    /**
+     * Checks whether the resources belonging to this planning are available at the given time.
+     * 
+     * @param time The time at which to check whether all the resources belonging to this planning are available.
+     * @return True if and only if all resources belonging to this planning are available at the given time.
+     */
+    public boolean isAvailable(LocalDateTime time)
+    {
+    	for(Resource resource : resources)
+    		if(!resource.isAvailable(time))
+    			return false;
+    	return true;
     }
     
 }

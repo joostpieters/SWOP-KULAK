@@ -636,10 +636,8 @@ public class Task implements DetailedTask {
             }
         }
 
-        PlanTaskCommand planCommand = new PlanTaskCommand(new Timespan(startTime, estimatedDuration), resources, this);
+        PlanTaskCommand planCommand = new PlanTaskCommand(new Timespan(startTime, estimatedDuration), resources, this, clock);
         planCommand.execute();
-        planning = planCommand.getResult();
-        clock.attach(planning);
         return planCommand;
     }
 
@@ -775,9 +773,7 @@ public class Task implements DetailedTask {
     }
     
     /**
-     * Sets the planning of this task
-     * 
-     * @param planning The planning to set
+     * Sets the planning of this task to the given planning.
      */
     public void setPlanning(Planning planning) {
         this.planning = planning;
