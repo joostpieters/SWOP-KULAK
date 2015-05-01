@@ -240,7 +240,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             expectLabel("type");
             int typeIndex = expectInt();
             // add to resourcetype
-            Resource res = new Resource(name, clock);
+            Resource res = new Resource(name);
             db.getResourceTypes().get(typeIndex).addResource(res);
             // add to db
             db.addResource(res);

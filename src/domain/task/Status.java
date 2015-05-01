@@ -1,8 +1,8 @@
 package domain.task;
 
+import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
-import java.time.LocalDateTime;
 
 /**
  * This class represents the status of a task, all satuses are mutually
@@ -130,11 +130,11 @@ public abstract class Status {
      * Moves the given task to the executing state
      * 
      * @param task The task to adjust
-     * @param currenTime The current time of the system
+     * @param clock The system clock
      * @throws IllegalStateException The task can't move to executing from this
      * state.
      */
-    public void execute(Task task, LocalDateTime currenTime) throws IllegalStateException {
+    public void execute(Task task, Clock clock) throws IllegalStateException {
         throw new IllegalStateException("This task can't execute, because it's not available.");
     }
     

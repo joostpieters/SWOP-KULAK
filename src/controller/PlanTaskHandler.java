@@ -4,11 +4,11 @@ import domain.Database;
 import domain.ProjectContainer;
 import domain.Resource;
 import domain.ResourceType;
-import domain.task.Task;
 import domain.command.SimulatorCommand;
 import domain.dto.DetailedResource;
 import domain.dto.DetailedResourceType;
 import domain.dto.DetailedTask;
+import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Timespan;
 import domain.user.Acl;
@@ -134,7 +134,7 @@ public class PlanTaskHandler extends Handler {
             res.add(db.getResources().get(i));
         }
         
-        simulatorCommand.add(manager.getProject(pId).getTask(tId).plan(startTime, res));
+        simulatorCommand.add(manager.getProject(pId).getTask(tId).plan(startTime, res, clock));
     }
     
 }

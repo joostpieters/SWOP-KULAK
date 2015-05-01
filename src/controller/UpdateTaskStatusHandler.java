@@ -1,15 +1,15 @@
 package controller;
 
-import domain.user.Acl;
-import domain.user.Auth;
-import domain.dto.DetailedProject;
-import domain.dto.DetailedTask;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.Resource;
+import domain.dto.DetailedProject;
+import domain.dto.DetailedTask;
 import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Timespan;
+import domain.user.Acl;
+import domain.user.Auth;
 import exception.NoAccessException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -111,7 +111,7 @@ public class UpdateTaskStatusHandler extends Handler {
         }
         try {
             if (((Resource) auth.getUser()).getReservation(currentTask) != null) {
-                currentTask.execute(clock.getTime());
+                currentTask.execute(clock);
             }            
             
         } catch (ClassCastException e) {

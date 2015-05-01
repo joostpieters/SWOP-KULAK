@@ -2,7 +2,6 @@ package domain;
 
 import domain.task.Task;
 import domain.time.Timespan;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +15,7 @@ import java.util.Map.Entry;
  * 
  * @author Mathias, Frederic, Pieter-Jan
  */
-public class Planning {
+public class Planning implements ClockObserver{
     
     private List<Resource> resources;
     private final Timespan timespan;
@@ -116,6 +115,21 @@ public class Planning {
     		}
     		this.taskMemento = task.createMemento();
     	}
+    }
+     
+     /**
+     * Ends this planning when it is in the past and free all reserved resources
+     * 
+     * @param currentTime The time to compare to
+     */
+    @Override
+    public void update(LocalDateTime currentTime) {
+        if(!timespan.endsAfter(currentTime)){
+            task.setPlanning(null);
+            for(Resource res :resources){
+                res.archiveOldReservations(currentTime);
+            }
+        }
     }
     
 }

@@ -6,6 +6,7 @@ import domain.Resource;
 import domain.ResourceType;
 import domain.command.PlanTaskCommand;
 import domain.dto.DetailedTask;
+import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
@@ -489,11 +490,10 @@ public class Task implements DetailedTask {
     /**
      * Move this task to the executing state
      *
-     * @param currentTime The current time when this task is changed to
-     * executing
+     * @param clock The clock to use to execute from
      */
-    public void execute(LocalDateTime currentTime) {
-        getStatus().execute(this, currentTime);
+    public void execute(Clock clock) {
+        getStatus().execute(this, clock);
     }
 
     /**
@@ -650,11 +650,12 @@ public class Task implements DetailedTask {
      *
      * @param startTime The time this task is planned to start
      * @param resources The resources to assign to this task
+     * @param clock The clock the planning has to observe
      * @return The plan command that has been executed by this method
      * @throws exception.ConflictException The task's reservations conflict with
      * another task
      */
-    public PlanTaskCommand plan(LocalDateTime startTime, List<Resource> resources) throws ConflictException {
+    public PlanTaskCommand plan(LocalDateTime startTime, List<Resource> resources, Clock clock) throws ConflictException {
         Map<ResourceType, Integer> required = getRequiredResources();
         for (ResourceType type : required.keySet()) {
             if (type.numberOfResources(resources) < required.get(type)) {
@@ -662,10 +663,8 @@ public class Task implements DetailedTask {
             }
         }
 
-        PlanTaskCommand planCommand = new PlanTaskCommand(new Timespan(startTime, estimatedDuration), resources, this);
+        PlanTaskCommand planCommand = new PlanTaskCommand(new Timespan(startTime, estimatedDuration), resources, this, clock);
         planCommand.execute();
-        planning = planCommand.getResult();
-        
         return planCommand;
     }
 
@@ -803,9 +802,8 @@ public class Task implements DetailedTask {
     /**
      * Sets the planning of this task to the given planning.
      */
-    public void setPlanning(Planning planning)
-    {
-    	this.planning = planning;
+    public void setPlanning(Planning planning) {
+        this.planning = planning;
     }
 
     /**

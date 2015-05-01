@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Box;
@@ -81,6 +82,34 @@ public class PlanTaskFrame extends javax.swing.JFrame {
         availableTaskTable.setModel(taskModel);
         availableTaskTable.getColumnModel().getColumn(0).setMaxWidth(50);
     }
+    
+      /**
+     * Fills the available task table with the appropriate data
+     */
+    private void initDeveloperTable(Set<DetailedResource> devs) {
+        String[] columnNames = {"Id", "Name"};
+        Object[][] data = new Object[devs.size()][];
+
+        int i = 0;
+        for (DetailedResource dev : devs) {
+            data[i] = new Object[]{
+                dev.getId(),
+                dev.getName(),
+            };
+            i++;
+        }
+
+        DefaultTableModel devModel = new DefaultTableModel(data, columnNames) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                //all cells false
+                return false;
+            }
+        };
+        developerTable.setModel(devModel);
+        developerTable.getColumnModel().getColumn(0).setMaxWidth(50);
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -377,7 +406,10 @@ public class PlanTaskFrame extends javax.swing.JFrame {
             selectedResources = new ArrayList<>();
             // init resource panel
             for (Map.Entry<DetailedResourceType, DetailedResource> entry : handler.getRequiredResources(selectedProjectId, selectedTaskId, start)) {
-                
+                if(entry.getKey().getName().equalsIgnoreCase("developer")){
+                    initDeveloperTable((Set<DetailedResource>) entry.getKey().getResources());
+                    continue;
+                }
                 JComboBox<DetailedResource> comboBox = new JComboBox();
                 comboBox.setModel(new javax.swing.DefaultComboBoxModel(entry.getKey().getResources().toArray()));
                 comboBox.setSelectedItem(entry.getValue());
@@ -412,6 +444,15 @@ public class PlanTaskFrame extends javax.swing.JFrame {
         }
         
         try {
+            // check if developers are selected
+            if (developerTable.getSelectedRow() != -1) {
+                int[] selectedRows = developerTable.getSelectedRows();
+
+                for (int rowId : selectedRows) {
+                    resourceIds.add(Integer.parseInt(developerTable.getValueAt(developerTable.convertRowIndexToModel(rowId), 0).toString()));
+
+                }
+            }
             handler.planTask(selectedProjectId, selectedTaskId, start, resourceIds);
             dispose();
         } catch (DateTimeException e) {
