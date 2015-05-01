@@ -21,19 +21,34 @@ public class Planning implements ClockObserver{
     private final Timespan timespan;
     private final Task task;
     
+    /**
+     * Instantiates this planning with the given resources, timespan and task.
+     * @param resources The resources belonging to this planning.
+     * @param timespan The timespan belonging to this planning.
+     * @param task The task belonging to this planning.
+     */
     public Planning(List<Resource> resources, Timespan timespan, Task task){
         this.resources = resources;
         this.timespan = timespan;
         this.task = task;
     }
     
-    
+    /**
+     * Clears the future reservations of the resources belonging to this planning.
+     * 
+     * @param currentTime The curren time
+     */
     public void clearFutureReservations(LocalDateTime currentTime) {
         for (Resource resource : resources) {
             resource.clearFutureReservations(currentTime, task);
         }
     }
 
+    /**
+     * Checks whether this plannings timespan is before the given time.
+     * @param currentTime The curren time.
+     * @return True if and only if the timespan belonging to this planning starts before
+     */
     public boolean isBefore(LocalDateTime currentTime) {
         return timespan.startsBefore(currentTime);
     }
