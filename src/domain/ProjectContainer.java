@@ -1,5 +1,6 @@
 package domain;
 
+import domain.task.Task;
 import exception.ObjectNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -133,7 +134,7 @@ public class ProjectContainer {
      * Returns a map with all available tasks in this projectContainer
      * ascociated with their project.
      *
-     * //TODO wnr mag een taak gepland worden voorwaarden?
+     * //TODO niet finished of niet failed
      *
      * @return A list with all unplanned tasks in this container.
      */

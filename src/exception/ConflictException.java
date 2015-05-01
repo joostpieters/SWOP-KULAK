@@ -1,8 +1,7 @@
 package exception;
 
+import domain.task.Task;
 import java.util.Set;
-
-import domain.Task;
 
 /**
  * Thrown to indicate that a conflict has occurred.
@@ -10,7 +9,7 @@ import domain.Task;
  * @author 	Frederic, Mathias, Pieter-Jan 
  *
  */
-public class ConflictException extends Exception {
+public class ConflictException extends RuntimeException {
 
 	private static final long serialVersionUID = -6949314560090380755L;
 	

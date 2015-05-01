@@ -1,22 +1,23 @@
-package domain;
+package domain.task;
 
+import domain.Project;
+import domain.ProjectContainer;
+import domain.Resource;
+import domain.ResourceType;
 import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
 import exception.ConflictException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -420,18 +421,6 @@ public class TaskTest {
     	t0.setAlternativeTask(t5);
     }
 
-    //TODO: niet langer relevant, denk ik! Mag dit weg? 
-//    /*
-//     * test of setAlternativeTask method, of class Task.
-//     * Attempt to set alternative task of t6 to t3 with illegal wrong project argument
-//     */
-//    @Test (expected = IllegalArgumentException.class)
-//    public void testSetAlternativeTaskException4()
-//    {
-//    	pc.createProject("p1", "not p0", LocalDateTime.of(2000, 11, 12, 13, 14), LocalDateTime.of(2030, 11, 12, 13, 14));
-//    	t6.setAlternativeTask(t0);
-//    }
-    
     /*
      * test of setAlternativeTask method, of class Task.
      * Attempt to set alternative task of t6 to a task belonging to a different project
@@ -492,7 +481,7 @@ public class TaskTest {
     	assertFalse(t6.canBeFulfilled());
     	assertTrue(t7.canBeFulfilled());
     	assertTrue(t8.canBeFulfilled());
-    	//TODO: waarom stond daar null??? oorspronkelijk: new Task("description", new Duration(10), 30, Arrays.asList(t6), null)
+    	
         assertFalse(new Task("description", new Duration(10), 30, Arrays.asList(t6), new HashMap<>(), p).canBeFulfilled());
     }
     /**

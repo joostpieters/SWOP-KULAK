@@ -1,4 +1,4 @@
-package domain;
+package domain.task;
 
 import domain.time.Duration;
 import domain.time.Timespan;

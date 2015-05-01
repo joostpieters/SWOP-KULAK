@@ -274,22 +274,6 @@ public class Duration implements Comparable<Duration> {
         return totalMinutes + getWorkTimeBetween(nextBegin, end);
     }
 
-    /**
-     * Get the first valid working hour past a given time.
-     *
-     * @param time The time to get the next valid working hour for.
-     *
-     * @return	the time if it is already a valid working time, the next Monday
-     * morning if it was in the weekend, right after lunch break if it was
-     * during lunch, as soon as the working day starts if time was before
-     * working hours, the start of the next working day if time was after
-     * working hours.
-     */
-    @Deprecated
-    public LocalDateTime nextValidWorkTime(LocalDateTime time) {
-        return configuration.nextValidWorkTime(time);
-        // TODO moet verdwijnen
-    }
 
     /**
      * **************************************

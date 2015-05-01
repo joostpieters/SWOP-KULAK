@@ -11,7 +11,7 @@ import domain.dto.DetailedTask;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.ResourceType;
-import domain.Task;
+import domain.task.Task;
 import domain.time.Duration;
 
 import java.util.ArrayList;

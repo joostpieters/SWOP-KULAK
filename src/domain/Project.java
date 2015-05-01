@@ -1,6 +1,7 @@
 package domain;
 
 import domain.dto.DetailedProject;
+import domain.task.Task;
 import domain.time.Duration;
 import domain.time.Timespan;
 import exception.ObjectNotFoundException;
@@ -226,7 +227,7 @@ public class Project implements DetailedProject {
      *
      * @see	#canHaveAsTask(Task)
      */
-    void addTask(Task t) {
+    public void addTask(Task t) {
         if (isFinished()) {
             throw new IllegalStateException("This project has already been finished.");
         }

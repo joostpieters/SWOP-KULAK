@@ -1,4 +1,4 @@
-package domain;
+package domain.task;
 
 import domain.time.Duration;
 import domain.time.Timespan;
@@ -23,8 +23,7 @@ public class Available extends Status {
 
      /**
      * Updates the status of this task to UNAVAILABLE if not all the
-     * prerequisite tasks are fulfilled. Or if not  all resources are available
-     * at current system time //TODO
+     * prerequisite tasks are fulfilled.
      *
      */
     @Override
@@ -35,13 +34,7 @@ public class Available extends Status {
                 unavailable = true;
             }
         }
-        
-//        for (Entry<ResourceType, Integer>  t : task.getRequiredResources().entrySet()) {
-//            //TODO
-//           t.getKey().getAvailability();
-//        }
-        
-
+       
         if (unavailable) {
             task.setStatus(new Unavailable());
         }

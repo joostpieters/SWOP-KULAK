@@ -1,5 +1,9 @@
-package domain;
+package domain.task;
 
+import domain.Planning;
+import domain.Project;
+import domain.Resource;
+import domain.ResourceType;
 import domain.command.PlanTaskCommand;
 import domain.dto.DetailedTask;
 import domain.time.Duration;
@@ -58,9 +62,9 @@ public class Task implements DetailedTask {
      * integer between 0 and 100.
      * @param prereq The list of prerequisite tasks for this task.
      * @param resources The resources this task requires to be performed
-     * @param The project this task belongsto
+     * @param project The project this task belongsto
      */
-    Task(String description, Duration duration, int accDev, List<Task> prereq, Map<ResourceType, Integer> resources, Project project) {
+    public Task(String description, Duration duration, int accDev, List<Task> prereq, Map<ResourceType, Integer> resources, Project project) {
         this.id = generateId();
         setDescription(description);
 
@@ -70,7 +74,10 @@ public class Task implements DetailedTask {
         } else {
             setPrerequisiteTasks(prereq);
         }
-        if (!canHaveAsResourceTypes(resources)) {
+        
+        Map<ResourceType, Integer> allResourceTypes = new HashMap<>(resources);
+        allResourceTypes.putAll(standardRequiredResources);
+        if (!canHaveAsResourceTypes(allResourceTypes)) {
             throw new IllegalArgumentException("This combination of resourcetypes is not valid.");
         }
         this.requiredResources = new HashMap<>(resources);
@@ -97,9 +104,9 @@ public class Task implements DetailedTask {
      * @param accDev The acceptable deviation of this task expressed as an
      * integer between 0 and 100.
      * @param resources The resources this task requires to be performed
-     * @param The project this task belongs to
+     * @param project The project this task belongs to
      */
-    Task(String description, Duration duration, int accDev, Map<ResourceType, Integer> resources, Project project) {
+    public Task(String description, Duration duration, int accDev, Map<ResourceType, Integer> resources, Project project) {
         this(description, duration, accDev, null, resources, project);
     }
 
@@ -355,12 +362,13 @@ public class Task implements DetailedTask {
 
     /**
      * Sets a map of resourcetypes acociated with their minimal quantity that
-     * are required for each task.
+     * are required for each task. This method should only be used once, before
+     * you start to create tasks.
      *
      * @param resourceTypes The resourceypes with their necessary quantity
      */
     public static void setStandardRequiredResources(Map<ResourceType, Integer> resourceTypes) {
-        //TODO check met bestaande instantie resourcetypes
+        
         if (!canHaveAsResourceTypes(resourceTypes)) {
             throw new IllegalArgumentException("This combination of resourcetypes is not valid.");
         }
@@ -673,7 +681,7 @@ public class Task implements DetailedTask {
     public SortedSet<LocalDateTime> nextAvailableStartingTimes(LocalDateTime from, int n) {
         SortedSet<LocalDateTime> result = new TreeSet<>();
         Map<ResourceType, Integer> required = getRequiredResources();
-        //TODO: developers zijn nog niet in rekening gebracht!!!
+        
         if(required.isEmpty()) {
         	result.add(from);
         	return result;
@@ -705,7 +713,7 @@ public class Task implements DetailedTask {
                 }
             }
 
-        	//TODO: bad smell?
+        	
             if(result.isEmpty()) {
             	result = temp;
             } else if(temp.isEmpty()) {

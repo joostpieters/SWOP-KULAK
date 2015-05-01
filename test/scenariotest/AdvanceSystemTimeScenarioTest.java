@@ -7,7 +7,7 @@ import domain.user.Auth;
 import domain.Database;
 import domain.Project;
 import domain.ProjectContainer;
-import domain.Task;
+import domain.task.Task;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;

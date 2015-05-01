@@ -1,4 +1,4 @@
-package domain;
+package domain.task;
 
 import domain.time.Duration;
 import domain.time.Timespan;
@@ -49,7 +49,7 @@ public abstract class Status {
      */
     abstract boolean isFulfilled(Task task);
 
-    /** TODO
+    /**
      * Checks whether the given task was fulfilled before the given time span.
      *
      * @param task The task to check.

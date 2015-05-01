@@ -7,7 +7,7 @@ import domain.dto.DetailedTask;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.Resource;
-import domain.Task;
+import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Timespan;
 import exception.NoAccessException;

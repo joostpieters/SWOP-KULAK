@@ -1,5 +1,6 @@
 package domain;
 
+import domain.task.TaskTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

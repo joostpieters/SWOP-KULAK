@@ -11,7 +11,7 @@ import domain.Project;
 import domain.ProjectContainer;
 import domain.Resource;
 import domain.ResourceType;
-import domain.Task;
+import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
@@ -186,7 +186,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
         
         clock.advanceTime(systemTime);
         
-        // TODO 
+       
         expectLabel("dailyAvailability");
         while (ttype == '-') {
             expectChar('-');

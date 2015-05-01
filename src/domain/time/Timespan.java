@@ -104,7 +104,7 @@ public final class Timespan implements Comparable<Timespan>{
      * @return 	True if and only if both time spans share a certain period of time.
      */
     public boolean overlapsWith(Timespan anotherTimespan){
-    	//TODO: aangepast: overlappen is enkel als er meer dan 1 exact punt in de tijd gelijk zijn...
+    	
         return anotherTimespan.getStartTime().compareTo(this.getEndTime()) < 0 &&
                this.getStartTime().compareTo(anotherTimespan.getEndTime()) < 0;
     }
@@ -209,6 +209,7 @@ public final class Timespan implements Comparable<Timespan>{
      *        	negative if other starts or ends before this,
      *        	positive if other starts or ends after this.
      */
+    @Override
 	public int compareTo(Timespan other) {
 		int res = this.getStartTime().compareTo(other.getStartTime());
 		if(res == 0)
@@ -220,7 +221,7 @@ public final class Timespan implements Comparable<Timespan>{
 		if(getStartTime().getMinute() == 0)
 			return this;
 		
-		//TODO: inconsistentie indien seconden of nanoseconden != 0 ???
+		//inconsistentie indien seconden of nanoseconden != 0
 		LocalDateTime newStart = getStartTime().withMinute(0);
 		return new Timespan(newStart, getEndTime()).postponeHours(1);
 	}

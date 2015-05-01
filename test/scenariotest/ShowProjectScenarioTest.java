@@ -9,8 +9,8 @@ import domain.dto.DetailedProject;
 import domain.dto.DetailedTask;
 import domain.Project;
 import domain.ProjectContainer;
-import domain.Task;
-import domain.Unavailable;
+import domain.task.Task;
+import domain.task.Unavailable;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;

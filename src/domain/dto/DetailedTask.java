@@ -1,6 +1,6 @@
 package domain.dto;
 
-import domain.Status;
+import domain.task.Status;
 import domain.time.Duration;
 import domain.time.Timespan;
 import java.util.List;

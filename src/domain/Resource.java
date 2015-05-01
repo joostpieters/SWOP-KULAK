@@ -1,6 +1,7 @@
 package domain;
 
 import domain.dto.DetailedResource;
+import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Timespan;
 import exception.ConflictException;
@@ -264,13 +265,13 @@ public class Resource implements ClockObserver, DetailedResource {
         for (Iterator<Reservation> iterator = getReservations().iterator(); iterator.hasNext();) {
             Reservation reservation = iterator.next();
             if (reservation.getTask().equals(task)) {
-                if (reservation.getTimespan().getStartTime().isAfter(currentTime)) // in the future TODO reservation logica
+                if (reservation.getStartTime().isAfter(currentTime)) 
                 {
                     iterator.remove();
-                } else if (reservation.getTimespan().overlapsWith(currentTime)) // partially consumed TODO reservation logica?
+                } else if (reservation.getTimespan().overlapsWith(currentTime))
                 {
                     iterator.remove();
-                    Timespan newTimeSpan = new Timespan(reservation.getTimespan().getStartTime(), currentTime); // TODO timespan logica?
+                    Timespan newTimeSpan = new Timespan(reservation.getStartTime(), currentTime);
                     archiveReservation(new Reservation(reservation.getTask(), newTimeSpan));
                 }
             }
@@ -294,7 +295,7 @@ public class Resource implements ClockObserver, DetailedResource {
     public void update(LocalDateTime currentTime) {
         for (Iterator<Reservation> iterator = getReservations().iterator(); iterator.hasNext();) {
             Reservation reservation = iterator.next();
-            if (reservation.getTimespan().compareTo(currentTime) <= 0) // TODO logica misschien verplaatsen
+            if (reservation.getTimespan().compareTo(currentTime) <= 0)
             {
                 iterator.remove();
                 archiveReservation(reservation);

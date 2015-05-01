@@ -1,5 +1,6 @@
 package domain;
 
+import domain.task.Task;
 import domain.time.Duration;
 import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;

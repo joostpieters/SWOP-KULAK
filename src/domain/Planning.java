@@ -1,5 +1,6 @@
 package domain;
 
+import domain.task.Task;
 import domain.time.Timespan;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,7 +30,7 @@ public class Planning {
         }
     }
 
-    boolean isBefore(LocalDateTime currentTime) {
+    public boolean isBefore(LocalDateTime currentTime) {
         return timespan.startsBefore(currentTime);
     }
     

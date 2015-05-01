@@ -4,7 +4,7 @@ import domain.Database;
 import domain.ProjectContainer;
 import domain.Resource;
 import domain.ResourceType;
-import domain.Task;
+import domain.task.Task;
 import domain.command.SimulatorCommand;
 import domain.dto.DetailedResource;
 import domain.dto.DetailedResourceType;

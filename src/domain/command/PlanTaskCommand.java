@@ -3,7 +3,7 @@ package domain.command;
 import domain.Planning;
 import domain.Resource;
 import domain.ResourceType;
-import domain.Task;
+import domain.task.Task;
 import domain.time.Timespan;
 import exception.ConflictException;
 import java.util.ArrayList;

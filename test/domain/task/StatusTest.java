@@ -1,5 +1,12 @@
-package domain;
+package domain.task;
 
+import domain.Project;
+import domain.ProjectContainer;
+import domain.task.Finished;
+import domain.task.Unavailable;
+import domain.task.Failed;
+import domain.task.Available;
+import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;

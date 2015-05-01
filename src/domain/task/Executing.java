@@ -1,4 +1,4 @@
-package domain;
+package domain.task;
 
 import domain.time.Duration;
 import domain.time.Timespan;
@@ -8,7 +8,6 @@ public class Executing extends Status {
 
     @Override
     void update(Task task) {
-        // TODO kan executing automatisch overgaan naar een andere status bvb unavailable?
     }
     
     /**

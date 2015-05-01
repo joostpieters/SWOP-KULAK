@@ -1,5 +1,6 @@
 package domain;
 
+import domain.task.Task;
 import domain.time.Timespan;
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -45,7 +46,7 @@ public class Reservation {
 	}
 	
         /**
-         * //TODO wss overbodig
+         * 
          * @return The starttime of this reservation
          */
 	public LocalDateTime getStartTime() {
@@ -53,7 +54,7 @@ public class Reservation {
 	}
 	
         /**
-         * //TODO wss overbodig
+         * 
          * @return The end time of this reservation 
          */
 	public LocalDateTime getEndTime() {
@@ -73,16 +74,9 @@ public class Reservation {
 	 * @see		Timespan#compareTo(Timespan)
 	 */
 	public static Comparator<Reservation> timespanComparator() {
-            //TODO dit is feller
+            
             return (Reservation o1, Reservation o2) -> o1.getTimespan().compareTo(o2.getTimespan());
-//		return new Comparator<Reservation>() {
-//
-//			@Override
-//			public int compare(Reservation o1, Reservation o2) {
-//				return o1.getTimespan().compareTo(o2.getTimespan());
-//			}
-//			
-//		};
+
 	}
 	
 	/****************************************************

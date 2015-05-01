@@ -1,6 +1,7 @@
 package domain;
 
 import domain.dto.DetailedResourceType;
+import domain.task.Task;
 import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
 import exception.ConflictException;
@@ -310,14 +311,6 @@ public class ResourceType implements DetailedResourceType {
 
     }
 
-    //TODO
-
-    public void clearFutureReservations(LocalDateTime currentTime, Task task) {
-        for (Resource resource : getResources()) {
-            resource.clearFutureReservations(currentTime, task);
-        }
-    }
-    
     /**
      * Returns the number of resources of this type the given list contains.
      * 

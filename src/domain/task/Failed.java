@@ -1,4 +1,4 @@
-package domain;
+package domain.task;
 
 import domain.time.Duration;
 import domain.time.Timespan;
@@ -74,7 +74,7 @@ public class Failed extends Status {
            return false;
         }
         
-        return task.getAlternativeTask().getStatus().isFulfilledBefore(task.getAlternativeTask(), timeSpan); // TODO misschien isFulfilledBefore aanmaken in Task en delegeren naar Status.isFulfilledBefore
+        return task.getAlternativeTask().getStatus().isFulfilledBefore(task.getAlternativeTask(), timeSpan); 
     }
     
     /**

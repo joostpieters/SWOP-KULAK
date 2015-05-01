@@ -5,7 +5,7 @@ import controller.UpdateTaskStatusHandler;
 import domain.Database;
 import domain.Project;
 import domain.ProjectContainer;
-import domain.Task;
+import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Duration;
 import domain.user.Acl;

@@ -377,7 +377,7 @@ public class PlanTaskFrame extends javax.swing.JFrame {
             selectedResources = new ArrayList<>();
             // init resource panel
             for (Map.Entry<DetailedResourceType, DetailedResource> entry : handler.getRequiredResources(selectedProjectId, selectedTaskId, start)) {
-
+                
                 JComboBox<DetailedResource> comboBox = new JComboBox();
                 comboBox.setModel(new javax.swing.DefaultComboBoxModel(entry.getKey().getResources().toArray()));
                 comboBox.setSelectedItem(entry.getValue());
