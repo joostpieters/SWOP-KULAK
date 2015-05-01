@@ -28,8 +28,18 @@ public class Failed extends Status {
                     "Can't set an alternative task for this task because "
                     + "this task already has an alternative task.");
         }
-
-        if (!task.canHaveAsAlternativeTask(alternativeTask)) {
+        
+        if (alternativeTask == task) {
+            throw new IllegalArgumentException(
+                    "Can't set an alternative task for this task because "
+                    + "this task is the same alternative task.");
+        }
+        if (alternativeTask.dependsOn(task)) {
+            throw new IllegalArgumentException(
+                    "Can't set an alternative task for this task because "
+                    + "the alternative depends on this task.");
+        }
+        if (!task.getProject().hasTask(alternativeTask)) {
             throw new IllegalArgumentException(
                     "This task can't have the given task as its alternative task.");
         }

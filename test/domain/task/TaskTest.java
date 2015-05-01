@@ -51,7 +51,9 @@ public class TaskTest {
     	clock = new Clock(LocalDateTime.of(2060, 3, 4, 11, 48));
     	pc = new ProjectContainer();
     	p = pc.createProject("Name", "Description", LocalDateTime.of(2001, 1, 9, 8, 0), LocalDateTime.of(2072, 10, 9, 8, 0));
+        
     	t0 = p.createTask("description!", new Duration(10), 20, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+        
     	t1 = p.createTask("t1", new Duration(10), 10, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
     	t2 = p.createTask("t2", new Duration(20), 10, Project.NO_ALTERNATIVE, Arrays.asList(t0.getId(), t1.getId()), new HashMap<>());
     	
@@ -484,24 +486,24 @@ public class TaskTest {
     	
         assertFalse(new Task("description", new Duration(10), 30, Arrays.asList(t6), new HashMap<>(), p).canBeFulfilled());
     }
-    /**
-     * Test of canHaveAsAlternativeTask method, of class Task.
-     */
-    @Test
-    public void testCanHaveAsAlternativeTask()
-    {
-    	// null
-    	assertFalse(t0.canHaveAsAlternativeTask(null));
-    	// this
-    	assertFalse(t0.canHaveAsAlternativeTask(t0));
-    	// depends on
-    	assertFalse(t0.canHaveAsAlternativeTask(t0)); 
-    	assertTrue(t5.canHaveAsAlternativeTask(t2));
-    	assertTrue(t5.canHaveAsAlternativeTask(t3));
-    	assertTrue(t5.canHaveAsAlternativeTask(t0));
-    	// success
-    	assertTrue(t0.canHaveAsAlternativeTask(t1));
-    }
+//    /**
+//     * Test of canHaveAsAlternativeTask method, of class Task.
+//     */
+//    @Test
+//    public void testCanHaveAsAlternativeTask()
+//    {
+//    	// null
+//    	assertFalse(t0.canHaveAsAlternativeTask(null));
+//    	// this
+//    	assertFalse(t0.canHaveAsAlternativeTask(t0));
+//    	// depends on
+//    	assertFalse(t0.canHaveAsAlternativeTask(t0)); 
+//    	assertTrue(t5.canHaveAsAlternativeTask(t2));
+//    	assertTrue(t5.canHaveAsAlternativeTask(t3));
+//    	assertTrue(t5.canHaveAsAlternativeTask(t0));
+//    	// success
+//    	assertTrue(t0.canHaveAsAlternativeTask(t1));
+//    }
     /**
      * Test of getDelay method, of class Task.
      */

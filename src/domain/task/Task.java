@@ -67,6 +67,10 @@ public class Task implements DetailedTask {
      */
     public Task(String description, Duration duration, int accDev, List<Task> prereq, Map<ResourceType, Integer> resources, Project project) {
         this.id = generateId();
+        if (project == null) {
+            throw new IllegalArgumentException("A task cannot exist without a project");
+        }
+        this.project = project;
         setDescription(description);
 
         setAcceptableDeviation(accDev);
@@ -88,12 +92,10 @@ public class Task implements DetailedTask {
         Status initStatus = new Available();
         setStatus(initStatus);
         initStatus.update(this);
-        this.project = project;
+        
 
-        if (project == null) {
-            throw new IllegalArgumentException("A task cannot exist without a project");
-        }
-        project.addTask(this);
+        
+        this.project.addTask(this);
     }
 
     /**
@@ -263,37 +265,6 @@ public class Task implements DetailedTask {
     }
 
     /**
-     * Checks whether this task can have the given alternative task as its
-     * alternative task.
-     *
-     * @param altTask The alternative task to check.
-     * @return False if the given alternative task is equal to null. False if
-     * the given alternative task is equal to this task. False if the given
-     * alternative task depends on this task. False if this task doesn't belong
-     * to the given project. False if the given alternative task doesn't belong
-     * to the given project. True otherwise.
-     * @see dependsOn
-     */
-    public boolean canHaveAsAlternativeTask(Task altTask) {
-        if (altTask == null) {
-            return false;
-        }
-        if (altTask.equals(this)) {
-            return false;
-        }
-        if (altTask.dependsOn(this)) {
-            return false;
-        }
-        if (!project.hasTask(getId())) {
-            return false;
-        }
-        if (!project.hasTask(altTask.getId())) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
      * @return The list of prerequisite tasks for this task.
      */
     @Override
@@ -325,15 +296,17 @@ public class Task implements DetailedTask {
      * @return False if the list is null. False if any of the tasks in the given
      * list is null. False if any of the tasks in the given list is equal to
      * this task. False if any of the tasks in the given list depends on this
-     * task. True otherwise.
+     * task. False if one of the given tasks doesn't belong to this project.
+     * True otherwise.
      * @see dependsOn
      */
     public boolean canHaveAsPrerequisiteTasks(List<Task> prereq) {
         if (prereq == null) {
             return false;
         }
+        
         for (Task t : prereq) {
-            if (t == null || t == this || t.dependsOn(this)) {
+            if (t == null || t == this || t.dependsOn(this) || !project.hasTask(t)) {
                 return false;
             }
         }

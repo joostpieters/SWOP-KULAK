@@ -164,6 +164,18 @@ public class Project implements DetailedProject {
     public boolean hasTask(int tid) {
         return tasks.containsKey(tid);
     }
+    
+     /**
+     * Checks whether this project contains the given task.
+     *
+     * @param task The task to be checked.
+     *
+     * @return true if this project contains a the given task,
+     * false otherwise.
+     */
+    public boolean hasTask(Task task) {
+        return tasks.containsValue(task);
+    }
 
     /**
      * Get a task with given id contained in this project.
@@ -199,16 +211,8 @@ public class Project implements DetailedProject {
             return false;
         }
         boolean taskCheck = !tasks.containsKey(t.getId()) && !t.isFulfilled() && t.getProject() == (this);
-        boolean altTaskCheck = t.getAlternativeTask() == null || tasks.containsKey(t.getAlternativeTask().getId());
-        boolean prereqTaskCheck = true;
-        for (Task x : t.getPrerequisiteTasks()) {
-            if (!tasks.containsKey(x.getId())) {
-                prereqTaskCheck = false;
-                break;
-            }
-        }
-
-        return taskCheck && altTaskCheck && prereqTaskCheck;
+        
+        return taskCheck;
     }
 
     /**
