@@ -799,6 +799,14 @@ public class Task implements DetailedTask {
     public Planning getPlanning() {
         return this.planning;
     }
+    
+    /**
+     * Sets the planning of this task to the given planning.
+     */
+    public void setPlanning(Planning planning)
+    {
+    	this.planning = planning;
+    }
 
     /**
      * This mememnto represents the internal state of this task

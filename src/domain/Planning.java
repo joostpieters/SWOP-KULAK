@@ -65,12 +65,12 @@ public class Planning {
     }
     
     /**
-     * Describes a memento for a planning
+     * Describes a planning memento which can be used to save or load the state of a planning.
      * 
      * @author Frederic
      *
      */
-    private class Memento
+    public class Memento
     {
     	private final List<Resource> resources;
     	private final Map<Resource, Resource.Memento> resourceMementos;
