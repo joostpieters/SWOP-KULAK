@@ -2,7 +2,6 @@ package domain;
 
 import domain.dto.DetailedResource;
 import domain.task.Task;
-import domain.time.Clock;
 import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
 import exception.ConflictException;
@@ -18,7 +17,7 @@ import java.util.TreeSet;
  *
  * @author Mathias, Pieter-Jan, Frederic
  */
-public class Resource implements ClockObserver, DetailedResource {
+public class Resource implements DetailedResource {
 
     private static int nextId = 0;
     private final int id;
@@ -31,9 +30,9 @@ public class Resource implements ClockObserver, DetailedResource {
      * Initialize a resource with a given name and clock to observe.
      *
      * @param name The name for this resource.
-     * @param clock The clock this resource has to observe
+     * 
      */
-    public Resource(String name, Clock clock) {
+    public Resource(String name) {
         if (!canHaveAsName(name)) {
             throw new IllegalArgumentException("This resource can't have the given name as name.");
         }
@@ -42,21 +41,9 @@ public class Resource implements ClockObserver, DetailedResource {
         this.name = name;
         this.reservations = new HashSet<>();
         this.previousReservations = new HashSet<>();
-        if (clock != null) {
-            clock.attach(this);
-        }
-        
+               
     }
     
-    /**
-     * Initializes a resource with the given name
-     * 
-     * @param name 
-     */
-    public Resource(String name) {
-        this(name, null);
-    }
-
     /**
      * **************************************************
      * Getters & Setters *
@@ -315,9 +302,9 @@ public class Resource implements ClockObserver, DetailedResource {
     /**
      * Archives the reservations which are in the past compared to the given
      * current time.
+     * @param currentTime The time to compare to
      */
-    @Override
-    public void update(LocalDateTime currentTime) {
+    public void archiveOldReservations(LocalDateTime currentTime) {
         for (Iterator<Reservation> iterator = getReservations().iterator(); iterator.hasNext();) {
             Reservation reservation = iterator.next();
             if (reservation.getTimespan().compareTo(currentTime) <= 0)

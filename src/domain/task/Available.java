@@ -1,9 +1,9 @@
 package domain.task;
 
+import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
 import exception.ConflictException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 /**
@@ -126,18 +126,18 @@ public class Available extends Status {
      * Moves the given task to the executing state
      * 
      * @param task The task to adjust
-     * @param currentTime
+     * 
      */
     @Override
-    public void execute(Task task, LocalDateTime currentTime){
+    public void execute(Task task, Clock clock){
         
         if(task.isPlanned()){
-            if(!task.getPlanning().isBefore(currentTime)){
+            if(!task.getPlanning().isBefore(clock.getTime())){
                 task.setStatus(new Executing());
             }else{
                 try {
                     // unplanned execution
-                    task.plan(currentTime, new ArrayList<>());
+                    task.plan(clock.getTime(), new ArrayList<>(), clock);
                 } catch (ConflictException ex) {
                     throw new IllegalStateException("This task can't move to executing because there are not enough resources available");
                 }

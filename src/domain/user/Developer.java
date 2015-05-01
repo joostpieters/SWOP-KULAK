@@ -20,7 +20,7 @@ public class Developer extends Resource implements User {
      * @param clock The clock this developer should observe
      */
     public Developer(String name, Clock clock) {
-        super(name, clock);
+        super(name);
         this.name = name;
         this.role = "developer";
      

@@ -39,15 +39,15 @@ public class ResourceTest {
 		t1 = p.createTask("task2", new Duration(60), 20, -1, new ArrayList<>(), new HashMap<>());
 		t2 = p.createTask("task3", new Duration(150), 0, -1, new ArrayList<>(), new HashMap<>());
 		
-		r0 = new Resource("not reserved", clock);
-		r1 = new Resource("reserved", clock);
+		r0 = new Resource("not reserved");
+		r1 = new Resource("reserved");
 		reservation = r1.makeReservation(t0, reservedSpan);
 	}
 
 	@Test
 	public void testConstructorValid() {
 		String name = "r";
-		Resource r = new Resource(name, clock);
+		Resource r = new Resource(name);
 		
 		assertEquals(name, r.getName());
 		assertTrue(r.getReservations().isEmpty());
@@ -56,12 +56,12 @@ public class ResourceTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructorNullName() {
-		new Resource(null, clock);
+		new Resource(null);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructorShortName() {
-		new Resource("", clock);
+		new Resource("");
 	}
 
 	@Test
