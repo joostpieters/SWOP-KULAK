@@ -315,7 +315,7 @@ public class Project implements DetailedProject {
      *
      * @see	Task#isPlanned()
      */
-    public List<Task> getUnplannedTasks() {
+    public List<Task> getCanBePlannedTasks() {
         List<Task> result = new LinkedList<>();
         for (Task t : getTasks()) {
             if (!t.isPlanned()) {

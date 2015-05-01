@@ -138,11 +138,11 @@ public class ProjectContainer {
      *
      * @return A list with all unplanned tasks in this container.
      */
-    public List<Task> getAllUnplannedTasks() {
+    public List<Task> getAllCanBePlannedTasks() {
 
         List<Task> unplannedTasks = new ArrayList<>();
         for (Project project : projects.values()) {
-            for (Task task : project.getUnplannedTasks()) {
+            for (Task task : project.getCanBePlannedTasks()) {
                 unplannedTasks.add(task);
             }
         }

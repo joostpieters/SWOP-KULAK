@@ -13,7 +13,11 @@ public abstract class Handler {
     protected Auth auth;
     protected Acl acl;
     
-    
+    /**
+     * Initializes this handler with the given auth and acl object?
+     * @param auth The authorization manager
+     * @param acl The access control list
+     */
     public Handler(Auth auth, Acl acl) throws NoAccessException{
         this.auth = auth;
        this.acl = acl;

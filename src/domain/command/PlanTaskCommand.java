@@ -74,7 +74,7 @@ public class PlanTaskCommand implements ICommand {
         }
     }
     /**
-     * TODO commentaar
+     * The tasks future reservations are cleared and the new reservations are made.
      */
     @Override
     public void execute() throws ConflictException {
@@ -99,6 +99,7 @@ public class PlanTaskCommand implements ICommand {
         task.setPlanning(new Planning(resources, timespan, task));
         clock.attach(task.getPlanning());
     }
+    
     /**
      * Reverts the changes made by the last execution of this command.
      */
@@ -114,7 +115,5 @@ public class PlanTaskCommand implements ICommand {
         {
         	originalTaskPlanning.setMemento(originalTaskPlanningMemento);
         }
-
-        
     }
 }

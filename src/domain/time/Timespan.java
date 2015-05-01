@@ -216,7 +216,11 @@ public final class Timespan implements Comparable<Timespan>{
 			res = this.getEndTime().compareTo(other.getEndTime());
 		return res;
 	}
-
+    
+    /**
+     * 
+     * @return
+     */
 	public Timespan roundStartingTime() {
 		if(getStartTime().getMinute() == 0)
 			return this;
@@ -233,11 +237,21 @@ public final class Timespan implements Comparable<Timespan>{
 		else 
 			return null;
 	}
-
+	
+	/**
+	 * Checks whether this timespan starts after the given time.
+	 * @param time The time to check.
+	 * @return True if and only if the start time of this timespan is after the given time.
+	 */
 	public boolean startsAfter(LocalDateTime time) {
 		return getStartTime().isAfter(time);
 	}
-
+	
+	/**
+	 * Checks whether this timespan starts before the given time.
+	 * @param time The time to check.
+	 * @return True if and only if the start time of this timespan is before the given time.
+	 */
 	public boolean startsBefore(LocalDateTime time) {
 		return getStartTime().isBefore(time);
 	}

@@ -73,7 +73,7 @@ public class PlanTaskHandler extends Handler {
      */
     public List<DetailedTask> getUnplannedTasks() {
 
-        return new ArrayList<>(manager.getAllUnplannedTasks());
+        return new ArrayList<>(manager.getAllCanBePlannedTasks());
     }
 
     /**

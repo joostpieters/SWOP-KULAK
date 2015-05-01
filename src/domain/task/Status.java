@@ -189,9 +189,6 @@ public abstract class Status {
         return new Duration(0);
     }
     
-    /**
-     * TODO
-     */
 	public boolean canBePlanned() {
 		return true;
 	}
