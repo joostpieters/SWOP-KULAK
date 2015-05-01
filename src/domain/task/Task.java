@@ -429,7 +429,7 @@ public class Task implements DetailedTask {
             throw new IllegalArgumentException("The given timespan is before the project creation time.");
         }
         getStatus().fail(this, timespan);
-        if(isPlanned()){
+        if(planning != null){
             planning.clearFutureReservations(timespan.getEndTime());
         }
     }
@@ -454,7 +454,7 @@ public class Task implements DetailedTask {
         }
         
         getStatus().finish(this, timespan);
-        if(isPlanned()){
+        if(planning != null){
             planning.clearFutureReservations(timespan.getEndTime());
         }
         
