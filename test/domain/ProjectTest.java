@@ -312,11 +312,6 @@ public class ProjectTest {
     	assertTrue(pFinished.getUnacceptablyOverdueTasks(clock.getTime()).isEmpty());
     	
     	Task t = p1.createTask(taskdescr, new Duration(create, due.plusDays(DAYDIF)), accdev, altFor, prereqs, new HashMap<>());
-    	System.out.println(new Duration(create, due.plusDays(DAYDIF)));
-    	System.out.println(t.estimatedWorkTimeNeeded());
-    	System.out.println(new Duration(create, due.plusDays(DAYDIF)).getEndTimeFrom(clock.getTime()));
-    	System.out.println(t.estimatedWorkTimeNeeded().getEndTimeFrom(clock.getTime()));
-    	System.out.println(new Duration(create, t.estimatedWorkTimeNeeded().getEndTimeFrom(clock.getTime())).getEndTimeFrom(clock.getTime()));
     	Map<Task, Double> unacceptablyOverdueTasks = p1.getUnacceptablyOverdueTasks(clock.getTime());
     	assertEquals(1, unacceptablyOverdueTasks.size());
     	assertTrue(unacceptablyOverdueTasks.containsKey(t));
@@ -332,7 +327,7 @@ public class ProjectTest {
     	
     	clock.advanceTime(due);
     	assertTrue(p0.getUnacceptablyOverdueTasks(clock.getTime()).isEmpty());
-    	assertEquals(p1.getTasks().size(), unacceptablyOverdueTasks.size());
+    	assertEquals(p1.getTasks().size(), p1.getUnacceptablyOverdueTasks(clock.getTime()).size());
     	assertEquals(p2.getTasks().size(), p2.getUnacceptablyOverdueTasks(clock.getTime()).size());
     	assertTrue(pFinished.getUnacceptablyOverdueTasks(clock.getTime()).isEmpty());
     }

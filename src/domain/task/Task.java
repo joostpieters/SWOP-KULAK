@@ -766,7 +766,7 @@ public class Task implements DetailedTask {
      * available resourcetype.
      */
     private void initDuration(Duration dur) {
-        WorkWeekConfiguration minconf = WorkWeekConfiguration.ALWAYS;
+        WorkWeekConfiguration minconf = new WorkWeekConfiguration();
 
         for (Entry<ResourceType, Integer> entry : requiredResources.entrySet()) {
             if (entry.getKey().getAvailability().compareTo(minconf) < 0) {

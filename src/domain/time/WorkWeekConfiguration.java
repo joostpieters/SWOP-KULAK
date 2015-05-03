@@ -23,11 +23,13 @@ public class WorkWeekConfiguration implements Comparable<WorkWeekConfiguration> 
 
     public static final LocalTime NO_LUNCHBREAK = LocalTime.of(12, 0);
     /**
-     * A constant representing a workweek configuration that indicates 24/7
+     * A constant representing a work week configuration that indicates 24/7
      * availability
      */
     public static final WorkWeekConfiguration ALWAYS
             = new WorkWeekConfiguration(1, 7, LocalTime.MIN, LocalTime.MAX, NO_LUNCHBREAK, NO_LUNCHBREAK);
+    
+    public static final WorkWeekConfiguration DEFAULT = new WorkWeekConfiguration();
 
     private final int beginWorkWeek;
     private final int endWorkWeek;
@@ -321,5 +323,11 @@ public class WorkWeekConfiguration implements Comparable<WorkWeekConfiguration> 
         } else {
             return 0;
         }
+    }
+    
+    public String toString() {
+    	return "days: " + getBeginWorkWeek() + " - " + getEndWorkWeek() + ", "
+    			+ "hours: " + getBeginWorkDay() + " - " + getEndWorkDay() + ", "
+    			+ "break: " + getBeginLunch() + " - " + getEndLunch();
     }
 }
