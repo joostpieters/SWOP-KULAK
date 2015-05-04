@@ -254,7 +254,7 @@ public class Resource implements DetailedResource {
         for (Iterator<Reservation> iterator = getReservations().iterator(); iterator.hasNext();) {
             Reservation reservation = iterator.next();
             if (reservation.getTask().equals(task)) {
-                if (reservation.getStartTime().isAfter(currentTime)) 
+                if (reservation.getStartTime().compareTo(currentTime) >= 0) 
                 {
                     iterator.remove();
                 } else if (reservation.getTimespan().overlapsWith(currentTime))
