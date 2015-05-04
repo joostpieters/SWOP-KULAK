@@ -664,70 +664,28 @@ public class Task implements DetailedTask {
      *          The size of the set is defined n.
      */
     public SortedSet<LocalDateTime> nextAvailableStartingTimes(LocalDateTime from, int n) {
-        SortedSet<LocalDateTime> result = new TreeSet<>();
-        Map<ResourceType, Integer> required = getRequiredResources();
-        
-        if(required.isEmpty()) {
-        	result.add(from);
-        	return result;
-        }
-        
-        SortedSet<Timespan> freeMoments;
-        SortedSet<LocalDateTime> temp;
-        LocalDateTime last = LocalDateTime.MIN;
-
-        for (ResourceType type : required.keySet()) {
-            temp = new TreeSet<>();
-            freeMoments = type.nextAvailableTimespans(from);
-            for (Timespan span : freeMoments) {
-                Timespan rounded = span.roundStartingTime();
-
-                //oneindige lus vermijden
-                if (rounded.isInfinite()) {
-
-                    //vanaf de laatste tijd zijn alle resources altijd beschikbaar.
-                    if (rounded.startsAfter(last)) {
-                        last = rounded.getStartTime();
-                        temp.add(rounded.getStartTime());
-                    }
-                } else {
-                    while (rounded != null && type.hasAvailableResources(rounded, required.get(type))) {
-                        temp.add(rounded.getStartTime());
-                        rounded = rounded.postponeHours(1);
-                    }
-                }
-            }
-
-        	
-            if(result.isEmpty()) {
-            	result = temp;
-            } else if(temp.isEmpty()) {
-            	continue;
-            } else if(result.last().isBefore(temp.last())) {
-                result.retainAll(temp);
-                result.addAll(temp.tailSet(result.last()));
-            } else {
-                temp.retainAll(result);
-                temp.addAll(result.tailSet(temp.last()));
-                result = temp;
-            }
-        }
-        
-        if(result.size() > n) {
-        	int count = 1;
-        	Iterator<LocalDateTime> it = result.iterator();
-        	while(it.hasNext()) {
-        		it.next();
-        		if(count++ > n)
-        			it.remove();
-        	}
-        } else {
-        	int count = 1;
-        	while(result.size() < n)
-        		result.add(result.last().plusHours(count++));
-        }
-
-        return result;
+    	SortedSet<LocalDateTime> result = new TreeSet<>();
+    	Map<ResourceType, Integer> required = getRequiredResources();
+    	LocalDateTime next = from;
+    	
+    	while(result.size() < n) {
+			LocalDateTime end = getEstimatedDuration().getEndTimeFrom(next);
+			Timespan span = new Timespan(next, end);
+			boolean allAvailable = true;
+    		for(ResourceType type : required.keySet()) {
+    			if(!type.hasAvailableResources(span, required.get(type))) {
+    				allAvailable = false;
+    				break;
+    			}
+    		}
+    		
+    		if(allAvailable)
+    			result.add(next);
+    		
+    		next = next.plusHours(1);
+    	}
+    	
+    	return result;
     }
 
     /**
