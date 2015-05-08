@@ -339,10 +339,14 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             expectLabel("planning");
             Integer planning;
             Task task;
+            // we need the index of the keys of the planning map
+            // because the initfile uses id's to refer to plannings
             ArrayList<LocalDateTime> arrayList = new ArrayList<>(plannings.keySet());
             if (ttype == TT_NUMBER) {
                 planning = expectInt();
                 task = manager.getProject(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, requiredResourceMaps.get(planning));
+                // TODO dit zou moeten werken, maar geeft een error, dit voegt enkel de developers toe aan de planning
+                // de andere resources worden blijkbaar apart gereserveerd later, zie volgende TODO
                 //task.plan(arrayList.get(planning), plannings.get(arrayList.get(planning)), clock);
             }else{
                 task = manager.getProject(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, Task.NO_REQUIRED_RESOURCE_TYPES);
@@ -384,6 +388,9 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             int task = expectIntField("task");
             LocalDateTime startTime = expectDateField("startTime");
             LocalDateTime endTime = expectDateField("endTime");
+            // TODO deze reservations staan los van een planning en zijn enkel
+            // te koppelen via een taak, wat het complex maakt, want bij ons moet 
+            // een planning in 1 keer gemaakt worden
             //resourcesList.get(resource).makeReservation(taskList.get(task), new Timespan(startTime, endTime));
         }
         if (ttype != TT_EOF) {

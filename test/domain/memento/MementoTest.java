@@ -1,5 +1,7 @@
-package domain;
+package domain.memento;
 
+import domain.Project;
+import domain.ProjectContainer;
 import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Duration;

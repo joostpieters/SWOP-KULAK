@@ -27,11 +27,9 @@ import org.junit.Test;
  */
 public class TaskTest {
 	
-	private static final int GAP = 3;
-	
-	private LocalDateTime from = LocalDateTime.of(2014, 2, 1, 16, 0);
-	private LocalDateTime to = from.plusDays(2);
-	private LocalDateTime from2 = to.plusHours(GAP);
+	private LocalDateTime from = LocalDateTime.of(2014, 2, 4, 13, 0);
+	private LocalDateTime to = from.plusHours(2);
+	private LocalDateTime from2 = to.plusHours(3);
 	private LocalDateTime to2 = from2.plusHours(1);
 	private Timespan reserved = new Timespan(from, to);
 	private Timespan reserved2 = new Timespan(from2, to2);
@@ -649,14 +647,22 @@ public class TaskTest {
     	assertEquals(1, nextAvailableStartingTimes.size());
     	assertTrue(nextAvailableStartingTimes.contains(from));
     	
+    	nextAvailableStartingTimes = t10.nextAvailableStartingTimes(from, 5);
+    	assertEquals(5, nextAvailableStartingTimes.size());
+    	assertTrue(nextAvailableStartingTimes.contains(from));
+    	assertTrue(nextAvailableStartingTimes.contains(from.plusHours(1)));
+    	assertTrue(nextAvailableStartingTimes.contains(from.plusHours(2)));
+    	assertTrue(nextAvailableStartingTimes.contains(from.plusHours(3)));
+    	assertTrue(nextAvailableStartingTimes.contains(from.plusHours(4)));
+    	
     	try {
-			type0.makeReservation(t10, reserved, 1);
+			type0.makeReservation(t10, reserved, 1); //more resources of this type available, thus no effect.
 		} catch (ConflictException e) {	}
     	nextAvailableStartingTimes = t10.nextAvailableStartingTimes(from, 3);
     	assertEquals(3, nextAvailableStartingTimes.size());
     	assertTrue(nextAvailableStartingTimes.contains(from));
-    	assertTrue(nextAvailableStartingTimes.contains(to));
-    	assertTrue(nextAvailableStartingTimes.contains(to.plusHours(1)));
+    	assertTrue(nextAvailableStartingTimes.contains(from.plusHours(1)));
+    	assertTrue(nextAvailableStartingTimes.contains(to)); //to = from.plusHours(2)
     	nextAvailableStartingTimes = t10.nextAvailableStartingTimes(from, 1);
     	assertEquals(1, nextAvailableStartingTimes.size());
     	assertTrue(nextAvailableStartingTimes.contains(from));
@@ -664,19 +670,17 @@ public class TaskTest {
     	try {
     		type1.makeReservation(t10, reserved2, 1);
     	} catch (ConflictException e) { }
-    	LocalDateTime tempFrom = from.minusHours(1);
-    	nextAvailableStartingTimes = t10.nextAvailableStartingTimes(tempFrom, 3);
-    	assertEquals(3, nextAvailableStartingTimes.size());
-    	assertTrue(nextAvailableStartingTimes.contains(tempFrom));
-    	assertTrue(nextAvailableStartingTimes.contains(to));
-    	assertTrue(nextAvailableStartingTimes.contains(to.plusHours(1)));
-    	nextAvailableStartingTimes = t10.nextAvailableStartingTimes(tempFrom, 6);
+    	nextAvailableStartingTimes = t10.nextAvailableStartingTimes(from, 3);
+    	assertTrue(nextAvailableStartingTimes.contains(from));
+    	assertTrue(nextAvailableStartingTimes.contains(from.plusHours(1)));
+    	assertTrue(nextAvailableStartingTimes.contains(to)); //to = from.plusHours(2)
+    	nextAvailableStartingTimes = t10.nextAvailableStartingTimes(from, 6);
     	assertEquals(6, nextAvailableStartingTimes.size());
-    	assertTrue(nextAvailableStartingTimes.contains(tempFrom));
-    	assertTrue(nextAvailableStartingTimes.contains(to));
+    	assertTrue(nextAvailableStartingTimes.contains(from));
+    	assertTrue(nextAvailableStartingTimes.contains(from.plusHours(1)));
+    	assertTrue(nextAvailableStartingTimes.contains(to)); //to = from.plusHours(2)
     	assertTrue(nextAvailableStartingTimes.contains(to.plusHours(1)));
     	assertTrue(nextAvailableStartingTimes.contains(to.plusHours(2)));
-    	assertTrue(nextAvailableStartingTimes.contains(to2));
-    	assertTrue(nextAvailableStartingTimes.contains(to2.plusHours(1)));
+    	assertTrue(nextAvailableStartingTimes.contains(to2)); //from2 = to.plusHours(3)
     }
 }
