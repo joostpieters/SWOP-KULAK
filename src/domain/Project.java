@@ -321,6 +321,21 @@ public class Project implements DetailedProject {
         }
         return result;
     }
+    
+    /**
+     * Returns a list of all the unplanned tasks belonging to this project.
+     * 
+     * @return The list of tasks belonging to this project which are unplanned.
+     * 
+     * @see Task#isPlanned()
+     */
+    public List<Task> getUnplannedTasks() {
+    	List<Task> unplannedTasks = new ArrayList<>();
+    	for(Task t : getTasks())
+    		if (t.isPlanned())
+    			unplannedTasks.add(t);
+    	return unplannedTasks;
+    }
 
     /**
      * Return all tasks which can cause this project to get overdue and the

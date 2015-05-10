@@ -72,8 +72,7 @@ public class PlanTaskHandler extends Handler {
      * @return All unplanned tasks in the projectContainer of this handler.
      */
     public List<DetailedTask> getUnplannedTasks() {
-
-        return new ArrayList<>(manager.getAllCanBePlannedTasks());
+        return new ArrayList<>(manager.getUnplannedTasks());
     }
 
     /**

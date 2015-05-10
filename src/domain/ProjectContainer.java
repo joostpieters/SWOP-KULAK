@@ -129,27 +129,21 @@ public class ProjectContainer {
         }
         return tasks;
     }
-
+    
     /**
-     * Returns a map with all available tasks in this projectContainer
-     * ascociated with their project.
-     *
-     * //TODO niet finished of niet failed
-     *
-     * @return A list with all unplanned tasks in this container.
+     * Returns a list of all unplanned tasks belonging to the projects in this project container.
+     * 
+     * @return The list of all unplanned tasks belonging to the projects of this project container.
+     * 
+     * @see Project#getUnplannedTasks()
      */
-    public List<Task> getAllCanBePlannedTasks() {
-
-        List<Task> unplannedTasks = new ArrayList<>();
-        for (Project project : projects.values()) {
-            for (Task task : project.getCanBePlannedTasks()) {
-                unplannedTasks.add(task);
-            }
-        }
-
-        return unplannedTasks;
+    public List<Task> getUnplannedTasks() {
+    	List<Task> unplannedTasks = new ArrayList<>();
+    	for (Project project: projects.values())
+    		unplannedTasks.addAll(project.getUnplannedTasks());
+    	return unplannedTasks;
     }
-
+    
     /**
      * Creates a memento for this project container.
      *

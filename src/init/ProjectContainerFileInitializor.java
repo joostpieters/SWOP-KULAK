@@ -18,6 +18,7 @@ import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
 import domain.user.Developer;
 import exception.ConflictException;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StreamTokenizer;
@@ -25,10 +26,12 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class ProjectContainerFileInitializor extends StreamTokenizer {
 
@@ -197,6 +200,10 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
         }
 
         expectLabel("resourceTypes");
+        List<List<ResourceType>> reqList = new ArrayList<>();
+        List<List<Integer>> reqIntList = new ArrayList<>();
+        List<List<ResourceType>> conflictList = new ArrayList<>();
+        List<List<Integer>> conflictIntList = new ArrayList<>();
         while (ttype == '-') {
             expectChar('-');
             String name = expectStringField("name");
@@ -210,19 +217,14 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
                 availabilityIndex = expectInt();
             }
 
+
             List<ResourceType> requirements = new ArrayList<>();
-
-            // transform ids to objects
-            for (Integer i : requirementIds) {
-                requirements.add(db.getResourceTypes().get(i));
-            }
-
             List<ResourceType> conflicts = new ArrayList<>();
+            reqList.add(requirements);
+            reqIntList.add(requirementIds);
+            conflictList.add(conflicts);
+            conflictIntList.add(conflictIds);
 
-            // transform ids to objects
-            for (Integer i : conflictIds) {
-                requirements.add(db.getResourceTypes().get(i - 1));
-            }
             ResourceType resourceType;
             if(availabilityIndex == 0){
                 resourceType = new ResourceType(name, requirements, conflicts, dailyAvailability);
@@ -231,8 +233,18 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
                 resourceType = new ResourceType(name, requirements, conflicts);
             }
             db.addResourceType(resourceType);
+
         }
 
+        // transform ids to objects
+        // this happens afterwards so a resource type can conflict with a resource type that's lower in the init file
+        for(int i = 0; i < reqList.size(); i++)
+        {
+        	for(Integer j : reqIntList.get(i))
+        		reqList.get(i).add(db.getResourceTypes().get(j));
+        	for(Integer j : conflictIntList.get(i))
+        		conflictList.get(i).add(db.getResourceTypes().get(j));
+        }
         expectLabel("resources");
         ArrayList<Resource> resourcesList = new ArrayList<>();
         while (ttype == '-') {

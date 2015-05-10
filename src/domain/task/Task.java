@@ -11,6 +11,9 @@ import domain.time.Duration;
 import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
 import exception.ConflictException;
+import exception.ResourceTypeConflictException;
+import exception.ResourceTypeMissingReqsException;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +41,7 @@ public class Task implements DetailedTask {
     private Task alternativeTask;
     private List<Task> prerequisiteTasks;
     private Status status;
-    private final Map<ResourceType, Integer> requiredResources;
+    private Map<ResourceType, Integer> requiredResources;
     private final Project project;
     private static Map<ResourceType, Integer> standardRequiredResources = new HashMap<>();
 
@@ -80,13 +83,11 @@ public class Task implements DetailedTask {
             setPrerequisiteTasks(prereq);
         }
         
-        Map<ResourceType, Integer> allResourceTypes = new HashMap<>(resources);
-        allResourceTypes.putAll(standardRequiredResources);
-        if (!canHaveAsResourceTypes(allResourceTypes)) {
-            throw new IllegalArgumentException("This combination of resourcetypes is not valid.");
-        }
-        this.requiredResources = new HashMap<>(resources);
-
+        
+        Map<ResourceType, Integer> finalResources = new HashMap<>(resources);
+        finalResources.putAll(standardRequiredResources);
+        setRequiredResources(finalResources);
+        
         initDuration(duration);
 
         Status initStatus = new Available();
@@ -97,8 +98,32 @@ public class Task implements DetailedTask {
         
         this.project.addTask(this);
     }
-
     /**
+     * Sets the list of required resource types to the given list of required resource types.
+     * 
+     * @param finalResources A map of resource types to their required number.
+     * @throws ResourceTypeConflictException
+     *         If there is a resource type conflict exception.
+     * @throws ResourceTypeMissingReqsException
+     *         If there is a resource type with missing requirements.
+     */
+    private void setRequiredResources(Map<ResourceType, Integer> finalResources) {
+        for(ResourceType resType : finalResources.keySet())
+        {
+        	ResourceTypeConflictException e = resType.getConflictException(finalResources);
+        	if(e != null)
+        		throw e;
+        }
+        for(ResourceType resType : finalResources.keySet())
+        {
+        	ResourceTypeMissingReqsException e = resType.getMissingReqsException(finalResources);
+        	if(e != null)
+        		throw e;
+        }
+        this.requiredResources = finalResources;
+	}
+
+	/**
      * Initializes this task based on the given description, estimated duration
      * and acceptable deviation.
      *
@@ -621,7 +646,7 @@ public class Task implements DetailedTask {
      * @return True if and only if this task has a planned start time.
      */
     public boolean isPlanned() {
-        return planning != null;
+        return this.planning != null;
     }
     
     /**

@@ -13,6 +13,9 @@ import domain.ProjectContainer;
 import domain.ResourceType;
 import domain.task.Task;
 import domain.time.Duration;
+import exception.ResourceTypeConflictException;
+import exception.ResourceTypeMissingReqsException;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -103,7 +106,7 @@ public class CreateTaskHandler extends Handler{
             
             simulatorCommand.addAndExecute(new CreateTaskCommand(project, description, duration, accDev, altfor, prereq, resources));
             
-        } catch (IllegalArgumentException | IllegalStateException e) {
+        } catch (IllegalArgumentException | IllegalStateException | ResourceTypeConflictException | ResourceTypeMissingReqsException e) {
             throw e;
         }catch(Exception e){
             // log for further review
