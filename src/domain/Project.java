@@ -332,7 +332,7 @@ public class Project implements DetailedProject {
     public List<Task> getUnplannedTasks() {
     	List<Task> unplannedTasks = new ArrayList<>();
     	for(Task t : getTasks())
-    		if (t.isPlanned())
+    		if (!t.isPlanned())
     			unplannedTasks.add(t);
     	return unplannedTasks;
     }
