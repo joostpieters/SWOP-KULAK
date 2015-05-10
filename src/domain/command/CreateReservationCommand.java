@@ -33,7 +33,8 @@ public class CreateReservationCommand implements ICommand {
     /**
      * Creates a new reservation with the timespan, resource and task
      * belonging to this reservation command.
-     * @throws ConflictException 
+     * @throws ConflictException By making this reservation a conflict occured
+     * with another reservation of this resource
      */
     @Override
     public void execute() throws ConflictException{

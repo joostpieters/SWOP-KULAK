@@ -105,7 +105,11 @@ public class PlanTaskHandler extends Handler {
     }
 
     /**
-     *
+     * Returns the possible start times for the task with the given id in the project
+     * with the given project id.
+     * 
+     * @param pId The id of the project the task belongs to
+     * @param tId The id of the task
      * @return A set containing hours at which the task currently being planned
      * could posiible be started
      */
@@ -120,7 +124,7 @@ public class PlanTaskHandler extends Handler {
      * @param pId The id of the projec the task belongs to
      * @param tId The id of the task
      * @param startTime The start time of the task (yyyy-MM-dd HH:mm)
-     * @param resources
+     * @param resources The resource to make a planning for
      * @throws exception.ConflictException The plainning of this task conflicts with
      * at least one other task
      * @throws RuntimeException An error occured whilte updating the currently

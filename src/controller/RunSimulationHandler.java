@@ -1,12 +1,11 @@
 package controller;
 
-import domain.user.Acl;
-import domain.user.Auth;
 import domain.Database;
 import domain.ProjectContainer;
 import domain.command.SimulatorCommand;
 import domain.time.Clock;
-
+import domain.user.Acl;
+import domain.user.Auth;
 import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,6 +26,7 @@ public class RunSimulationHandler extends Handler{
      * Initialize this createprojecthandler with the given projectContainer.
      * 
      * @param manager The projectContainer to use in this handler. 
+     * @param clock The clock to use in this handler
      * @param auth The authorization manager to use
      * @param acl The action control list to use
      * @param db The database to use in conjunction with this handler

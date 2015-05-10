@@ -7,12 +7,13 @@ package domain.user;
  */
 public class GenericUser implements User {
     private String name;
-    private String role;
+    private final String role;
 
     /**
-     * Initialize a new manager with the given name
+     * Initialize a new user with the given name and role
      * 
      * @param name The name of the manager
+     * @param role The role of the user
      */
     public GenericUser(String name, String role) {
         this.name = name;
