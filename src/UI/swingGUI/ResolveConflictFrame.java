@@ -25,8 +25,8 @@ public class ResolveConflictFrame extends javax.swing.JFrame {
      * Creates new form ListProjectsFrame
      *
      * @param originator The frame from which the error came 
-     * @param conflictingTasks 
-     * @param planHandler 
+     * @param conflictingTasks The conflicting task
+     * @param planHandler The handler that handles the planning of a task.
      */
     public ResolveConflictFrame(PlanTaskFrame originator, Set<DetailedTask> conflictingTasks, PlanTaskHandler planHandler) {
         this.originator = originator;

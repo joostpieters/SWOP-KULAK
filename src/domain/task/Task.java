@@ -14,7 +14,6 @@ import exception.ConflictException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -246,7 +245,7 @@ public class Task implements DetailedTask {
      * Sets the alternative task of this task to the given alternative task.
      *
      * @param alternativeTask The alternative task for this task.
-     * @throws IllegalStateException
+     * @throws IllegalStateException The given task can't have an alternative
      *
      */
     public void setAlternativeTask(Task alternativeTask) throws IllegalStateException, IllegalArgumentException {
@@ -563,6 +562,9 @@ public class Task implements DetailedTask {
     }
     
     /**
+     * @param task
+     * @param timeSpan
+     * @return 
      * @see Status#isFulfilledBefore
      */
     public boolean isFulfilledBefore(Task task, Timespan timeSpan)
@@ -745,6 +747,8 @@ public class Task implements DetailedTask {
     
     /**
      * Sets the planning of this task to the given planning.
+     * 
+     * @param planning The planning to set
      */
     public void setPlanning(Planning planning) {
         this.planning = planning;

@@ -1,6 +1,5 @@
 package domain.command;
 
-import exception.ConflictException;
 import java.util.Stack;
 
 /**
@@ -32,8 +31,9 @@ public class SimulatorCommand implements ICommand {
 	
 	/**
 	 * Executes the given command and adds it to this simulatorCommand
-	 * @param command
-	 * @throws ConflictException
+         * 
+	 * @param command The command to excute and add to this simulatorcommand
+	 * 
 	 */
 	public void addAndExecute(ICommand command)
 	{

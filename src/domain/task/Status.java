@@ -37,6 +37,8 @@ public abstract class Status {
     /**
      * Update the status of the given task to based on the changes made in this
      * task.
+     * 
+     * @param  task The task to update
      */
     abstract void update(Task task);
 

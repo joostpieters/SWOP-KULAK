@@ -22,6 +22,7 @@ public class ConflictException extends RuntimeException {
 	 * 
 	 * @param 	message
 	 *       	The detail message for this exception.
+     * @param currentTask The task the other tasks conflict with
 	 * @param 	conflictingTasks
 	 *       	The tasks responsible for the conflict.
 	 */

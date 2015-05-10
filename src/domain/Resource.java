@@ -326,17 +326,6 @@ public class Resource implements DetailedResource {
     }
 
     /**
-     * Make the given reservation for this resource
-     *
-     * @param reservation The reservation to make
-     * @throws exception.ConflictException The given reservation conflicts with
-     * another reservation.
-     */
-    public void makeReservation(Reservation reservation) throws ConflictException {
-        makeReservation(reservation.getTask(), reservation.getTimespan());
-    }
-
-    /**
      * Creates a memento for this resource.
      *
      * @return A memento which stores the the state of this resource.
