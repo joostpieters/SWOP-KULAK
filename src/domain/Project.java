@@ -315,7 +315,7 @@ public class Project implements DetailedProject {
     public List<Task> getCanBePlannedTasks() {
         List<Task> result = new LinkedList<>();
         for (Task t : getTasks()) {
-            if (!t.isPlanned()) {
+            if (t.isPlanned()) {
                 result.add(t);
             }
         }

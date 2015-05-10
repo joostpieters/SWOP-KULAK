@@ -626,10 +626,6 @@ public class Task implements DetailedTask {
         return planning != null;
     }
     
-    public boolean canBePlanned()
-    {
-    	return getStatus().canBePlanned();
-    }
     /**
      * Checks whether this task is failed
      * @return True if and only if this task is failed.

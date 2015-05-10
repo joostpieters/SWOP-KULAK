@@ -671,9 +671,6 @@ public class TaskTest {
     		type1.makeReservation(t10, reserved2, 1);
     	} catch (ConflictException e) { }
     	nextAvailableStartingTimes = t10.nextAvailableStartingTimes(from, 3);
-    	assertEquals(3, nextAvailableStartingTimes.size());
-    	System.out.println(nextAvailableStartingTimes);
-    	System.out.println(from);
     	assertTrue(nextAvailableStartingTimes.contains(from));
     	assertTrue(nextAvailableStartingTimes.contains(from.plusHours(1)));
     	assertTrue(nextAvailableStartingTimes.contains(to)); //to = from.plusHours(2)

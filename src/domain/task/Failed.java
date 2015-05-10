@@ -137,10 +137,4 @@ public class Failed extends Status {
         
         
     }
-    
-    @Override
-    public boolean canBePlanned()
-    {
-    	return false;
-    }
 }

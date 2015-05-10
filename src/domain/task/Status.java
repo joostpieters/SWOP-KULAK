@@ -190,8 +190,4 @@ public abstract class Status {
     public Duration getTimeSpent(Task task) {
         return new Duration(0);
     }
-    
-	public boolean canBePlanned() {
-		return true;
-	}
 }
