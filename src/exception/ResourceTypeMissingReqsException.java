@@ -19,8 +19,8 @@ public class ResourceTypeMissingReqsException extends RuntimeException {
 	/**
 	 * Creates a new ResourceTypeMissingReqsException describing the missing requirements of a resource type.
 	 * 
-	 * @param resourceType
-	 * @param missingReqs
+	 * @param resourceType The resource type which has missing requirements.
+	 * @param missingReqs The list of missing requirements.
 	 */
 	public ResourceTypeMissingReqsException(ResourceType resourceType, List<ResourceType> missingReqs)
 	{
