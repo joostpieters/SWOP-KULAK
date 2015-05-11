@@ -5,14 +5,20 @@ import domain.task.Task;
 import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
 import exception.ConflictException;
+import exception.ResourceTypeConflictException;
+import exception.ResourceTypeMissingReqsException;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import javax.management.modelmbean.RequiredModelMBean;
 
 /**
  * This class represents a common type of resources
@@ -339,5 +345,144 @@ public class ResourceType implements DetailedResourceType {
         }
         return result;
     }
+
+    /**
+     * Checks whether this resource type conflicts with the given resource type
+     * 
+     * @param resType The resource type to check for conflicts with.
+     * @return True if this resource type contains resType in its list of conflicts.
+     *         True if resType contains this resource type in its list of conflicts.
+     *         False otherwise.
+     */
+    public boolean conflictsWith(ResourceType resType) {
+    	return getConflicts().contains(resType) || resType.getConflicts().contains(this);
+    }
+    
+    /**
+     * Returns the list of conflicts of this resource type in the given list of resource types.
+     * 
+     * @param allResources The resource types along with their number in which to check for conflicts.
+     *                     This list should contain this resource type.
+     * @return The list of conflicts of this resource found in allResources.
+     */
+    public List<ResourceType> getConflicts(Map<ResourceType, Integer> allResources)
+    {
+    	List<ResourceType> conflictResult = new ArrayList<>();
+    	for(ResourceType conflict : getConflicts())
+    	{
+    		if(conflict == this)
+    		{
+    			if(allResources.containsKey(conflict) && allResources.get(conflict) > 1)
+    				conflictResult.add(conflict);
+    		}
+    		else if(allResources.containsKey(conflict) && allResources.get(conflict) > 0)
+    			conflictResult.add(conflict);
+    	}
+    	return conflictResult;
+    }
+    
+    /**
+     * Returns the list of missing requirements of this resource type in the given list of resource types.
+     * 
+     * @param allResources The resource types along with their number in which to check for missing resource tpyes.
+     *                     This list should contain this resource type.
+     * @return The list of requirements missing from allResources.
+     */
+    public List<ResourceType> getMissingReqs(Map<ResourceType, Integer> allResources)
+    {
+    	List<ResourceType> missingReqResult = new ArrayList<>();
+    	for(ResourceType req : getRequirements())
+    	{
+    		if(req == this)
+    		{
+    			if((allResources.containsKey(req) && allResources.get(req) < 2) || !allResources.containsKey(req))
+    				missingReqResult.add(req);
+    		}
+    		else if ((allResources.containsKey(req) && allResources.get(req) < 1) || !allResources.containsKey(req))
+    			missingReqResult.add(req);
+    	}
+    	return missingReqResult;
+    }
+
+	public ResourceTypeConflictException getConflictException(Map<ResourceType, Integer> allResources)
+	{
+		List<ResourceType> conflicts = getConflicts(allResources);
+		if(conflicts.isEmpty())
+			return null;
+		return new ResourceTypeConflictException(this, conflicts);
+	}
+	public ResourceTypeMissingReqsException getMissingReqsException(Map<ResourceType, Integer> allResources)
+	{
+		List<ResourceType> missingReqs = getMissingReqs(allResources);
+		if(missingReqs.isEmpty())
+			return null;
+		return new ResourceTypeMissingReqsException(this, getMissingReqs(allResources));
+	}
+	
+    /**
+     * Adds this resource type to the given map resourceTypeMap.
+     * 
+     * @param resourceTypeMap
+     *        The map to which this resource type is going to be added to.
+     * @param finalResourceTypes
+     *        The list of all resource types which are currently
+     *        in resourceTypeMap or are going to be added to resourceTypeMap.
+     * 
+     * @throws IllegalArgumentException
+     *         If this resource type conflicts with any resource type in resourceTypeMap
+     * @throws IllegalArgumentException
+     *         If this resource type misses requirements in finalResourceTypes
+     * @see ResourceType#conflictsWith
+     */
+    public void addTo(Map<ResourceType, Integer> resourceTypeMap, Map<ResourceType, Integer> finalResourceTypes) throws IllegalArgumentException {
+		
+    	// Check for conflicts with the resource types in resourceTypeMap
+    	List<ResourceType> conflicts = getConflicts(finalResourceTypes);
+		if(!conflicts.isEmpty())
+		{
+
+			String conflictsText = "['";
+			for(int i = 0; i < conflicts.size(); i++)
+			{
+				conflictsText += conflicts.get(i).getName();
+				if(i < conflicts.size() - 1)
+					conflictsText += "', ";
+			}
+			conflictsText += "']";
+
+			throw new IllegalArgumentException(
+					"Resource type '"
+					+ this.getName()
+					+ "' conflicts with "
+					+ conflictsText); // TODO misschien nieuwe exception?
+		}
+		
+		// Check for missing requirements in finalResourceTypes
+		List<ResourceType> missingRequirements = getMissingReqs(finalResourceTypes);
+		if(!missingRequirements.isEmpty())
+		{
+
+			String missingRequirementsText = "['";
+			for(int i = 0; i < missingRequirements.size(); i++)
+			{
+				missingRequirementsText += missingRequirements.get(i).getName();
+				if(i < missingRequirements.size() - 1)
+					missingRequirementsText += "', ";
+			}
+			missingRequirementsText += "']";
+
+			throw new IllegalArgumentException(
+					"Resource type '"
+					+ this.getName()
+					+ "' misses requirements "
+					+ missingRequirementsText); // TODO misschien nieuwe exception?
+		}
+		
+		// Add this resource type to the given map resourceTypeMap
+		int number = 1;
+		if(resourceTypeMap.containsKey(this))
+			number += resourceTypeMap.remove(this);
+		resourceTypeMap.put(this, number);
+	}
 
 }

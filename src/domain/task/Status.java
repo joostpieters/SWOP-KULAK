@@ -37,6 +37,8 @@ public abstract class Status {
     /**
      * Update the status of the given task to based on the changes made in this
      * task.
+     * 
+     * @param  task The task to update
      */
     abstract void update(Task task);
 
@@ -188,8 +190,4 @@ public abstract class Status {
     public Duration getTimeSpent(Task task) {
         return new Duration(0);
     }
-    
-	public boolean canBePlanned() {
-		return true;
-	}
 }

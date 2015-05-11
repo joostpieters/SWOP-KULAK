@@ -90,10 +90,4 @@ public class Finished extends Status {
         return temp;
 
     }
-    
-    @Override
-    public boolean canBePlanned()
-    {
-    	return false;
-    }
 }

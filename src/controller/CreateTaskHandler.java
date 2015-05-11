@@ -1,19 +1,19 @@
 package controller;
 
-import domain.user.Acl;
-import domain.user.Auth;
 import domain.Database;
+import domain.Project;
+import domain.ProjectContainer;
+import domain.ResourceType;
 import domain.command.CreateTaskCommand;
 import domain.command.SimulatorCommand;
 import domain.dto.DetailedProject;
 import domain.dto.DetailedResourceType;
 import domain.dto.DetailedTask;
-import domain.Project;
-import domain.ProjectContainer;
-import domain.ResourceType;
-import domain.task.Task;
 import domain.time.Duration;
-
+import exception.ResourceTypeConflictException;
+import exception.ResourceTypeMissingReqsException;
+import domain.user.Acl;
+import domain.user.Auth;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +40,7 @@ public class CreateTaskHandler extends Handler{
      * @param auth The authorization manager to use
      * @param acl The action control list to use
      * @param db The database to use
+     * @param simulatorCommand The command to use, to store all executed commands
      */   
     public CreateTaskHandler(ProjectContainer manager, Auth auth, Acl acl, Database db, SimulatorCommand simulatorCommand){
         super(auth, acl);
@@ -103,7 +104,7 @@ public class CreateTaskHandler extends Handler{
             
             simulatorCommand.addAndExecute(new CreateTaskCommand(project, description, duration, accDev, altfor, prereq, resources));
             
-        } catch (IllegalArgumentException | IllegalStateException e) {
+        } catch (IllegalArgumentException | IllegalStateException | ResourceTypeConflictException | ResourceTypeMissingReqsException e) {
             throw e;
         }catch(Exception e){
             // log for further review

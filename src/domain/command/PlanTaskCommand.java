@@ -7,12 +7,9 @@ import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Timespan;
 import exception.ConflictException;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
 
@@ -39,6 +36,7 @@ public class PlanTaskCommand implements ICommand {
      * @param timespan The timespan during which the task is planned.
      * @param resources The resources belonging to the task.
      * @param task The task to be planned.
+     * @param clock The clock to use with this planning
      */
     public PlanTaskCommand(Timespan timespan, List<Resource> resources, Task task, Clock clock) {
         this.task = task;

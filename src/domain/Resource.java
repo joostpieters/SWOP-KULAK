@@ -254,7 +254,7 @@ public class Resource implements DetailedResource {
         for (Iterator<Reservation> iterator = getReservations().iterator(); iterator.hasNext();) {
             Reservation reservation = iterator.next();
             if (reservation.getTask().equals(task)) {
-                if (reservation.getStartTime().isAfter(currentTime)) 
+                if (reservation.getStartTime().compareTo(currentTime) >= 0) 
                 {
                     iterator.remove();
                 } else if (reservation.getTimespan().overlapsWith(currentTime))
@@ -323,17 +323,6 @@ public class Resource implements DetailedResource {
      */
     public boolean removeReservation(Reservation reservation) {
         return getReservations().remove(reservation);
-    }
-
-    /**
-     * Make the given reservation for this resource
-     *
-     * @param reservation The reservation to make
-     * @throws exception.ConflictException The given reservation conflicts with
-     * another reservation.
-     */
-    public void makeReservation(Reservation reservation) throws ConflictException {
-        makeReservation(reservation.getTask(), reservation.getTimespan());
     }
 
     /**
