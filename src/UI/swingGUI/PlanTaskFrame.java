@@ -64,7 +64,7 @@ public class PlanTaskFrame extends javax.swing.JFrame {
             data[i] = new Object[]{
                 task.getId(),
                 task.getDescription(),
-                task.getEstimatedDuration().getMinutes() + " min",
+                task.getEstimatedDuration(),
                 task.getAcceptableDeviation() + "%",
                 task.getProject().getId(),
                 task.getProject().getName()

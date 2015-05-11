@@ -13,7 +13,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  * This jframe handles the create task use case.
- * 
+ *
  * @author Frederic, Mathias, Pieter-Jan
  */
 public class CreateTaskFrame extends javax.swing.JFrame {
@@ -21,6 +21,7 @@ public class CreateTaskFrame extends javax.swing.JFrame {
     private static final long serialVersionUID = -2618352985080584426L;
     private final CreateTaskHandler handler;
     private DefaultTableModel prereqModel;
+    private DefaultTableModel resourceModel;
 
     /**
      * Creates new form CreateProjectFrame
@@ -28,12 +29,12 @@ public class CreateTaskFrame extends javax.swing.JFrame {
      * @param handler The handler to pass the requests to
      */
     public CreateTaskFrame(CreateTaskHandler handler) throws IllegalStateException {
-        
+
         initComponents();
         this.handler = handler;
         initProjectComboBox();
-               
-        initTaskTables(((DetailedProject) projectComboBox.getSelectedItem()).getId());     
+
+        initTaskTables(((DetailedProject) projectComboBox.getSelectedItem()).getId());
         initResourceTable();
     }
 
@@ -41,18 +42,18 @@ public class CreateTaskFrame extends javax.swing.JFrame {
      * Initialize the project combobox with the projects.
      */
     private void initProjectComboBox() {
-        
+
         for (DetailedProject project : handler.getUnfinishedProjects()) {
             projectComboBox.addItem(project);
         }
 
     }
-    
-     /**
+
+    /**
      * Inits the resourcetype table with the resourcetypes
      */
     private void initResourceTable() {
-        
+
         List<DetailedResourceType> resourceTypes = handler.getResourceTypes();
         Object[][] data = new Object[resourceTypes.size()][];
         int i = 0;
@@ -62,7 +63,14 @@ public class CreateTaskFrame extends javax.swing.JFrame {
                 0};
             i++;
         }
-        DefaultTableModel resourceModel = new DefaultTableModel(data, new String[]{"Name", "Quantity"});
+        resourceModel = new DefaultTableModel(data, new String[]{"Name", "Quantity"}){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // only second column is editable
+                return column != 0;
+                
+            }
+        };
         ResourceTypeTable.setModel(resourceModel);
     }
 
@@ -83,7 +91,7 @@ public class CreateTaskFrame extends javax.swing.JFrame {
             i++;
         }
 
-        prereqModel = new DefaultTableModel(data, columnNames){
+        prereqModel = new DefaultTableModel(data, columnNames) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 //all cells false
@@ -94,9 +102,7 @@ public class CreateTaskFrame extends javax.swing.JFrame {
         prereqTable.getColumnModel().getColumn(0).setMaxWidth(50);
         alternativeForTable.setModel(prereqModel);
         alternativeForTable.getColumnModel().getColumn(0).setMaxWidth(50);
-        
-        
-       
+
     }
 
     /**
@@ -296,10 +302,11 @@ public class CreateTaskFrame extends javax.swing.JFrame {
 
     /**
      * The create task button is pressed
-     * @param evt 
+     *
+     * @param evt
      */
     private void createTask(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createTask
-        if(projectComboBox.getSelectedItem() == null){
+        if (projectComboBox.getSelectedItem() == null) {
             JOptionPane.showMessageDialog(rootPane, "Please select a project.", null, JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -315,35 +322,36 @@ public class CreateTaskFrame extends javax.swing.JFrame {
         }
         List<Integer> prereqs = null;
         int altFor;
-        
+
         // check if alternative for is selected
         if (alternativeForTable.getSelectedRow() != -1) {
             altFor = (int) alternativeForTable.getValueAt(alternativeForTable.convertRowIndexToModel(alternativeForTable.getSelectedRow()), 0);
         } else {
             altFor = -1;
         }
-        
+
         // check if prereqs are selected
         if (prereqTable.getSelectedRow() != -1) {
             int[] selectedRows = prereqTable.getSelectedRows();
             prereqs = new ArrayList<>();
-            
+
             for (int rowId : selectedRows) {
 
                 prereqs.add((int) prereqTable.getValueAt(prereqTable.convertRowIndexToModel(rowId), 0));
-                
+
             }
         }
-        
+
         Map<Integer, Integer> resources = new HashMap<>();
         // check if resourcetypes are selected
-        if (ResourceTypeTable.getSelectedRow() != -1) {
-            int[] selectedRows = ResourceTypeTable.getSelectedRows();
-            
-            for (int rowId : selectedRows) {
-                resources.put(rowId, Integer.parseInt(ResourceTypeTable.getValueAt(ResourceTypeTable.convertRowIndexToModel(rowId), 1).toString()));
+
+        for (int rowId = 0; rowId < ResourceTypeTable.getRowCount(); rowId++) {
+            int quantity = Integer.parseInt(ResourceTypeTable.getValueAt(ResourceTypeTable.convertRowIndexToModel(rowId), 1).toString());
+            if (quantity > 0) {
                 
+                resources.put(rowId, quantity);
             }
+
         }
 
         try {
@@ -353,11 +361,11 @@ public class CreateTaskFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(rootPane, e.getMessage(), null, JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_createTask
-    
+
     /**
      * A project is selected in the combobox
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void projectComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_projectComboBoxActionPerformed
         int Pid = ((DetailedProject) projectComboBox.getSelectedItem()).getId();
@@ -391,5 +399,4 @@ public class CreateTaskFrame extends javax.swing.JFrame {
     private javax.swing.JComboBox projectComboBox;
     // End of variables declaration//GEN-END:variables
 
-   
 }

@@ -49,7 +49,7 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
             data[i] = new Object[]{
                 pair.getKey().getId(),
                 pair.getKey().getDescription(),
-                pair.getKey().getEstimatedDuration().getHours() + "h " + pair.getKey().getEstimatedDuration().getMinutes() + " min",
+                pair.getKey().getEstimatedDuration(),
                 pair.getKey().getAcceptableDeviation() + "%",
                 pair.getValue().getId(),
                 pair.getValue().getName()

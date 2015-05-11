@@ -10,6 +10,7 @@ import domain.time.WorkWeekConfiguration;
 import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.GenericUser;
+import java.awt.HeadlessException;
 import java.io.FileReader;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -44,8 +45,7 @@ public class Bootstrap {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        
-        
+
         Clock clock = new Clock();
         Database db = new Database();
         int option = JOptionPane.showConfirmDialog(null, "Would you like to initialize the system with an input file?");
@@ -55,45 +55,47 @@ public class Bootstrap {
         } else if (option == 2) {
             return;
         }
-        
+
         Auth auth = new Auth(db);
-        
+
         auth.registerUser(new GenericUser("root", "admin"));
         auth.registerUser(new GenericUser("manager", "manager"));
         String username;
-        while(true){
+        while (true) {
             username = JOptionPane.showInputDialog("Enter your username");
-            
-            if(username == null || auth.login(username)){
+
+            if (username == null || auth.login(username)) {
                 break;
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(null, "You entered the wrong credentials.", null, JOptionPane.WARNING_MESSAGE);
-            }           
-        }
-        
-        if(auth.loggedIn() && auth.getUser().getRole().equals("developer")){
-            
-            
-            try {
-                String begintime = JOptionPane.showInputDialog("If you want you can change the beginning of your lunch break, now it's 12 o'clock");
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-                LocalTime start = LocalTime.parse(begintime, formatter);
-                LocalTime end = start.plusHours(1);
-                ((Resource) auth.getUser()).setAvailability(new WorkWeekConfiguration(LocalTime.of(8, 00), LocalTime.of(17, 00), start, end));
-            } catch (Exception exception) {
-                JOptionPane.showMessageDialog(null, "This lunchbreak is not allowed.", null, JOptionPane.WARNING_MESSAGE);
             }
         }
-        
-        
+
+        if (auth.loggedIn() && auth.getUser().getRole().equals("developer")) {
+
+            String begintime = JOptionPane.showInputDialog("If you want you can change the beginning of your lunch break, now it's 12 o'clock");
+            if (begintime != null) {
+                try {
+
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+                    LocalTime start = LocalTime.parse(begintime, formatter);
+                    LocalTime end = start.plusHours(1);
+                    ((Resource) auth.getUser()).setAvailability(new WorkWeekConfiguration(LocalTime.of(8, 00), LocalTime.of(17, 00), start, end));
+                } catch (HeadlessException | IllegalArgumentException exception) {
+                    JOptionPane.showMessageDialog(null, "This lunchbreak is not allowed.", null, JOptionPane.WARNING_MESSAGE);
+                }
+            }
+
+        }
+
         Acl acl = initAcl();
         HandlerFactory factory = new HandlerFactory(manager, clock, auth, acl, db);
-        
-         //display uncaught exceptions
+
+        //display uncaught exceptions
         Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
             JOptionPane.showMessageDialog(null, e.getMessage(), null, JOptionPane.WARNING_MESSAGE);
         });
-        
+
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             new MainFrame(factory).setVisible(true);
@@ -107,20 +109,24 @@ public class Bootstrap {
         acl.addEntry("manager", Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator"));
         return acl;
     }
-    
+
     /**
-     * Show an input file dialog and initialize the given manager from the chosen
-     * file.
-     * 
+     * Show an input file dialog and initialize the given manager from the
+     * chosen file.
+     *
      * @param manager The manager to initialize
      */
     private static void initManagerFromFile(ProjectContainer manager, Clock clock, Database db) {
-        
+
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Task Man inputfile", "tman");
         chooser.setFileFilter(filter);
         //Solve the chooser deadlock bug
-        try { Thread.sleep(10); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
         int returnVal = chooser.showOpenDialog(null);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
 
@@ -133,6 +139,6 @@ public class Bootstrap {
                 Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
     }
 }

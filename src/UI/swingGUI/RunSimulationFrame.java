@@ -2,6 +2,7 @@ package UI.swingGUI;
 
 import controller.HandlerFactory;
 import controller.RunSimulationHandler;
+import exception.NoAccessException;
 import java.awt.Frame;
 import java.time.format.DateTimeFormatter;
 import javax.swing.JFrame;
@@ -26,7 +27,19 @@ public class RunSimulationFrame extends javax.swing.JFrame {
     public RunSimulationFrame(HandlerFactory factory) {
         initComponents();
         this.factory = factory;
-        handler = factory.getSimulationHandler();
+        try {
+            handler = factory.getSimulationHandler();
+        } catch (NoAccessException e) {
+            
+            for(Frame frame : JFrame.getFrames()){
+                if(frame instanceof MainFrame){
+                    frame.setVisible(true);
+                    break;
+                }
+
+            }
+            throw e;
+        }
     }
 
     /**
