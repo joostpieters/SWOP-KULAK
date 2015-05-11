@@ -34,7 +34,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
 
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-    private final ProjectContainer manager;
+    private final ProjectContainer container;
     private final Clock clock;
     private final Database db;
     private WorkWeekConfiguration dailyAvailability;
@@ -50,7 +50,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
      */
     public ProjectContainerFileInitializor(Reader r, ProjectContainer manager, Clock clock, Database db) {
         super(r);
-        this.manager = manager;
+        this.container = manager;
         this.clock = clock;
         this.db = db;
     }
@@ -280,7 +280,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             String description = expectStringField("description");
             LocalDateTime creationTime = expectDateField("creationTime");
             LocalDateTime dueTime = expectDateField("dueTime");
-            manager.createProject(name, description, creationTime, dueTime);
+            container.createProject(name, description, creationTime, dueTime);
         }
 
         expectLabel("plannings");
@@ -344,12 +344,12 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             ArrayList<LocalDateTime> arrayList = new ArrayList<>(plannings.keySet());
             if (ttype == TT_NUMBER) {
                 planning = expectInt();
-                task = manager.getProject(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, requiredResourceMaps.get(planning));
+                task = container.getProject(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, requiredResourceMaps.get(planning));
                 // TODO dit zou moeten werken, maar geeft een error, dit voegt enkel de developers toe aan de planning
                 // de andere resources worden blijkbaar apart gereserveerd later, zie volgende TODO
                 //task.plan(arrayList.get(planning), plannings.get(arrayList.get(planning)), clock);
             }else{
-                task = manager.getProject(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, Task.NO_REQUIRED_RESOURCE_TYPES);
+                task = container.getProject(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, Task.NO_REQUIRED_RESOURCE_TYPES);
             }
             // add to temporary list
             taskList.add(task);
@@ -372,9 +372,9 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
                 LocalDateTime endTime = expectDateField("endTime");
                 
                 if(status.equalsIgnoreCase("failed")){
-                    manager.getProject(projectId).getTask(task.getId()).fail(new Timespan(startTime, endTime), clock.getTime());
+                    container.getProject(projectId).getTask(task.getId()).fail(new Timespan(startTime, endTime), clock.getTime());
                 }else if(status.equalsIgnoreCase("finished")){
-                    manager.getProject(projectId).getTask(task.getId()).finish(new Timespan(startTime, endTime), clock.getTime());
+                    container.getProject(projectId).getTask(task.getId()).finish(new Timespan(startTime, endTime), clock.getTime());
                 }
               
             }
