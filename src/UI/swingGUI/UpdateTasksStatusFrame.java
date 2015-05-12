@@ -155,7 +155,7 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
             }
         });
 
-        statusComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Finished", "Failed", "Executing" }));
+        statusComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Finished", "Failed" }));
 
         jLabel8.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         jLabel8.setText("Status");
@@ -316,6 +316,7 @@ public class UpdateTasksStatusFrame extends javax.swing.JFrame {
     private void ExecuteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExecuteButtonActionPerformed
         try {
            handler.executeCurrentTask();
+           this.dispose();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(rootPane, e.getMessage(), null, JOptionPane.ERROR_MESSAGE);
         }

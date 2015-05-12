@@ -1,12 +1,9 @@
 package UI.swingGUI;
 
 import controller.HandlerFactory;
-
 import java.time.format.DateTimeFormatter;
-
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
-
-import exception.ResourceTypeConflictException;
 
 
 /**
@@ -49,6 +46,7 @@ public class MainFrame extends javax.swing.JFrame {
         updateTaskButton = new javax.swing.JButton();
         modifySystemTimeButton1 = new javax.swing.JButton();
         simulationButton = new javax.swing.JButton();
+        loginButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Taskman - A Project-Oriented Task Manager");
@@ -117,12 +115,20 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
+        loginButton.setForeground(new java.awt.Color(0, 204, 51));
+        loginButton.setText("Login");
+        loginButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loginButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(48, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(listAllProjectsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(createNewTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -132,22 +138,29 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(updateTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(createProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(planTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(49, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(simulationButton, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(158, 158, 158))
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(194, 194, 194)
                 .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(loginButton)
+                .addGap(42, 42, 42))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(37, 37, 37)
-                .addComponent(jLabel1)
-                .addGap(45, 45, 45)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(49, 49, 49)
+                        .addComponent(loginButton)))
+                .addGap(47, 47, 47)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(listAllProjectsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(createProjectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -230,19 +243,48 @@ public class MainFrame extends javax.swing.JFrame {
     private void planTask(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_planTask
         (new PlanTaskFrame(controller.getPlanTaskHandler())).setVisible(true);
     }//GEN-LAST:event_planTask
-
+    
+    /**
+     * Start the run simulation use case
+     * 
+     * @param evt 
+     */
     private void runSimulation(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runSimulation
         this.setVisible(false);
         (new RunSimulationFrame(controller)).setVisible(true);
     }//GEN-LAST:event_runSimulation
-
     
+    /**
+     * Starts the login use case
+     * 
+     * @param evt 
+     */
+    private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
+        if(controller.getLoginHandler().loggedIn()){
+            controller.getLoginHandler().logout();
+            loginButton.setForeground(new java.awt.Color(0, 204, 51));
+            loginButton.setText("Login");
+        }else{
+            (new LoginFrame(controller.getLoginHandler(), this)).setVisible(true);
+        }
+        
+        
+    }//GEN-LAST:event_loginButtonActionPerformed
+    
+    /**
+     * 
+     * @return The loginbutton of this frame 
+     */
+    public JButton getLoginButton(){
+        return loginButton;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton createNewTaskButton;
     private javax.swing.JButton createProjectButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JButton listAllProjectsButton;
+    private javax.swing.JButton loginButton;
     private javax.swing.JButton modifySystemTimeButton1;
     private javax.swing.JButton planTaskButton;
     private javax.swing.JButton simulationButton;

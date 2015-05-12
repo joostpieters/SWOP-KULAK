@@ -27,32 +27,46 @@
           <Group type="102" attributes="0">
               <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="listAllProjectsButton" alignment="0" min="-2" pref="230" max="-2" attributes="0"/>
-                          <Component id="createNewTaskButton" alignment="0" min="-2" pref="230" max="-2" attributes="0"/>
-                          <Component id="modifySystemTimeButton1" min="-2" pref="230" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="67" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="updateTaskButton" min="-2" pref="230" max="-2" attributes="0"/>
-                          <Component id="createProjectButton" min="-2" pref="230" max="-2" attributes="0"/>
-                          <Component id="planTaskButton" alignment="0" min="-2" pref="230" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                  <Component id="simulationButton" alignment="0" min="-2" pref="230" max="-2" attributes="0"/>
-                  <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="listAllProjectsButton" alignment="0" min="-2" pref="230" max="-2" attributes="0"/>
+                  <Component id="createNewTaskButton" alignment="0" min="-2" pref="230" max="-2" attributes="0"/>
+                  <Component id="modifySystemTimeButton1" min="-2" pref="230" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="67" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="updateTaskButton" min="-2" pref="230" max="-2" attributes="0"/>
+                  <Component id="createProjectButton" min="-2" pref="230" max="-2" attributes="0"/>
+                  <Component id="planTaskButton" alignment="0" min="-2" pref="230" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace max="32767" attributes="0"/>
+              <Component id="simulationButton" min="-2" pref="230" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="158" max="-2" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="194" max="-2" attributes="0"/>
+              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+              <Component id="loginButton" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
-              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
+                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
+                      <Component id="loginButton" min="-2" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+              <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="listAllProjectsButton" alignment="3" min="-2" pref="56" max="-2" attributes="0"/>
                   <Component id="createProjectButton" alignment="3" min="-2" pref="56" max="-2" attributes="0"/>
@@ -184,6 +198,17 @@
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="Main_jButton1"/>
       </AuxValues>
+    </Component>
+    <Component class="javax.swing.JButton" name="loginButton">
+      <Properties>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="33" green="cc" red="0" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Login"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loginButtonActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

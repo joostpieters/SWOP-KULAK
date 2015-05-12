@@ -67,4 +67,11 @@ public class Auth {
     public void registerUser(User user) {
         db.addUser(user);
     }
+    
+    /**
+     * Logs out the currently logged in user.
+     */
+    public void logout(){
+        user = null;
+    }
 }

@@ -1,10 +1,10 @@
 package controller;
 
-import domain.user.Acl;
-import domain.user.Auth;
 import domain.Database;
 import domain.ProjectContainer;
 import domain.time.Clock;
+import domain.user.Acl;
+import domain.user.Auth;
 
 
 /**
@@ -87,4 +87,12 @@ public class HandlerFactory {
     public RunSimulationHandler getSimulationHandler(){
         return new RunSimulationHandler(manager, clock, auth, acl, db);
     }
+    
+    /** 
+     * @return A new login handler.
+     */
+    public LoginHandler getLoginHandler(){
+        return new LoginHandler(auth);
+    }
+    
 }
