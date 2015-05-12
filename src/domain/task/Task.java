@@ -106,19 +106,23 @@ public class Task implements DetailedTask {
      * @throws ResourceTypeMissingReqsException
      *         If there is a resource type with missing requirements.
      */
-    private void setRequiredResources(Map<ResourceType, Integer> finalResources) {
+    private void setRequiredResources(Map<ResourceType, Integer> finalResources)
+    		throws ResourceTypeConflictException, ResourceTypeMissingReqsException {
+    	// check for conflict exceptions
         for(ResourceType resType : finalResources.keySet())
         {
-        	ResourceTypeConflictException e = resType.getConflictException(finalResources);
+        	ResourceTypeConflictException e = resType.createConflictException(finalResources);
         	if(e != null)
         		throw e;
         }
+        // check for missing requirements exceptions
         for(ResourceType resType : finalResources.keySet())
         {
-        	ResourceTypeMissingReqsException e = resType.getMissingReqsException(finalResources);
+        	ResourceTypeMissingReqsException e = resType.createMissingReqsException(finalResources);
         	if(e != null)
         		throw e;
         }
+        // set the required resource to the given map
         this.requiredResources = finalResources;
 	}
 

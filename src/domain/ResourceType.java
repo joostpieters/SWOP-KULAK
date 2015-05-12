@@ -403,15 +403,36 @@ public class ResourceType implements DetailedResourceType {
     	}
     	return missingReqResult;
     }
-
-	public ResourceTypeConflictException getConflictException(Map<ResourceType, Integer> allResources)
+    
+    /**
+     * Creates a resource type conflict exception if there are conflicts of this resource type with
+     * the given map of resource types and their quantity.
+     * 
+     * @param allResources The map of all resource types connecting the resource types with their quantity.
+     *                     This map should contain this resource type.
+     * @return If there are conflicts for this resource type,
+     *         a ResourceTypeConflictException, describing the conflict, is returned.
+     *         If there are no conflicts, null is returned.
+     */
+	public ResourceTypeConflictException createConflictException(Map<ResourceType, Integer> allResources)
 	{
 		List<ResourceType> conflicts = getConflicts(allResources);
 		if(conflicts.isEmpty())
 			return null;
 		return new ResourceTypeConflictException(this, conflicts);
 	}
-	public ResourceTypeMissingReqsException getMissingReqsException(Map<ResourceType, Integer> allResources)
+	
+	/**
+	 * Creates a missing requirements exception if there are missing requirements
+	 * of this resource type in the given map of resource types and their quantity.
+	 * 
+	 * @param allResources The map of all resource types connecting the resource types with their quantity.
+	 *                     This map should contain this resource type.
+	 * @return If there are missing requirements for this resource type,
+	 *         a ResourceTypeMissingReqsException, describing the missing requirements, is returned.
+	 *         If there are no missing requirements, null is returned.
+	 */
+	public ResourceTypeMissingReqsException createMissingReqsException(Map<ResourceType, Integer> allResources)
 	{
 		List<ResourceType> missingReqs = getMissingReqs(allResources);
 		if(missingReqs.isEmpty())
