@@ -1,14 +1,11 @@
 package domain.time;
 
 import java.time.LocalDateTime;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 
-import domain.time.Clock;
 
 /**
  *

@@ -32,7 +32,8 @@ public class CreateTaskCommand implements ICommand {
     
 
     /**
-     * @return The task which was created upon execution of this command.
+     * @return The task which was created upon execution of this command, null if
+     * the command was reverted or ir the task isn't created.
      */
     public Task getCreatedTask() {
         return createdTask;
@@ -94,6 +95,7 @@ public class CreateTaskCommand implements ICommand {
         if (altforTask != null && altforTaskMemento != null) {
             altforTask.setMemento(altforTaskMemento);
         }
+        createdTask = null;
     }
 
 }
