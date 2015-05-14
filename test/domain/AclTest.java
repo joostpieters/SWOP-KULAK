@@ -1,13 +1,14 @@
 package domain;
 
-import domain.user.GenericUser;
-import domain.user.Developer;
-import domain.user.Acl;
-import domain.user.User;
 import domain.time.Clock;
+import domain.user.Acl;
+import domain.user.Developer;
+import domain.user.GenericUser;
+import domain.user.User;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
@@ -41,7 +42,7 @@ public class AclTest {
     
     @Before
     public void setUp() {
-        clock = new Clock();
+        clock = EasyMock.createNiceMock(Clock.class);
         acl = new Acl();
         
         acl.addEntry("manager", new ArrayList<>(Arrays.asList("edit", "remove", "view")));

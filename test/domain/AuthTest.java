@@ -1,10 +1,11 @@
 package domain;
 
-import domain.user.Auth;
-import domain.user.GenericUser;
-import domain.user.Developer;
-import domain.user.User;
 import domain.time.Clock;
+import domain.user.Auth;
+import domain.user.Developer;
+import domain.user.GenericUser;
+import domain.user.User;
+import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
@@ -37,7 +38,7 @@ public class AuthTest {
     
     @Before
     public void setUp() {
-        clock = new Clock();
+        clock = EasyMock.createNiceMock(Clock.class);
         auth = new Auth(new Database());
         
 		user1 = new GenericUser("John", "manager");

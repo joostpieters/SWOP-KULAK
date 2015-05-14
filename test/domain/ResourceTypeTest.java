@@ -1,7 +1,6 @@
 package domain;
 
 import domain.task.Task;
-import domain.time.Duration;
 import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
 import exception.ConflictException;
@@ -13,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
+import static org.easymock.EasyMock.createNiceMock;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -36,8 +36,8 @@ public class ResourceTypeTest {
     @Before
     public void setUp() throws Exception {
         Project p = new Project("name", "description", startRes, endRes);
-        t0 = p.createTask("descr", new Duration(60), 10, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
-        t1 = p.createTask("task1", new Duration(120), 10, -1, new ArrayList<>(), new HashMap<>());
+        t0 = createNiceMock(Task.class);
+        t1 = createNiceMock(Task.class);
         res0 = new Resource("tic");
         res1 = new Resource("tac");
         res1.makeReservation(t0, reserved);

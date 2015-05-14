@@ -1,16 +1,13 @@
 package domain;
 
 import domain.task.Task;
-import domain.time.Clock;
-import domain.time.Duration;
 import domain.time.Timespan;
 import exception.ConflictException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import static org.easymock.EasyMock.createNiceMock;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -29,15 +26,13 @@ public class ResourceTest {
 	Map<ResourceType, Integer> reqs1, reqs2;
 	private Resource r0, r1;
 	private Reservation reservation;
-    private Clock clock;
+   
 
 	@Before
 	public void setUp() throws Exception {
-		Project p = new Project("name", "description", startTime, dueTime);
-		clock = new Clock();
-		t0 = p.createTask("task1", new Duration(120), 10, -1, new ArrayList<>(), new HashMap<>());
-		t1 = p.createTask("task2", new Duration(60), 20, -1, new ArrayList<>(), new HashMap<>());
-		t2 = p.createTask("task3", new Duration(150), 0, -1, new ArrayList<>(), new HashMap<>());
+		t0 = createNiceMock(Task.class);
+		t1 = createNiceMock(Task.class);
+		t2 = createNiceMock(Task.class);
 		
 		r0 = new Resource("not reserved");
 		r1 = new Resource("reserved");
