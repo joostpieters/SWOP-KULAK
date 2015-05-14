@@ -77,8 +77,10 @@ public class PlanTaskCommand implements ICommand {
     @Override
     public void execute() throws ConflictException {
     	originalTaskPlanning = task.getPlanning();
+        
     	if(originalTaskPlanning != null)
     	{
+            
     		originalTaskPlanningMemento = originalTaskPlanning.createMemento();
     		originalTaskPlanning.clearFutureReservations(clock.getTime());
     	}
@@ -101,6 +103,7 @@ public class PlanTaskCommand implements ICommand {
     /**
      * Reverts the changes made by the last execution of this command.
      */
+    @Override
     public void revert() {
     	clock.detach(task.getPlanning());
         task.setPlanning(originalTaskPlanning);

@@ -158,4 +158,22 @@ public class ResourceTest {
 	public void testMakeReservationSameTask() throws ConflictException {
 		r1.makeReservation(t0, justAfter);
 	}
+        
+        @Test
+	public void testClearFutureReservations() {
+            // just overlapping on edge
+            r0.makeReservation(t0, new Timespan(startTime, startTime.plusHours(2)));
+            r0.clearFutureReservations(startTime, t0);
+            assertEquals(null, r0.getReservation(t0));
+            
+            // partly consumed
+            r0.makeReservation(t0, new Timespan(startTime, startTime.plusHours(2)));
+            r0.clearFutureReservations(startTime.plusHours(1), t0);
+            assertEquals(startTime.plusHours(1), r0.getPreviousReservations().get(0).getEndTime());
+            
+            // no reservations in future
+            r0.makeReservation(t0, new Timespan(startTime, startTime.plusHours(2)));
+            r0.clearFutureReservations(startTime.plusHours(8), t0);
+            assertEquals(1, r0.getReservations().size());
+	}
 }

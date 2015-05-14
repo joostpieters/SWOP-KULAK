@@ -6,8 +6,10 @@ import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
 import exception.ConflictException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -23,7 +25,7 @@ public class Resource implements DetailedResource {
     private final int id;
     private final String name;
     private final Set<Reservation> reservations;
-    private final Set<Reservation> previousReservations;
+    private final List<Reservation> previousReservations;
     private WorkWeekConfiguration availability;
 
     /**
@@ -40,7 +42,7 @@ public class Resource implements DetailedResource {
         this.id = generateId();
         this.name = name;
         this.reservations = new HashSet<>();
-        this.previousReservations = new HashSet<>();
+        this.previousReservations = new ArrayList<>();
                
     }
     
@@ -94,8 +96,8 @@ public class Resource implements DetailedResource {
     /**
      * @return The previous reservations of this resource.
      */
-    public Set<Reservation> getPreviousReservations() {
-        return new HashSet<>(previousReservations);
+    public List<Reservation> getPreviousReservations() {
+        return new ArrayList<>(previousReservations);
     }
 
     /**
@@ -251,7 +253,7 @@ public class Resource implements DetailedResource {
      * @param task The task of which the future reservations are cleared.
      */
     public void clearFutureReservations(LocalDateTime currentTime, Task task) {
-        for (Iterator<Reservation> iterator = getReservations().iterator(); iterator.hasNext();) {
+        for (Iterator<Reservation> iterator = reservations.iterator(); iterator.hasNext();) {
             Reservation reservation = iterator.next();
             if (reservation.getTask().equals(task)) {
                 if (reservation.getStartTime().compareTo(currentTime) >= 0) 
@@ -259,6 +261,7 @@ public class Resource implements DetailedResource {
                     iterator.remove();
                 } else if (reservation.getTimespan().overlapsWith(currentTime))
                 {
+                    
                     iterator.remove();
                     Timespan newTimeSpan = new Timespan(reservation.getStartTime(), currentTime);
                     archiveReservation(new Reservation(reservation.getTask(), newTimeSpan));
@@ -362,19 +365,19 @@ public class Resource implements DetailedResource {
     public class Memento {
 
         private final Set<Reservation> reservations;
-        private final Set<Reservation> previousReservations;
+        private final List<Reservation> previousReservations;
 
         private Set<Reservation> getReservations() {
             return new HashSet<>(this.reservations);
         }
 
-        private Set<Reservation> getPreviousReservations() {
-            return new HashSet<>(this.previousReservations);
+        private List<Reservation> getPreviousReservations() {
+            return new ArrayList<>(this.previousReservations);
         }
 
-        private Memento(Set<Reservation> reservations, Set<Reservation> previousReservations) {
+        private Memento(Set<Reservation> reservations, List<Reservation> previousReservations) {
             this.reservations = new HashSet<>(reservations);
-            this.previousReservations = new HashSet<>(previousReservations);
+            this.previousReservations = new ArrayList<>(previousReservations);
         }
     }
 }
