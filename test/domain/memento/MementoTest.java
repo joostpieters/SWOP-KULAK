@@ -1,7 +1,7 @@
 package domain.memento;
 
 import domain.Project;
-import domain.ProjectContainer;
+import domain.BranchOffice;
 import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Duration;
@@ -26,11 +26,11 @@ public class MementoTest {
     private static Project p1, p2, p3;
     private static Task t1, t2, t3;
     
-    private static ProjectContainer container;
+    private static BranchOffice container;
     
     @BeforeClass
     public static void setUpClass() {
-        container = new ProjectContainer();
+        container = new BranchOffice();
         clock = new Clock(LocalDateTime.MAX);
         container.createProject("Test", "Description", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 12, 17, 50));
         p1 = container.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
@@ -49,20 +49,20 @@ public class MementoTest {
     }
 
     /**
-     * Test of getProject method, of class ProjectContainer if the id doesn't exists.
+     * Test of getProject method, of class BranchOffice if the id doesn't exists.
      */
     @Test (expected=ObjectNotFoundException.class)
     public void testGetProjectFail() throws ObjectNotFoundException{
-        ProjectContainer instance = new ProjectContainer();
+        BranchOffice instance = new BranchOffice();
         instance.getProject(12);
     }
     
     /**
-     * Test of getProject and create project method, of class ProjectContainer.
+     * Test of getProject and create project method, of class BranchOffice.
      */
     @Test
     public void testGetProjectAndCreateProject() throws ObjectNotFoundException{
-        ProjectContainer projectContainer = new ProjectContainer();
+        BranchOffice projectContainer = new BranchOffice();
         Project project1 = projectContainer.createProject("Test", "Description", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 12, 17, 50));
         int pId = project1.getId();
         Project project2 = projectContainer.getProject(pId);
@@ -70,7 +70,7 @@ public class MementoTest {
     }
     
     /**
-     * Test of getAllavailableTasks, of class ProjectContainer.
+     * Test of getAllavailableTasks, of class BranchOffice.
      */
     @Test
     public void testGetAvailableTasks(){
@@ -81,7 +81,7 @@ public class MementoTest {
     }
     
     /**
-     * Test of getAllTasks, of class ProjectContainer.
+     * Test of getAllTasks, of class BranchOffice.
      */
     @Test
     public void testGetAllTasks(){
@@ -92,7 +92,7 @@ public class MementoTest {
     }
     
     /**
-     * Test of getUnfinishedProjects, of class ProjectContainer.
+     * Test of getUnfinishedProjects, of class BranchOffice.
      */
     @Test
     public void testGetUnfinishedProjects(){
@@ -103,7 +103,7 @@ public class MementoTest {
     }
     
     /**
-     * Test of getNbProjects, of class ProjectContainer.
+     * Test of getNbProjects, of class BranchOffice.
      */
     @Test
     public void testGetNbProjects(){

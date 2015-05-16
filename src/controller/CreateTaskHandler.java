@@ -2,7 +2,7 @@ package controller;
 
 import domain.Database;
 import domain.Project;
-import domain.ProjectContainer;
+import domain.BranchOffice;
 import domain.ResourceType;
 import domain.command.CreateTaskCommand;
 import domain.command.SimulatorCommand;
@@ -28,7 +28,7 @@ import java.util.logging.Logger;
  */
 public class CreateTaskHandler extends Handler{
     
-    protected final ProjectContainer manager;
+    protected final BranchOffice manager;
     protected final Database db;
     
     protected final SimulatorCommand simulatorCommand;
@@ -42,7 +42,7 @@ public class CreateTaskHandler extends Handler{
      * @param db The database to use
      * @param simulatorCommand The command to use, to store all executed commands
      */   
-    public CreateTaskHandler(ProjectContainer manager, Auth auth, Acl acl, Database db, SimulatorCommand simulatorCommand){
+    public CreateTaskHandler(BranchOffice manager, Auth auth, Acl acl, Database db, SimulatorCommand simulatorCommand){
         super(auth, acl);
         this.manager = manager;
         this.db = db;
@@ -57,7 +57,7 @@ public class CreateTaskHandler extends Handler{
      * @param acl The action control list to use
      * @param db The database to use
      */   
-    public CreateTaskHandler(ProjectContainer manager, Auth auth, Acl acl, Database db) {
+    public CreateTaskHandler(BranchOffice manager, Auth auth, Acl acl, Database db) {
         this(manager, auth, acl, db, new SimulatorCommand());
     }
     

@@ -4,7 +4,7 @@ package controller;
 import domain.dto.DetailedProject;
 import domain.dto.DetailedTask;
 import domain.Project;
-import domain.ProjectContainer;
+import domain.BranchOffice;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ import domain.time.Clock;
  */
 public class ShowProjectHandler {
     
-    private final ProjectContainer manager;
+    private final BranchOffice manager;
     
     private Project currentProject;
     private final Clock clock;
@@ -31,7 +31,7 @@ public class ShowProjectHandler {
      * @param manager The projectContainer to use in this handler. 
      * @param clock The clock to use in this handler
      */   
-    public ShowProjectHandler(ProjectContainer manager, Clock clock){
+    public ShowProjectHandler(BranchOffice manager, Clock clock){
         this.manager = manager;
         this.clock = clock;
     }

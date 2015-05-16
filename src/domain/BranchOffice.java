@@ -13,14 +13,14 @@ import java.util.Map;
  *
  * @author Frederic, Mathias, Pieter-Jan
  */
-public class ProjectContainer {
+public class BranchOffice {
 
     private final Map<Integer, Project> projects;
 
     /**
      * Initializes a new project container and its systemClock.
      */
-    public ProjectContainer() {
+    public BranchOffice() {
         projects = new HashMap<>();
     }
 

@@ -8,7 +8,7 @@ import domain.user.Auth;
 import domain.Database;
 import domain.user.GenericUser;
 import domain.Project;
-import domain.ProjectContainer;
+import domain.BranchOffice;
 import domain.dto.DetailedProject;
 import domain.time.Clock;
 import java.time.DateTimeException;
@@ -28,7 +28,7 @@ import org.junit.Test;
 public class CreateProjectScenarioTest {
 	
 	private static Database db;
-	private static ProjectContainer manager;
+	private static BranchOffice manager;
 	private static CreateProjectHandler handler;
     private static Clock clock;
     private static Auth auth;
@@ -38,7 +38,7 @@ public class CreateProjectScenarioTest {
     public static void setUpClass() {
     	db = new Database();
         
-        manager = new ProjectContainer();
+        manager = new BranchOffice();
         clock = new Clock();
          auth = new Auth(db);
         acl = new Acl();

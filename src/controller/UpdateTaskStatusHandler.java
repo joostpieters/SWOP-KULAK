@@ -1,7 +1,7 @@
 package controller;
 
 import domain.Project;
-import domain.ProjectContainer;
+import domain.BranchOffice;
 import domain.Resource;
 import domain.dto.DetailedProject;
 import domain.dto.DetailedTask;
@@ -24,7 +24,7 @@ import java.util.logging.Logger;
  */
 public class UpdateTaskStatusHandler extends Handler {
 
-    private final ProjectContainer manager;
+    private final BranchOffice manager;
 
     private Task currentTask;
     private Project currentProject;
@@ -38,7 +38,7 @@ public class UpdateTaskStatusHandler extends Handler {
      * @param auth The authorization manager to use
      * @param acl The action control list to use
      */
-    public UpdateTaskStatusHandler(ProjectContainer manager, Clock clock, Auth auth, Acl acl) {
+    public UpdateTaskStatusHandler(BranchOffice manager, Clock clock, Auth auth, Acl acl) {
         super(auth, acl);
         this.manager = manager;
         this.clock = clock;

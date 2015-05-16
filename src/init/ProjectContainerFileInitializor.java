@@ -8,7 +8,7 @@ package init;
  */
 import domain.Database;
 import domain.Project;
-import domain.ProjectContainer;
+import domain.BranchOffice;
 import domain.Resource;
 import domain.ResourceType;
 import domain.task.Task;
@@ -34,7 +34,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
 
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-    private final ProjectContainer container;
+    private final BranchOffice container;
     private final Clock clock;
     private final Database db;
     private WorkWeekConfiguration dailyAvailability;
@@ -48,7 +48,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
      * @param clock The clock to use
      * @param db The database to initialize
      */
-    public ProjectContainerFileInitializor(Reader r, ProjectContainer manager, Clock clock, Database db) {
+    public ProjectContainerFileInitializor(Reader r, BranchOffice manager, Clock clock, Database db) {
         super(r);
         this.container = manager;
         this.clock = clock;

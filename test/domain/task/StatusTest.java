@@ -1,12 +1,7 @@
 package domain.task;
 
+import domain.BranchOffice;
 import domain.Project;
-import domain.ProjectContainer;
-import domain.task.Finished;
-import domain.task.Unavailable;
-import domain.task.Failed;
-import domain.task.Available;
-import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
@@ -26,14 +21,14 @@ public class StatusTest {
 	
 	private Clock clock;
     private Project p;
-    private ProjectContainer pm;
+    private BranchOffice pm;
 	private Task t0, t1, t2, t3, t4, t5, t6, t7, t7alternative, t8;
 	private Timespan ts0, ts1, ts2;
     @Before
     public void setUp() {
     	clock = new Clock();
-    	pm = new ProjectContainer();
-    	p = pm.createProject("Name", "Description", LocalDateTime.of(2001, 1, 9, 8, 0), LocalDateTime.of(2072, 10, 9, 8, 0));
+    	
+    	p = new Project("Name", "Description", LocalDateTime.of(2001, 1, 9, 8, 0), LocalDateTime.of(2072, 10, 9, 8, 0));
     	t0 = p.createTask("description!", new Duration(10), 20, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
     	t1 = p.createTask("t1", new Duration(10), 10, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
     	t2 = p.createTask("t2", new Duration(20), 10, Project.NO_ALTERNATIVE, Arrays.asList(t0.getId(), t1.getId()), new HashMap<>());

@@ -6,18 +6,15 @@ import domain.time.Duration;
 import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
 import exception.ObjectNotFoundException;
-
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse; 
 import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,7 +45,7 @@ public class ProjectTest {
 	LocalDateTime start = LocalDateTime.of(2015, 2, 9, 15, 0);
 	LocalDateTime end = start.plusHours(ProjectTest.HOURDIF);
 	
-	ProjectContainer pc;
+	BranchOffice pc;
 	Project p0, p1, p2, pFinished;
 	Task t1, t2, t3, tFin;
     private Clock clock;
@@ -58,12 +55,12 @@ public class ProjectTest {
     	assertTrue(!create.isAfter(start));
     	assertTrue(!end.isAfter(due));
     	
-    	pc = new ProjectContainer();
+    	
     	clock = new Clock(create);
     	
-    	p0 = pc.createProject(name, descr, create, due);
+    	p0 = new Project(name, descr, create, due);
     	
-    	p1 = pc.createProject(name, descr, create, due);
+    	p1 = new Project(name, descr, create, due);
     	t1 = p1.createTask("design system", new Duration(480), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
     	
     	p2 = pc.createProject(name, descr, create, due);

@@ -6,7 +6,7 @@ import controller.HandlerFactory;
 import controller.RunSimulationHandler;
 import domain.Database;
 import domain.Project;
-import domain.ProjectContainer;
+import domain.BranchOffice;
 import domain.task.Task;
 import domain.task.Unavailable;
 import domain.time.Clock;
@@ -37,7 +37,7 @@ import org.junit.Test;
 public class SimulatorScenarioTest {
 
 	private static Database db;
-    private static ProjectContainer manager;
+    private static BranchOffice manager;
     private static RunSimulationHandler simHandler;
     private static CreateTaskHandler createTaskSimHandler;
     private static Project p1;
@@ -50,7 +50,7 @@ public class SimulatorScenarioTest {
     @Before
     public void setUp() {
     	db = new Database();
-        manager = new ProjectContainer();
+        manager = new BranchOffice();
         String project1Name = "project 1 :)";
         String project1Description = "This is project 1";
         LocalDateTime project1StartTime = LocalDateTime.of(2015, 03, 12, 17, 30);

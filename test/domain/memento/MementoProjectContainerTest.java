@@ -1,8 +1,8 @@
 package domain.memento;
 
 import domain.Project;
-import domain.ProjectContainer;
-import domain.ProjectContainer.Memento;
+import domain.BranchOffice;
+import domain.BranchOffice.Memento;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import static org.junit.Assert.assertTrue;
@@ -13,11 +13,11 @@ public class MementoProjectContainerTest {
 
     private static Project p1, p2, p3;
     
-    private static ProjectContainer container;
+    private static BranchOffice container;
     
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-        container = new ProjectContainer();
+        container = new BranchOffice();
         p1 = container.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         p2 = container.createProject("Test 2", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         p3 = container.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
@@ -28,13 +28,13 @@ public class MementoProjectContainerTest {
 	 */
 	@Test
 	public void testRevertCreateProject() {
-		ProjectContainer.Memento memento123 = container.createMemento();
+		BranchOffice.Memento memento123 = container.createMemento();
 		Project p4 = container.createProject(
 				"Test 4",
 				"Description of project Test 4",
 				LocalDateTime.of(2015, 3, 12, 17, 30),
 				LocalDateTime.of(2015, 3, 22, 17, 50));
-		ProjectContainer.Memento memento1234 = container.createMemento();
+		BranchOffice.Memento memento1234 = container.createMemento();
 		Project p5 = container.createProject(
 				"Test 5",
 				"A description",

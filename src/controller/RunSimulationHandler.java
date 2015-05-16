@@ -1,7 +1,7 @@
 package controller;
 
 import domain.Database;
-import domain.ProjectContainer;
+import domain.BranchOffice;
 import domain.command.SimulatorCommand;
 import domain.time.Clock;
 import domain.user.Acl;
@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * @author Frederic, Mathias, Pieter-Jan
  */
 public class RunSimulationHandler extends Handler{
-    private final ProjectContainer manager;
+    private final BranchOffice manager;
     private final Clock clock;
     private final Database db;
     
@@ -31,7 +31,7 @@ public class RunSimulationHandler extends Handler{
      * @param acl The action control list to use
      * @param db The database to use in conjunction with this handler
      */
-    public RunSimulationHandler(ProjectContainer manager, Clock clock, Auth auth, Acl acl, Database db){
+    public RunSimulationHandler(BranchOffice manager, Clock clock, Auth auth, Acl acl, Database db){
         super(auth, acl);
         this.manager = manager;
         this.clock = clock;

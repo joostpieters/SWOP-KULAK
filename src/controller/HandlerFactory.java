@@ -1,7 +1,7 @@
 package controller;
 
 import domain.Database;
-import domain.ProjectContainer;
+import domain.BranchOffice;
 import domain.time.Clock;
 import domain.user.Acl;
 import domain.user.Auth;
@@ -14,7 +14,7 @@ import domain.user.Auth;
  */
 public class HandlerFactory {
     
-    private final ProjectContainer manager;
+    private final BranchOffice manager;
     private final Clock clock;
     private final Acl acl;
     private final Auth auth;
@@ -31,7 +31,7 @@ public class HandlerFactory {
      * @param acl The action control list to use
      * @param db The database to use
      */   
-    public HandlerFactory(ProjectContainer manager, Clock clock, Auth auth, Acl acl, Database db){
+    public HandlerFactory(BranchOffice manager, Clock clock, Auth auth, Acl acl, Database db){
         this.acl = acl;
         this.auth = auth;
         this.manager = manager;

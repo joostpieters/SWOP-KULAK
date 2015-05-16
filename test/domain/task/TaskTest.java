@@ -1,7 +1,7 @@
 package domain.task;
 
+import domain.BranchOffice;
 import domain.Project;
-import domain.ProjectContainer;
 import domain.Resource;
 import domain.ResourceType;
 import domain.time.Clock;
@@ -36,7 +36,7 @@ public class TaskTest {
 	
 	private Clock clock;
     private Project p;
-    private ProjectContainer pc;
+    private BranchOffice pc;
 	private Task t0, t1, t2, t3, t4, t5, t6, t7, t7alternative, t8, t10;
 	private ResourceType type0, type1, type2;
 	private Resource res00, res01, res02, res10, res20, res21;
@@ -47,8 +47,8 @@ public class TaskTest {
     @Before
     public void setUp() {
     	clock = new Clock(LocalDateTime.of(2060, 3, 4, 11, 48));
-    	pc = new ProjectContainer();
-    	p = pc.createProject("Name", "Description", LocalDateTime.of(2001, 1, 9, 8, 0), LocalDateTime.of(2072, 10, 9, 8, 0));
+    	
+    	p = new Project("Name", "Description", LocalDateTime.of(2001, 1, 9, 8, 0), LocalDateTime.of(2072, 10, 9, 8, 0));
         
     	t0 = p.createTask("description!", new Duration(10), 20, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
         

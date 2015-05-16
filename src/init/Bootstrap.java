@@ -3,7 +3,7 @@ package init;
 import UI.swingGUI.MainFrame;
 import controller.HandlerFactory;
 import domain.Database;
-import domain.ProjectContainer;
+import domain.BranchOffice;
 import domain.time.Clock;
 import domain.user.Acl;
 import domain.user.Auth;
@@ -44,7 +44,7 @@ public class Bootstrap {
         Clock clock = new Clock();
         Database db = new Database();
         int option = JOptionPane.showConfirmDialog(null, "Would you like to initialize the system with an input file?");
-        ProjectContainer manager = new ProjectContainer();
+        BranchOffice manager = new BranchOffice();
         if (option == 0) {
             initManagerFromFile(manager, clock, db);
         } else if (option == 2) {
@@ -94,7 +94,7 @@ public class Bootstrap {
      *
      * @param manager The manager to initialize
      */
-    private static void initManagerFromFile(ProjectContainer manager, Clock clock, Database db) {
+    private static void initManagerFromFile(BranchOffice manager, Clock clock, Database db) {
 
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Task Man inputfile", "tman");

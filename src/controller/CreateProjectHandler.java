@@ -2,7 +2,7 @@ package controller;
 
 import domain.user.Acl;
 import domain.user.Auth;
-import domain.ProjectContainer;
+import domain.BranchOffice;
 import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  */
 public class CreateProjectHandler extends Handler{
     
-    private final ProjectContainer manager;
+    private final BranchOffice manager;
     
     /**
      * Initialize this createprojecthandler with the given projectContainer.
@@ -23,7 +23,7 @@ public class CreateProjectHandler extends Handler{
      * @param auth The authorization manager to use
      * @param acl The action control list to use
      */
-    public CreateProjectHandler(ProjectContainer manager, Auth auth, Acl acl){
+    public CreateProjectHandler(BranchOffice manager, Auth auth, Acl acl){
         super(auth, acl);
         this.manager = manager;
     }

@@ -1,6 +1,6 @@
 package controller;
 
-import domain.ProjectContainer;
+import domain.BranchOffice;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,7 +17,7 @@ import domain.time.Clock;
  */
 public class AdvanceSystemTimeHandler {
     
-    private final ProjectContainer manager;
+    private final BranchOffice manager;
     private final Clock clock;
         
     /**
@@ -26,7 +26,7 @@ public class AdvanceSystemTimeHandler {
      * @param manager The manager to use in this handler
      * @param clock The clock to use to manipulate
      */   
-    public AdvanceSystemTimeHandler(ProjectContainer manager, Clock clock){
+    public AdvanceSystemTimeHandler(BranchOffice manager, Clock clock){
         this.manager = manager;
         this.clock = clock;
     }

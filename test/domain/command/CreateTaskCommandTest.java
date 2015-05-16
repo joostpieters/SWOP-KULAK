@@ -1,7 +1,7 @@
 package domain.command;
 
+import domain.BranchOffice;
 import domain.Project;
-import domain.ProjectContainer;
 import domain.task.Task;
 import domain.time.Duration;
 import domain.time.Timespan;
@@ -19,7 +19,7 @@ import org.junit.Test;
  * @author Mathias
  */
 public class CreateTaskCommandTest {
-    private ProjectContainer pc;
+    private BranchOffice pc;
     private Project p;
     private Task t0;
     private Task t1;
@@ -28,8 +28,7 @@ public class CreateTaskCommandTest {
    
     @Before
     public void setUp() {
-        pc = new ProjectContainer();
-    	p = pc.createProject("Name", "Description", LocalDateTime.MIN, LocalDateTime.of(2072, 10, 9, 8, 0));
+        p = new Project("Name", "Description", LocalDateTime.MIN, LocalDateTime.of(2072, 10, 9, 8, 0));
         
     	t0 = p.createTask("description!", new Duration(10), 20, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
         t0.fail(new Timespan(LocalDateTime.MIN, LocalDateTime.MAX), LocalDateTime.MAX);

@@ -1,7 +1,7 @@
 package controller;
 
 import domain.Database;
-import domain.ProjectContainer;
+import domain.BranchOffice;
 import domain.Resource;
 import domain.ResourceType;
 import domain.command.SimulatorCommand;
@@ -28,7 +28,7 @@ import java.util.Set;
  */
 public class PlanTaskHandler extends Handler {
 
-    protected final ProjectContainer manager;
+    protected final BranchOffice manager;
     private final Clock clock;
     private final Database db;
     
@@ -43,7 +43,7 @@ public class PlanTaskHandler extends Handler {
      * @param acl The action control list to use
      * @param db The database to use in this handler
      */
-    public PlanTaskHandler(ProjectContainer manager, Clock clock, Auth auth, Acl acl, Database db) {
+    public PlanTaskHandler(BranchOffice manager, Clock clock, Auth auth, Acl acl, Database db) {
     	this(manager, clock, auth, acl, db, new SimulatorCommand());
     }
     
@@ -57,7 +57,7 @@ public class PlanTaskHandler extends Handler {
      * @param db The database to use in this handler
      * @param simulatorCommand The simulator command to which commands are added.
      */
-    public PlanTaskHandler(ProjectContainer manager, Clock clock, Auth auth, Acl acl, Database db, SimulatorCommand simulatorCommand)
+    public PlanTaskHandler(BranchOffice manager, Clock clock, Auth auth, Acl acl, Database db, SimulatorCommand simulatorCommand)
     {
         super(auth, acl);
         this.manager = manager;

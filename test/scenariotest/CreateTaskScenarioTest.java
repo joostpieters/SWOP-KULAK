@@ -5,7 +5,7 @@ import controller.CreateTaskHandler;
 import controller.HandlerFactory;
 import domain.Database;
 import domain.Project;
-import domain.ProjectContainer;
+import domain.BranchOffice;
 import domain.task.Task;
 import domain.task.Unavailable;
 import domain.time.Clock;
@@ -32,7 +32,7 @@ import org.junit.Test;
 public class CreateTaskScenarioTest {
 
 	private static Database db;
-    private static ProjectContainer manager;
+    private static BranchOffice manager;
     private static CreateTaskHandler handler;
     private static Project p1;
     private static Task t1;
@@ -44,7 +44,7 @@ public class CreateTaskScenarioTest {
     @BeforeClass
     public static void setUpClass() {
     	db = new Database();
-        manager = new ProjectContainer();
+        manager = new BranchOffice();
         String project1Name = "project 1 :)";
         String project1Description = "This is project 1";
         LocalDateTime project1StartTime = LocalDateTime.of(2015, 03, 12, 17, 30);
