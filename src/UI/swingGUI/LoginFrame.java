@@ -3,6 +3,7 @@ package UI.swingGUI;
 import controller.LoginHandler;
 import exception.NoAccessException;
 import java.awt.CardLayout;
+import java.awt.HeadlessException;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
@@ -231,6 +232,19 @@ public class LoginFrame extends javax.swing.JFrame {
                 handler.login(userList.getSelectedValue().toString());
                 originator.getLoginButton().setForeground(new java.awt.Color(245, 0, 61));
                 originator.getLoginButton().setText("Logout");
+                
+                // should the lunchbreak be changed?
+                if (handler.askLunchbreak()) {
+                    String begintime = JOptionPane.showInputDialog("If you want you can change the beginning of your lunch break, now it's 12 o'clock");
+                    if (begintime != null) {
+                        try {
+                            handler.setLunchbreak(begintime);
+                        } catch (HeadlessException | IllegalArgumentException exception) {
+                            JOptionPane.showMessageDialog(null, exception.getMessage(), null, JOptionPane.WARNING_MESSAGE);
+                        }
+                    }
+                }
+                this.dispose();
             }catch(NoAccessException e){
                 JOptionPane.showMessageDialog(rootPane, e.getMessage(), null, JOptionPane.ERROR_MESSAGE);
             }

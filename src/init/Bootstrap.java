@@ -4,16 +4,11 @@ import UI.swingGUI.MainFrame;
 import controller.HandlerFactory;
 import domain.Database;
 import domain.ProjectContainer;
-import domain.Resource;
 import domain.time.Clock;
-import domain.time.WorkWeekConfiguration;
 import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.GenericUser;
-import java.awt.HeadlessException;
 import java.io.FileReader;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,23 +66,6 @@ public class Bootstrap {
             }
         }
 
-        if (auth.loggedIn() && auth.getUser().getRole().equals("developer")) {
-
-            String begintime = JOptionPane.showInputDialog("If you want you can change the beginning of your lunch break, now it's 12 o'clock");
-            if (begintime != null) {
-                try {
-
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-                    LocalTime start = LocalTime.parse(begintime, formatter);
-                    LocalTime end = start.plusHours(1);
-                    ((Resource) auth.getUser()).setAvailability(new WorkWeekConfiguration(LocalTime.of(8, 00), LocalTime.of(17, 00), start, end));
-                } catch (HeadlessException | IllegalArgumentException exception) {
-                    JOptionPane.showMessageDialog(null, "This lunchbreak is not allowed.", null, JOptionPane.WARNING_MESSAGE);
-                }
-            }
-
-        }
-
         Acl acl = initAcl();
         HandlerFactory factory = new HandlerFactory(manager, clock, auth, acl, db);
 
@@ -104,9 +82,9 @@ public class Bootstrap {
 
     private static Acl initAcl() {
         Acl acl = new Acl();
-        acl.addEntry("admin", Arrays.asList("UpdateTaskStatus", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "updateTaskStatus"));
+        acl.addEntry("admin", Arrays.asList("UpdateTaskStatus", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "updateTaskStatus", "DelegateTask"));
         acl.addEntry("developer", Arrays.asList("UpdateTaskStatus"));
-        acl.addEntry("manager", Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator"));
+        acl.addEntry("manager", Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "DelegateTask"));
         return acl;
     }
 

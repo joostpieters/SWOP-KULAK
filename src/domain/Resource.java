@@ -319,16 +319,6 @@ public class Resource implements DetailedResource {
     }
 
     /**
-     * Removes the given reservation from this resources reservations.
-     *
-     * @param reservation The reservation to remove.
-     * @return True if this resource contained the given reservation.
-     */
-    public boolean removeReservation(Reservation reservation) {
-        return getReservations().remove(reservation);
-    }
-
-    /**
      * Creates a memento for this resource.
      *
      * @return A memento which stores the the state of this resource.

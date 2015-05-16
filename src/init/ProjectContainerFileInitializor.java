@@ -18,7 +18,6 @@ import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
 import domain.user.Developer;
 import exception.ConflictException;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StreamTokenizer;
@@ -26,12 +25,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class ProjectContainerFileInitializor extends StreamTokenizer {
 
@@ -174,7 +171,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
         expectChar(']');
         return list;
     }
-    
+
     /**
      * Processes the input file and inits all necessary structures
      */
@@ -187,10 +184,9 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
         nextToken();
 
         LocalDateTime systemTime = expectDateField("systemTime");
-        
+
         clock.advanceTime(systemTime);
-        
-       
+
         expectLabel("dailyAvailability");
         while (ttype == '-') {
             expectChar('-');
@@ -199,6 +195,17 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             dailyAvailability = new WorkWeekConfiguration(creationTime, dueTime);
         }
 
+        expectLabel("offices");
+
+        while (ttype == '-') {
+            expectChar('-');
+            String name = expectStringField("name");
+
+            //TODO
+        }
+        /**
+         * Resourcetypes
+         */
         expectLabel("resourceTypes");
         List<List<ResourceType>> reqList = new ArrayList<>();
         List<List<Integer>> reqIntList = new ArrayList<>();
@@ -217,7 +224,6 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
                 availabilityIndex = expectInt();
             }
 
-
             List<ResourceType> requirements = new ArrayList<>();
             List<ResourceType> conflicts = new ArrayList<>();
             reqList.add(requirements);
@@ -226,9 +232,9 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             conflictIntList.add(conflictIds);
 
             ResourceType resourceType;
-            if(availabilityIndex == 0){
+            if (availabilityIndex == 0) {
                 resourceType = new ResourceType(name, requirements, conflicts, dailyAvailability);
-            }else{
+            } else {
                 // always available
                 resourceType = new ResourceType(name, requirements, conflicts);
             }
@@ -238,12 +244,13 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
 
         // transform ids to objects
         // this happens afterwards so a resource type can conflict with a resource type that's lower in the init file
-        for(int i = 0; i < reqList.size(); i++)
-        {
-        	for(Integer j : reqIntList.get(i))
-        		reqList.get(i).add(db.getResourceTypes().get(j));
-        	for(Integer j : conflictIntList.get(i))
-        		conflictList.get(i).add(db.getResourceTypes().get(j));
+        for (int i = 0; i < reqList.size(); i++) {
+            for (Integer j : reqIntList.get(i)) {
+                reqList.get(i).add(db.getResourceTypes().get(j));
+            }
+            for (Integer j : conflictIntList.get(i)) {
+                conflictList.get(i).add(db.getResourceTypes().get(j));
+            }
         }
         expectLabel("resources");
         ArrayList<Resource> resourcesList = new ArrayList<>();
@@ -263,26 +270,24 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
 
         expectLabel("developers");
         // new resourcetype for developers
-        ResourceType devType = new ResourceType("developer", new WorkWeekConfiguration(LocalTime.of(8, 00), LocalTime.of(17,00)));
+        ResourceType devType = new ResourceType("developer", new WorkWeekConfiguration(LocalTime.of(8, 00), LocalTime.of(17, 00)));
         db.addResourceType(devType);
         while (ttype == '-') {
             expectChar('-');
             String name = expectStringField("name");
-            Developer dev =  new Developer(name, clock);
+            Developer dev = new Developer(name, clock);
             // add to type
             // TODO workweek conf?
             devType.addResource(dev);
             // developer is user and resource at the same time
             db.addUser(dev);
             db.addResource(dev);
-            
+
         }
-        Map<ResourceType, Integer> hashMap = new HashMap<> ();
+        Map<ResourceType, Integer> hashMap = new HashMap<>();
         hashMap.put(devType, 1);
         // dev is standard requirement
         Task.setStandardRequiredResources(hashMap);
-        
-        
 
         expectLabel("projects");
 
@@ -295,33 +300,9 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             container.createProject(name, description, creationTime, dueTime);
         }
 
-        expectLabel("plannings");
-        List<HashMap<ResourceType, Integer>> requiredResourceMaps = new ArrayList<>();
-        LinkedHashMap<LocalDateTime, List<Resource>> plannings = new LinkedHashMap<>();
-        while (ttype == '-') {
-            expectChar('-');
-            LocalDateTime dueTime = expectDateField("plannedStartTime");
-            expectLabel("developers");
-            List<Integer> developers = expectIntList();
-            // transform ids to objects
-            ArrayList<Resource> devs = new ArrayList<>();
-            ArrayList<Resource> devList = new ArrayList<>(devType.getResources());
-            for(int id : developers){
-                devs.add(devList.get(id));
-            }
-            
-            // store plannings with there resources
-            plannings.put(dueTime, devs);
-            
-            expectLabel("resources");
-            List<IntPair> resources = expectLabeledPairList("type", "quantity");
-            HashMap<ResourceType, Integer> resourceMap = new LinkedHashMap<>();
-            for(IntPair pair : resources){
-                resourceMap.put(db.getResourceTypes().get(pair.first), pair.second);
-            }
-            requiredResourceMaps.add(resourceMap);
-        }
-
+        /**
+         * Tasks
+         */
         expectLabel("tasks");
         List<Task> taskList = new ArrayList<>();
         while (ttype == '-') {
@@ -347,25 +328,30 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             }
 
             Duration duration = new Duration(estimatedDuration);
-            
-            expectLabel("planning");
-            Integer planning;
+
+            expectLabel("resources");
+            List<IntPair> resources = expectLabeledPairList("type", "quantity");
+            HashMap<ResourceType, Integer> resourceMap = new LinkedHashMap<>();
+            for (IntPair pair : resources) {
+                resourceMap.put(db.getResourceTypes().get(pair.first), pair.second);
+            }
+
             Task task;
             // we need the index of the keys of the planning map
             // because the initfile uses id's to refer to plannings
-            ArrayList<LocalDateTime> arrayList = new ArrayList<>(plannings.keySet());
+
             if (ttype == TT_NUMBER) {
-                planning = expectInt();
-                task = container.getProject(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, requiredResourceMaps.get(planning));
+
+                task = container.getProject(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, resourceMap);
                 // TODO dit zou moeten werken, maar geeft een error, dit voegt enkel de developers toe aan de planning
                 // de andere resources worden blijkbaar apart gereserveerd later, zie volgende TODO
                 //task.plan(arrayList.get(planning), plannings.get(arrayList.get(planning)), clock);
-            }else{
+            } else {
                 task = container.getProject(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, Task.NO_REQUIRED_RESOURCE_TYPES);
             }
             // add to temporary list
             taskList.add(task);
-            
+
             expectLabel("status");
             String status = "";
             if (isWord("finished")) {
@@ -382,29 +368,52 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             if (!"".equals(status) && !(status.equalsIgnoreCase("executing"))) {
                 LocalDateTime startTime = expectDateField("startTime");
                 LocalDateTime endTime = expectDateField("endTime");
-                
-                if(status.equalsIgnoreCase("failed")){
+
+                if (status.equalsIgnoreCase("failed")) {
                     container.getProject(projectId).getTask(task.getId()).fail(new Timespan(startTime, endTime), clock.getTime());
-                }else if(status.equalsIgnoreCase("finished")){
+                } else if (status.equalsIgnoreCase("finished")) {
                     container.getProject(projectId).getTask(task.getId()).finish(new Timespan(startTime, endTime), clock.getTime());
                 }
-              
+
             }
 
         }
 
-        expectLabel("reservations");
+        /**
+         * Plannings
+         */
+        expectLabel("plannings");
+
         while (ttype == '-') {
             expectChar('-');
-            int resource = expectIntField("resource");
-            int task = expectIntField("task");
-            LocalDateTime startTime = expectDateField("startTime");
-            LocalDateTime endTime = expectDateField("endTime");
-            // TODO deze reservations staan los van een planning en zijn enkel
-            // te koppelen via een taak, wat het complex maakt, want bij ons moet 
-            // een planning in 1 keer gemaakt worden
-            //resourcesList.get(resource).makeReservation(taskList.get(task), new Timespan(startTime, endTime));
+            LocalDateTime startTime = expectDateField("plannedStartTime");
+            expectLabel("developers");
+            List<Integer> developers = expectIntList();
+            // transform ids to objects
+            ArrayList<Resource> resources = new ArrayList<>();
+            ArrayList<Resource> devList = new ArrayList<>(devType.getResources());
+            for (int id : developers) {
+                resources.add(devList.get(id));
+            }
+
+            expectLabel("resources");
+            List<Integer> resourcesIds = new ArrayList<>();
+            if (ttype == '[') {
+                resourcesIds = expectIntList();
+            }
+            // add rest of resources
+            for (int id : resourcesIds) {
+                resources.add(db.getResources().get(id));
+            }
+
+            expectLabel("task");
+            if (ttype == TT_NUMBER) {
+                int taskId = expectInt();
+                taskList.get(taskId).plan(startTime, resources, clock);
+            }
+
         }
+
         if (ttype != TT_EOF) {
             error("End of file or '-' expected");
         }

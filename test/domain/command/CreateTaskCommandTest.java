@@ -7,7 +7,6 @@ import domain.time.Duration;
 import domain.time.Timespan;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import org.easymock.Capture;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -20,8 +19,6 @@ import org.junit.Test;
  * @author Mathias
  */
 public class CreateTaskCommandTest {
-    private Project project;
-    private Capture<Object> capturedArgument;
     private ProjectContainer pc;
     private Project p;
     private Task t0;

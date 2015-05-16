@@ -82,6 +82,13 @@ public class HandlerFactory {
     }
     
     /** 
+     * @return A new delegate task handler.
+     */
+    public DelegateTaskHandler getDelegatedTaskHandler(){
+        return new DelegateTaskHandler(manager, clock,auth, acl, db);
+    }
+    
+    /** 
      * @return A new run simulation handler, initialized with this manager.
      */
     public RunSimulationHandler getSimulationHandler(){
