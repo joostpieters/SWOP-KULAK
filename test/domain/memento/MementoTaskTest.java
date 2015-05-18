@@ -143,7 +143,19 @@ public class MementoTaskTest {
 		Task.Memento t0memento0 = t0.createMemento();
 		TaskProperties t0properties0 = new TaskProperties(t0);
 		t0properties0.checkEquals(t0);
-		// TODO resource types enzo worden nog veranderd dus kzou het toch gewoon opnieuw moeten herschrijven
+		
+		Planning planning1 = EasyMock.createNiceMock(Planning.class);
+		t0.setPlanning(planning1);
+		
+		Task.Memento t0memento1 = t0.createMemento();
+		TaskProperties t0properties1 = new TaskProperties(t0);
+		t0properties1.checkEquals(t0);
+		
+		t0.setMemento(t0memento0);
+		t0properties0.checkEquals(t0);
+		
+		t0.setMemento(t0memento1);
+		t0properties1.checkEquals(t0);
 	}
 	
 	private class TaskProperties
