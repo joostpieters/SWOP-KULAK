@@ -1,7 +1,7 @@
 package domain.memento;
 
 import domain.Project;
-import domain.BranchOffice;
+import domain.ProjectContainer;
 import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Duration;
@@ -26,11 +26,11 @@ public class MementoTest {
     private static Project p1, p2, p3;
     private static Task t1, t2, t3;
     
-    private static BranchOffice container;
+    private static ProjectContainer container;
     
     @BeforeClass
     public static void setUpClass() {
-        container = new BranchOffice();
+        container = new ProjectContainer();
         clock = new Clock(LocalDateTime.MAX);
         container.createProject("Test", "Description", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 12, 17, 50));
         p1 = container.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
@@ -53,7 +53,7 @@ public class MementoTest {
      */
     @Test (expected=ObjectNotFoundException.class)
     public void testGetProjectFail() throws ObjectNotFoundException{
-        BranchOffice instance = new BranchOffice();
+        ProjectContainer instance = new ProjectContainer();
         instance.getProject(12);
     }
     
@@ -62,7 +62,7 @@ public class MementoTest {
      */
     @Test
     public void testGetProjectAndCreateProject() throws ObjectNotFoundException{
-        BranchOffice projectContainer = new BranchOffice();
+        ProjectContainer projectContainer = new ProjectContainer();
         Project project1 = projectContainer.createProject("Test", "Description", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 12, 17, 50));
         int pId = project1.getId();
         Project project2 = projectContainer.getProject(pId);
