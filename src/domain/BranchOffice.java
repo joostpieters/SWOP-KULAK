@@ -10,7 +10,18 @@ public class BranchOffice {
 	private final ProjectContainer projects;
 	private final ResourceContainer resources;
 	private final Database database;
+    private String location;
 	
+        /**
+         * Initializes this bracnhoffice with the given location
+         * 
+         * @param location The location where this branch office is situated
+         */
+        public BranchOffice(String location) {
+            this(new Database());
+            this.location = location;            
+	}
+        
 	public BranchOffice() {
 		this(new Database());
 	}
@@ -45,5 +56,12 @@ public class BranchOffice {
 	public Database getWorld() {
 		return database;
 	}
+        /**
+         * 
+         * @return The location of this branch office 
+         */
+    public String getLocation() {
+        return location;
+    }
 
 }
