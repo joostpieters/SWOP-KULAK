@@ -38,8 +38,11 @@ public class Resource implements DetailedResource {
      * 
      */
     public Resource(String name, ResourceType type) {
-        if (!canHaveAsName(name)) {
+        if(!canHaveAsName(name)) {
             throw new IllegalArgumentException("This resource can't have the given name as name.");
+        }
+        if(!canHaveAsType(type)) {
+        	throw new IllegalArgumentException("This resource can't have the given type as type.");
         }
         
         this.id = generateId();
@@ -49,8 +52,8 @@ public class Resource implements DetailedResource {
         this.previousReservations = new ArrayList<>();
                
     }
-    
-    /**
+
+	/**
      * **************************************************
      * Getters & Setters *
 	 ***************************************************
@@ -89,6 +92,16 @@ public class Resource implements DetailedResource {
     public String getName() {
         return name;
     }
+    
+    /**
+     * Checks whether this resource can have the given type as its type
+     * 
+     * @param type The type to check
+     * @return True if and only if the given type is not null.
+     */
+    public boolean canHaveAsType(ResourceType type) {
+		return type != null;
+	}
 
     /**
 	 * @return the type of this resource

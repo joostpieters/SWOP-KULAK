@@ -4,7 +4,6 @@ import domain.task.Task;
 import domain.time.Timespan;
 import exception.ConflictException;
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import static org.easymock.EasyMock.createNiceMock;
@@ -23,8 +22,8 @@ public class ResourceTest {
 	private Timespan justAfter = new Timespan(reservedSpan.getEndTime(), reservedSpan.getEndTime().plusDays(1));
 	
 	private Task t0, t1, t2;
-	Map<ResourceType, Integer> reqs1, reqs2;
 	private Resource r0, r1;
+	private ResourceType type0, type1;
 	private Reservation reservation;
    
 
@@ -34,29 +33,39 @@ public class ResourceTest {
 		t1 = createNiceMock(Task.class);
 		t2 = createNiceMock(Task.class);
 		
-		r0 = new Resource("not reserved");
-		r1 = new Resource("reserved");
+		type0 = new ResourceType("type2");
+		type1 = new ResourceType("type3");
+		
+		r0 = new Resource("not reserved", type0);
+		r1 = new Resource("reserved", type1);
 		reservation = r1.makeReservation(t0, reservedSpan);
 	}
 
 	@Test
 	public void testConstructorValid() {
 		String name = "r";
-		Resource r = new Resource(name);
+		ResourceType type = new ResourceType("test");
+		Resource r = new Resource(name, type);
 		
 		assertEquals(name, r.getName());
+		assertEquals(type, r.getType());
 		assertTrue(r.getReservations().isEmpty());
 		assertTrue(r.getPreviousReservations().isEmpty());
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructorNullName() {
-		new Resource(null);
+		new Resource(null, type0);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructorShortName() {
-		new Resource("");
+		new Resource("", type0);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testConstructorNullType() {
+		new Resource("name", null);
 	}
 
 	@Test
@@ -156,19 +165,19 @@ public class ResourceTest {
         
         @Test
 	public void testClearFutureReservations() {
-            // just overlapping on edge
-            r0.makeReservation(t0, new Timespan(startTime, startTime.plusHours(2)));
-            r0.clearFutureReservations(startTime, t0);
-            assertEquals(null, r0.getReservation(t0));
-            
-            // partly consumed
-            r0.makeReservation(t0, new Timespan(startTime, startTime.plusHours(2)));
-            r0.clearFutureReservations(startTime.plusHours(1), t0);
-            assertEquals(startTime.plusHours(1), r0.getPreviousReservations().get(0).getEndTime());
-            
-            // no reservations in future
-            r0.makeReservation(t0, new Timespan(startTime, startTime.plusHours(2)));
-            r0.clearFutureReservations(startTime.plusHours(8), t0);
-            assertEquals(1, r0.getReservations().size());
+        // just overlapping on edge
+        r0.makeReservation(t0, new Timespan(startTime, startTime.plusHours(2)));
+        r0.clearFutureReservations(startTime, t0);
+        assertEquals(null, r0.getReservation(t0));
+        
+        // partly consumed
+        r0.makeReservation(t0, new Timespan(startTime, startTime.plusHours(2)));
+        r0.clearFutureReservations(startTime.plusHours(1), t0);
+        assertEquals(startTime.plusHours(1), r0.getPreviousReservations().get(0).getEndTime());
+        
+        // no reservations in future
+        r0.makeReservation(t0, new Timespan(startTime, startTime.plusHours(2)));
+        r0.clearFutureReservations(startTime.plusHours(8), t0);
+        assertEquals(1, r0.getReservations().size());
 	}
 }
