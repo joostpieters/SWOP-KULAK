@@ -1,18 +1,11 @@
 package domain;
 
-import domain.task.Task;
-import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
-import exception.ConflictException;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import static org.easymock.EasyMock.createNiceMock;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -25,28 +18,18 @@ public class ResourceTypeTest {
     private LocalTime availableTo = LocalTime.of(17, 0);
     private WorkWeekConfiguration available = new WorkWeekConfiguration(availableFrom, availableTo,
             WorkWeekConfiguration.NO_LUNCHBREAK, WorkWeekConfiguration.NO_LUNCHBREAK);
-    private LocalDateTime startRes = LocalDateTime.of(2015, 1, 1, 14, 0);
-    private LocalDateTime endRes = LocalDateTime.of(2015, 1, 3, 15, 0);
-    private Timespan reserved = new Timespan(startRes, endRes);
 
     private ResourceType type0, type1, type2;
     private Resource res0, res1, res2;
-    private Task t0, t1;
 
     @Before
     public void setUp() throws Exception {
-        t0 = createNiceMock(Task.class);
-        t1 = createNiceMock(Task.class);
-        res0 = new Resource("tic");
-        res1 = new Resource("tac");
-        res1.makeReservation(t0, reserved);
-        res2 = new Resource("bla");
-
         type0 = new ResourceType("very simple");
         type1 = new ResourceType("still simple", Arrays.asList(type0), new ArrayList<>());
-        type1.addResource(res0);
         type2 = new ResourceType("limited", new ArrayList<>(), Arrays.asList(type0), available);
-        type2.addResource(res1);
+        
+        res0 = new Resource("tic", type1);
+        res1 = new Resource("tac", type2);
     }
 
     @Test
@@ -103,116 +86,6 @@ public class ResourceTypeTest {
     }
 
     @Test
-    public void testGetAvailableResources() {
-        assertTrue(type0.getAvailableResources(reserved).isEmpty());
-
-        Set<Resource> availableResources = type1.getAvailableResources(reserved);
-        assertEquals(1, availableResources.size());
-        assertTrue(availableResources.contains(res0));
-
-        assertTrue(type2.getAvailableResources(reserved).isEmpty());
-        availableResources = type2.getAvailableResources(new Timespan(endRes));
-        assertEquals(1, availableResources.size());
-        assertTrue(availableResources.contains(res1));
-    }
-
-    @Test
-    public void testHasAvailableResources() {
-        assertFalse(type0.hasAvailableResources(reserved, -1));
-        assertTrue(type0.hasAvailableResources(reserved, 0));
-        assertFalse(type0.hasAvailableResources(reserved, 1));
-        assertTrue(type1.hasAvailableResources(reserved, 0));
-        assertTrue(type1.hasAvailableResources(reserved, 1));
-        assertFalse(type1.hasAvailableResources(reserved, 2));
-        assertTrue(type2.hasAvailableResources(reserved, 0));
-        assertFalse(type2.hasAvailableResources(reserved, 1));
-        assertTrue(type2.hasAvailableResources(new Timespan(endRes), 1));
-        assertFalse(type2.hasAvailableResources(new Timespan(endRes), 2));
-    }
-
-    @Test
-    public void testFindConflictingTasks() {
-        assertTrue(type0.findConflictingTasks(reserved).isEmpty());
-        assertTrue(type1.findConflictingTasks(reserved).isEmpty());
-        Set<Task> conflictingTasks = type2.findConflictingTasks(reserved);
-        assertEquals(1, conflictingTasks.size());
-        assertTrue(conflictingTasks.contains(t0));
-    }
-
-    @Test
-    public void testMakeReservationValid() throws ConflictException {
-        Set<Resource> reservations = type1.makeReservation(t0, reserved, 1);
-        assertEquals(1, reservations.size());
-        assertTrue(reservations.contains(res0));
-        reservations = type2.makeReservation(t1, new Timespan(endRes, endRes.plusDays(1)), 1);
-        assertEquals(1, reservations.size());
-        assertTrue(reservations.contains(res1));
-        type2.addResource(res2);
-        reservations = type2.makeReservation(t1, reserved, 1);
-        assertEquals(1, reservations.size());
-        assertTrue(reservations.contains(res2));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testMakeReservationNoResources() throws ConflictException {
-        type0.makeReservation(t0, reserved, 1);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testMakeEmptyReservation() throws ConflictException {
-        type1.makeReservation(t0, reserved, 0);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testMakeReservationSameTask() throws ConflictException {
-        type2.makeReservation(t0, new Timespan(endRes, endRes.plusDays(1)), 1);
-    }
-
-    @Test(expected = ConflictException.class)
-    public void testMakeReservationOverlappingTime() throws ConflictException {
-        type2.makeReservation(t1, reserved, 1);
-    }
-
-    @Test
-    public void testNextAvailableTimespans() {
-        assertTrue(type0.nextAvailableTimespans(startRes).isEmpty());
-        SortedSet<Timespan> availableTimespans = type1.nextAvailableTimespans(startRes);
-        assertEquals(1, availableTimespans.size());
-        assertTrue(availableTimespans.contains(new Timespan(startRes)));
-
-        availableTimespans = type2.nextAvailableTimespans(endRes);
-        assertEquals(1, availableTimespans.size());
-        assertTrue(availableTimespans.contains(new Timespan(endRes)));
-
-        availableTimespans = type2.nextAvailableTimespans(startRes);
-        assertEquals(1, availableTimespans.size());
-        assertTrue(availableTimespans.contains(new Timespan(endRes)));
-        LocalDateTime beforeStart = startRes.minusDays(1);
-
-        type2.addResource(res2);
-
-        availableTimespans = type2.nextAvailableTimespans(beforeStart);
-        assertEquals(3, availableTimespans.size());
-        assertTrue(availableTimespans.contains(new Timespan(beforeStart)));
-        assertTrue(availableTimespans.contains(new Timespan(endRes)));
-        assertTrue(availableTimespans.contains(new Timespan(beforeStart, startRes)));
-
-        availableTimespans = type2.nextAvailableTimespans(startRes);
-        assertEquals(2, availableTimespans.size());
-        assertTrue(availableTimespans.contains(new Timespan(startRes)));
-        assertTrue(availableTimespans.contains(new Timespan(endRes)));
-        try {
-            type2.makeReservation(t1, reserved, 1);
-        } catch (ConflictException e) {
-        }
-
-        availableTimespans = type2.nextAvailableTimespans(beforeStart);
-        assertEquals(2, availableTimespans.size());
-        assertTrue(availableTimespans.contains(new Timespan(endRes)));
-        assertTrue(availableTimespans.contains(new Timespan(beforeStart, startRes)));
-    }
-
-    @Test
     public void testCanHaveAsCombination() {
         HashMap<ResourceType, Integer> combination = new HashMap<>();
         combination.put(type0, 2);
@@ -225,10 +98,11 @@ public class ResourceTypeTest {
 
     @Test
     public void testNumberOfResources() {
-        type0.addResource(res0);
-        type0.addResource(res1);
-        assertEquals(2, type0.numberOfResources(Arrays.asList(res0,res1,res2)));
+        assertEquals(0, type0.numberOfResources(Arrays.asList(res0,res1,res2)));
+        assertEquals(1, type1.numberOfResources(Arrays.asList(res0,res1,res2)));
         assertEquals(0, type1.numberOfResources(Arrays.asList(res1,res2)));
+        assertEquals(1, type2.numberOfResources(Arrays.asList(res0, res1,res2)));
+        assertEquals(0, type2.numberOfResources(Arrays.asList(res0,res2)));
 
     }
 
