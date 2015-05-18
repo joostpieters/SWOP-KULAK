@@ -1,5 +1,6 @@
 package domain.task;
 
+import domain.BranchOffice;
 import domain.Planning;
 import domain.Project;
 import domain.Resource;
@@ -14,6 +15,7 @@ import domain.time.WorkWeekConfiguration;
 import exception.ConflictException;
 import exception.ResourceTypeConflictException;
 import exception.ResourceTypeMissingReqsException;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,11 +46,13 @@ public class Task implements DetailedTask {
     private final Project project;
     private static Map<ResourceType, Integer> standardRequiredResources = new HashMap<>();
 
+	private boolean isDelegated; // TODO in constructor
     /**
      * A constant to indicate that a task requires no resources
      */
     public static Map<ResourceType, Integer> NO_REQUIRED_RESOURCE_TYPES = new HashMap<>();
     private Planning planning;
+
 
     /**
      * **************************************
@@ -780,7 +784,29 @@ public class Task implements DetailedTask {
     public void setPlanning(Planning planning) {
         this.planning = planning;
     }
-
+	
+	/**
+	 * Checks whether this task is delegated to a branch office which is different from
+	 * the branch office to which the project of this task belongs to.
+	 * 
+	 * @return True if and only if this task is delegated to a branch office different from the one
+	 *         containing the project to which this task belongs to.
+	 */
+	public boolean isDelegated()
+	{
+		return this.isDelegated;
+	}
+	
+	/**
+	 * Sets whether or not this task is delegated.
+	 * 
+	 * @param value Whether or not this task is delegated.
+	 */
+	public void setIsDelegated(boolean value)
+	{
+		this.isDelegated = value;
+	}
+	
     /**
      * This mememnto represents the internal state of this task
      */
@@ -831,4 +857,5 @@ public class Task implements DetailedTask {
             this.planning = planning;
         }
     }
+
 }

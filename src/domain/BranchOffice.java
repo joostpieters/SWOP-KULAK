@@ -1,7 +1,9 @@
 package domain;
 
 import domain.dto.DetailedBranchOffice;
+import domain.task.Task;
 import domain.user.User;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,12 +16,13 @@ public class BranchOffice implements DetailedBranchOffice {
 	
 	private final ProjectContainer projects;
 	private final ResourceContainer resources;
+	private final List<Task> delegatedTasks;
 	
     private String location;
     private List<User> users;
 	
         /**
-         * Initializes this bracnhoffice with the given location
+         * Initializes this branchoffice with the given location
          * 
          * @param location The location where this branch office is situated
          */
@@ -36,10 +39,89 @@ public class BranchOffice implements DetailedBranchOffice {
 	public BranchOffice(ProjectContainer pc, ResourceContainer rc) {
 		projects = pc;
 		resources = rc;
-		
-                users = new ArrayList<>();
+		delegatedTasks = new ArrayList<>();
+		users = new ArrayList<>();
 	}
-
+	
+	/**
+	 * Delegates the given task from this branch office to the given branch office.
+	 * @param task The task to delegate to the given branch office.
+	 * @param branchOffice The branch office to which the given task should be delegated to.
+	 * @throws IllegalArgumentException If the given task is not assigned to this branch office.
+	 */
+	public void delegateTaskTo(Task task, BranchOffice branchOffice) throws IllegalArgumentException
+	{
+		if(!taskIsAssigned(task))
+			throw new IllegalArgumentException("An attempt has been made to delegate a"
+					+ "task from a branch office to which the task is not assigned to.");
+		if(containsDelegatedTask(task))
+			removeDelegatedTask(task);
+		branchOffice.addDelegatedTask(task);
+	}
+	
+	/**
+	 * Adds the given task to this branch offices list of delegated tasks and updates 
+	 * whether or not the task is delegated.
+	 * 
+	 * @param task The task to add to this branch offices list of delegated tasks.
+	 */
+	private void addDelegatedTask(Task task)
+	{
+		this.delegatedTasks.add(task);
+		if(getProjectContainer().containsTask(task))
+			task.setIsDelegated(false);
+		else
+			task.setIsDelegated(true);
+	}
+	/**
+	 * Removes the given task from the list of delegated tasks of this branch office.
+	 * 
+	 * @param task The delegated task to remove from this branch office.
+	 * @throws IllegalArgumentException
+	 *         If this branch office does not contain the given task in its list of delegated tasks.
+	 * @post This branch office does not contain the given task as one of its delegated tasks.
+	 *       | !containsDelegatedTask(task)
+	 */
+	private void removeDelegatedTask(Task task) throws IllegalArgumentException
+	{
+		if(!containsDelegatedTask(task))
+			throw new IllegalArgumentException(
+					"An attempt has been made to remove a delegated task from a branch office"
+					+ " which does not contain the given task as one of its delegated tasks.");
+		this.delegatedTasks.remove(task);
+	}
+	
+	/**
+	 * Checks whether the given task is assigned to this branch office.
+	 * @param task The task to check.
+	 * @return True if the given task is in the list of delegated tasks of this branch office.
+	 *         True if the given task is not delegated and the project container of this branch
+	 *                 office contains the given task.
+	 *         False otherwise.
+	 *         
+	 */
+	public boolean taskIsAssigned(Task task)
+	{
+		if(containsDelegatedTask(task))
+			return true;
+		if(!task.isDelegated() && projects.containsTask(task))
+			return true;
+		return false;
+	}
+	
+	/**
+	 * Checks whether this branch office contains the given ask as a task
+	 * which was delegated to this branch office.
+	 * 
+	 * @param task The task to check.
+	 * @return True if and only if the list of delegated tasks belonging to this
+	 *         branch office contains the given task.
+	 */
+	private boolean containsDelegatedTask(Task task)
+	{
+		return delegatedTasks.contains(task);
+	}
+	
 	/**
 	 * @return the project container
 	 */

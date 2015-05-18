@@ -109,6 +109,19 @@ public class ProjectContainer {
         }
         return availableTasks;
     }
+    
+    /**
+     * Checks whether this project container contains the given task.
+     * 
+     * @param task The task to check.
+     * @return True if and only if the list of all the tasks of this
+     *         project container contains the given task.
+     * @see ProjectContainer#getAllTasks()
+     */
+    boolean containsTask(Task task)
+    {
+    	return getAllTasks().contains(task);
+    }
 
     /**
      * Returns a list with all available tasks in this projectContainer
