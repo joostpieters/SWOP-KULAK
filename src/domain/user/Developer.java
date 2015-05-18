@@ -1,5 +1,6 @@
 package domain.user;
 
+import domain.BranchOffice;
 import domain.Resource;
 import domain.ResourceType;
 import domain.time.Clock;
@@ -13,18 +14,20 @@ public class Developer extends Resource implements User {
     
     private String name;
     private final String role;
+    private final BranchOffice branchoffice;
     
     /**
      * Initializes a new developer with the given name and role
      * 
      * @param name The name of the developer
-     * @param clock The clock this developer should observe
+     * @param clock The clock this developer should observe 
+     * @param branchOffice The office this developer belongs to
      */
-    public Developer(String name, Clock clock) {
+    public Developer(String name, Clock clock, BranchOffice branchOffice) {
         super(name, ResourceType.DEVELOPER);
         this.name = name;
         this.role = "developer";
-     
+        this.branchoffice = branchOffice;
     }
     
     /**
@@ -53,5 +56,15 @@ public class Developer extends Resource implements User {
      @Override
     public String getRole() {
         return role;
+    }
+    
+     /**
+     * 
+     * @return The branchoffice this user belongs to
+     */
+    @Override
+    public BranchOffice getBranchOffice(){
+        return branchoffice;
+        
     }
 }

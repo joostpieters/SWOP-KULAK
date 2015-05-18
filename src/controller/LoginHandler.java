@@ -1,12 +1,18 @@
 package controller;
 
+import domain.BranchOffice;
+import domain.Database;
 import domain.Resource;
+import domain.dto.DetailedBranchOffice;
 import domain.time.WorkWeekConfiguration;
 import domain.user.Auth;
+import domain.user.User;
 import exception.NoAccessException;
 import java.awt.HeadlessException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This handler, handles the login use case
@@ -16,14 +22,17 @@ import java.time.format.DateTimeFormatter;
 public class LoginHandler{
 
     private final Auth auth;
+    private final Database db;
 
     /**
      * Initialize a new create task handler with the given projectContainer.
      *
      * @param auth The authorization manager to use
+     * @param db The database to use
      */
-    public LoginHandler(Auth auth) {        
+    public LoginHandler(Auth auth, Database db) {        
         this.auth = auth;
+        this.db = db;
     }
 
     
@@ -82,6 +91,25 @@ public class LoginHandler{
      */
    public boolean loggedIn(){
       return auth.loggedIn();
+   }
+   
+   /**
+    * 
+    * @return A list of all brancoffices in this company 
+    */
+   public List<DetailedBranchOffice> getOffices(){
+       return new ArrayList<>(db.getOffices());
+   }
+   
+   /**
+    * Returns all the developers of the given branchoffice
+     * @param officeId
+    * @return A list of developers of the office with the given id.
+    */
+   public List<User> getUsers(int officeId){
+       BranchOffice office = db.getOffices().get(officeId);
+       
+       return new ArrayList<>(office.getUsers());
    }
 
 }

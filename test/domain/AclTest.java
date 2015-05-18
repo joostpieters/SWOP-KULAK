@@ -27,6 +27,7 @@ public class AclTest {
     private static User user1;
     private static User user2;
     private Clock clock;
+    private BranchOffice branchOffice;
     
     public AclTest() {
     }
@@ -43,13 +44,14 @@ public class AclTest {
     @Before
     public void setUp() {
         clock = EasyMock.createNiceMock(Clock.class);
+        branchOffice = EasyMock.createNiceMock(BranchOffice.class);
         acl = new Acl();
         
         acl.addEntry("manager", new ArrayList<>(Arrays.asList("edit", "remove", "view")));
         acl.addEntry("developer", new ArrayList<>(Arrays.asList("edit", "view")));
         
-        user1 = new GenericUser("John", "manager");
-        user2 = new Developer("Fred", clock);
+        user1 = new GenericUser("John", "manager", branchOffice);
+        user2 = new Developer("Fred", clock, branchOffice);
         
     }
     

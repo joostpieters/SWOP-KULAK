@@ -1,5 +1,6 @@
 package domain;
 
+import domain.dto.DetailedPlanning;
 import domain.task.Task;
 import domain.time.Timespan;
 import java.time.LocalDateTime;

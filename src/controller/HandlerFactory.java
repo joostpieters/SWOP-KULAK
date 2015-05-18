@@ -1,7 +1,7 @@
 package controller;
 
-import domain.Database;
 import domain.BranchOffice;
+import domain.Database;
 import domain.time.Clock;
 import domain.user.Acl;
 import domain.user.Auth;
@@ -99,7 +99,7 @@ public class HandlerFactory {
      * @return A new login handler.
      */
     public LoginHandler getLoginHandler(){
-        return new LoginHandler(auth);
+        return new LoginHandler(auth, db);
     }
     
 }

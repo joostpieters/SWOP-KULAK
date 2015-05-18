@@ -17,6 +17,7 @@ import domain.time.Duration;
 import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
 import domain.user.Developer;
+import domain.user.GenericUser;
 import exception.ConflictException;
 import java.io.IOException;
 import java.io.Reader;
@@ -272,7 +273,25 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             
             
         }
+        
+        expectLabel("managers");
+        
+        while (ttype == '-') {
+            expectChar('-');
+            String name = expectStringField("name");
+            int officeId = expectIntField("office");
+            GenericUser manager = new GenericUser(name,"manager" , db.getOffices().get(officeId));
+            db.getOffices().get(officeId).addUser(manager);
+                        
+            // developer is user and resource at the same time
+            db.addUser(manager);
+            
 
+        }
+        
+        /**
+         * Developers
+         */
         expectLabel("developers");
         // new resourcetype for developers
         ArrayList<Resource> devList = new ArrayList<>();
@@ -281,7 +300,9 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
         while (ttype == '-') {
             expectChar('-');
             String name = expectStringField("name");
-            Developer dev = new Developer(name, clock);
+            int officeId = expectIntField("office");
+            Developer dev = new Developer(name, clock, db.getOffices().get(officeId));
+            db.getOffices().get(officeId).addUser(dev);
             // add to temp list
             devList.add(dev);
             // TODO workweek conf?

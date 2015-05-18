@@ -2,8 +2,8 @@ package init;
 
 import UI.swingGUI.MainFrame;
 import controller.HandlerFactory;
-import domain.Database;
 import domain.BranchOffice;
+import domain.Database;
 import domain.time.Clock;
 import domain.user.Acl;
 import domain.user.Auth;
@@ -52,20 +52,10 @@ public class Bootstrap {
         }
 
         Auth auth = new Auth(db);
-
-        auth.registerUser(new GenericUser("root", "admin"));
-        auth.registerUser(new GenericUser("manager", "manager"));
-        String username;
-        while (true) {
-            username = JOptionPane.showInputDialog("Enter your username");
-
-            if (username == null || auth.login(username)) {
-                break;
-            } else {
-                JOptionPane.showMessageDialog(null, "You entered the wrong credentials.", null, JOptionPane.WARNING_MESSAGE);
-            }
-        }
-
+        //TODO
+        auth.registerUser(new GenericUser("root", "admin", null));
+        auth.registerUser(new GenericUser("manager", "manager",null));
+        
         Acl acl = initAcl();
         HandlerFactory factory = new HandlerFactory(manager, clock, auth, acl, db);
 

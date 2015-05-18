@@ -1,5 +1,7 @@
 package domain.user;
 
+import domain.BranchOffice;
+
 /**
  * This class represents a developer in the system
  * 
@@ -8,17 +10,19 @@ package domain.user;
 public class GenericUser implements User {
     private String name;
     private final String role;
+    private final BranchOffice branchoffice;
 
     /**
      * Initialize a new user with the given name and role
      * 
      * @param name The name of the manager
      * @param role The role of the user
+     * @param branchOffice The office this user belongs to
      */
-    public GenericUser(String name, String role) {
+    public GenericUser(String name, String role, BranchOffice branchOffice) {
         this.name = name;
         this.role = role;
-       
+       this.branchoffice = branchOffice;
     }
     
     /**
@@ -48,4 +52,15 @@ public class GenericUser implements User {
     public String getRole() {
         return role;
     }  
+    
+    
+     /**
+     * 
+     * @return The branchoffice this user belongs to
+     */
+    @Override
+    public BranchOffice getBranchOffice(){
+        return branchoffice;
+        
+    }
 }

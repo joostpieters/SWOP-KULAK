@@ -1,6 +1,5 @@
 package domain.dto;
 
-import domain.DetailedPlanning;
 import domain.task.Status;
 import domain.time.Duration;
 import domain.time.Timespan;

@@ -1,4 +1,4 @@
-package domain;
+package domain.dto;
 
 import domain.dto.DetailedResource;
 import domain.time.Timespan;

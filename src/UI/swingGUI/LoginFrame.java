@@ -1,6 +1,8 @@
 package UI.swingGUI;
 
 import controller.LoginHandler;
+import domain.dto.DetailedBranchOffice;
+import domain.user.User;
 import exception.NoAccessException;
 import java.awt.CardLayout;
 import java.awt.HeadlessException;
@@ -38,8 +40,8 @@ public class LoginFrame extends javax.swing.JFrame {
      */
     private void initOfficeList() {
         DefaultListModel listModel = new DefaultListModel();
-        for (int i = 0; i < 5; i++) {
-            listModel.addElement("test");
+        for (DetailedBranchOffice office : handler.getOffices()) {
+            listModel.addElement(office.getLocation());
         }
 
         officeList.setModel(listModel);
@@ -48,10 +50,11 @@ public class LoginFrame extends javax.swing.JFrame {
     /**
      * Fills the user list with the given data
      */
-    private void initUserList(List<String> users) {
+    private void initUserList(List<User> users) {
+        // TODO dto?
         DefaultListModel listModel = new DefaultListModel();
-        for (String user : users) {
-            listModel.addElement(user);
+        for (User user : users) {
+            listModel.addElement(user.getName());
         }
 
         userList.setModel(listModel);
@@ -212,8 +215,8 @@ public class LoginFrame extends javax.swing.JFrame {
      */
     private void selectOfficeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectOfficeButtonActionPerformed
         if (officeList.getSelectedValue() != null) {
-            // TODO
-            initUserList(null);
+            
+            initUserList(handler.getUsers(officeList.getSelectedIndex()));
             CardLayout card = (CardLayout) mainPanel.getLayout();
             card.show(mainPanel, "updateTask");
         } else {

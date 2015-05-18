@@ -1,5 +1,7 @@
 package domain.user;
 
+import domain.BranchOffice;
+
 /**
  *  This interface represents a user of the system
  * 
@@ -25,5 +27,11 @@ public interface User {
      * @return The role of this user 
      */
     public String getRole();
+    
+     /**
+     * 
+     * @return The branchoffice this user belongs to
+     */
+    public BranchOffice getBranchOffice();
 
 }
