@@ -2,6 +2,7 @@ package UI.swingGUI;
 
 import controller.ShowProjectHandler;
 import domain.dto.DetailedProject;
+import domain.dto.DetailedResource;
 import domain.dto.DetailedTask;
 import java.awt.CardLayout;
 import java.time.format.DateTimeFormatter;
@@ -80,6 +81,7 @@ public class ShowProjectFrame extends javax.swing.JFrame {
      */
     private void initDetailedProject(DetailedProject project) {
         projectNameLabel.setText(project.getName());
+        
         creationTimeLabel.setText(project.getCreationTime().format(formatter));
         dueTimeLabel.setText(project.getDueTime().format(formatter));
         descriptionLabel.setText(project.getDescription());
@@ -138,6 +140,13 @@ public class ShowProjectFrame extends javax.swing.JFrame {
             taskStatusLabel.setText(task.getStatus().toString());
             timespanLabel.setText("n/a");
         }
+        
+        String resources = "";
+        for (DetailedResource res : task.getPlanning().getResources()) {
+            resources += res.getName() + ",";
+        }
+        taskPlanningLabel.setText(task.getPlanning() == null ? "n/a" : task.getPlanning().getTimespan().toString() + ": " + resources);
+        
         
         taskDescriptionLabel.setText(task.getDescription());
         taskAccDevLabel.setText(task.getAcceptableDeviation() + "%");
@@ -222,6 +231,8 @@ public class ShowProjectFrame extends javax.swing.JFrame {
         jSeparator3 = new javax.swing.JSeparator();
         jLabel15 = new javax.swing.JLabel();
         alternativeTaskLabel = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        taskPlanningLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Select Project");
@@ -423,6 +434,9 @@ public class ShowProjectFrame extends javax.swing.JFrame {
         jLabel15.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
         jLabel15.setText("Timespan:");
 
+        jLabel19.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        jLabel19.setText("Planning:");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -468,7 +482,11 @@ public class ShowProjectFrame extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(alternativeTaskLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 508, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(timespanLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 521, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(timespanLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 521, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(taskPlanningLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 482, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -476,16 +494,24 @@ public class ShowProjectFrame extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(taskEstDurLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(31, 31, 31)
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26)
+                        .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(taskEstDurLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(29, 29, 29)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(38, 38, 38))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(taskPlanningLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel9)
                     .addComponent(taskAccDevLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -591,6 +617,7 @@ public class ShowProjectFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -618,6 +645,7 @@ public class ShowProjectFrame extends javax.swing.JFrame {
     private javax.swing.JLabel taskAccDevLabel;
     private javax.swing.JLabel taskDescriptionLabel;
     private javax.swing.JLabel taskEstDurLabel;
+    private javax.swing.JLabel taskPlanningLabel;
     private javax.swing.JLabel taskStatusLabel;
     private javax.swing.JTable taskTable;
     private javax.swing.JLabel timespanLabel;

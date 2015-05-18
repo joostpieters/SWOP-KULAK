@@ -1,5 +1,6 @@
 package domain.dto;
 
+import domain.DetailedPlanning;
 import domain.task.Status;
 import domain.time.Duration;
 import domain.time.Timespan;
@@ -67,5 +68,11 @@ public interface DetailedTask {
      * @return The project this task belongs to 
      */
     public DetailedProject getProject();
+    
+    /**
+     *
+     * @return The planning of this task
+     */
+    public DetailedPlanning getPlanning();
     
 }

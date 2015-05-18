@@ -15,7 +15,7 @@ import java.util.Map.Entry;
  * 
  * @author Mathias, Frederic, Pieter-Jan
  */
-public class Planning implements ClockObserver{
+public class Planning implements ClockObserver, DetailedPlanning{
     
     private List<Resource> resources;
     private final Timespan timespan;
@@ -159,6 +159,25 @@ public class Planning implements ClockObserver{
     		if(!resource.isAvailable(time))
     			return false;
     	return true;
+    }
+    
+    
+    /**
+     * 
+     * @return The timespan of this planning 
+     */
+    @Override
+    public Timespan getTimespan(){
+        return timespan;
+    }
+    
+    /**
+     * 
+     * @return The resources assigned to this planning 
+     */
+    @Override
+    public List<Resource> getResources(){
+        return new ArrayList<>(resources);
     }
     
 }
