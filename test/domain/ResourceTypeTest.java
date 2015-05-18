@@ -35,7 +35,6 @@ public class ResourceTypeTest {
 
     @Before
     public void setUp() throws Exception {
-        Project p = new Project("name", "description", startRes, endRes);
         t0 = createNiceMock(Task.class);
         t1 = createNiceMock(Task.class);
         res0 = new Resource("tic");

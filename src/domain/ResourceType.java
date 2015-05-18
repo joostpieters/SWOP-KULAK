@@ -1,24 +1,13 @@
 package domain;
 
 import domain.dto.DetailedResourceType;
-import domain.task.Task;
-import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
-import exception.ConflictException;
 import exception.ResourceTypeConflictException;
 import exception.ResourceTypeMissingReqsException;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import javax.management.modelmbean.RequiredModelMBean;
 
 /**
  * This class represents a common type of resources
@@ -31,7 +20,6 @@ public class ResourceType implements DetailedResourceType {
     private final List<ResourceType> requirements;
     private final List<ResourceType> conflicts;
     private final WorkWeekConfiguration availability;
-    private final Set<Resource> resources;
 
     /**
      * Initialize a resource type with given name, required and conflicting
@@ -57,7 +45,6 @@ public class ResourceType implements DetailedResourceType {
         this.requirements = requirements;
         this.conflicts = conflicts;
         this.availability = availability;
-        resources = new HashSet<>();
     }
 
     /**
@@ -161,142 +148,71 @@ public class ResourceType implements DetailedResourceType {
         return availability != null;
     }
 
-    /**
-     * @return the resources that are instances of this resourcetype
-     */
-    @Override
-    public Set<Resource> getResources() {
-        return new HashSet<>(resources);
-    }
+    /****************************************************
+     * Others                                           *
+	 ****************************************************/
 
-    /**
-     * Check whether a given resource can be added to this type.
-     *
-     * @param resource The resource to be checked.
-     * @return	{@code true} if not null.
-     */
-    public boolean canHaveAsResource(Resource resource) {
-        return resource != null;
-    }
-
-    /**
-     * Add a resource to the list of resources of this type.
-     * And sets its workweekconfiguration to this configuration.
-     *
-     * @param resource The resource to be added.
-     */
-    public void addResource(Resource resource) {
-        if (!canHaveAsResource(resource)) {
-            throw new IllegalArgumentException("The given resource is not of the right type.");
-        }
-        resource.setAvailability(availability);
-        resources.add(resource);
-    }
-
-    /**
-     * **************************************************
-     * Others *
-	 ***************************************************
-     */
-    /**
-     * Get the set of available resources of this type.
-     *
-     * @param span The time span the resources should be available in.
-     * @return	all available resources of this type at the given time span.
-     */
-    public Set<Resource> getAvailableResources(Timespan span) {
-        Set<Resource> result = new HashSet<>();
-
-        for (Resource r : getResources()) {
-            if (r.isAvailable(span)) {
-                result.add(r);
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Checks whether the given quantity of instances are available of this
-     * resourcetype at the given timespan.
-     *
-     * @param span The timespan to check availability on
-     * @param quantity The quantity necessary of this resourcetype
-     * @return True if and only if the given quantity of instances are available
-     * at the given timespan.
-     */
-    public boolean hasAvailableResources(Timespan span, int quantity) {
-        return (quantity < 0) ? false : getAvailableResources(span).size() >= quantity;
-    }
-
-    /**
-     * Get the set of tasks that cause conflicts with the given time span.
-     *
-     * @param span The time span the tasks conflict with.
-     * @return	all tasks that reserved resources of this type in span.
-     */
-    public Set<Task> findConflictingTasks(Timespan span) {
-        Set<Task> result = new HashSet<>();
-
-        for (Resource r : getResources()) {
-            result.addAll(r.findConflictingTasks(span));
-        }
-
-        return result;
-    }
-
-    /**
-     * Reserve a certain amount of resources of this type for a given task
-     * during a given time span.
-     *
-     * @param task The task to make the reservation for.
-     * @param span The time span during which it should be reserved.
-     * @param quantity The number of resources to be reserved.
-     * @return	the set of resources that got reserved.
-     * @throws ConflictException if the reservation conflicted with other tasks.
-     */
-    public Set<Resource> makeReservation(Task task, Timespan span, int quantity) throws ConflictException {
-        if (quantity < 1) {
-            throw new IllegalArgumentException("At least 1 resource should be reserved.");
-        }
-        if (getResources().size() < quantity) {
-            throw new IllegalArgumentException("There are less resources of this type than you want to reserve.");
-        }
-        Set<Resource> availableResources = getAvailableResources(span);
-        if (availableResources.size() < quantity) {
-            Set<Task> confl = findConflictingTasks(span);
-            throw new ConflictException("There are not enough resources of the right type available.", task, confl);
-        }
-
-        Set<Resource> result = new HashSet<>();
-        for (Resource r : availableResources) {
-            r.makeReservation(task, span);
-            result.add(r);
-            if(result.size() >= quantity)
-            	break;
-        }
-        return result;
-    }
-
-    /**
-     * Get the time spans the resources of this type are available from a
-     * certain point in time.
-     *
-     * @param from The time stamp to start looking for free time spans.
-     * @return	a sorted set of time spans in which the resources of this type
-     * are free. This set contains as many infinite time spans as there are
-     * resources.
-     * @see Resource#nextAvailableTimespans(LocalDateTime)
-     */
-    public SortedSet<Timespan> nextAvailableTimespans(LocalDateTime from) {
-        SortedSet<Timespan> result = new TreeSet<>();
-
-        for (Resource r : getResources()) {
-            result.addAll(r.nextAvailableTimespans(from));
-        }
-
-        return result;
-    }
+//    /**
+//     * Checks whether the given quantity of instances are available of this
+//     * resourcetype at the given timespan.
+//     *
+//     * @param span The timespan to check availability on
+//     * @param quantity The quantity necessary of this resourcetype
+//     * @return True if and only if the given quantity of instances are available
+//     * at the given timespan.
+//     */
+//    public boolean hasAvailableResources(Timespan span, int quantity) {
+//        return (quantity < 0) ? false : getAvailableResources(span).size() >= quantity;
+//    }
+//
+//    /**
+//     * Get the set of tasks that cause conflicts with the given time span.
+//     *
+//     * @param span The time span the tasks conflict with.
+//     * @return	all tasks that reserved resources of this type in span.
+//     */
+//    private Set<Task> findConflictingTasks(Timespan span) {
+//        Set<Task> result = new HashSet<>();
+//
+//        for (Resource r : getResources()) {
+//            result.addAll(r.findConflictingTasks(span));
+//        }
+//
+//        return result;
+//    }
+//
+//    /**
+//     * Reserve a certain amount of resources of this type for a given task
+//     * during a given time span.
+//     *
+//     * @param task The task to make the reservation for.
+//     * @param span The time span during which it should be reserved.
+//     * @param quantity The number of resources to be reserved.
+//     * @return	the set of resources that got reserved.
+//     * @throws ConflictException if the reservation conflicted with other tasks.
+//     */
+//    public Set<Resource> makeReservation(Task task, Timespan span, int quantity) throws ConflictException {
+//        if (quantity < 1) {
+//            throw new IllegalArgumentException("At least 1 resource should be reserved.");
+//        }
+//        if (getResources().size() < quantity) {
+//            throw new IllegalArgumentException("There are less resources of this type than you want to reserve.");
+//        }
+//        Set<Resource> availableResources = getAvailableResources(span);
+//        if (availableResources.size() < quantity) {
+//            Set<Task> confl = findConflictingTasks(span);
+//            throw new ConflictException("There are not enough resources of the right type available.", task, confl);
+//        }
+//
+//        Set<Resource> result = new HashSet<>();
+//        for (Resource r : availableResources) {
+//            r.makeReservation(task, span);
+//            result.add(r);
+//            if(result.size() >= quantity)
+//            	break;
+//        }
+//        return result;
+//    }
 
     /**
      * Checks whether the given list of resourcetypes is compatible with this
@@ -339,7 +255,7 @@ public class ResourceType implements DetailedResourceType {
     public int numberOfResources(List<Resource> resources) {
         int result = 0;
         for (Resource r : resources) {
-            if (getResources().contains(r)) {
+            if (r.getType().equals(this)) {
                 result++;
             }
         }

@@ -41,7 +41,7 @@ public class ShowProjectHandler {
      * @return A list of projects of this projectContainer
      */
     public List<DetailedProject> getProjects(){
-        return new ArrayList<>(manager.getProjects());
+        return new ArrayList<>(manager.getProjects().getProjects());
     }
     
     /**
@@ -51,7 +51,7 @@ public class ShowProjectHandler {
      * @param projectId The id of the project ro retrieve 
      */
     public void selectProject(int projectId){
-        currentProject = manager.getProject(projectId);
+        currentProject = manager.getProjects().getProject(projectId);
     }
     /**
      * @return The current project of this handler.

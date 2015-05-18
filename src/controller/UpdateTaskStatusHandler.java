@@ -52,7 +52,7 @@ public class UpdateTaskStatusHandler extends Handler {
      */
     public Map<DetailedTask, DetailedProject> getAvailableTasks() {
 
-        return new HashMap<>(manager.getAllAvailableTasks());
+        return new HashMap<>(manager.getProjects().getAllAvailableTasks());
     }
 
     /**
@@ -63,8 +63,9 @@ public class UpdateTaskStatusHandler extends Handler {
      * @param tId The id of the task to select.
      */
     public void selectTask(int pId, int tId) {
-        currentTask = manager.getProject(pId).getTask(tId);
-        currentProject = manager.getProject(pId);
+    	Project project = manager.getProjects().getProject(pId);
+        currentTask = project.getTask(tId);
+        currentProject = project;
     }
 
     /**
@@ -111,7 +112,7 @@ public class UpdateTaskStatusHandler extends Handler {
         }
         try {
             if (((Resource) auth.getUser()).getReservation(currentTask) != null) {
-                currentTask.execute(clock);
+                currentTask.execute(clock, manager.getResources());
             }            
             
         } catch (ClassCastException e) {

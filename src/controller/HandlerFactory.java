@@ -71,7 +71,7 @@ public class HandlerFactory {
      * @return A new advance system time handler, initialized with this manager.
      */
     public AdvanceSystemTimeHandler getAdvanceSystemTimeHandler(){
-        return new AdvanceSystemTimeHandler(manager, clock);
+        return new AdvanceSystemTimeHandler(clock);
     }
     
     /** 

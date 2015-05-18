@@ -1,5 +1,7 @@
 package domain.dto;
 
+import domain.ResourceType;
+
 /**
  * This interface provides access to the properties of resourcetype, without 
  * exposing bussiness logic to the UI
@@ -17,5 +19,10 @@ public interface DetailedResource {
      * @return the name of this resource
      */
     String getName();
+    
+    /**
+     * @return the type of this resource
+     */
+    ResourceType getType();
     
 }

@@ -24,9 +24,31 @@ public class Resource implements DetailedResource {
     private static int nextId = 0;
     private final int id;
     private final String name;
+    private final ResourceType type;
     private final Set<Reservation> reservations;
     private final List<Reservation> previousReservations;
+    //TODO: weg ermee
     private WorkWeekConfiguration availability;
+
+    /**
+     * Initialize a resource with a given name and clock to observe.
+     *
+     * @param name The name for this resource.
+     * @param type The type for this resou
+     * 
+     */
+    public Resource(String name, ResourceType type) {
+        if (!canHaveAsName(name)) {
+            throw new IllegalArgumentException("This resource can't have the given name as name.");
+        }
+        
+        this.id = generateId();
+        this.name = name;
+        this.type = type;
+        this.reservations = new HashSet<>();
+        this.previousReservations = new ArrayList<>();
+               
+    }
 
     /**
      * Initialize a resource with a given name and clock to observe.
@@ -35,15 +57,8 @@ public class Resource implements DetailedResource {
      * 
      */
     public Resource(String name) {
-        if (!canHaveAsName(name)) {
-            throw new IllegalArgumentException("This resource can't have the given name as name.");
-        }
-        
-        this.id = generateId();
-        this.name = name;
-        this.reservations = new HashSet<>();
-        this.previousReservations = new ArrayList<>();
-               
+    	//TODO: wat te doen met resources zonder type? 
+        this(name, null);
     }
     
     /**
@@ -87,6 +102,13 @@ public class Resource implements DetailedResource {
     }
 
     /**
+	 * @return the type of this resource
+	 */
+	public ResourceType getType() {
+		return type;
+	}
+
+	/**
      * @return The reservations of this resource
      */
     public Set<Reservation> getReservations() {

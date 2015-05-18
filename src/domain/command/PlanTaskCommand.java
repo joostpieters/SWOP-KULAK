@@ -7,10 +7,10 @@ import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Timespan;
 import exception.ConflictException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 
 /**
@@ -23,6 +23,7 @@ public class PlanTaskCommand implements ICommand {
     private final Task task;
     private final List<Resource> resources;
     private final List<CreateReservationCommand> reservations;
+    //TODO: PlanTaskCommand lijkt niet verantwoordelijk voor bijhouden Clock.
     private final Clock clock;
     
     private final Timespan timespan;
@@ -38,13 +39,13 @@ public class PlanTaskCommand implements ICommand {
      * @param task The task to be planned.
      * @param clock The clock to use with this planning
      */
-    public PlanTaskCommand(Timespan timespan, List<Resource> resources, Task task, Clock clock) {
+    public PlanTaskCommand(Timespan timespan, List<Resource> resources, Task task, Clock clock, List<Resource> availableResources) {
         this.task = task;
         this.resources = resources;
         this.timespan = timespan;
         this.clock = clock;
         reservations = new ArrayList<>();
-        repleteResources();
+        repleteResources(availableResources);
         
         for (Resource resource : resources) {
             reservations.add(new CreateReservationCommand(timespan, resource, task));
@@ -55,15 +56,14 @@ public class PlanTaskCommand implements ICommand {
      * Replete the list of resources to the point that all required resources are met
      * @throws IllegalArgumentException 
      */
-    private void repleteResources() throws IllegalArgumentException {
+    private void repleteResources(List<Resource> availableResources) throws IllegalArgumentException {
         Map<ResourceType, Integer> required = task.getRequiredResources();
         for (ResourceType type : required.keySet()) {
             if (type.numberOfResources(resources) < required.get(type)) {
                 // remove the all ready selected resources from the available resources
-                Set<Resource> availableResources = type.getAvailableResources(timespan);
                 availableResources.removeAll(resources);
                 // chech whether the remaining resources can fulfill the still required quantity
-                if (availableResources.size() < (required.get(type) - type.numberOfResources(resources))) {
+                if (type.numberOfResources(availableResources) < (required.get(type) - type.numberOfResources(resources))) {
                     throw new IllegalArgumentException("There are not enough resources available at this moment.");
                 } else {
                     resources.addAll(availableResources);
@@ -96,6 +96,7 @@ public class PlanTaskCommand implements ICommand {
         		executedCmds.pop().revert();
             throw ex;
         }
+        //TODO: clock in constructor planning attachen
         task.setPlanning(new Planning(resources, timespan, task));
         clock.attach(task.getPlanning());
     }

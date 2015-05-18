@@ -3,6 +3,7 @@ package domain.task;
 import domain.Planning;
 import domain.Project;
 import domain.Resource;
+import domain.ResourceContainer;
 import domain.ResourceType;
 import domain.command.PlanTaskCommand;
 import domain.dto.DetailedTask;
@@ -492,8 +493,8 @@ public class Task implements DetailedTask {
      *
      * @param clock The clock to use to execute from
      */
-    public void execute(Clock clock) {
-        getStatus().execute(this, clock);
+    public void execute(Clock clock, ResourceContainer container) {
+        getStatus().execute(this, clock, container);
     }
 
     /**
@@ -673,10 +674,10 @@ public class Task implements DetailedTask {
      * @throws exception.ConflictException The task's reservations conflict with
      * another task
      */
-    public PlanTaskCommand plan(LocalDateTime startTime, List<Resource> resources, Clock clock) throws ConflictException {
-        Map<ResourceType, Integer> required = getRequiredResources();
-        
-        PlanTaskCommand planCommand = new PlanTaskCommand(new Timespan(startTime, estimatedDuration), resources, this, clock);
+    public PlanTaskCommand plan(LocalDateTime startTime, List<Resource> resources, Clock clock, ResourceContainer container) 
+    		throws ConflictException {
+        Timespan span = new Timespan(startTime, estimatedDuration);
+		PlanTaskCommand planCommand = new PlanTaskCommand(span, resources, this, clock, new ArrayList<>(container.getAvailableResources(span)));
         planCommand.execute();
         return planCommand;
     }
@@ -690,7 +691,7 @@ public class Task implements DetailedTask {
      * @return	a sorted set of possible points in time this task may be started.
      *          The size of the set is defined n.
      */
-    public SortedSet<LocalDateTime> nextAvailableStartingTimes(LocalDateTime from, int n) {
+    public SortedSet<LocalDateTime> nextAvailableStartingTimes(ResourceContainer resContainer, LocalDateTime from, int n) {
     	SortedSet<LocalDateTime> result = new TreeSet<>();
     	Map<ResourceType, Integer> required = getRequiredResources();
     	LocalDateTime next = from;
@@ -700,7 +701,7 @@ public class Task implements DetailedTask {
 			Timespan span = new Timespan(next, end);
 			boolean allAvailable = true;
     		for(ResourceType type : required.keySet()) {
-    			if(!type.hasAvailableResources(span, required.get(type))) {
+    			if(!resContainer.hasAvailableOfType(type, span, required.get(type))) {
     				allAvailable = false;
     				break;
     			}

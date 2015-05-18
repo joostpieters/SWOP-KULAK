@@ -44,7 +44,7 @@ public class Bootstrap {
         Clock clock = new Clock();
         Database db = new Database();
         int option = JOptionPane.showConfirmDialog(null, "Would you like to initialize the system with an input file?");
-        BranchOffice manager = new BranchOffice();
+        BranchOffice manager = new BranchOffice(db);
         if (option == 0) {
             initManagerFromFile(manager, clock, db);
         } else if (option == 2) {
