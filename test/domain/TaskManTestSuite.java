@@ -30,6 +30,7 @@ import scenariotest.UpdateTaskStatusScenarioTest;
                     DurationTest.class,
                     ResourceTest.class,
                     ResourceTypeTest.class,
+                    ResourceContainerTest.class,
                     MementoTest.class,
                     MementoProjectTest.class,
                     MementoProjectContainerTest.class,

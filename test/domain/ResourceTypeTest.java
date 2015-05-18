@@ -30,6 +30,7 @@ public class ResourceTypeTest {
         
         res0 = new Resource("tic", type1);
         res1 = new Resource("tac", type2);
+        res2 = new Resource("bla", type2);
     }
 
     @Test
@@ -101,8 +102,9 @@ public class ResourceTypeTest {
         assertEquals(0, type0.numberOfResources(Arrays.asList(res0,res1,res2)));
         assertEquals(1, type1.numberOfResources(Arrays.asList(res0,res1,res2)));
         assertEquals(0, type1.numberOfResources(Arrays.asList(res1,res2)));
-        assertEquals(1, type2.numberOfResources(Arrays.asList(res0, res1,res2)));
-        assertEquals(0, type2.numberOfResources(Arrays.asList(res0,res2)));
+        assertEquals(2, type2.numberOfResources(Arrays.asList(res0, res1,res2)));
+        assertEquals(1, type2.numberOfResources(Arrays.asList(res0,res2)));
+        assertEquals(0, type2.numberOfResources(Arrays.asList(res0)));
 
     }
 

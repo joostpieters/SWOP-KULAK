@@ -30,12 +30,11 @@ import org.junit.Test;
  */
 public class PlanTaskCommandTest {
 
-    private static Task task;
-    private static Resource car1;
-    private static Resource car2;
-    private static Resource car3;
-    private static Clock clock;
-    private static Capture<Planning> capturedArgument;
+    private Task task;
+    private ResourceType type;
+    private Resource car1, car2, car3;
+    private Clock clock;
+    private Capture<Planning> capturedArgument;
     private PlanTaskCommand planTaskCommand;
     private LocalDateTime start;
     private LocalDateTime end;
@@ -84,10 +83,10 @@ public class PlanTaskCommandTest {
         task2.setPlanning(null);
         
 
-        
-        car1 = new Resource("car1");
-        car2 = new Resource("car2");
-        car3 = new Resource("car3");
+        type = new ResourceType("car");
+        car1 = new Resource("car1", type);
+        car2 = new Resource("car2", type);
+        car3 = new Resource("car3", type);
         start = LocalDateTime.of(2015, Month.MARCH, 10, 10, 30);
         end = LocalDateTime.of(2015, Month.MARCH, 20, 10, 30);
         resList = new ArrayList<>();
@@ -149,7 +148,7 @@ public class PlanTaskCommandTest {
         LocalDateTime start2 = LocalDateTime.of(2015, Month.MARCH, 8, 10, 30);
         LocalDateTime end2 = LocalDateTime.of(2015, Month.MARCH, 13, 10, 30);
         ArrayList<Resource> resList2 = new ArrayList<>();
-        Resource bicycle = new Resource("bicycle");
+        Resource bicycle = new Resource("bicycle", type);
         resList2.add(bicycle);
         resList2.add(car3);
         PlanTaskCommand planTaskCommand2 = new PlanTaskCommand(new Timespan(start2, end2), resList2, task2, clock, new ArrayList<>());
@@ -190,7 +189,7 @@ public class PlanTaskCommandTest {
         LocalDateTime start2 = LocalDateTime.of(2015, Month.MARCH, 8, 10, 30);
         LocalDateTime end2 = LocalDateTime.of(2015, Month.MARCH, 13, 10, 30);
         ArrayList<Resource> resList2 = new ArrayList<>();
-        Resource bicycle = new Resource("bicycle");
+        Resource bicycle = new Resource("bicycle", type);
         resList2.add(bicycle);
         resList2.add(car1);
         resList2.add(car2);

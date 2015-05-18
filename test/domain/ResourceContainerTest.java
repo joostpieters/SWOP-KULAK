@@ -161,6 +161,7 @@ public class ResourceContainerTest {
 
     @Test(expected = ConflictException.class)
     public void testMakeReservationOverlappingTime() throws ConflictException {
+    	//FIXME: misschien niet onbelangrijk... 
         rc3.makeReservation(type1, t1, reserved, 1);
     }
 

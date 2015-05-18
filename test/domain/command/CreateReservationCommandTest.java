@@ -1,13 +1,17 @@
 package domain.command;
 
 import domain.Resource;
+import domain.ResourceType;
 import domain.task.Task;
 import domain.time.Timespan;
 import exception.ConflictException;
+
 import java.time.LocalDateTime;
 import java.time.Month;
+
 import static org.easymock.EasyMock.createNiceMock;
 import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,6 +21,7 @@ import org.junit.Test;
  */
 public class CreateReservationCommandTest {
     private Task t0;
+    private ResourceType type;
     private CreateReservationCommand createReservationCommand;
     private LocalDateTime start;
     private LocalDateTime end;
@@ -29,7 +34,8 @@ public class CreateReservationCommandTest {
         
         start = LocalDateTime.of(2015, Month.MARCH, 2, 10, 30);
         end = LocalDateTime.of(2015, Month.MARCH, 15, 10, 30);
-        res0 = new Resource("car");
+        type = new ResourceType("cool type");
+        res0 = new Resource("car", type);
         createReservationCommand = new CreateReservationCommand(new Timespan(start, end), res0, t0);
     }
     
