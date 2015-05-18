@@ -63,7 +63,7 @@ public class CreateProjectScenarioTest {
     	LocalDateTime project1StartTime = LocalDateTime.of(2015,03,12, 17,30);
     	LocalDateTime project1EndTime = LocalDateTime.of(2015,03,13, 14,44);
     	handler.createProject(project1Name, project1Description, project1StartTime, project1EndTime);
-    	List<Project> projects = manager.getProjects().getProjects();
+    	List<Project> projects = manager.getProjectContainer().getProjects();
     	boolean foundProject = false;
     	for(DetailedProject p : projects)
     	{

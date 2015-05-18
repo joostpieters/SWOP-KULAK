@@ -2,7 +2,6 @@ package init;
 
 import UI.swingGUI.MainFrame;
 import controller.HandlerFactory;
-import domain.BranchOffice;
 import domain.Database;
 import domain.time.Clock;
 import domain.user.Acl;
@@ -44,9 +43,9 @@ public class Bootstrap {
         Clock clock = new Clock();
         Database db = new Database();
         int option = JOptionPane.showConfirmDialog(null, "Would you like to initialize the system with an input file?");
-        BranchOffice manager = new BranchOffice(db);
+        
         if (option == 0) {
-            initManagerFromFile(manager, clock, db);
+            initManagerFromFile(clock, db);
         } else if (option == 2) {
             return;
         }
@@ -57,7 +56,8 @@ public class Bootstrap {
         auth.registerUser(new GenericUser("manager", "manager",null));
         
         Acl acl = initAcl();
-        HandlerFactory factory = new HandlerFactory(manager, clock, auth, acl, db);
+        // TODO
+        HandlerFactory factory = new HandlerFactory(null, clock, auth, acl, db);
 
         //display uncaught exceptions
         Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
@@ -82,9 +82,9 @@ public class Bootstrap {
      * Show an input file dialog and initialize the given manager from the
      * chosen file.
      *
-     * @param manager The manager to initialize
+     * 
      */
-    private static void initManagerFromFile(BranchOffice manager, Clock clock, Database db) {
+    private static void initManagerFromFile(Clock clock, Database db) {
 
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Task Man inputfile", "tman");
@@ -100,7 +100,7 @@ public class Bootstrap {
 
             try (FileReader fileReader = new FileReader(chooser.getSelectedFile())) {
 
-                ProjectContainerFileInitializor fileInitializor = new ProjectContainerFileInitializor(fileReader, manager, clock, db);
+                ProjectContainerFileInitializor fileInitializor = new ProjectContainerFileInitializor(fileReader, clock, db);
                 fileInitializor.processFile();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, "An error occured while reading/processing the file, please try again.", null, JOptionPane.ERROR_MESSAGE);

@@ -1,15 +1,13 @@
 package controller;
 
 
+import domain.BranchOffice;
+import domain.Project;
 import domain.dto.DetailedProject;
 import domain.dto.DetailedTask;
-import domain.Project;
-import domain.BranchOffice;
-
+import domain.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
-
-import domain.time.Clock;
 
 
 
@@ -41,7 +39,7 @@ public class ShowProjectHandler {
      * @return A list of projects of this projectContainer
      */
     public List<DetailedProject> getProjects(){
-        return new ArrayList<>(manager.getProjects().getProjects());
+        return new ArrayList<>(manager.getProjectContainer().getProjects());
     }
     
     /**
@@ -51,7 +49,7 @@ public class ShowProjectHandler {
      * @param projectId The id of the project ro retrieve 
      */
     public void selectProject(int projectId){
-        currentProject = manager.getProjects().getProject(projectId);
+        currentProject = manager.getProjectContainer().getProject(projectId);
     }
     /**
      * @return The current project of this handler.

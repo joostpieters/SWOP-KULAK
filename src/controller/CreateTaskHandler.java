@@ -69,7 +69,7 @@ public class CreateTaskHandler extends Handler{
      * @return A list containing all the tasks of the project with the given id.
      */   
     public List<DetailedTask>  getTasksByProject(int Pid){
-        return new ArrayList<>(manager.getProjects().getProject(Pid).getTasks());
+        return new ArrayList<>(manager.getProjectContainer().getProject(Pid).getTasks());
     }
     
     /**
@@ -93,7 +93,7 @@ public class CreateTaskHandler extends Handler{
             altfor = Project.NO_ALTERNATIVE;
         }
         try {
-            Project project = manager.getProjects().getProject(pId);
+            Project project = manager.getProjectContainer().getProject(pId);
             Duration duration = new Duration(estDurMinutes);
             
             HashMap<ResourceType, Integer> resources = new HashMap<>();
@@ -122,7 +122,7 @@ public class CreateTaskHandler extends Handler{
      * @throws IllegalStateException No unfinished projects are available.
      */
     public List<DetailedProject> getUnfinishedProjects() throws IllegalStateException{
-        ArrayList<DetailedProject> projects = new ArrayList<>(manager.getProjects().getUnfinishedProjects());
+        ArrayList<DetailedProject> projects = new ArrayList<>(manager.getProjectContainer().getUnfinishedProjects());
         if(projects.isEmpty()){
             throw new IllegalStateException("No unfinished projects are available.");
         }
@@ -134,7 +134,7 @@ public class CreateTaskHandler extends Handler{
      * @return A list of all the tasks available in this manager. 
      */
     public List<DetailedTask> getAllTasks(){
-        return new ArrayList<>(manager.getProjects().getAllTasks());
+        return new ArrayList<>(manager.getProjectContainer().getAllTasks());
     }
     
     /**

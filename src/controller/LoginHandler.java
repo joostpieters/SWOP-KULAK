@@ -23,16 +23,19 @@ public class LoginHandler{
 
     private final Auth auth;
     private final Database db;
+    private final HandlerFactory factory;
 
     /**
      * Initialize a new create task handler with the given projectContainer.
      *
      * @param auth The authorization manager to use
      * @param db The database to use
+     * @param factory The handler factory
      */
-    public LoginHandler(Auth auth, Database db) {        
+    public LoginHandler(Auth auth, Database db, HandlerFactory factory) {        
         this.auth = auth;
         this.db = db;
+        this.factory = factory;
     }
 
     
@@ -46,6 +49,8 @@ public class LoginHandler{
        if(!auth.login(username)){
            throw new NoAccessException("The login failed");
        }
+       
+       factory.setManager(auth.getUser().getBranchOffice());
    }
    
    /**

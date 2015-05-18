@@ -14,7 +14,7 @@ public class BranchOffice implements DetailedBranchOffice {
 	
 	private final ProjectContainer projects;
 	private final ResourceContainer resources;
-	private final Database database;
+	
     private String location;
     private List<User> users;
 	
@@ -24,45 +24,37 @@ public class BranchOffice implements DetailedBranchOffice {
          * @param location The location where this branch office is situated
          */
         public BranchOffice(String location) {
-            this(new Database());
+            this();
             this.location = location;            
 	}
         
+		
 	public BranchOffice() {
-		this(new Database());
+		this(new ProjectContainer(), new ResourceContainer());
 	}
 	
-	public BranchOffice(Database world) {
-		this(new ProjectContainer(), new ResourceContainer(), world);
-	}
-	
-	public BranchOffice(ProjectContainer pc, ResourceContainer rc, Database world) {
+	public BranchOffice(ProjectContainer pc, ResourceContainer rc) {
 		projects = pc;
 		resources = rc;
-		database = world;
+		
                 users = new ArrayList<>();
 	}
 
 	/**
-	 * @return the projects
+	 * @return the project container
 	 */
-	public ProjectContainer getProjects() {
+	public ProjectContainer getProjectContainer() {
 		return projects;
 	}
 
 	/**
-	 * @return the resources
+	 * @return the resource container
 	 */
-	public ResourceContainer getResources() {
+	public ResourceContainer getResourceContainer() {
 		return resources;
 	}
 
-	/**
-	 * @return the database
-	 */
-	public Database getWorld() {
-		return database;
-	}
+	
         /**
          * 
          * @return The location of this branch office 

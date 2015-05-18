@@ -14,7 +14,7 @@ import domain.user.Auth;
  */
 public class HandlerFactory {
     
-    private final BranchOffice manager;
+    private BranchOffice manager;
     private final Clock clock;
     private final Acl acl;
     private final Auth auth;
@@ -99,7 +99,15 @@ public class HandlerFactory {
      * @return A new login handler.
      */
     public LoginHandler getLoginHandler(){
-        return new LoginHandler(auth, db);
+        return new LoginHandler(auth, db, this);
+    }
+    /**
+     * Sets the branchoffice of this factory
+     * 
+     * @param manager The office to set
+     */
+    public void setManager(BranchOffice manager) {
+        this.manager = manager;
     }
     
 }

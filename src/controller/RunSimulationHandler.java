@@ -51,7 +51,7 @@ public class RunSimulationHandler extends Handler{
     public void createProject(String name, String description, LocalDateTime creationTime, LocalDateTime dueTime) throws RuntimeException{
        
         try{
-            manager.getProjects().createProject(name, description, creationTime, dueTime);
+            manager.getProjectContainer().createProject(name, description, creationTime, dueTime);
         }catch(IllegalArgumentException | IllegalStateException e){
             throw e;
         }catch(Exception e){

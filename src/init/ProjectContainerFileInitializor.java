@@ -35,7 +35,6 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
 
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-    private final BranchOffice container;
     private final Clock clock;
     private final Database db;
     private WorkWeekConfiguration dailyAvailability;
@@ -49,9 +48,9 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
      * @param clock The clock to use
      * @param db The database to initialize
      */
-    public ProjectContainerFileInitializor(Reader r, BranchOffice manager, Clock clock, Database db) {
+    public ProjectContainerFileInitializor(Reader r, Clock clock, Database db) {
         super(r);
-        this.container = manager;
+        
         this.clock = clock;
         this.db = db;
     }
@@ -264,7 +263,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             expectLabel("office");
             int officeId = expectInt();
             // create and add resourcetype
-            Resource res = db.getOffices().get(officeId).getResources().createResource(name, db.getResourceTypes().get(typeIndex));
+            Resource res = db.getOffices().get(officeId).getResourceContainer().createResource(name, db.getResourceTypes().get(typeIndex));
             
             // add to db
             db.addResource(res);
@@ -333,7 +332,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             int officeId = expectIntField("office");
             
             BranchOffice office = db.getOffices().get(officeId);
-            Project project = office.getProjects().createProject(name, description, creationTime, dueTime);
+            Project project = office.getProjectContainer().createProject(name, description, creationTime, dueTime);
             projectOffice.put(project, office);
             tempProjects.add(project);
             System.out.println(project);
@@ -452,7 +451,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
                 Task task = taskList.get(taskId);
                 BranchOffice office = projectOffice.get(task.getProject());
                 
-                task.plan(startTime, resources, clock, office.getResources());
+                task.plan(startTime, resources, clock, office.getResourceContainer());
                 
             }
 

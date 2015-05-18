@@ -72,7 +72,7 @@ public class PlanTaskHandler extends Handler {
      * @return All unplanned tasks in the projectContainer of this handler.
      */
     public List<DetailedTask> getUnplannedTasks() {
-        return new ArrayList<>(manager.getProjects().getUnplannedTasks());
+        return new ArrayList<>(manager.getProjectContainer().getUnplannedTasks());
     }
 
     /**
@@ -85,11 +85,11 @@ public class PlanTaskHandler extends Handler {
      * @return A list of proposed required resources, ascociated with their resourcetype.
      */
     public List<Entry<DetailedResourceType, DetailedResource>> getRequiredResources(int pId, int tId, LocalDateTime start) {
-        Task currentTask = manager.getProjects().getProject(pId).getTask(tId);
+        Task currentTask = manager.getProjectContainer().getProject(pId).getTask(tId);
         List<Entry<DetailedResourceType, DetailedResource>> resources = new ArrayList<>();
         for (Entry<ResourceType, Integer> entry : currentTask.getRequiredResources().entrySet()) {
             List<Resource> availableResources = new ArrayList<>();
-            manager.getResources().getAvailableResources(entry.getKey(), new Timespan(start, currentTask.getEstimatedDuration())); // TODO niet verantwoordelijkheid van plantaskhandler
+            manager.getResourceContainer().getAvailableResources(entry.getKey(), new Timespan(start, currentTask.getEstimatedDuration())); // TODO niet verantwoordelijkheid van plantaskhandler
             for (int i = 0; i < entry.getValue(); i++) {
                     // if there are not enough resources available add same resource
                 // multiple times
@@ -115,7 +115,7 @@ public class PlanTaskHandler extends Handler {
      */
     public Set<LocalDateTime> getPossibleStartTimesCurrentTask(int pId, int tId) {
        
-        return manager.getProjects().getProject(pId).getTask(tId).nextAvailableStartingTimes(manager.getResources(), clock.getTime(), 3);
+        return manager.getProjectContainer().getProject(pId).getTask(tId).nextAvailableStartingTimes(manager.getResourceContainer(), clock.getTime(), 3);
     }
 
     /**
@@ -137,12 +137,12 @@ public class PlanTaskHandler extends Handler {
             res.add(db.getResources().get(i));
         }
         //TODO: bad smell
-        simulatorCommand.add(manager.getProjects().getProject(pId).getTask(tId).plan(startTime, res, clock, manager.getResources()));
+        simulatorCommand.add(manager.getProjectContainer().getProject(pId).getTask(tId).plan(startTime, res, clock, manager.getResourceContainer()));
     }
 
     //TODO: goeie oplossing? 
 	public Set<? extends DetailedResource> getResources(DetailedResourceType type) {
-		return manager.getResources().getResourcesOfType((ResourceType) type);
+		return manager.getResourceContainer().getResourcesOfType((ResourceType) type);
 	}
     
 }
