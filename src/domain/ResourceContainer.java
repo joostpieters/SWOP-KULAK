@@ -23,10 +23,10 @@ public class ResourceContainer {
     }
 
     /**
-     * Add a resource to the list of resources of this type.
-     * And sets its workweekconfiguration to this configuration.
+     * Make a resource and add it to the list of resources.
      *
-     * @param resource The resource to be added.
+     * @param name The name for the new resource.
+     * @param type The type of the new resource.
      */
     public Resource createResource(String name, ResourceType type) {
         Resource res = new Resource(name, type);
