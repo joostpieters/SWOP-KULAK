@@ -156,12 +156,13 @@ public class ResourceContainerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testMakeReservationSameTask() throws ConflictException {
-        rc3.makeReservation(type1, t0, new Timespan(endRes, endRes.plusDays(1)), 1);
+    	rc3.makeReservation(type0, t0, reserved, 1);
+        rc3.makeReservation(type0, t0, new Timespan(endRes, endRes.plusDays(1)), 1);
     }
 
     @Test(expected = ConflictException.class)
     public void testMakeReservationOverlappingTime() throws ConflictException {
-    	//FIXME: misschien niet onbelangrijk... 
+    	res2.makeReservation(t0, reserved);
         rc3.makeReservation(type1, t1, reserved, 1);
     }
 

@@ -122,7 +122,7 @@ public class ResourceContainer {
 	     if (quantity < 1) {
 	         throw new IllegalArgumentException("At least 1 resource should be reserved.");
 	     }
-	     if (getResources().size() < quantity) {
+	     if (getResourcesOfType(type).size() < quantity) {
 	         throw new IllegalArgumentException("There are less resources of this type than you want to reserve.");
 	     }
 	     Set<Resource> availableResources = getAvailableResources(type, span);
