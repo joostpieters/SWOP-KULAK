@@ -45,7 +45,7 @@ public class ProjectTest {
 	LocalDateTime start = LocalDateTime.of(2015, 2, 9, 15, 0);
 	LocalDateTime end = start.plusHours(ProjectTest.HOURDIF);
 	
-	BranchOffice pc;
+	ProjectContainer pc;
 	Project p0, p1, p2, pFinished;
 	Task t1, t2, t3, tFin;
     private Clock clock;

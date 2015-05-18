@@ -94,7 +94,7 @@ public class PlanTaskCommandTest {
         resList.add(car1);
         resList.add(car2);
         resList.add(car3);
-        planTaskCommand = new PlanTaskCommand(new Timespan(start, end), resList, task, clock);
+        planTaskCommand = new PlanTaskCommand(new Timespan(start, end), resList, task, clock, new ArrayList<>());
 
     }
 
@@ -152,7 +152,7 @@ public class PlanTaskCommandTest {
         Resource bicycle = new Resource("bicycle");
         resList2.add(bicycle);
         resList2.add(car3);
-        PlanTaskCommand planTaskCommand2 = new PlanTaskCommand(new Timespan(start2, end2), resList2, task2, clock);
+        PlanTaskCommand planTaskCommand2 = new PlanTaskCommand(new Timespan(start2, end2), resList2, task2, clock, new ArrayList<>());
         try{
              planTaskCommand2.execute();
              fail("No exception arised");
@@ -195,7 +195,7 @@ public class PlanTaskCommandTest {
         resList2.add(car1);
         resList2.add(car2);
         resList2.add(car3);
-        PlanTaskCommand planTaskCommand2 = new PlanTaskCommand(new Timespan(start2, end2), resList2, task, clock);
+        PlanTaskCommand planTaskCommand2 = new PlanTaskCommand(new Timespan(start2, end2), resList2, task, clock, new ArrayList<>());
         
              planTaskCommand2.execute();
          
