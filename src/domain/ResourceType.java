@@ -16,7 +16,9 @@ import java.util.Map;
  */
 public class ResourceType implements DetailedResourceType {
 
-    private final String name;
+    public static final ResourceType DEVELOPER = new ResourceType("developer");
+    
+	private final String name;
     private final List<ResourceType> requirements;
     private final List<ResourceType> conflicts;
     private final WorkWeekConfiguration availability;

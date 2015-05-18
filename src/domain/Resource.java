@@ -49,17 +49,6 @@ public class Resource implements DetailedResource {
         this.previousReservations = new ArrayList<>();
                
     }
-
-    /**
-     * Initialize a resource with a given name and clock to observe.
-     *
-     * @param name The name for this resource.
-     * 
-     */
-    public Resource(String name) {
-    	//TODO: wat te doen met resources zonder type? 
-        this(name, null);
-    }
     
     /**
      * **************************************************

@@ -1,6 +1,7 @@
 package domain.user;
 
 import domain.Resource;
+import domain.ResourceType;
 import domain.time.Clock;
 
 /**
@@ -20,7 +21,7 @@ public class Developer extends Resource implements User {
      * @param clock The clock this developer should observe
      */
     public Developer(String name, Clock clock) {
-        super(name);
+        super(name, ResourceType.DEVELOPER);
         this.name = name;
         this.role = "developer";
      
