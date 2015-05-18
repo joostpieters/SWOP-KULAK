@@ -37,14 +37,15 @@ public class CreateProjectScenarioTest {
     @BeforeClass
     public static void setUpClass() {
     	db = new Database();
-        
-        manager = new BranchOffice();
         clock = new Clock();
          auth = new Auth(db);
         acl = new Acl();
+        
         db.addUser(new GenericUser("John", "manager"));
         acl.addEntry("manager", new ArrayList<>(Arrays.asList("CreateProject")));
         auth.login("John");
+
+        manager = new BranchOffice(db);
         HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
         handler = controller.getCreateProjectHandler();
     }
@@ -62,7 +63,7 @@ public class CreateProjectScenarioTest {
     	LocalDateTime project1StartTime = LocalDateTime.of(2015,03,12, 17,30);
     	LocalDateTime project1EndTime = LocalDateTime.of(2015,03,13, 14,44);
     	handler.createProject(project1Name, project1Description, project1StartTime, project1EndTime);
-    	List<Project> projects = manager.getProjects();
+    	List<Project> projects = manager.getProjects().getProjects();
     	boolean foundProject = false;
     	for(DetailedProject p : projects)
     	{

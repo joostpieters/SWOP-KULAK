@@ -45,7 +45,6 @@ public class ProjectTest {
 	LocalDateTime start = LocalDateTime.of(2015, 2, 9, 15, 0);
 	LocalDateTime end = start.plusHours(ProjectTest.HOURDIF);
 	
-	ProjectContainer pc;
 	Project p0, p1, p2, pFinished;
 	Task t1, t2, t3, tFin;
     private Clock clock;
@@ -63,12 +62,12 @@ public class ProjectTest {
     	p1 = new Project(name, descr, create, due);
     	t1 = p1.createTask("design system", new Duration(480), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
     	
-    	p2 = pc.createProject(name, descr, create, due);
+    	p2 = new Project(name, descr, create, due);
     	t2 = p2.createTask("design system", new Duration(480), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
     	t3 = p2.createTask("implement system in native code", new Duration(960), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
     	
     	LocalDateTime hist = create.minusDays(DAYDIF);
-    	pFinished = pc.createProject(name, descr, hist, create);
+    	pFinished = new Project(name, descr, hist, create);
     	tFin = pFinished.createTask("design system", new Duration(480), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
     	tFin.finish(new Timespan(hist, hist.plusHours(HOURDIF)), clock.getTime());
     }
@@ -542,7 +541,7 @@ public class ProjectTest {
     	LocalDateTime create = LocalDateTime.of(2015, 2, 9, 8, 0);
     	LocalDateTime due = LocalDateTime.of(2015, 2, 13, 19, 0);
     	
-    	Project p = pc.createProject(name, descr, create, due);
+    	Project p = new Project(name, descr, create, due);
     	Task t1 = p.createTask("design system", new Duration(8,0), 0, altFor, prereqs, new HashMap<>());
     	Task t2 = p.createTask("implement system in native code", new Duration(16,0), 50, altFor, Arrays.asList(t1.getId()), new HashMap<>());
     	Task t3 = p.createTask("test system", new Duration(8,0), 0, altFor, Arrays.asList(t2.getId()), new HashMap<>());

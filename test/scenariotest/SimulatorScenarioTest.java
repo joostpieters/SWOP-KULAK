@@ -7,6 +7,8 @@ import controller.RunSimulationHandler;
 import domain.Database;
 import domain.Project;
 import domain.BranchOffice;
+import domain.ProjectContainer;
+import domain.ResourceContainer;
 import domain.task.Task;
 import domain.task.Unavailable;
 import domain.time.Clock;
@@ -17,7 +19,6 @@ import domain.user.Auth;
 import domain.user.GenericUser;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -37,7 +37,7 @@ import org.junit.Test;
 public class SimulatorScenarioTest {
 
 	private static Database db;
-    private static BranchOffice manager;
+    private static ProjectContainer manager;
     private static RunSimulationHandler simHandler;
     private static CreateTaskHandler createTaskSimHandler;
     private static Project p1;
@@ -50,7 +50,7 @@ public class SimulatorScenarioTest {
     @Before
     public void setUp() {
     	db = new Database();
-        manager = new BranchOffice();
+        manager = new ProjectContainer();
         String project1Name = "project 1 :)";
         String project1Description = "This is project 1";
         LocalDateTime project1StartTime = LocalDateTime.of(2015, 03, 12, 17, 30);
@@ -66,7 +66,7 @@ public class SimulatorScenarioTest {
         db.addUser(new GenericUser("root", "admin"));
         acl.addEntry("admin", Arrays.asList("UpdateTaskStatus", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "updateTaskStatus"));
         auth.login("root");
-        HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
+        HandlerFactory controller = new HandlerFactory(new BranchOffice(manager, new ResourceContainer(), db), clock, auth, acl, db);
         simHandler = controller.getSimulationHandler();
         createTaskSimHandler  = simHandler.getCreateTaskSimulatorHandler();
     }

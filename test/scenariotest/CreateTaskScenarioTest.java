@@ -6,6 +6,8 @@ import controller.HandlerFactory;
 import domain.Database;
 import domain.Project;
 import domain.BranchOffice;
+import domain.ProjectContainer;
+import domain.ResourceContainer;
 import domain.task.Task;
 import domain.task.Unavailable;
 import domain.time.Clock;
@@ -14,13 +16,16 @@ import domain.time.Timespan;
 import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.GenericUser;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -32,7 +37,7 @@ import org.junit.Test;
 public class CreateTaskScenarioTest {
 
 	private static Database db;
-    private static BranchOffice manager;
+    private static ProjectContainer manager;
     private static CreateTaskHandler handler;
     private static Project p1;
     private static Task t1;
@@ -44,7 +49,7 @@ public class CreateTaskScenarioTest {
     @BeforeClass
     public static void setUpClass() {
     	db = new Database();
-        manager = new BranchOffice();
+        manager = new ProjectContainer();
         String project1Name = "project 1 :)";
         String project1Description = "This is project 1";
         LocalDateTime project1StartTime = LocalDateTime.of(2015, 03, 12, 17, 30);
@@ -59,7 +64,7 @@ public class CreateTaskScenarioTest {
         db.addUser(new GenericUser("John", "manager"));
         acl.addEntry("manager", new ArrayList<>(Arrays.asList("CreateTask")));
         auth.login("John");
-        HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
+        HandlerFactory controller = new HandlerFactory(new BranchOffice(manager, new ResourceContainer(), db), clock, auth, acl, db);
         handler = controller.getCreateTaskHandler();
     }
 

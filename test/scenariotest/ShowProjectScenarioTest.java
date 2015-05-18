@@ -7,8 +7,10 @@ import domain.user.Auth;
 import domain.Database;
 import domain.dto.DetailedProject;
 import domain.dto.DetailedTask;
-import domain.Project;
 import domain.BranchOffice;
+import domain.Project;
+import domain.ProjectContainer;
+import domain.ResourceContainer;
 import domain.task.Task;
 import domain.task.Unavailable;
 
@@ -37,7 +39,7 @@ import domain.time.Duration;
 public class ShowProjectScenarioTest {
     
 	private static Database db;
-    private static BranchOffice manager;
+    private static ProjectContainer manager;
     private static ShowProjectHandler handler;
     private static Project p1, p2, p3;
     private static Task t1, t2;
@@ -51,7 +53,7 @@ public class ShowProjectScenarioTest {
     @BeforeClass
     public static void setUpBeforeClass() {
     	db = new Database();
-        manager = new BranchOffice();
+        manager = new ProjectContainer();
         // only p1 has tasks
         p1 = manager.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
@@ -64,7 +66,7 @@ public class ShowProjectScenarioTest {
         clock = new Clock();
         auth = new Auth(db);
         acl = new Acl();
-        HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
+        HandlerFactory controller = new HandlerFactory(new BranchOffice(manager, new ResourceContainer(), new Database()), clock, auth, acl, db);
         handler = controller.getShowProjectHandler();
     }
 

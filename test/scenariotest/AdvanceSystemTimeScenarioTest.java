@@ -4,9 +4,11 @@ import controller.AdvanceSystemTimeHandler;
 import controller.HandlerFactory;
 import domain.user.Acl;
 import domain.user.Auth;
+import domain.BranchOffice;
 import domain.Database;
 import domain.Project;
 import domain.ProjectContainer;
+import domain.ResourceContainer;
 import domain.task.Task;
 
 import java.time.LocalDateTime;
@@ -53,7 +55,7 @@ public class AdvanceSystemTimeScenarioTest {
         clock = new Clock();
         auth = new Auth(db);
         acl = new Acl();
-        HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
+        HandlerFactory controller = new HandlerFactory(new BranchOffice(manager, new ResourceContainer(), new Database()), clock, auth, acl, db);
         handler = controller.getAdvanceSystemTimeHandler();
     }
 

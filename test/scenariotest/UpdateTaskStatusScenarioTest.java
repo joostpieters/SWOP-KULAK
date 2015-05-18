@@ -4,17 +4,21 @@ import controller.HandlerFactory;
 import controller.UpdateTaskStatusHandler;
 import domain.Database;
 import domain.Project;
+import domain.ProjectContainer;
 import domain.BranchOffice;
+import domain.ResourceContainer;
 import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Duration;
 import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.GenericUser;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -29,7 +33,7 @@ import org.junit.Test;
 public class UpdateTaskStatusScenarioTest {
     
 	private static Database db;
-    private static BranchOffice manager;
+    private static ProjectContainer manager;
     private static UpdateTaskStatusHandler handler;
     private static Project p1;
     private static Task t1;
@@ -40,7 +44,7 @@ public class UpdateTaskStatusScenarioTest {
     @BeforeClass
     public static void setUpClass() {
     	db = new Database();
-        manager = new BranchOffice();
+        manager = new ProjectContainer();
         // only p1 has tasks
         p1 = manager.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
@@ -56,7 +60,7 @@ public class UpdateTaskStatusScenarioTest {
         db.addUser(new GenericUser("John", "manager"));
         acl.addEntry("manager", new ArrayList<>(Arrays.asList("UpdateTaskStatus")));
         auth.login("John");
-        HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
+        HandlerFactory controller = new HandlerFactory(new BranchOffice(manager, new ResourceContainer(), db), clock, auth, acl, db);
         handler = controller.getUpdateTaskHandler();
         clock.advanceTime(LocalDateTime.of(2015,03,17,14,10));
     }
