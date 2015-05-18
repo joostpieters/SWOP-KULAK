@@ -5,6 +5,7 @@ import domain.dto.DetailedResource;
 import domain.dto.DetailedResourceType;
 import domain.dto.DetailedTask;
 import exception.ConflictException;
+
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
@@ -54,7 +56,8 @@ public class PlanTaskFrame extends javax.swing.JFrame {
     /**
      * Fills the available task table with the appropriate data
      */
-    private void initAvailableTaskTable() {
+    @SuppressWarnings("serial")
+	private void initAvailableTaskTable() {
         String[] columnNames = {"Id", "Description", "Estimated Duration", "Acceptable Deviation", "Project id", "Project"};
         List<DetailedTask> tasks = handler.getUnplannedTasks();
         Object[][] data = new Object[tasks.size()][];
@@ -99,7 +102,8 @@ public class PlanTaskFrame extends javax.swing.JFrame {
             i++;
         }
 
-        DefaultTableModel devModel = new DefaultTableModel(data, columnNames) {
+        @SuppressWarnings("serial")
+		DefaultTableModel devModel = new DefaultTableModel(data, columnNames) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 //all cells false
@@ -134,7 +138,7 @@ public class PlanTaskFrame extends javax.swing.JFrame {
         specificTimeTextField = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        timeList = new javax.swing.JList();
+        timeList = new javax.swing.JList<String>();
         jPanel3 = new javax.swing.JPanel();
         planTaskButton = new javax.swing.JButton();
         jLabel12 = new javax.swing.JLabel();
@@ -381,7 +385,7 @@ public class PlanTaskFrame extends javax.swing.JFrame {
 
     protected void initTimeList() {
         // init possible start times
-        DefaultListModel listModel = new DefaultListModel();
+        DefaultListModel<String> listModel = new DefaultListModel<String>();
         for (LocalDateTime time : handler.getPossibleStartTimesCurrentTask(selectedProjectId, selectedTaskId)) {
             listModel.addElement(time.format(formatter));
         }
@@ -405,13 +409,15 @@ public class PlanTaskFrame extends javax.swing.JFrame {
             }
             selectedResources = new ArrayList<>();
             // init resource panel
+            //TODO: handler.getResources om compile-errors op te lossen goed idee?
             for (Map.Entry<DetailedResourceType, DetailedResource> entry : handler.getRequiredResources(selectedProjectId, selectedTaskId, start)) {
-                if(entry.getKey().getName().equalsIgnoreCase("developer")){
-                    initDeveloperTable((Set<DetailedResource>) entry.getKey().getResources());
+                if(entry.getKey().equals(DetailedResourceType.DEVELOPER)){
+                    initDeveloperTable((Set<DetailedResource>) handler.getResources(entry.getKey()));
                     continue;
                 }
-                JComboBox<DetailedResource> comboBox = new JComboBox();
-                comboBox.setModel(new javax.swing.DefaultComboBoxModel(entry.getKey().getResources().toArray()));
+                JComboBox<DetailedResource> comboBox = new JComboBox<>();
+                comboBox.setModel(new javax.swing.DefaultComboBoxModel<DetailedResource>(
+                		(DetailedResource[]) handler.getResources(entry.getKey()).toArray()));
                 comboBox.setSelectedItem(entry.getValue());
                 comboBox.setPreferredSize(new java.awt.Dimension(200, 30));
                 
@@ -495,7 +501,7 @@ public class PlanTaskFrame extends javax.swing.JFrame {
     private javax.swing.JPanel resourcePanel;
     private javax.swing.JButton selectTaskButton;
     private javax.swing.JTextField specificTimeTextField;
-    private javax.swing.JList timeList;
+    private javax.swing.JList<String> timeList;
     // End of variables declaration//GEN-END:variables
 
     public int getSelectedTaskId() {

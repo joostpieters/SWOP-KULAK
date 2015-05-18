@@ -139,5 +139,10 @@ public class PlanTaskHandler extends Handler {
         //TODO: bad smell
         simulatorCommand.add(manager.getProjects().getProject(pId).getTask(tId).plan(startTime, res, clock, manager.getResources()));
     }
+
+    //TODO: goeie oplossing? 
+	public Set<? extends DetailedResource> getResources(DetailedResourceType type) {
+		return manager.getResources().getResourcesOfType((ResourceType) type);
+	}
     
 }

@@ -1,8 +1,15 @@
 package controller;
 
+import java.util.List;
+import java.util.Set;
+
 import domain.Database;
 import domain.BranchOffice;
+import domain.ResourceType;
 import domain.command.SimulatorCommand;
+import domain.dto.DetailedResource;
+import domain.dto.DetailedResourceType;
+import domain.dto.DetailedTask;
 import domain.time.Clock;
 import domain.user.Acl;
 import domain.user.Auth;
@@ -51,5 +58,16 @@ public class DelegateTaskHandler extends Handler {
         this.db = db;
         this.simulatorCommand = simulatorCommand;
     }
+
+	public List<DetailedTask> getUnplannedTasks() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<String> getPossibleBranchOffices(int selectedProjectId,
+			int selectedTaskId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
     
 }

@@ -15,8 +15,6 @@ import java.util.Map;
  * @author Mathias, Pieter-Jan, Frederic
  */
 public class ResourceType implements DetailedResourceType {
-
-    public static final ResourceType DEVELOPER = new ResourceType("developer");
     
 	private final String name;
     private final List<ResourceType> requirements;

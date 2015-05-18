@@ -264,18 +264,18 @@ public class DelegateTaskFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(rootPane, "Please select a task.", null, JOptionPane.ERROR_MESSAGE);
         }
 
-        initTimeList();
+        initBranchOfficeList();
         CardLayout card = (CardLayout) mainPanel.getLayout();
         card.show(mainPanel, "selectTime");
 
 
     }//GEN-LAST:event_selectTaskButtonActionPerformed
 
-    protected void initTimeList() {
-        // init possible start times
-        DefaultListModel listModel = new DefaultListModel();
-        for (LocalDateTime time : handler.getPossibleStartTimesCurrentTask(selectedProjectId, selectedTaskId)) {
-            listModel.addElement(time);
+    protected void initBranchOfficeList() {
+        // init possible start times TODO
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        for (String branchOffice : handler.getPossibleBranchOffices(selectedProjectId, selectedTaskId)) {
+            listModel.addElement(branchOffice);
         }
         
         officeList.setModel(listModel);
@@ -288,34 +288,7 @@ public class DelegateTaskFrame extends javax.swing.JFrame {
      */
     private void delegateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delegateButtonActionPerformed
 
-        try {
-           
-            if (officeList.getSelectedValue() != null) {
-                //start = LocalDateTime.parse((String) timeList.getSelectedValue(), formatter);
-            } 
-            selectedResources = new ArrayList<>();
-            // init resource panel
-            for (Map.Entry<DetailedResourceType, DetailedResource> entry : handler.getRequiredResources(selectedProjectId, selectedTaskId, start)) {
-                if(entry.getKey().getName().equalsIgnoreCase("developer")){
-                    initDeveloperTable((Set<DetailedResource>) entry.getKey().getResources());
-                    continue;
-                }
-                JComboBox<DetailedResource> comboBox = new JComboBox();
-                comboBox.setModel(new javax.swing.DefaultComboBoxModel(entry.getKey().getResources().toArray()));
-                comboBox.setSelectedItem(entry.getValue());
-                comboBox.setPreferredSize(new java.awt.Dimension(200, 30));
-                
-                
-                selectedResources.add(comboBox);
-
-            }
-
-           
-            CardLayout card = (CardLayout) mainPanel.getLayout();
-            card.show(mainPanel, "selectResources");
-        } catch (DateTimeException e) {
-            JOptionPane.showMessageDialog(rootPane, "The given time is not in the right format.", null, JOptionPane.ERROR_MESSAGE);
-        }
+        //TODO
 
     }//GEN-LAST:event_delegateButtonActionPerformed
 
@@ -333,7 +306,7 @@ public class DelegateTaskFrame extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JPanel mainPanel;
-    private javax.swing.JList officeList;
+    private javax.swing.JList<String> officeList;
     private javax.swing.JButton selectTaskButton;
     // End of variables declaration//GEN-END:variables
 
