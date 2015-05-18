@@ -1,8 +1,6 @@
 package domain.task;
 
-import domain.ProjectContainer;
 import domain.Project;
-import domain.Resource;
 import domain.ResourceContainer;
 import domain.ResourceType;
 import domain.time.Clock;
@@ -40,11 +38,9 @@ public class TaskTest {
 	
 	private Clock clock;
     private Project p;
-    private ProjectContainer pc;
     private ResourceContainer rc;
 	private Task t0, t1, t2, t3, t4, t5, t6, t7, t7alternative, t8, t10;
 	private ResourceType type0, type1, type2;
-	private Resource res00, res01, res02, res10, res20, res21;
 	
     public TaskTest() {
     }
@@ -85,12 +81,12 @@ public class TaskTest {
     	type1 = new ResourceType("Car", Arrays.asList(type0), new ArrayList<>());
     	type2 = new ResourceType("Jacket");
     	rc = new ResourceContainer();
-    	res00 = rc.createResource("V8", type0);
-    	res01 = rc.createResource("V10", type0);
-    	res02 = rc.createResource("V12", type0);
-    	res10 = rc.createResource("Aston Martin", type1);
-    	res20 = rc.createResource("hooded", type2);
-    	res21 = rc.createResource("armless", type2);
+    	rc.createResource("V8", type0);
+    	rc.createResource("V10", type0);
+    	rc.createResource("V12", type0);
+    	rc.createResource("Aston Martin", type1);
+    	rc.createResource("hooded", type2);
+    	rc.createResource("armless", type2);
     	Map<ResourceType, Integer> requiredResources = new HashMap<>();
     	requiredResources.put(type0, 1);
     	requiredResources.put(type1, 1);
@@ -427,7 +423,7 @@ public class TaskTest {
     @Test (expected = IllegalArgumentException.class)
     public void testSetAlternativeTaskException5()
     {
-    	Project p1 = pc.createProject("p1", "not p", LocalDateTime.of(2000, 11, 12, 13, 14), LocalDateTime.of(2030, 11, 12, 13, 14));
+    	Project p1 = new Project("p1", "not p", LocalDateTime.of(2000, 11, 12, 13, 14), LocalDateTime.of(2030, 11, 12, 13, 14));
     	Task p1t0 = p1.createTask("task belonging to p1", new Duration(120), 33, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
     	t6.setAlternativeTask(p1t0);
     }
@@ -439,7 +435,7 @@ public class TaskTest {
     @Test (expected = IllegalArgumentException.class)
     public void testSetAlternativeTaskException6()
     {
-    	Project p1 = pc.createProject("p1", "not p", LocalDateTime.of(2000, 11, 12, 13, 14), LocalDateTime.of(2030, 11, 12, 13, 14));
+    	Project p1 = new Project("p1", "not p", LocalDateTime.of(2000, 11, 12, 13, 14), LocalDateTime.of(2030, 11, 12, 13, 14));
     	Task p1t0 = p1.createTask("task belonging to p1", new Duration(120), 33, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
     	t6.setAlternativeTask(p1t0);
     }
