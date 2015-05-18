@@ -24,14 +24,16 @@ import domain.task.Task;
 import domain.time.Duration;
 import domain.time.Timespan;
 
+/**
+ * A class testing the Task Memento.
+ * @author Mathias, Pieter-Jan, Frederic
+ *
+ */
 public class MementoTaskTest {
 
 	private Task t0, t1, t2;
 	private Project p0;
-	/*
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}*/
+	
 	@Before
 	public void setUp() throws Exception {
 		p0 = new Project("project 0", "this is project 0", LocalDateTime.of(2015, 5, 18, 10, 20), LocalDateTime.of(2015, 5, 30, 13, 0));
@@ -40,26 +42,11 @@ public class MementoTaskTest {
 		t2 = new Task("task 2", new Duration(24), 23, new HashMap<ResourceType, Integer>(), p0);
 		
 	}
-	private void checkEquals(Task task, Timespan timespan, Task altTask, List<Task> prereqs, Status status, Planning planning)
-	{
-		assertEquals(timespan, task.getTimeSpan());
-		assertEquals(altTask, task.getAlternativeTask());
-		List<Task> taskprereqs = task.getPrerequisiteTasks();
-		
-		if(taskprereqs == null || prereqs == null)
-		{
-			assertEquals(null, taskprereqs);
-			assertEquals(null, prereqs);
-		}
-		else
-		{
-			assertTrue(taskprereqs.containsAll(prereqs));
-			assertTrue(prereqs.containsAll(taskprereqs));
-		}
-		assertEquals(status, task.getStatus());
-		assertEquals(planning, task.getPlanning());
-		
-	}
+	
+	/**
+	 * Tests whether the status and time span of a task are properly stored and loaded when
+	 * using Task Mementos.
+	 */
 	@Test
 	public void testStatusTimespan() {
 		Task.Memento t0memento0 = t0.createMemento();
@@ -112,7 +99,7 @@ public class MementoTaskTest {
 	}
 	
 	/**
-	 * Checks if the alt task property is rolled back properly when setting the memento
+	 * Checks if the alternative task property is rolled back properly when setting the Task Memento
 	 */
 	@Test
 	public void testStatusAlttask()
@@ -137,6 +124,9 @@ public class MementoTaskTest {
 		t0properties1.checkEquals(t0);
 	}
 	
+	/**
+	 * Tests whether the planning is stored and restored properly in Task Memento.
+	 */
 	@Test
 	public void testPlanning()
 	{
@@ -158,6 +148,12 @@ public class MementoTaskTest {
 		t0properties1.checkEquals(t0);
 	}
 	
+	/**
+	 * A class storing the properties which should be kept track of in Task Mementos.
+	 * 
+	 * @author Mathias, Pieter-Jan, Frederic
+	 *
+	 */
 	private class TaskProperties
 	{
 		Timespan timespan;
@@ -165,6 +161,12 @@ public class MementoTaskTest {
 		List<Task> prereqs;
 		Status status;
 		Planning planning;
+		
+		/**
+		 * Initializes this TaskProperties based on the given task.
+		 * 
+		 * @param task The task on which the Taskproperties should be based on.
+		 */
 		public TaskProperties(Task task)
 		{
 			this.timespan = task.getTimeSpan();
@@ -174,6 +176,11 @@ public class MementoTaskTest {
 			this.planning = task.getPlanning();
 		}
 		
+		/**
+		 * Tests whether the given task has the same state as the one stored in this TaskProperties
+		 * 
+		 * @param task The task to check.
+		 */
 		public void checkEquals(Task task)
 		{
 			assertEquals(timespan, task.getTimeSpan());
