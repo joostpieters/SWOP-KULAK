@@ -1,7 +1,7 @@
 package controller;
 
-import domain.Database;
 import domain.BranchOffice;
+import domain.Database;
 import domain.Resource;
 import domain.ResourceType;
 import domain.command.SimulatorCommand;
@@ -76,7 +76,7 @@ public class PlanTaskHandler extends Handler {
     }
 
     /**
-     * Returns the required resources, with resource propostions
+     * Returns the required resources, with resource propositions
      * of the task with the given id
      * 
      * @param pId The id of the projec the task belongs to
@@ -89,7 +89,7 @@ public class PlanTaskHandler extends Handler {
         List<Entry<DetailedResourceType, DetailedResource>> resources = new ArrayList<>();
         for (Entry<ResourceType, Integer> entry : currentTask.getRequiredResources().entrySet()) {
             List<Resource> availableResources = new ArrayList<>();
-            manager.getResources().getAvailableResources(entry.getKey(), new Timespan(start, currentTask.getEstimatedDuration()));
+            manager.getResources().getAvailableResources(entry.getKey(), new Timespan(start, currentTask.getEstimatedDuration())); // TODO niet verantwoordelijkheid van plantaskhandler
             for (int i = 0; i < entry.getValue(); i++) {
                     // if there are not enough resources available add same resource
                 // multiple times

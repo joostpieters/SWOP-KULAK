@@ -14,6 +14,7 @@ public class Database {
     private final List<ResourceType> resourceTypes;
     private final List<User> users;
     private final List<Resource> resources;
+    private final List<BranchOffice> offices;
     
     /**
      * Initializes this new database
@@ -22,6 +23,7 @@ public class Database {
         resources = new ArrayList<>();
         resourceTypes = new ArrayList<>();
         users = new ArrayList<>();
+        offices = new ArrayList<>();
     }
     
     /**
@@ -71,5 +73,23 @@ public class Database {
     public void addUser(User user){
         users.add(user);
     }
+    
+     /**
+     * 
+     * @return The users stored in this database
+     */
+    public List<BranchOffice> getOffices(){
+        return new ArrayList<>(offices);
+    }
+    
+    /**
+     * Adds the given user to this database
+     * @param office The office to add
+     */
+    public void addOffice(BranchOffice office){
+        offices.add(office);
+    }
+    
+    
 
 }

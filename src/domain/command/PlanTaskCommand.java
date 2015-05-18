@@ -7,7 +7,6 @@ import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Timespan;
 import exception.ConflictException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +61,7 @@ public class PlanTaskCommand implements ICommand {
             if (type.numberOfResources(resources) < required.get(type)) {
                 // remove the all ready selected resources from the available resources
                 availableResources.removeAll(resources);
-                // chech whether the remaining resources can fulfill the still required quantity
+                // check whether the remaining resources can fulfill the still required quantity
                 if (type.numberOfResources(availableResources) < (required.get(type) - type.numberOfResources(resources))) {
                     throw new IllegalArgumentException("There are not enough resources available at this moment.");
                 } else {

@@ -14,7 +14,6 @@ import domain.time.WorkWeekConfiguration;
 import exception.ConflictException;
 import exception.ResourceTypeConflictException;
 import exception.ResourceTypeMissingReqsException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -677,7 +676,9 @@ public class Task implements DetailedTask {
     public PlanTaskCommand plan(LocalDateTime startTime, List<Resource> resources, Clock clock, ResourceContainer container) 
     		throws ConflictException {
         Timespan span = new Timespan(startTime, estimatedDuration);
-		PlanTaskCommand planCommand = new PlanTaskCommand(span, resources, this, clock, new ArrayList<>(container.getAvailableResources(span)));
+        
+	PlanTaskCommand planCommand = new PlanTaskCommand(span, resources, this, clock, new ArrayList<>(container.getAvailableResources(span)));
+        
         planCommand.execute();
         return planCommand;
     }
