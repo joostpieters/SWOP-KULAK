@@ -114,10 +114,12 @@ public class Available extends Status {
     @Override
     public void execute(Task task, Clock clock, ResourceContainer container){
         
-        if(task.isPlanned()){
-            if(!task.getPlanning().isBefore(clock.getTime())){
+        if(task.isPlanned())
+        {
+            if(!task.getPlanning().isBefore(clock.getTime()))
                 task.setStatus(new Executing());
-            }else{
+            else
+            {
                 try {
                     // unplanned execution
                     task.plan(clock.getTime(), new ArrayList<>(), clock, container);
@@ -125,9 +127,9 @@ public class Available extends Status {
                     throw new IllegalStateException("This task can't move to executing because there are not enough resources available");
                 }
             }
-        }else{
-            throw new IllegalStateException("A task has to be planned before you can execute it!");
         }
+        else
+            throw new IllegalStateException("A task has to be planned before you can execute it!");
         
         
     }
