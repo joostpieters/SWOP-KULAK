@@ -82,6 +82,7 @@ public class PlanTaskHandler extends Handler {
     public List<Entry<DetailedResourceType, DetailedResource>> getRequiredResources(int pId, int tId, LocalDateTime start) {
         Task currentTask = manager.getProjectContainer().getProject(pId).getTask(tId);
         List<Entry<DetailedResourceType, DetailedResource>> resources = new ArrayList<>();
+        System.out.println(currentTask.getRequiredResources());
         for (Entry<ResourceType, Integer> entry : currentTask.getRequiredResources().entrySet()) {
             
             List<Resource> availableResources = new ArrayList<>(manager.getResourceContainer().getAvailableResources(entry.getKey(), new Timespan(start, currentTask.getEstimatedDuration()))); // TODO niet verantwoordelijkheid van plantaskhandler

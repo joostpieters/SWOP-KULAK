@@ -107,8 +107,8 @@ public class WorkWeekConfigurationTest {
         WorkWeekConfiguration o = new WorkWeekConfiguration(LocalTime.of(10, 00), LocalTime.of(15, 00));
         WorkWeekConfiguration instance = new WorkWeekConfiguration();
         
-        assertEquals(-1, instance.compareTo(o));
-        assertEquals(1, o.compareTo(instance));
+        assertEquals(1, instance.compareTo(o));
+        assertEquals(-1, o.compareTo(instance));
         
         assertEquals(0, o.compareTo(o));
         

@@ -1,28 +1,22 @@
 package domain.memento;
 
-import static org.junit.Assert.*;
-
-import java.util.List;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-
-import org.easymock.EasyMock;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import domain.Planning;
 import domain.Project;
 import domain.ResourceType;
-import domain.task.Available;
-import domain.task.Failed;
-import domain.task.Finished;
 import domain.task.Status;
 import domain.task.Task;
 import domain.time.Duration;
 import domain.time.Timespan;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import org.easymock.EasyMock;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * A class testing the Task Memento.
@@ -58,6 +52,7 @@ public class MementoTaskTest {
 		Timespan t0finishTS = new Timespan(
 				LocalDateTime.of(2015, 5, 18, 15, 0),
 				LocalDateTime.of(2015, 5, 19, 15, 0));
+                
 		t0.finish(t0finishTS,
 				LocalDateTime.of(2015, 5, 20, 10, 0));
 		

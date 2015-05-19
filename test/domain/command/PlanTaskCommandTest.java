@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
 import static org.easymock.EasyMock.capture;
@@ -124,30 +123,6 @@ public class PlanTaskCommandTest {
         assertEquals(1, car3.getReservations().size());
     }
     
-     /**
-     * Test of execute method, of class PlanTaskCommand.
-     */
-    @Test
-    public void testExecuteWithNotEnoughResources() {
-        List<Resource> resList2 = new ArrayList<>();
-        resList2.add(car1);
-        PlanTaskCommand planTaskCommand2 = new PlanTaskCommand(new Timespan(start, end), resList2, task, clock);
-        planTaskCommand2.execute();
-        assertEquals(start, car1.getReservation(task).getStartTime());
-        assertEquals(end, car1.getReservation(task).getEndTime());
-        assertEquals(start, car2.getReservation(task).getStartTime());
-        assertEquals(end, car2.getReservation(task).getEndTime());
-        assertEquals(start, car3.getReservation(task).getStartTime());
-        assertEquals(end, car3.getReservation(task).getEndTime());
-        
-        assertNotEquals(null, capturedArgument.getValue());
-
-        // check not too much reservations 
-        assertEquals(1, car1.getReservations().size());
-        assertEquals(1, car2.getReservations().size());
-        assertEquals(0, car3.getReservations().size());
-    }
-
     /**
      * Test of revert method, of class PlanTaskCommand.
      */
