@@ -600,7 +600,7 @@ public class ShowProjectFrame extends javax.swing.JFrame {
      */
     private void selectProject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectProject
         try {
-            int pId = (int) projectModel.getValueAt(projectTable.convertRowIndexToModel(projectTable.getSelectedRow()), 0);
+            int pId = (int) projectTable.convertRowIndexToModel(projectTable.getSelectedRow());
             handler.selectProject(pId);
             DetailedProject project = handler.getProject();
             initDetailedProject(project);
