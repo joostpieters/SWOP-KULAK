@@ -2,11 +2,11 @@ package controller;
 
 
 import domain.BranchOffice;
-import domain.Database;
 import domain.Project;
 import domain.dto.DetailedProject;
 import domain.dto.DetailedTask;
 import domain.time.Clock;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,20 +22,16 @@ public class ShowProjectHandler {
     private final BranchOffice manager;
     
     private Project currentProject;
-    //TODO: waarom zit hier nog een db?
-    private final Database db;
     private final Clock clock;
     
     /**
      * Initialize a new show project handler with the given projectContainer.
      * 
      * @param manager The projectContainer to use in this handler. 
-     * @param db The database to use with this handler
      * @param clock The clock to use in this handler
      */   
-    public ShowProjectHandler(BranchOffice manager, Database db, Clock clock){
+    public ShowProjectHandler(BranchOffice manager, Clock clock){
         this.manager = manager;
-        this.db = db;
         this.clock = clock;
     }
     
@@ -45,7 +41,7 @@ public class ShowProjectHandler {
      */
     public List<DetailedProject> getProjects(){
         
-        return new ArrayList<>(db.getProjects());
+        return new ArrayList<>(manager.getProjectContainer().getProjects());
     }
     
     /**
@@ -55,7 +51,7 @@ public class ShowProjectHandler {
      * @param projectId The id of the project ro retrieve 
      */
     public void selectProject(int projectId){
-        currentProject = db.getProjects().get(projectId);
+        currentProject = manager.getProjectContainer().getProject(projectId);
     }
     /**
      * @return The current project of this handler.

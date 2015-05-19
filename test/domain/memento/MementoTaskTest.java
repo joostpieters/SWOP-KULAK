@@ -5,16 +5,21 @@ import domain.Project;
 import domain.ResourceType;
 import domain.task.Status;
 import domain.task.Task;
+import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
 import org.easymock.EasyMock;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,11 +30,13 @@ import org.junit.Test;
  */
 public class MementoTaskTest {
 
+	private Clock clock;
 	private Task t0, t1, t2;
 	private Project p0;
 	
 	@Before
 	public void setUp() throws Exception {
+		clock = new Clock();
 		p0 = new Project("project 0", "this is project 0", LocalDateTime.of(2015, 5, 18, 10, 20), LocalDateTime.of(2015, 5, 30, 13, 0));
 		t0 = new Task("task 0", new Duration(30), 54, new HashMap<ResourceType, Integer>(), p0);
 		t1 = new Task("task 1", new Duration(31), 55, Arrays.asList(t0), new HashMap<ResourceType, Integer>(), p0);
@@ -52,7 +59,9 @@ public class MementoTaskTest {
 		Timespan t0finishTS = new Timespan(
 				LocalDateTime.of(2015, 5, 18, 15, 0),
 				LocalDateTime.of(2015, 5, 19, 15, 0));
-                
+        
+    	t0.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t0.execute(clock);
 		t0.finish(t0finishTS,
 				LocalDateTime.of(2015, 5, 20, 10, 0));
 		

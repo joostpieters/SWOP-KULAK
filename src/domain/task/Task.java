@@ -459,7 +459,7 @@ public class Task implements DetailedTask {
             throw new IllegalArgumentException("The given timespan is before the project creation time.");
         }
         getStatus().fail(this, timespan);
-        if(isPlanned()){
+        if(hasPlanning()){
             planning.clearFutureReservations(timespan.getEndTime());
         }
     }
@@ -484,7 +484,7 @@ public class Task implements DetailedTask {
         }
         
         getStatus().finish(this, timespan);
-        if(isPlanned()){
+        if(hasPlanning()){
             planning.clearFutureReservations(timespan.getEndTime());
         }
         
@@ -654,9 +654,13 @@ public class Task implements DetailedTask {
      *
      * @return True if and only if this task has a planned start time.
      */
-    public boolean isPlanned() {
+    public boolean hasPlanning() {
     	//TODO: verandering door P-J, maar misschien niet precies het gewenste resultaat?
         return this.planning != null;
+    }
+    
+    public boolean isUnplanned() {
+    	return !hasPlanning() && !isFailed() && !isFinished();
     }
     
     /**

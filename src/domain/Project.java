@@ -310,12 +310,12 @@ public class Project implements DetailedProject {
      * @return	a list of tasks which are available to be planned, an empty list
      * if this project does not contain such tasks.
      *
-     * @see	Task#isPlanned()
+     * @see	Task#hasPlanning()
      */
     public List<Task> getCanBePlannedTasks() {
         List<Task> result = new LinkedList<>();
         for (Task t : getTasks()) {
-            if (t.isPlanned()) {
+            if (t.hasPlanning()) {
                 result.add(t);
             }
         }
@@ -327,12 +327,12 @@ public class Project implements DetailedProject {
      * 
      * @return The list of tasks belonging to this project which are unplanned.
      * 
-     * @see Task#isPlanned()
+     * @see Task#hasPlanning()
      */
     public List<Task> getUnplannedTasks() {
     	List<Task> unplannedTasks = new ArrayList<>();
     	for(Task t : getTasks())
-    		if (!t.isPlanned())
+    		if (t.isUnplanned())
     			unplannedTasks.add(t);
     	return unplannedTasks;
     }

@@ -34,9 +34,12 @@ import scenariotest.UpdateTaskStatusScenarioTest;
                     TaskTest.class,
                     TimespanTest.class, 
                     DurationTest.class,
+                    WorkWeekConfigurationTest.class, 
                     ResourceTest.class,
                     ResourceTypeTest.class,
                     ResourceContainerTest.class,
+                    CreateReservationCommandTest.class, 
+                    PlanTaskCommandTest.class, 
                     MementoTest.class,
                     MementoProjectTest.class,
                     MementoTaskTest.class,
@@ -47,7 +50,9 @@ import scenariotest.UpdateTaskStatusScenarioTest;
                     ShowProjectScenarioTest.class,
                     UpdateTaskStatusScenarioTest.class,
                     SimulatorScenarioTest.class,
-                    PlanTaskScenarioTest.class, CreateReservationCommandTest.class, PlanTaskCommandTest.class, CreateReservationCommandTest.class, WorkWeekConfigurationTest.class, LoginScenarioTest.class, DelegateTaskScenarioTest.class})
+                    PlanTaskScenarioTest.class, 
+                    LoginScenarioTest.class, 
+                    DelegateTaskScenarioTest.class})
 public class TaskManTestSuite {
     
 }

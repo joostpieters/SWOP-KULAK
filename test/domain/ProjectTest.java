@@ -637,7 +637,6 @@ public class ProjectTest {
 
     	t2.plan(clock.getTime(), new ArrayList<>(), clock);
     	t2.execute(clock);
-    	System.out.println(t2.getStatus());
     	clock.advanceTime(end.plusDays(1));
     	t2.finish(new Timespan(start, end.plusDays(1)), clock.getTime());
     	assertEquals(Duration.ZERO, p2.getDelay(clock.getTime()));

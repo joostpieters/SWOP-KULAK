@@ -64,7 +64,7 @@ public class TaskTest {
     	
     	t3 = p.createTask("t3 finished", new Duration(30), 40, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
     	t3.plan(LocalDateTime.of(2060, 3, 5, 11, 48), new ArrayList<Resource>(), clock);
-    	assertTrue(t3.isPlanned());
+    	assertTrue(t3.hasPlanning());
     	assertTrue(t3.getStatus() instanceof Available);
     	t3.execute(clock);
     	assertTrue(t3.getStatus() instanceof Executing);

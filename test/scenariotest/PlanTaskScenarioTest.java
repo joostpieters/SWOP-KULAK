@@ -112,6 +112,7 @@ public class PlanTaskScenarioTest {
 		assertEquals(type0, requiredResources.get(0).getKey());
 		assertTrue(possibleResources.contains(requiredResources.get(0).getValue()));
 		
+		//TODO: main scenario provides possible resources without choosing specific ones, not sure whether this is correct...
 		List<Integer> resources = new ArrayList<>();
 		for(Entry<DetailedResourceType, DetailedResource> e : requiredResources) 
 			resources.add(e.getValue().getId());
@@ -140,12 +141,15 @@ public class PlanTaskScenarioTest {
 		
 		requiredResources = handler.getRequiredResources(pId, tId, selectedTime);
 		assertEquals(3, requiredResources.size());
+		//TODO: andere volgorde zorgt voor falen test!
 		possibleResources = rc.getResourcesOfType(type0);
 		assertEquals(type0, requiredResources.get(0).getKey());
 		assertTrue(possibleResources.contains(requiredResources.get(0).getValue()));
+		assertEquals(type0, requiredResources.get(1).getKey());
+		assertTrue(possibleResources.contains(requiredResources.get(1).getValue()));
 		possibleResources = rc.getResourcesOfType(type1);
 		assertEquals(type0, requiredResources.get(0).getKey());
-		assertTrue(possibleResources.contains(requiredResources.get(0).getValue()));
+		assertTrue(possibleResources.contains(requiredResources.get(2).getValue()));
 		
 		resources = new ArrayList<>();
 		for(Entry<DetailedResourceType, DetailedResource> e : requiredResources)

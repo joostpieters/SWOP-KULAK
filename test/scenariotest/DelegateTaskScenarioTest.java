@@ -92,6 +92,7 @@ public class DelegateTaskScenarioTest {
         // Step 5 - The user selects one of the branch offices
         int chosenBranchOffice = 1; // The second branch office is chosen: 'Lauwe city'
         handler.delegateTask(chosenTaskProjectId, chosenTaskId, chosenBranchOffice);
+        //TODO: delete...
         System.out.println(chosenTaskProjectId + " " + chosenTaskId + " " + chosenBranchOffice);
         
         // check that the original branch office no longer contains the delegated task as one of its assigned tasks.
