@@ -37,7 +37,8 @@ import org.junit.Test;
 public class CreateTaskScenarioTest {
 
 	private static Database db;
-    private static ProjectContainer manager;
+    private static ProjectContainer pc;
+    private static BranchOffice manager;
     private static CreateTaskHandler handler;
     private static Project p1;
     private static Task t1;
@@ -49,22 +50,23 @@ public class CreateTaskScenarioTest {
     @BeforeClass
     public static void setUpClass() {
     	db = new Database();
-        manager = new ProjectContainer();
+        pc = new ProjectContainer();
+        manager = new BranchOffice(pc, new ResourceContainer());
         String project1Name = "project 1 :)";
         String project1Description = "This is project 1";
         LocalDateTime project1StartTime = LocalDateTime.of(2015, 03, 12, 17, 30);
         LocalDateTime project1EndTime = LocalDateTime.of(2015, 03, 16, 17, 30);
-        p1 = manager.createProject(project1Name, project1Description, project1StartTime, project1EndTime);
+        p1 = pc.createProject(project1Name, project1Description, project1StartTime, project1EndTime);
         t1 = p1.createTask("Prereq", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
         t2 = p1.createTask("Alternative", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
         
         clock = new Clock();
         auth = new Auth(db);
         acl = new Acl();
-        db.addUser(new GenericUser("John", "manager"));
+        db.addUser(new GenericUser("John", "manager", manager));
         acl.addEntry("manager", new ArrayList<>(Arrays.asList("CreateTask")));
         auth.login("John");
-        HandlerFactory controller = new HandlerFactory(new BranchOffice(manager, new ResourceContainer(), db), clock, auth, acl, db);
+        HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
         handler = controller.getCreateTaskHandler();
     }
 
@@ -81,7 +83,7 @@ public class CreateTaskScenarioTest {
         
         handler.createTask(p1.getId(), "Fun task", 50, Arrays.asList(t1.getId()), 20, t2.getId(), new HashMap<>());
         
-        Project project = manager.getProject(p1.getId());
+        Project project = pc.getProject(p1.getId());
         List<Task> tasks = project.getTasks();
         boolean foundTask = false;
         for (Task t : tasks) {
@@ -110,7 +112,7 @@ public class CreateTaskScenarioTest {
         LocalDateTime project2StartTime = LocalDateTime.of(2015, 03, 12, 17, 30);
         LocalDateTime project2EndTime = LocalDateTime.of(2015, 03, 16, 17, 30);
         
-        Project p2 = manager.createProject(project2Name, project2Description, project2StartTime, project2EndTime);
+        Project p2 = pc.createProject(project2Name, project2Description, project2StartTime, project2EndTime);
         int alternativeId = t2.getId();
         
         handler.createTask(p2.getId(), "Fun task8", 50, Project.NO_DEPENDENCIES, 20, alternativeId, new HashMap<>());
@@ -139,7 +141,7 @@ public class CreateTaskScenarioTest {
         LocalDateTime project2StartTime = LocalDateTime.of(2015, 03, 12, 17, 30);
         LocalDateTime project2EndTime = LocalDateTime.of(2015, 03, 16, 17, 30);
         
-        Project p2 = manager.createProject(project2Name, project2Description, project2StartTime, project2EndTime);
+        Project p2 = pc.createProject(project2Name, project2Description, project2StartTime, project2EndTime);
         int dependencyId = t2.getId();
         
         handler.createTask(p2.getId(), "Fun task5", 50, Arrays.asList(dependencyId), 20, Project.NO_ALTERNATIVE, new HashMap<>());

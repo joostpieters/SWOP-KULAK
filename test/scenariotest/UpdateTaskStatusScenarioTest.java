@@ -33,7 +33,8 @@ import org.junit.Test;
 public class UpdateTaskStatusScenarioTest {
     
 	private static Database db;
-    private static ProjectContainer manager;
+    private static ProjectContainer pc;
+    private static BranchOffice manager;
     private static UpdateTaskStatusHandler handler;
     private static Project p1;
     private static Task t1;
@@ -44,23 +45,24 @@ public class UpdateTaskStatusScenarioTest {
     @BeforeClass
     public static void setUpClass() {
     	db = new Database();
-        manager = new ProjectContainer();
+        pc = new ProjectContainer();
+        manager = new BranchOffice(pc, new ResourceContainer());
         // only p1 has tasks
-        p1 = manager.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
+        p1 = pc.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
         
         p1.createTask("A difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Arrays.asList(t1.getId()), new HashMap<>());
         
-        manager.createProject("Test 2", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
-        manager.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
+        pc.createProject("Test 2", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
+        pc.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         
         clock = new Clock();
         auth = new Auth(db);
         acl = new Acl();
-        db.addUser(new GenericUser("John", "manager"));
+        db.addUser(new GenericUser("John", "manager", manager));
         acl.addEntry("manager", new ArrayList<>(Arrays.asList("UpdateTaskStatus")));
         auth.login("John");
-        HandlerFactory controller = new HandlerFactory(new BranchOffice(manager, new ResourceContainer(), db), clock, auth, acl, db);
+		HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
         handler = controller.getUpdateTaskHandler();
         clock.advanceTime(LocalDateTime.of(2015,03,17,14,10));
     }
