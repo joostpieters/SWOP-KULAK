@@ -414,7 +414,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
                 }
                 
                 
-                task.plan(plannedStartTime, resources, clock, office.getResourceContainer());
+                task.plan(plannedStartTime, resources, clock);
             }
             
             expectLabel("status");
@@ -439,7 +439,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
                 if (status.equalsIgnoreCase("failed")) {
                     task.fail(new Timespan(startTime, endTime), clock.getTime());
                 } else if (status.equalsIgnoreCase("finished")) {
-                    task.execute(clock, office.getResourceContainer());
+                    task.execute(clock);
                     
                     task.finish(new Timespan(startTime, endTime), clock.getTime());
                 }
