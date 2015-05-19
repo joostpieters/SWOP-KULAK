@@ -1,19 +1,5 @@
 package scenariotest;
 
-import static org.junit.Assert.*;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import controller.PlanTaskHandler;
 import domain.BranchOffice;
 import domain.Database;
@@ -33,6 +19,18 @@ import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.GenericUser;
 import domain.user.User;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class PlanTaskScenarioTest {
 

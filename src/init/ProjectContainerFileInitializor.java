@@ -50,7 +50,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
      */
     public ProjectContainerFileInitializor(Reader r, Clock clock, Database db) {
         super(r);
-        
+
         this.clock = clock;
         this.db = db;
     }
@@ -203,7 +203,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
 
             db.addOffice(new BranchOffice(location));
         }
-        
+
         /**
          * Resourcetypes
          */
@@ -264,30 +264,28 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             int officeId = expectInt();
             // create and add resourcetype
             Resource res = db.getOffices().get(officeId).getResourceContainer().createResource(name, db.getResourceTypes().get(typeIndex));
-            
+
             // add to db
             db.addResource(res);
             // add to temp list
             resourcesList.add(res);
-            
-            
+
         }
-        
+
         expectLabel("managers");
-        
+
         while (ttype == '-') {
             expectChar('-');
             String name = expectStringField("name");
             int officeId = expectIntField("office");
-            GenericUser manager = new GenericUser(name,"manager" , db.getOffices().get(officeId));
+            GenericUser manager = new GenericUser(name, "manager", db.getOffices().get(officeId));
             db.getOffices().get(officeId).addUser(manager);
-                        
+
             // developer is user and resource at the same time
             db.addUser(manager);
-            
 
         }
-        
+
         /**
          * Developers
          */
@@ -305,7 +303,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             // add to temp list
             devList.add(dev);
             // TODO workweek conf?
-            
+
             // developer is user and resource at the same time
             db.addUser(dev);
             db.addResource(dev);
@@ -315,12 +313,12 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
         hashMap.put(devType, 1);
         // dev is standard requirement
         Task.setStandardRequiredResources(hashMap);
-        
+
         /**
          * Projects
          */
         expectLabel("projects");
-        
+
         HashMap<Project, BranchOffice> projectOffice = new HashMap<>();
         List<Project> tempProjects = new ArrayList<>();
         while (ttype == '-') {
@@ -330,12 +328,12 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             LocalDateTime creationTime = expectDateField("creationTime");
             LocalDateTime dueTime = expectDateField("dueTime");
             int officeId = expectIntField("office");
-            
+
             BranchOffice office = db.getOffices().get(officeId);
             Project project = office.getProjectContainer().createProject(name, description, creationTime, dueTime);
             projectOffice.put(project, office);
             tempProjects.add(project);
-            
+
         }
 
         /**
@@ -345,6 +343,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
         List<Task> taskList = new ArrayList<>();
         while (ttype == '-') {
             expectChar('-');
+            System.out.println("lol");
             int projectId = expectIntField("project");
             String description = expectStringField("description");
 
@@ -368,9 +367,9 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             Duration duration = new Duration(estimatedDuration);
 
             expectLabel("resources");
-            List<IntPair> resources = expectLabeledPairList("type", "quantity");
+            List<IntPair> requirements = expectLabeledPairList("type", "quantity");
             HashMap<ResourceType, Integer> resourceMap = new LinkedHashMap<>();
-            for (IntPair pair : resources) {
+            for (IntPair pair : requirements) {
                 resourceMap.put(db.getResourceTypes().get(pair.first), pair.second);
             }
 
@@ -385,16 +384,45 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
                 // de andere resources worden blijkbaar apart gereserveerd later, zie volgende TODO
                 //task.plan(arrayList.get(planning), plannings.get(arrayList.get(planning)), clock);
             } else {
-                
+
                 task = tempProjects.get(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, Task.NO_REQUIRED_RESOURCE_TYPES);
             }
             // add to temporary list
             taskList.add(task);
-
+            int planning = expectIntField("planned");
+           
+            BranchOffice office = projectOffice.get(task.getProject());
+            if (planning == 1) {
+                LocalDateTime plannedStartTime = expectDateField("plannedStartTime");
+                expectLabel("developers");
+                List<Integer> developers = expectIntList();
+                // transform ids to objects
+                ArrayList<Resource> resources = new ArrayList<>();
+                
+                for (int id : developers) {
+                    resources.add(devList.get(id));
+                }
+                
+                expectLabel("resources");
+                List<Integer> resourcesIds = new ArrayList<>();
+                if (ttype == '[') {
+                    resourcesIds = expectIntList();
+                }
+                // add rest of resources
+                for (int id : resourcesIds) {
+                    resources.add(db.getResources().get(id));
+                }
+                
+                
+                task.plan(plannedStartTime, resources, clock, office.getResourceContainer());
+            }
+            
             expectLabel("status");
+            System.out.println("lo");
             String status = "";
             if (isWord("finished")) {
                 nextToken();
+                
                 status = "finished";
             } else if (isWord("failed")) {
                 nextToken();
@@ -411,53 +439,16 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
                 if (status.equalsIgnoreCase("failed")) {
                     task.fail(new Timespan(startTime, endTime), clock.getTime());
                 } else if (status.equalsIgnoreCase("finished")) {
+                    task.execute(clock, office.getResourceContainer());
+                    
                     task.finish(new Timespan(startTime, endTime), clock.getTime());
                 }
 
             }
-
-        }
-
-        /**
-         * Plannings
-         */
-        expectLabel("plannings");
-
-        while (ttype == '-') {
-            expectChar('-');
-            LocalDateTime startTime = expectDateField("plannedStartTime");
-            expectLabel("developers");
-            List<Integer> developers = expectIntList();
-            // transform ids to objects
-            ArrayList<Resource> resources = new ArrayList<>();
-            
-            for (int id : developers) {
-                resources.add(devList.get(id));
-            }
-
-            expectLabel("resources");
-            List<Integer> resourcesIds = new ArrayList<>();
-            if (ttype == '[') {
-                resourcesIds = expectIntList();
-            }
-            // add rest of resources
-            for (int id : resourcesIds) {
-                resources.add(db.getResources().get(id));
-            }
-
-            expectLabel("task");
-            if (ttype == TT_NUMBER) {
-                int taskId = expectInt();
-                Task task = taskList.get(taskId);
-                BranchOffice office = projectOffice.get(task.getProject());
-                
-                task.plan(startTime, resources, clock, office.getResourceContainer());
-                
-            }
-
         }
 
         if (ttype != TT_EOF) {
+            
             error("End of file or '-' expected");
         }
     }
