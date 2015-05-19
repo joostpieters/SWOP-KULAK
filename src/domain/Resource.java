@@ -210,38 +210,7 @@ public class Resource implements DetailedResource {
         return result;
     }
 
-    /**
-     * Get the time spans this resource is available from a given point in time.
-     *
-     * @param from The time stamp to start looking for free time spans.
-     * @return	a sorted set of time spans in which this resource is free. The
-     * last time span is an infinite time span.
-     */
-    public SortedSet<Timespan> nextAvailableTimespans(LocalDateTime from) {
-        SortedSet<Timespan> result = new TreeSet<>();
-        SortedSet<Reservation> reserVations = getReservations(from);
-        if (reserVations.isEmpty()) {
-            result.add(new Timespan(from));
-            return result;
-        }
-
-        Iterator<Reservation> it = reserVations.iterator();
-        Reservation r1, r2 = it.next();
-        if (r2.startsAfter(from)) {
-            result.add(new Timespan(from, r2.getStartTime()));
-        }
-
-        while (it.hasNext()) {
-            r1 = r2;
-            r2 = it.next();
-            if (!r1.conflictsWith(r2)) {
-                result.add(new Timespan(r1.getEndTime(), r2.getStartTime()));
-            }
-        }
-
-        result.add(new Timespan(r2.getEndTime()));
-        return result;
-    }
+    
 
     /**
      * **************************************************
