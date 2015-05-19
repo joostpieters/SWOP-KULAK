@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * This scenario test, tests the create task use case
+ * This scenario test, tests the delegate task use case.
  *
  * @author Frederic, Mathias, Pieter-Jan
  */
@@ -74,7 +74,7 @@ public class DelegateTaskScenarioTest {
     }
 
     /**
-     * Tests the main success scenario of the "Create Task" use case
+     * Tests the main success scenario of the "Delegate Task" use case
      */
     @Test
     public void testMainSuccessScenario() {
