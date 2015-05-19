@@ -60,9 +60,16 @@ public class DelegateTaskHandler extends Handler {
      * 
      * @return All unplanned tasks in this branchoffice 
      */
-	public List<DetailedTask> getUnplannedTasks() {
+	public List<DetailedTask> getUnplannedTasks() { // TODO mss zal dit later onnodige methode zijn
 		return new ArrayList<>(manager.getUnplannedTasks());
-		
+	}
+	
+	/**
+	 * @return All unplanned tasks which are assigned to this branch office.
+	 */
+	public List<DetailedTask> getUnplannedAssignedTasks()
+	{
+		return new ArrayList<>(manager.getAssignedUnplannedTasks());
 	}
         
         /**

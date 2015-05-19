@@ -189,6 +189,19 @@ public class BranchOffice implements DetailedBranchOffice {
     }
     
     /**
+     * @return The list of unplanned tasks which are assigned to this branch office.
+     * @see BranchOffice#taskIsAssigned()
+     */
+    public List<Task> getAssignedUnplannedTasks()
+    {
+    	List<Task> assignedUnplannedTasks = new ArrayList<>();
+    	for(Task task : projectContainer.getUnplannedTasks())
+    		if(taskIsAssigned(task))
+    			assignedUnplannedTasks.add(task);
+    	return assignedUnplannedTasks;
+    }
+    
+    /**
      * @return All unplanned tasks in the list of delegated tasks of this branch office.
      */
     private List<Task> getDelegatedUnplannedTasks() {

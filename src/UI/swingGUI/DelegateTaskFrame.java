@@ -36,15 +36,15 @@ public class DelegateTaskFrame extends javax.swing.JFrame {
     public DelegateTaskFrame(DelegateTaskHandler handler) {
         this.handler = handler;
         initComponents();
-        initUnplannedTaskTable();
+        initUnplannedAssignedTaskTable();
     }
 
     /**
      * Fills the available task table with the appropriate data
      */
-    private void initUnplannedTaskTable() {
+    private void initUnplannedAssignedTaskTable() {
         String[] columnNames = {"Id", "Description", "Estimated Duration", "Acceptable Deviation", "Project id", "Project"};
-        List<DetailedTask> tasks = handler.getUnplannedTasks();
+        List<DetailedTask> tasks = handler.getUnplannedAssignedTasks();
         Object[][] data = new Object[tasks.size()][];
 
         int i = 0;
