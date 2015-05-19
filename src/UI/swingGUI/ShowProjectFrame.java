@@ -2,7 +2,6 @@ package UI.swingGUI;
 
 import controller.ShowProjectHandler;
 import domain.dto.DetailedProject;
-import domain.dto.DetailedResource;
 import domain.dto.DetailedTask;
 import java.awt.CardLayout;
 import java.time.format.DateTimeFormatter;
@@ -141,11 +140,8 @@ public class ShowProjectFrame extends javax.swing.JFrame {
             timespanLabel.setText("n/a");
         }
         
-        String resources = "";
-        for (DetailedResource res : task.getPlanning().getResources()) {
-            resources += res.getName() + ",";
-        }
-        taskPlanningLabel.setText(task.getPlanning() == null ? "n/a" : task.getPlanning().getTimespan().toString() + ": " + resources);
+        
+        taskPlanningLabel.setText(task.getPlanning() == null ? "n/a" : task.getPlanning().getTimespan().toString() + ": " + task.getPlanning().getResources());
         
         
         taskDescriptionLabel.setText(task.getDescription());
@@ -578,6 +574,7 @@ public class ShowProjectFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(rootPane, "Please select a task.", null, JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(rootPane, e.getMessage(), null, JOptionPane.ERROR_MESSAGE);
+           
         }
     }//GEN-LAST:event_selectTaskButtonActionPerformed
     
@@ -597,6 +594,7 @@ public class ShowProjectFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(rootPane, "Please select a project.", null, JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(rootPane, e.getMessage(), null, JOptionPane.ERROR_MESSAGE);
+             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, e);
         }
     }//GEN-LAST:event_selectProject
 
