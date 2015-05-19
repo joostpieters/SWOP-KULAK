@@ -112,10 +112,12 @@ public class Available extends Status {
         if (task.isPlanned()) {
             if (!task.getPlanning().isBefore(clock.getTime())) {
                 task.setStatus(new Executing());
+                
             } else {
                 try {
                     // unplanned execution
                     task.plan(clock.getTime(), new ArrayList<>(), clock);
+                    task.setStatus(new Executing());
                 } catch (ConflictException ex) {
                     throw new IllegalStateException("This task can't move to executing because there are not enough resources available");
                 }

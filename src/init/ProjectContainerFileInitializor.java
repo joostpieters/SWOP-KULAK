@@ -343,7 +343,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
         List<Task> taskList = new ArrayList<>();
         while (ttype == '-') {
             expectChar('-');
-            System.out.println("lol");
+            
             int projectId = expectIntField("project");
             String description = expectStringField("description");
 
@@ -418,7 +418,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             }
             
             expectLabel("status");
-            System.out.println("lo");
+            
             String status = "";
             if (isWord("finished")) {
                 nextToken();
