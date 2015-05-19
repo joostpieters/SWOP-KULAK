@@ -88,8 +88,7 @@ public class PlanTaskHandler extends Handler {
         Task currentTask = manager.getProjectContainer().getProject(pId).getTask(tId);
         List<Entry<DetailedResourceType, DetailedResource>> resources = new ArrayList<>();
         for (Entry<ResourceType, Integer> entry : currentTask.getRequiredResources().entrySet()) {
-            List<Resource> availableResources = new ArrayList<>();
-            manager.getResourceContainer().getAvailableResources(entry.getKey(), new Timespan(start, currentTask.getEstimatedDuration())); // TODO niet verantwoordelijkheid van plantaskhandler
+            List<Resource> availableResources = new ArrayList<>(manager.getResourceContainer().getAvailableResources(entry.getKey(), new Timespan(start, currentTask.getEstimatedDuration()))); // TODO niet verantwoordelijkheid van plantaskhandler
             for (int i = 0; i < entry.getValue(); i++) {
                     // if there are not enough resources available add same resource
                 // multiple times
