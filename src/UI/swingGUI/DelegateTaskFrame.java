@@ -271,7 +271,7 @@ public class DelegateTaskFrame extends javax.swing.JFrame {
     protected void initBranchOfficeList() {
         
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        for (DetailedBranchOffice branchOffice : handler.getBranchOffices()) {
+        for (DetailedBranchOffice branchOffice : handler.getOtherBranchOffices()) {
             listModel.addElement(branchOffice.getLocation());
         }
         

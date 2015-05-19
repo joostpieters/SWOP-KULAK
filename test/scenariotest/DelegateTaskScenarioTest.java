@@ -87,7 +87,7 @@ public class DelegateTaskScenarioTest {
         int chosenTaskProjectId = chosenTask.getProject().getId();
         
         // Step 4 - Show an overview of the different branch offices
-        List<DetailedBranchOffice> branchOffices = handler.getBranchOffices();
+        List<DetailedBranchOffice> branchOffices = handler.getOtherBranchOffices();
         
         // Step 5 - The user selects one of the branch offices
         int chosenBranchOffice = 1; // The second branch office is chosen: 'Lauwe city'

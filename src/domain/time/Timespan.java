@@ -51,7 +51,7 @@ public final class Timespan implements Comparable<Timespan> {
      * @param duration The duration of this time span
      */
     public Timespan(LocalDateTime startTime, Duration duration) {
-        this(startTime, startTime.plusMinutes(duration.getMinutes()));
+        this(startTime, startTime.plusMinutes(duration.toMinutes()));
     }
 
     /**

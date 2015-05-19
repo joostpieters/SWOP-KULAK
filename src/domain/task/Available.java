@@ -105,25 +105,6 @@ public class Available extends Status {
         task.setStatus(new Failed());
     }
     
-    /**
-     * Transition to the finished state
-     * 
-     * @param timespan The timespan of this finished task
-     * @param task The task which is to be set to failed.
-     * 
-     * @throws IllegalStateException This state can't transition to finished.
-     * @throws IllegalArgumentException The given task can't have the given time span as its time span 
-    */
-    @Override
-    void finish(Task task, Timespan timespan) throws IllegalStateException
-    {
-        if(!canHaveAsTimeSpan(task, timespan))
-            throw new IllegalArgumentException("The given task can't have the given time span as its time span");
-        else
-            task.setTimeSpan(timespan);
-        task.setStatus(new Finished());
-    }
-    
      /**
      * Moves the given task to the executing state
      * 

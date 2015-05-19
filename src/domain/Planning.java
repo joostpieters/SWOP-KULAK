@@ -2,7 +2,9 @@ package domain;
 
 import domain.dto.DetailedPlanning;
 import domain.task.Task;
+import domain.time.Clock;
 import domain.time.Timespan;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,11 +29,13 @@ public class Planning implements ClockObserver, DetailedPlanning{
      * @param resources The resources belonging to this planning.
      * @param timespan The timespan belonging to this planning.
      * @param task The task belonging to this planning.
+     * @param clock The clock to which this planning has to be attached as a clock observer.
      */
-    public Planning(List<Resource> resources, Timespan timespan, Task task){
+    public Planning(List<Resource> resources, Timespan timespan, Task task, Clock clock){
         this.resources = resources;
         this.timespan = timespan;
         this.task = task;
+        clock.attach(this);
     }
     
     /**
