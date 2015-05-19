@@ -40,12 +40,12 @@ public class CreateProjectScenarioTest {
         clock = new Clock();
          auth = new Auth(db);
         acl = new Acl();
-        
-        db.addUser(new GenericUser("John", "manager"));
+
+        manager = new BranchOffice();
+        db.addUser(new GenericUser("John", "manager", manager));
         acl.addEntry("manager", new ArrayList<>(Arrays.asList("CreateProject")));
         auth.login("John");
-
-        manager = new BranchOffice(db);
+        
         HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
         handler = controller.getCreateProjectHandler();
     }
