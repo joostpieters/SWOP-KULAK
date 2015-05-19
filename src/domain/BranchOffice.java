@@ -3,8 +3,11 @@ package domain;
 import domain.dto.DetailedBranchOffice;
 import domain.task.Task;
 import domain.user.User;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This class represents a branch office with a location, project container, resource container and a list of users.
@@ -199,6 +202,19 @@ public class BranchOffice implements DetailedBranchOffice {
     		if(taskIsAssigned(task))
     			assignedUnplannedTasks.add(task);
     	return assignedUnplannedTasks;
+    }
+    
+    /**
+     * @return The list of tasks assigned to this branch office.
+     */
+    public List<Task> getAssignedTasks()
+    {
+    	Set<Task> assignedTasks = new HashSet<>();
+    	for(Task task : projectContainer.getAllTasks())
+    		if(taskIsAssigned(task))
+    			assignedTasks.add(task);
+    	assignedTasks.addAll(delegatedTasks);
+    	return new ArrayList<>(assignedTasks);
     }
     
     /**
