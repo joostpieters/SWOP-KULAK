@@ -44,22 +44,24 @@ public class UpdateTaskStatusScenarioTest {
     
     @BeforeClass
     public static void setUpClass() {
+        clock = new Clock();
     	db = new Database();
         pc = new ProjectContainer();
         manager = new BranchOffice("Monaco", pc, new ResourceContainer());
         // only p1 has tasks
         p1 = pc.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+        t1.plan(clock.getTime(), new ArrayList<>(), clock);
+        t1.execute(clock);
         
         p1.createTask("A difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Arrays.asList(t1.getId()), new HashMap<>());
         
         pc.createProject("Test 2", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         pc.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         
-        clock = new Clock();
         auth = new Auth(db);
         acl = Acl.DEFAULT;
-        db.addUser(new GenericUser("John", "manager", manager));
+        db.addUser(new GenericUser("John", "developer", manager));
         auth.login("John");
 		HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
         handler = controller.getUpdateTaskHandler();

@@ -133,10 +133,10 @@ public class PlanTaskHandler extends Handler {
         ArrayList<Resource> res = new ArrayList<>();
         // id's to resources
         for(int i : resources){
-            res.add(db.getResources().get(i));
+            res.add(manager.getResourceContainer().getResource(i));
         }
         //TODO: bad smell
-        simulatorCommand.add(manager.getProjectContainer().getProject(pId).getTask(tId).plan(startTime, res, clock, manager.getResourceContainer()));
+        simulatorCommand.add(manager.getProjectContainer().getProject(pId).getTask(tId).plan(startTime, res, clock));
     }
 
     //TODO: goeie oplossing? 

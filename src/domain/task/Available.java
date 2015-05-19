@@ -5,6 +5,7 @@ import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
 import exception.ConflictException;
+
 import java.util.ArrayList;
 
 /**
@@ -22,7 +23,7 @@ public class Available extends Status {
 
     }
 
-    /**
+     /**
      * Updates the status of this task to UNAVAILABLE if not all the
      * prerequisite tasks are fulfilled.
      *
@@ -35,7 +36,7 @@ public class Available extends Status {
                 unavailable = true;
             }
         }
-
+       
         if (unavailable) {
             task.setStatus(new Unavailable());
         }
@@ -49,7 +50,7 @@ public class Available extends Status {
     boolean canBeFulfilled(Task task) {
         return true;
     }
-
+    
     /**
      * Checks whether the given task has been fulfilled.
      *
@@ -60,6 +61,7 @@ public class Available extends Status {
     boolean isFulfilled(Task task) {
         return false;
     }
+
 
     /**
      * The estimated amount of work time needed for this task.
@@ -83,40 +85,41 @@ public class Available extends Status {
     boolean isFulfilledBefore(Task task, Timespan timeSpan) {
         return false;
     }
-
-    /**
+    
+     /**
      * Transition to the failed state
-     *
+     * 
      * @param timespan The timespan of this failed task
      * @param task The task which is to be set to failed.
-     *
+     * 
      * @throws IllegalStateException This state can't transition to finished.
-     * @throws IllegalArgumentException The given task can't have the given time
-     * span as its time span
-     */
+     * @throws IllegalArgumentException The given task can't have the given time span as its time span 
+    */
     @Override
-    void fail(Task task, Timespan timespan) {
-        if (!canHaveAsTimeSpan(task, timespan)) {
+    void fail(Task task, Timespan timespan)
+    {
+        if(!canHaveAsTimeSpan(task, timespan))
             throw new IllegalArgumentException("The given task can't have the given time span as its time span");
-        } else {
+        else
             task.setTimeSpan(timespan);
-        }
         task.setStatus(new Failed());
     }
-
-    /**
+    
+     /**
      * Moves the given task to the executing state
-     *
+     * 
      * @param task The task to adjust
-     *
+     * 
      */
     @Override
-    public void execute(Task task, Clock clock, ResourceContainer container) {
-
-        if (task.isPlanned()) {
-            if (!task.getPlanning().isBefore(clock.getTime())) {
+    public void execute(Task task, Clock clock, ResourceContainer container){
+        
+        if(task.isPlanned())
+        {
+            if(!task.getPlanning().isBefore(clock.getTime()))
                 task.setStatus(new Executing());
-            } else {
+            else
+            {
                 try {
                     // unplanned execution
                     task.plan(clock.getTime(), new ArrayList<>(), clock, container);
@@ -124,14 +127,10 @@ public class Available extends Status {
                     throw new IllegalStateException("This task can't move to executing because there are not enough resources available");
                 }
             }
-        } else {
-            try {
-                // unplanned execution
-                task.plan(clock.getTime(), new ArrayList<>(), clock, container);
-            } catch (ConflictException ex) {
-                throw new IllegalStateException("This task can't move to executing because there are not enough resources available");
-            }
         }
-
+        else
+            throw new IllegalStateException("A task has to be planned before you can execute it!");
+        
+        
     }
 }

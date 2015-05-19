@@ -8,6 +8,7 @@ import domain.ProjectContainer;
 import domain.Resource;
 import domain.ResourceContainer;
 import domain.ResourceType;
+import domain.dto.DetailedPlanning;
 import domain.dto.DetailedResource;
 import domain.dto.DetailedResourceType;
 import domain.dto.DetailedTask;
@@ -68,8 +69,8 @@ public class PlanTaskScenarioTest {
 				Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
 		t2 = p.createTask("this is task 2 with task 1 as prerequisite", new Duration(120), 100, 
 				Project.NO_ALTERNATIVE, Arrays.asList(t1.getId()), requiredResources0);
-		t1.plan(START, new ArrayList<>(), clock, rc);
-		t1.execute(clock, rc);
+		t1.plan(START, new ArrayList<>(), clock);
+		t1.execute(clock);
 		//TODO: veranderen naar 90 minuten doet test failen...
 		clock.advanceTime(START.plusMinutes(30));
 		t1.fail(new Timespan(START, clock.getTime()), clock.getTime());
@@ -88,6 +89,7 @@ public class PlanTaskScenarioTest {
 
 	@Test
 	public void testMainSuccesScenario() {
+		//Try planning t3
 		List<DetailedTask> unplannedTasks = handler.getUnplannedTasks();
 		assertEquals(2, unplannedTasks.size());
 		assertTrue(unplannedTasks.contains(t2));
@@ -98,21 +100,66 @@ public class PlanTaskScenarioTest {
 		
 		Set<LocalDateTime> times = handler.getPossibleStartTimesCurrentTask(pId, tId);
 		assertEquals(3, times.size());
-		LocalDateTime first = clock.getTime().withMinute(0);
+		LocalDateTime first = clock.getTime().plusMinutes(60 - clock.getTime().getMinute());
 		assertTrue(times.contains(first));
 		assertTrue(times.contains(first.plusHours(1)));
 		assertTrue(times.contains(first.plusHours(2)));
 		LocalDateTime selectedTime = first.plusHours(2);
 		
 		List<Entry<DetailedResourceType, DetailedResource>> requiredResources = handler.getRequiredResources(pId, tId, selectedTime);
-		System.out.println(requiredResources);
 		assertEquals(1, requiredResources.size()); //TODO: wordt hier evenveel resources als required verwacht?
-		Set<Resource> expectedResources = rc.getResourcesOfType(type0);
+		Set<Resource> possibleResources = rc.getResourcesOfType(type0);
 		assertEquals(type0, requiredResources.get(0).getKey());
-		assertTrue(expectedResources.contains(requiredResources.get(0).getValue()));
+		assertTrue(possibleResources.contains(requiredResources.get(0).getValue()));
 		
-	
-//		handler.planTask(pId, tId, selectedTime, resources);
+		List<Integer> resources = new ArrayList<>();
+		for(Entry<DetailedResourceType, DetailedResource> e : requiredResources) 
+			resources.add(e.getValue().getId());
+		handler.planTask(pId, tId, selectedTime, resources);
+		DetailedPlanning planning = selectedTask.getPlanning();
+		assertTrue(planning != null);
+		assertEquals(new Timespan(selectedTime, selectedTask.getEstimatedDuration()), planning.getTimespan());
+		assertEquals(Arrays.asList(requiredResources.get(0).getValue()), planning.getResources());
+
+		//Try planning t2
+		clock.advanceTime(clock.getTime().plusMinutes(40));
+		unplannedTasks = handler.getUnplannedTasks();
+		assertEquals(1, unplannedTasks.size());
+		assertTrue(unplannedTasks.contains(t2));
+		selectedTask = t2;
+		pId = selectedTask.getProject().getId();
+		tId = selectedTask.getId();
+		
+		times = handler.getPossibleStartTimesCurrentTask(pId, tId);
+		assertEquals(3, times.size());
+		first = clock.getTime().withMinute(0).plusHours(1);
+		assertTrue(times.contains(first));
+		assertTrue(times.contains(first.plusHours(1)));
+		assertTrue(times.contains(first.plusHours(2)));
+		selectedTime = first.plusHours(1);
+		
+		requiredResources = handler.getRequiredResources(pId, tId, selectedTime);
+		assertEquals(3, requiredResources.size());
+		possibleResources = rc.getResourcesOfType(type0);
+		assertEquals(type0, requiredResources.get(0).getKey());
+		assertTrue(possibleResources.contains(requiredResources.get(0).getValue()));
+		possibleResources = rc.getResourcesOfType(type1);
+		assertEquals(type0, requiredResources.get(0).getKey());
+		assertTrue(possibleResources.contains(requiredResources.get(0).getValue()));
+		
+		resources = new ArrayList<>();
+		for(Entry<DetailedResourceType, DetailedResource> e : requiredResources)
+			if(e.getKey().equals(type0)) {
+				DetailedResource temp = e.getValue();
+				resources.add(temp.getId());
+				break;
+			}
+		handler.planTask(pId, tId, selectedTime, resources);
+		planning = selectedTask.getPlanning();
+		assertTrue(planning != null);
+		assertEquals(new Timespan(selectedTime, selectedTask.getEstimatedDuration()), planning.getTimespan());
+		assertEquals(Arrays.asList(requiredResources.get(0).getValue()), planning.getResources());
+		
 	}
 
 }

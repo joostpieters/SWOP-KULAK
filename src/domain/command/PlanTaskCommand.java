@@ -2,14 +2,12 @@ package domain.command;
 
 import domain.Planning;
 import domain.Resource;
-import domain.ResourceType;
 import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Timespan;
 import exception.ConflictException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 
 /**
@@ -38,42 +36,18 @@ public class PlanTaskCommand implements ICommand {
      * @param task The task to be planned.
      * @param clock The clock to use with this planning
      */
-    public PlanTaskCommand(Timespan timespan, List<Resource> resources, Task task, Clock clock, List<Resource> availableResources) {
+    public PlanTaskCommand(Timespan timespan, List<Resource> resources, Task task, Clock clock) {
         this.task = task;
         this.resources = resources;
         this.timespan = timespan;
         this.clock = clock;
         reservations = new ArrayList<>();
-        repleteResources(availableResources);
         
         for (Resource resource : resources) {
             reservations.add(new CreateReservationCommand(timespan, resource, task));
         }
     }
     
-    /**
-     * Replete the list of resources to the point that all required resources are met
-     * @throws IllegalArgumentException 
-     */
-    private void repleteResources(List<Resource> availableResources) throws IllegalArgumentException {
-        Map<ResourceType, Integer> required = task.getRequiredResources();
-        
-        for (ResourceType type : required.keySet()) {
-            
-            if (type.numberOfResources(resources) < required.get(type)) {
-                System.out.println(type.numberOfResources(resources));
-                System.out.println(required.get(type));
-                // remove the all ready selected resources from the available resources
-                availableResources.removeAll(resources);
-                // check whether the remaining resources can fulfill the still required quantity
-                if (type.numberOfResources(availableResources) < (required.get(type) - type.numberOfResources(resources))) {
-                    throw new IllegalArgumentException("There are not enough resources available at this moment.");
-                } else {
-                    resources.addAll(availableResources);
-                }
-            }
-        }
-    }
     /**
      * The tasks future reservations are cleared and the new reservations are made.
      */

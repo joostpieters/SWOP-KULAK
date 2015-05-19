@@ -21,6 +21,19 @@ public class ResourceContainer {
     public Set<Resource> getResources() {
         return new HashSet<>(resources);
     }
+    
+    /**
+     * Return a resource based on its id.
+     * 
+     * @param id The id of the resource looking for.
+     * @return the resource with the given id or null if it is not in this container.
+     */
+    public Resource getResource(int id) {
+    	for(Resource r : getResources())
+    		if(r.getId() == id)
+    			return r;
+    	return null;
+    }
 
     /**
      * Make a resource and add it to the list of resources.

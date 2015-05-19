@@ -112,7 +112,7 @@ public class UpdateTaskStatusHandler extends Handler {
         }
         try {
             if (((Resource) auth.getUser()).getReservation(currentTask) != null) {
-                currentTask.execute(clock, manager.getResourceContainer());
+                currentTask.execute(clock);
             }            
             
         } catch (ClassCastException e) {

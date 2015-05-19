@@ -1,6 +1,5 @@
 package domain.task;
 
-import domain.ResourceContainer;
 import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
@@ -137,7 +136,7 @@ public abstract class Status {
      * @throws IllegalStateException The task can't move to executing from this
      * state.
      */
-    public void execute(Task task, Clock clock, ResourceContainer container) throws IllegalStateException {
+    public void execute(Task task, Clock clock) throws IllegalStateException {
         throw new IllegalStateException("This task can't execute, because it's not available.");
     }
     
