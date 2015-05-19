@@ -1,18 +1,16 @@
 package controller;
 
-import java.util.List;
-import java.util.Set;
-
-import domain.Database;
 import domain.BranchOffice;
-import domain.ResourceType;
+import domain.Database;
 import domain.command.SimulatorCommand;
-import domain.dto.DetailedResource;
-import domain.dto.DetailedResourceType;
+import domain.dto.DetailedBranchOffice;
 import domain.dto.DetailedTask;
+import domain.task.Task;
 import domain.time.Clock;
 import domain.user.Acl;
 import domain.user.Auth;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This handler, handles the delegate task use case
@@ -58,16 +56,34 @@ public class DelegateTaskHandler extends Handler {
         this.db = db;
         this.simulatorCommand = simulatorCommand;
     }
-
+    /**
+     * 
+     * @return All unplanned tasks in this branchoffice 
+     */
 	public List<DetailedTask> getUnplannedTasks() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<>(manager.getUnplannedTasks());
+		
 	}
-
-	public List<String> getPossibleBranchOffices(int selectedProjectId,
-			int selectedTaskId) {
-		// TODO Auto-generated method stub
-		return null;
+        
+        /**
+         * 
+         * @return All branch offices in the system
+         */
+	public List<DetailedBranchOffice> getBranchOffices() {
+		
+		return new ArrayList<>(db.getOffices());
 	}
+        
+        /**
+         * Delegates the task with the given id to the given branchoffice
+         * 
+         * @param pId The project id of the task
+         * @param tId The id of the task to delegate
+         * @param officeId The id of the office to delegate to
+         */
+        public void delegateTask(int pId, int tId, int officeId){
+            Task task = manager.getProjectContainer().getProject(pId).getTask(tId);
+            manager.delegateTaskTo(task, db.getOffices().get(officeId));
+        }
     
 }

@@ -1,15 +1,12 @@
 package UI.swingGUI;
 
 import controller.DelegateTaskHandler;
+import domain.dto.DetailedBranchOffice;
 import domain.dto.DetailedResource;
-import domain.dto.DetailedResourceType;
 import domain.dto.DetailedTask;
 import java.awt.CardLayout;
-import java.time.DateTimeException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
@@ -39,13 +36,13 @@ public class DelegateTaskFrame extends javax.swing.JFrame {
     public DelegateTaskFrame(DelegateTaskHandler handler) {
         this.handler = handler;
         initComponents();
-        initAvailableTaskTable();
+        initUnplannedTaskTable();
     }
 
     /**
      * Fills the available task table with the appropriate data
      */
-    private void initAvailableTaskTable() {
+    private void initUnplannedTaskTable() {
         String[] columnNames = {"Id", "Description", "Estimated Duration", "Acceptable Deviation", "Project id", "Project"};
         List<DetailedTask> tasks = handler.getUnplannedTasks();
         Object[][] data = new Object[tasks.size()][];
@@ -272,10 +269,10 @@ public class DelegateTaskFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_selectTaskButtonActionPerformed
 
     protected void initBranchOfficeList() {
-        // init possible start times TODO
+        
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        for (String branchOffice : handler.getPossibleBranchOffices(selectedProjectId, selectedTaskId)) {
-            listModel.addElement(branchOffice);
+        for (DetailedBranchOffice branchOffice : handler.getBranchOffices()) {
+            listModel.addElement(branchOffice.getLocation());
         }
         
         officeList.setModel(listModel);
@@ -288,7 +285,16 @@ public class DelegateTaskFrame extends javax.swing.JFrame {
      */
     private void delegateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delegateButtonActionPerformed
 
-        //TODO
+        if(officeList.getSelectedIndex() != -1){
+            try {
+                handler.delegateTask(selectedProjectId, selectedTaskId, officeList.getSelectedIndex());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(rootPane, e.getMessage(), null, JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        else {
+            JOptionPane.showMessageDialog(rootPane, "Please select an office.", null, JOptionPane.ERROR_MESSAGE);
+        }
 
     }//GEN-LAST:event_delegateButtonActionPerformed
 

@@ -3,7 +3,6 @@ package domain;
 import domain.dto.DetailedBranchOffice;
 import domain.task.Task;
 import domain.user.User;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -161,6 +160,31 @@ public class BranchOffice implements DetailedBranchOffice {
      */
     public void addUser(User user){
         users.add(user);
+    }
+    
+    /**
+     * 
+     * @return All unplanned tasks in this branchoffice, including the delegated
+     * tasks.
+     */
+    public List<Task> getUnplannedTasks(){
+        List<Task> unplannedTasks = projects.getUnplannedTasks();
+        unplannedTasks.addAll(getDelegatedUnplannedTasks());
+        return unplannedTasks;
+    }
+    
+    /**
+     * 
+     * @return All unplanned tasks in the list of delegated tasks 
+     */
+    private List<Task> getDelegatedUnplannedTasks() {
+        List<Task> tasks = new ArrayList<>();
+        for(Task task : delegatedTasks){
+            if(!task.isPlanned()){
+                tasks.add(task);
+            }
+        }
+        return tasks;
     }
 
 }
