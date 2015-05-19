@@ -66,12 +66,17 @@ public class BranchOffice implements DetailedBranchOffice {
 	 */
 	private void addDelegatedTask(Task task)
 	{
-		this.delegatedTasks.add(task);
-		if(getProjectContainer().containsTask(task))
+		// if this task originally belonged to this branch office
+		// we simply set isDelegated to false
+		if(getProjectContainer().containsTask(task)) 
 			task.setIsDelegated(false);
-		else
+		else // only add the task as a delegated task if it really is delegated and didn't originally belong to this office
+		{
+			this.delegatedTasks.add(task);
 			task.setIsDelegated(true);
+		}
 	}
+	
 	/**
 	 * Removes the given task from the list of delegated tasks of this branch office.
 	 * 
