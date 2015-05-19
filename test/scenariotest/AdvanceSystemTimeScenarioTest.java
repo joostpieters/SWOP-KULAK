@@ -55,7 +55,7 @@ public class AdvanceSystemTimeScenarioTest {
         clock = new Clock();
         auth = new Auth(db);
         acl = new Acl();
-        HandlerFactory controller = new HandlerFactory(new BranchOffice(manager, new ResourceContainer()), clock, auth, acl, db);
+        HandlerFactory controller = new HandlerFactory(new BranchOffice("Tokyo", manager, new ResourceContainer()), clock, auth, acl, db);
         handler = controller.getAdvanceSystemTimeHandler();
     }
 

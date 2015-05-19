@@ -41,7 +41,7 @@ public class CreateProjectScenarioTest {
          auth = new Auth(db);
         acl = new Acl();
 
-        manager = new BranchOffice();
+        manager = new BranchOffice("Berlin");
         db.addUser(new GenericUser("John", "manager", manager));
         acl.addEntry("manager", new ArrayList<>(Arrays.asList("CreateProject")));
         auth.login("John");

@@ -7,45 +7,48 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class represents a manager to contain the projects in the system.
+ * This class represents a branch office with a location, project container, resource container and a list of users.
  *
  * @author Frederic, Mathias, Pieter-Jan
  */
 public class BranchOffice implements DetailedBranchOffice {
-	
-	private final ProjectContainer projects;
-	private final ResourceContainer resources;
+
+    private final String location;
+	private final ProjectContainer projectContainer;
+	private final ResourceContainer resourceContainer;
 	private final List<Task> delegatedTasks;
+    private final List<User> users;
 	
-    private String location;
-    private List<User> users;
-	
-        /**
-         * Initializes this branchoffice with the given location
-         * 
-         * @param location The location where this branch office is situated
-         */
-        public BranchOffice(String location) {
-            this();
-            this.location = location;            
-	}
-        
-		
-	public BranchOffice() {
-		this(new ProjectContainer(), new ResourceContainer());
+    /**
+    * Initializes this branchoffice with the given location
+    * 
+    * @param location The location where this branch office is situated
+    */
+    public BranchOffice(String location) {
+    	this(location,  new ProjectContainer(), new ResourceContainer());
 	}
 	
-	public BranchOffice(ProjectContainer pc, ResourceContainer rc) {
-		projects = pc;
-		resources = rc;
-		delegatedTasks = new ArrayList<>();
-		users = new ArrayList<>();
+    /**
+     * Initializes this branch office with the given location, project container and resource container.
+     * 
+     * @param location The location where this branch office is situated.
+     * @param pc The project container of this branch office.
+     * @param rc The resource container of this branch office.
+     */
+	public BranchOffice(String location, ProjectContainer pc, ResourceContainer rc) {
+		this.location = location;
+		this.projectContainer = pc;
+		this.resourceContainer = rc;
+		this.delegatedTasks = new ArrayList<>();
+		this.users = new ArrayList<>();
 	}
 	
 	/**
 	 * Delegates the given task from this branch office to the given branch office.
+	 * 
 	 * @param task The task to delegate to the given branch office.
 	 * @param branchOffice The branch office to which the given task should be delegated to.
+	 * 
 	 * @throws IllegalArgumentException If the given task is not assigned to this branch office.
 	 */
 	public void delegateTaskTo(Task task, BranchOffice branchOffice) throws IllegalArgumentException
@@ -53,8 +56,10 @@ public class BranchOffice implements DetailedBranchOffice {
 		if(!taskIsAssigned(task))
 			throw new IllegalArgumentException("An attempt has been made to delegate a"
 					+ "task from a branch office to which the task is not assigned to.");
+		
 		if(containsDelegatedTask(task))
 			removeDelegatedTask(task);
+		
 		branchOffice.addDelegatedTask(task);
 	}
 	
@@ -108,7 +113,7 @@ public class BranchOffice implements DetailedBranchOffice {
 	{
 		if(containsDelegatedTask(task))
 			return true;
-		if(!task.isDelegated() && projects.containsTask(task))
+		if(!task.isDelegated() && projectContainer.containsTask(task))
 			return true;
 		return false;
 	}
@@ -118,6 +123,7 @@ public class BranchOffice implements DetailedBranchOffice {
 	 * which was delegated to this branch office.
 	 * 
 	 * @param task The task to check.
+	 * 
 	 * @return True if and only if the list of delegated tasks belonging to this
 	 *         branch office contains the given task.
 	 */
@@ -130,21 +136,21 @@ public class BranchOffice implements DetailedBranchOffice {
 	 * @return the project container
 	 */
 	public ProjectContainer getProjectContainer() {
-		return projects;
+		return projectContainer;
 	}
 
 	/**
 	 * @return the resource container
 	 */
 	public ResourceContainer getResourceContainer() {
-		return resources;
+		return resourceContainer;
 	}
 
 	
-        /**
-         * 
-         * @return The location of this branch office 
-         */
+    /**
+    * 
+    * @return The location of this branch office 
+    */
     @Override
     public String getLocation() {
         return location;
@@ -173,22 +179,21 @@ public class BranchOffice implements DetailedBranchOffice {
      * tasks.
      */
     public List<Task> getUnplannedTasks(){
-        List<Task> unplannedTasks = projects.getUnplannedTasks();
+        List<Task> unplannedTasks = projectContainer.getUnplannedTasks();
         unplannedTasks.addAll(getDelegatedUnplannedTasks());
         return unplannedTasks;
     }
     
     /**
-     * 
-     * @return All unplanned tasks in the list of delegated tasks 
+     * @return All unplanned tasks in the list of delegated tasks of this branch office.
      */
     private List<Task> getDelegatedUnplannedTasks() {
         List<Task> tasks = new ArrayList<>();
-        for(Task task : delegatedTasks){
-            if(!task.isPlanned()){
+        
+        for(Task task : delegatedTasks)
+            if(!task.isPlanned())
                 tasks.add(task);
-            }
-        }
+        
         return tasks;
     }
 
