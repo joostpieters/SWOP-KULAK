@@ -99,9 +99,7 @@ public class PlanTaskCommand implements ICommand {
         		executedCmds.pop().revert();
             throw ex;
         }
-        //TODO: clock in constructor planning attachen
-        task.setPlanning(new Planning(resources, timespan, task));
-        clock.attach(task.getPlanning());
+        task.setPlanning(new Planning(resources, timespan, task, clock));
     }
     
     /**
