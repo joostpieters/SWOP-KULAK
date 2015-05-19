@@ -59,7 +59,10 @@ public class Bootstrap {
         // TODO
         HandlerFactory factory = new HandlerFactory(null, clock, auth, acl, db);
 
-       
+        //display uncaught exceptions
+        Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
+            JOptionPane.showMessageDialog(null, e.getMessage(), null, JOptionPane.WARNING_MESSAGE);
+        });
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {

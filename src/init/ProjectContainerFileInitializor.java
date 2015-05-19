@@ -376,16 +376,9 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
 
             Task task;
             
-            if (ttype == TT_NUMBER) {
-
-                task = tempProjects.get(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, resourceMap);
-                // TODO dit zou moeten werken, maar geeft een error, dit voegt enkel de developers toe aan de planning
-                // de andere resources worden blijkbaar apart gereserveerd later, zie volgende TODO
-                //task.plan(arrayList.get(planning), plannings.get(arrayList.get(planning)), clock);
-            } else {
-
-                task = tempProjects.get(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, Task.NO_REQUIRED_RESOURCE_TYPES);
-            }
+            System.out.println(resourceMap);         
+            task = tempProjects.get(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, resourceMap);
+             
             // add to temporary list
             taskList.add(task);
             int planning = expectIntField("planned");
