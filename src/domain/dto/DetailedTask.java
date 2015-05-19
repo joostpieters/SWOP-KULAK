@@ -74,4 +74,11 @@ public interface DetailedTask {
      */
     public DetailedPlanning getPlanning();
     
+    /**
+	 * Returns the branch office to which this task has been delegated to.
+	 * @return The branch office to which this task has been delegated to.
+	 *         null if the task is assigned to the same branch office to which its project belongs to.
+	 */
+	public DetailedBranchOffice getDelegatedBranchOffice();
+    
 }

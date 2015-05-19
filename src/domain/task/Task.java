@@ -15,7 +15,6 @@ import domain.time.WorkWeekConfiguration;
 import exception.ConflictException;
 import exception.ResourceTypeConflictException;
 import exception.ResourceTypeMissingReqsException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -805,6 +804,7 @@ public class Task implements DetailedTask {
 	 * @return The branch office to which this task has been delegated to.
 	 *         null if the task is assigned to the same branch office to which its project belongs to.
 	 */
+    @Override
 	public BranchOffice getDelegatedBranchOffice()
 	{
 		return this.delegatedBranchOffice;

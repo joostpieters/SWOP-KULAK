@@ -5,7 +5,6 @@ import domain.dto.DetailedResource;
 import domain.dto.DetailedResourceType;
 import domain.dto.DetailedTask;
 import exception.ConflictException;
-
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
@@ -19,7 +18,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
@@ -411,10 +409,7 @@ public class PlanTaskFrame extends javax.swing.JFrame {
             // init resource panel
             //TODO: handler.getResources om compile-errors op te lossen goed idee?
             for (Map.Entry<DetailedResourceType, DetailedResource> entry : handler.getRequiredResources(selectedProjectId, selectedTaskId, start)) {
-                if(entry.getKey().equals(DetailedResourceType.DEVELOPER)){
-                    initDeveloperTable((Set<DetailedResource>) handler.getResources(entry.getKey()));
-                    continue;
-                }
+                
                 JComboBox<DetailedResource> comboBox = new JComboBox<>();
                 comboBox.setModel(new javax.swing.DefaultComboBoxModel<DetailedResource>(
                 		(DetailedResource[]) handler.getResources(entry.getKey()).toArray()));
@@ -449,16 +444,9 @@ public class PlanTaskFrame extends javax.swing.JFrame {
             resourceIds.add((combobox.getItemAt(combobox.getSelectedIndex())).getId());
         }
         
+        
         try {
-            // check if developers are selected
-            if (developerTable.getSelectedRow() != -1) {
-                int[] selectedRows = developerTable.getSelectedRows();
-
-                for (int rowId : selectedRows) {
-                    resourceIds.add(Integer.parseInt(developerTable.getValueAt(developerTable.convertRowIndexToModel(rowId), 0).toString()));
-
-                }
-            }
+           
             handler.planTask(selectedProjectId, selectedTaskId, start, resourceIds);
             dispose();
         } catch (DateTimeException e) {
