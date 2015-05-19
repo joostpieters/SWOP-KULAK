@@ -1,11 +1,10 @@
 package domain;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import domain.task.Task;
 import domain.time.Timespan;
 import exception.ConflictException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ResourceContainer {
 
@@ -43,8 +42,17 @@ public class ResourceContainer {
      */
     public Resource createResource(String name, ResourceType type) {
         Resource res = new Resource(name, type);
-        resources.add(res);
+        addResource(res);
         return res;
+    }
+    
+    /**
+     * Adds the given resource to this container
+     * 
+     * @param res The resource to add
+     */
+    public void addResource(Resource res) {
+        resources.add(res);
     }
     
     public Set<Resource> getResourcesOfType(ResourceType type) {

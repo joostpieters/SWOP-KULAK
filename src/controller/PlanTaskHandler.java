@@ -13,7 +13,6 @@ import domain.time.Timespan;
 import domain.user.Acl;
 import domain.user.Auth;
 import exception.ConflictException;
-
 import java.time.LocalDateTime;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
@@ -109,7 +108,6 @@ public class PlanTaskHandler extends Handler {
      * could posiible be started
      */
     public Set<LocalDateTime> getPossibleStartTimesCurrentTask(int pId, int tId) {
-       
         return manager.getProjectContainer().getProject(pId).getTask(tId).nextAvailableStartingTimes(manager.getResourceContainer(), clock.getTime(), 3);
     }
 

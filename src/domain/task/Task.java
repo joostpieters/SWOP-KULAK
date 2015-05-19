@@ -703,7 +703,14 @@ public class Task implements DetailedTask {
     	if(next.getMinute() != 0)
     		next = next.withMinute(0).plusHours(1);
     	
+        for(ResourceType type : required.keySet()) {
+            
+    			if(resContainer.getResourcesOfType(type).size() < required.get(type)) {
+    				return result;
+    			}
+    	}
     	while(result.size() < n) {
+            
 			LocalDateTime end = getEstimatedDuration().getEndTimeFrom(next);
 			Timespan span = new Timespan(next, end);
 			boolean allAvailable = true;
@@ -718,6 +725,7 @@ public class Task implements DetailedTask {
     			result.add(next);
     		
     		next = next.plusHours(1);
+                
     	}
     	
     	return result;

@@ -300,6 +300,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             int officeId = expectIntField("office");
             Developer dev = new Developer(name, clock, db.getOffices().get(officeId));
             db.getOffices().get(officeId).addUser(dev);
+            db.getOffices().get(officeId).getResourceContainer().addResource(dev);
             // add to temp list
             devList.add(dev);
             // TODO workweek conf?
@@ -374,9 +375,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             }
 
             Task task;
-            // we need the index of the keys of the planning map
-            // because the initfile uses id's to refer to plannings
-
+            
             if (ttype == TT_NUMBER) {
 
                 task = tempProjects.get(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, resourceMap);
