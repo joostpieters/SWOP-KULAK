@@ -1,6 +1,7 @@
 package domain.user;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,15 @@ import java.util.Map;
  * @author Mathias, Frederic, Pieter-Jan
  */
 public class Acl {
+    
+	public static final Acl DEFAULT = new Acl();
+	static {
+        DEFAULT.addEntry("developer", Arrays.asList("UpdateTaskStatus"));
+        DEFAULT.addEntry("manager", Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "DelegateTask"));
+        DEFAULT.addEntry("admin", DEFAULT.getPermissions("manager"));
+        for(String permission : DEFAULT.getPermissions("developer"))
+        	DEFAULT.addPermission("admin", permission);
+	}
     
     
     private final Map<String, List<String>> permissions;
@@ -79,7 +89,7 @@ public class Acl {
     public void addEntry(String role, List<String> permissionList){
         if(permissionList == null)
             permissionList = new ArrayList<>();
-        permissions.put(role, permissionList);
+        permissions.put(role, new ArrayList<>(permissionList));
     }
    
 }

@@ -62,9 +62,8 @@ public class CreateTaskScenarioTest {
         
         clock = new Clock();
         auth = new Auth(db);
-        acl = new Acl();
+        acl = Acl.DEFAULT;
         db.addUser(new GenericUser("John", "manager", manager));
-        acl.addEntry("manager", new ArrayList<>(Arrays.asList("CreateTask")));
         auth.login("John");
         HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
         handler = controller.getCreateTaskHandler();
