@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
 import static org.easymock.EasyMock.capture;
@@ -57,7 +58,8 @@ public class PlanTaskCommandTest {
         
         EasyMock.expectLastCall().times(0, 100);
         HashMap<ResourceType, Integer> requirements = new HashMap<>();
-
+        type = new ResourceType("car");
+        requirements.put(type, 2);
         expect(task.getRequiredResources()).andReturn(requirements).anyTimes();
 
         replay(task);
@@ -75,7 +77,10 @@ public class PlanTaskCommandTest {
         
         EasyMock.expectLastCall().times(0, 100);
         
-        expect(task2.getRequiredResources()).andReturn(new HashMap<>()).anyTimes();
+        
+        HashMap<ResourceType, Integer> requiredResources = new HashMap<>();
+        requiredResources.put(type, 1);
+        expect(task2.getRequiredResources()).andReturn(requiredResources).anyTimes();
 
         replay(task2);
         
@@ -83,7 +88,7 @@ public class PlanTaskCommandTest {
         task2.setPlanning(null);
         
 
-        type = new ResourceType("car");
+        
         car1 = new Resource("car1", type);
         car2 = new Resource("car2", type);
         car3 = new Resource("car3", type);
@@ -93,7 +98,7 @@ public class PlanTaskCommandTest {
         resList.add(car1);
         resList.add(car2);
         resList.add(car3);
-        planTaskCommand = new PlanTaskCommand(new Timespan(start, end), resList, task, clock, new ArrayList<>());
+        planTaskCommand = new PlanTaskCommand(new Timespan(start, end), resList, task, clock, resList);
 
     }
 
@@ -117,6 +122,30 @@ public class PlanTaskCommandTest {
         assertEquals(1, car1.getReservations().size());
         assertEquals(1, car2.getReservations().size());
         assertEquals(1, car3.getReservations().size());
+    }
+    
+     /**
+     * Test of execute method, of class PlanTaskCommand.
+     */
+    @Test
+    public void testExecuteWithNotEnoughResources() {
+        List<Resource> resList2 = new ArrayList<>();
+        resList2.add(car1);
+        PlanTaskCommand planTaskCommand2 = new PlanTaskCommand(new Timespan(start, end), resList2, task, clock, resList);
+        planTaskCommand2.execute();
+        assertEquals(start, car1.getReservation(task).getStartTime());
+        assertEquals(end, car1.getReservation(task).getEndTime());
+        assertEquals(start, car2.getReservation(task).getStartTime());
+        assertEquals(end, car2.getReservation(task).getEndTime());
+        assertEquals(start, car3.getReservation(task).getStartTime());
+        assertEquals(end, car3.getReservation(task).getEndTime());
+        
+        assertNotEquals(null, capturedArgument.getValue());
+
+        // check not too much reservations 
+        assertEquals(1, car1.getReservations().size());
+        assertEquals(1, car2.getReservations().size());
+        assertEquals(0, car3.getReservations().size());
     }
 
     /**
@@ -151,7 +180,7 @@ public class PlanTaskCommandTest {
         Resource bicycle = new Resource("bicycle", type);
         resList2.add(bicycle);
         resList2.add(car3);
-        PlanTaskCommand planTaskCommand2 = new PlanTaskCommand(new Timespan(start2, end2), resList2, task2, clock, new ArrayList<>());
+        PlanTaskCommand planTaskCommand2 = new PlanTaskCommand(new Timespan(start2, end2), resList2, task2, clock, resList2);
         try{
              planTaskCommand2.execute();
              fail("No exception arised");
