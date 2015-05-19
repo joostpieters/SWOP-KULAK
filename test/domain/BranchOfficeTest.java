@@ -26,13 +26,12 @@ public class BranchOfficeTest {
     public void setUp() {
     	pc0 = new ProjectContainer();
 
-    	bo0 = new BranchOffice(pc0, new ResourceContainer());
+    	bo0 = new BranchOffice("London", pc0, new ResourceContainer());
     	
     	p0 = pc0.createProject("project 0", "description for project 0", LocalDateTime.of(2015, 5, 19, 10, 10), LocalDateTime.of(2015, 6, 19, 10, 10));
     	t0 = new Task("task 0!", new Duration(68), 70, new HashMap<ResourceType, Integer>(), p0);
     	
-    	
-    	bo1 = new BranchOffice();
+    	bo1 = new BranchOffice("Eisingen");
     }
     
 	/**

@@ -43,7 +43,7 @@ public class HandlerFactory {
      * @return A new show project handler, initialized with this manager.
      */
     public ShowProjectHandler getShowProjectHandler(){
-        return new ShowProjectHandler(manager, clock);
+        return new ShowProjectHandler(manager, db, clock);
     }
     
     /** 
@@ -85,7 +85,7 @@ public class HandlerFactory {
      * @return A new delegate task handler.
      */
     public DelegateTaskHandler getDelegatedTaskHandler(){
-        return new DelegateTaskHandler(manager, clock,auth, acl, db);
+        return new DelegateTaskHandler(manager,auth, acl, db);
     }
     
     /** 

@@ -46,7 +46,7 @@ public class Task implements DetailedTask {
     private final Project project;
     private static Map<ResourceType, Integer> standardRequiredResources = new HashMap<>();
 
-	private boolean isDelegated; // TODO in constructor
+	private BranchOffice delegatedBranchOffice; // TODO in constructor
     /**
      * A constant to indicate that a task requires no resources
      */
@@ -794,21 +794,39 @@ public class Task implements DetailedTask {
 	 */
 	public boolean isDelegated()
 	{
-		return this.isDelegated;
+		return this.delegatedBranchOffice != null;
 	}
 	
 	/**
-	 * Sets whether or not this task is delegated.
-	 * 
-	 * @param value Whether or not this task is delegated.
+	 * Returns the branch office to which this task has been delegated to.
+	 * @return The branch office to which this task has been delegated to.
+	 *         null if the task is assigned to the same branch office to which its project belongs to.
 	 */
-	public void setIsDelegated(boolean value)
+	public BranchOffice getDelegatedBranchOffice()
 	{
-		this.isDelegated = value;
+		return this.delegatedBranchOffice;
+	}
+	
+	/**
+	 * Sets the branch office to which this task has been delegated to.
+	 * 
+	 * @param branchOffice The branch office to which this task has been delegated to.
+	 */
+	public void setDelegatedBranchOffice(BranchOffice branchOffice)
+	{
+		this.delegatedBranchOffice = branchOffice;
+	}
+	
+	/**
+     * Sets that this task is not delegated to a branch office different
+     * from the one to which its project belongs to.
+     */
+	public void setNotDelegated() {
+		this.delegatedBranchOffice = null;
 	}
 	
     /**
-     * This mememnto represents the internal state of this task
+     * This memento represents the internal state of this task
      */
     public class Memento {
 
@@ -857,5 +875,4 @@ public class Task implements DetailedTask {
             this.planning = planning;
         }
     }
-
 }

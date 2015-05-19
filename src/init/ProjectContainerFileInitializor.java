@@ -335,7 +335,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             Project project = office.getProjectContainer().createProject(name, description, creationTime, dueTime);
             projectOffice.put(project, office);
             tempProjects.add(project);
-            System.out.println(project);
+            
         }
 
         /**

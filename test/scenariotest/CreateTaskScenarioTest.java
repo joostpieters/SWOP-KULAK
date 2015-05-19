@@ -51,7 +51,7 @@ public class CreateTaskScenarioTest {
     public static void setUpClass() {
     	db = new Database();
         pc = new ProjectContainer();
-        manager = new BranchOffice(pc, new ResourceContainer());
+        manager = new BranchOffice("Kortrijk", pc, new ResourceContainer());
         String project1Name = "project 1 :)";
         String project1Description = "This is project 1";
         LocalDateTime project1StartTime = LocalDateTime.of(2015, 03, 12, 17, 30);

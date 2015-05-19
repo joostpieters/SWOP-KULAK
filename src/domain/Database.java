@@ -90,6 +90,17 @@ public class Database {
         offices.add(office);
     }
     
-    
+    /**
+     * 
+     * @return All the projects from all the branchoffices in this database
+     */
+    public List<Project> getProjects(){
+        List<Project> projects = new ArrayList<>();
+        for(BranchOffice office : offices){
+            projects.addAll(office.getProjectContainer().getProjects());
+        }
+        
+        return projects;
+    }
 
 }

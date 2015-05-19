@@ -126,7 +126,7 @@ public class PlanTaskCommandTest {
     public void testRevert() {
         planTaskCommand.execute();
         planTaskCommand.revert();
-        System.out.println(capturedArgument.getValues().size());
+        
         assertEquals(null, capturedArgument.getValue());
         // check all reservations dissapeared
         assertEquals(0, car1.getReservations().size());

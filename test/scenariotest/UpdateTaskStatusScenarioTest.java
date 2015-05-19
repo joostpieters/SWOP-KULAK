@@ -46,7 +46,7 @@ public class UpdateTaskStatusScenarioTest {
     public static void setUpClass() {
     	db = new Database();
         pc = new ProjectContainer();
-        manager = new BranchOffice(pc, new ResourceContainer());
+        manager = new BranchOffice("Monaco", pc, new ResourceContainer());
         // only p1 has tasks
         p1 = pc.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
