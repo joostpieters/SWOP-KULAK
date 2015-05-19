@@ -134,8 +134,8 @@ public class PlanTaskHandler extends Handler {
     }
 
     //TODO: goeie oplossing? 
-	public Set<? extends DetailedResource> getResources(DetailedResourceType type) {
-		return manager.getResourceContainer().getResourcesOfType((ResourceType) type);
+	public List<DetailedResource> getResources(DetailedResourceType type) {
+		return new ArrayList<>(manager.getResourceContainer().getResourcesOfType((ResourceType) type));
 	}
     
 }

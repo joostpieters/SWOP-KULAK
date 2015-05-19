@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Box;
@@ -84,35 +83,6 @@ public class PlanTaskFrame extends javax.swing.JFrame {
         availableTaskTable.getColumnModel().getColumn(0).setMaxWidth(50);
     }
     
-      /**
-     * Fills the available task table with the appropriate data
-     */
-    private void initDeveloperTable(Set<DetailedResource> devs) {
-        String[] columnNames = {"Id", "Name"};
-        Object[][] data = new Object[devs.size()][];
-
-        int i = 0;
-        for (DetailedResource dev : devs) {
-            data[i] = new Object[]{
-                dev.getId(),
-                dev.getName(),
-            };
-            i++;
-        }
-
-        @SuppressWarnings("serial")
-		DefaultTableModel devModel = new DefaultTableModel(data, columnNames) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                //all cells false
-                return false;
-            }
-        };
-        developerTable.setModel(devModel);
-        developerTable.getColumnModel().getColumn(0).setMaxWidth(50);
-    }
-
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -136,15 +106,12 @@ public class PlanTaskFrame extends javax.swing.JFrame {
         specificTimeTextField = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        timeList = new javax.swing.JList<String>();
+        timeList = new javax.swing.JList();
         jPanel3 = new javax.swing.JPanel();
         planTaskButton = new javax.swing.JButton();
         jLabel12 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jSeparator3 = new javax.swing.JSeparator();
-        jScrollPane7 = new javax.swing.JScrollPane();
-        developerTable = new javax.swing.JTable();
-        jLabel15 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         resourcePanel = new javax.swing.JPanel();
 
@@ -283,13 +250,6 @@ public class PlanTaskFrame extends javax.swing.JFrame {
         jLabel4.setFont(jLabel4.getFont().deriveFont(jLabel4.getFont().getSize()+15f));
         jLabel4.setText("Select Resources");
 
-        developerTable.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        developerTable.getTableHeader().setReorderingAllowed(false);
-        jScrollPane7.setViewportView(developerTable);
-
-        jLabel15.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
-        jLabel15.setText("Select Developers");
-
         resourcePanel.setLayout(new javax.swing.BoxLayout(resourcePanel, javax.swing.BoxLayout.Y_AXIS));
         jScrollPane2.setViewportView(resourcePanel);
 
@@ -302,14 +262,9 @@ public class PlanTaskFrame extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(243, 243, 243)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(1, 1, 1)
-                                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 109, Short.MAX_VALUE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 91, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jSeparator3)))
@@ -329,16 +284,12 @@ public class PlanTaskFrame extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
                 .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel12)
-                .addGap(11, 11, 11)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
-                .addComponent(jLabel15)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(planTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(43, 43, 43))
@@ -411,8 +362,9 @@ public class PlanTaskFrame extends javax.swing.JFrame {
             for (Map.Entry<DetailedResourceType, DetailedResource> entry : handler.getRequiredResources(selectedProjectId, selectedTaskId, start)) {
                 
                 JComboBox<DetailedResource> comboBox = new JComboBox<>();
-                comboBox.setModel(new javax.swing.DefaultComboBoxModel<DetailedResource>(
-                		(DetailedResource[]) handler.getResources(entry.getKey()).toArray()));
+                DetailedResource[] resources = handler.getResources(entry.getKey()).toArray(new DetailedResource[handler.getResources(entry.getKey()).size()]);
+                comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(resources));
+                
                 comboBox.setSelectedItem(entry.getValue());
                 comboBox.setPreferredSize(new java.awt.Dimension(200, 30));
                 
@@ -465,10 +417,8 @@ public class PlanTaskFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable availableTaskTable;
-    private javax.swing.JTable developerTable;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -479,7 +429,6 @@ public class PlanTaskFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
@@ -489,7 +438,7 @@ public class PlanTaskFrame extends javax.swing.JFrame {
     private javax.swing.JPanel resourcePanel;
     private javax.swing.JButton selectTaskButton;
     private javax.swing.JTextField specificTimeTextField;
-    private javax.swing.JList<String> timeList;
+    private javax.swing.JList timeList;
     // End of variables declaration//GEN-END:variables
 
     public int getSelectedTaskId() {
