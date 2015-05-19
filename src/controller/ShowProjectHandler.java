@@ -22,6 +22,7 @@ public class ShowProjectHandler {
     private final BranchOffice manager;
     
     private Project currentProject;
+    //TODO: waarom zit hier nog een db?
     private final Database db;
     private final Clock clock;
     
@@ -43,7 +44,7 @@ public class ShowProjectHandler {
      * @return A list of projects of this projectContainer
      */
     public List<DetailedProject> getProjects(){
-        return new ArrayList<>(db.getProjects());
+        return new ArrayList<>(manager.getProjectContainer().getProjects());
     }
     
     /**
@@ -54,7 +55,7 @@ public class ShowProjectHandler {
      */
     public void selectProject(int projectId){
         // TODO id's?
-        currentProject = db.getProjects().get(projectId);
+        currentProject = manager.getProjectContainer().getProject(projectId);
     }
     /**
      * @return The current project of this handler.
