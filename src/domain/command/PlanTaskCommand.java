@@ -57,8 +57,12 @@ public class PlanTaskCommand implements ICommand {
      */
     private void repleteResources(List<Resource> availableResources) throws IllegalArgumentException {
         Map<ResourceType, Integer> required = task.getRequiredResources();
+        
         for (ResourceType type : required.keySet()) {
+            
             if (type.numberOfResources(resources) < required.get(type)) {
+                System.out.println(type.numberOfResources(resources));
+                System.out.println(required.get(type));
                 // remove the all ready selected resources from the available resources
                 availableResources.removeAll(resources);
                 // check whether the remaining resources can fulfill the still required quantity

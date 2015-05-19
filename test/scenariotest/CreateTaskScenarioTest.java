@@ -3,11 +3,13 @@ package scenariotest;
 
 import controller.CreateTaskHandler;
 import controller.HandlerFactory;
+import domain.BranchOffice;
 import domain.Database;
 import domain.Project;
-import domain.BranchOffice;
 import domain.ProjectContainer;
 import domain.ResourceContainer;
+import domain.ResourceType;
+import domain.dto.DetailedResourceType;
 import domain.task.Task;
 import domain.task.Unavailable;
 import domain.time.Clock;
@@ -16,17 +18,13 @@ import domain.time.Timespan;
 import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.GenericUser;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -46,11 +44,21 @@ public class CreateTaskScenarioTest {
     private static Clock clock;
     private static Acl acl;
     private static Auth auth;
+    private static ResourceContainer rc;
+    private static ResourceType resType1;
+    private static ResourceType resType2;
 
-    @BeforeClass
-    public static void setUpClass() {
+    @Before
+    public void setUp() {
     	db = new Database();
         pc = new ProjectContainer();
+        rc = new ResourceContainer();
+        // resourcetypes
+        resType1 = DetailedResourceType.DEVELOPER;
+        db.addResourceType(resType1);
+        resType2 = new ResourceType("car");
+        db.addResourceType(resType2);
+        
         manager = new BranchOffice("Kortrijk", pc, new ResourceContainer());
         String project1Name = "project 1 :)";
         String project1Description = "This is project 1";
@@ -74,13 +82,29 @@ public class CreateTaskScenarioTest {
      */
     @Test
     public void testMainSuccessScenario() {
-
+        // Step 3
+        // Check whether all the input is available
+        assertTrue(handler.getUnfinishedProjects().contains(p1));
+        assertEquals(1, handler.getUnfinishedProjects().size());
+        
+        assertTrue(handler.getAllTasks().contains(t1));
+        assertTrue(handler.getAllTasks().contains(t2));
+        assertEquals(2, handler.getAllTasks().size());
+        
+        assertTrue(handler.getResourceTypes().contains(resType1));
+        assertTrue(handler.getResourceTypes().contains(resType2));
+        assertEquals(2, handler.getResourceTypes().size());
+        
+        
         // Step 4
         clock.advanceTime(LocalDateTime.of(2015, 03, 16, 17, 30));
         t2.fail(new Timespan(LocalDateTime.of(2015, 03, 12, 17, 30), LocalDateTime.of(2015, 03, 16, 17, 30)), clock.getTime());
         
-        
-        handler.createTask(p1.getId(), "Fun task", 50, Arrays.asList(t1.getId()), 20, t2.getId(), new HashMap<>());
+            HashMap<Integer, Integer> requirements = new HashMap<>();
+            requirements.put(0, 2);
+            requirements.put(1, 4);
+            
+        handler.createTask(p1.getId(), "Fun task", 50, Arrays.asList(t1.getId()), 20, t2.getId(), requirements);
         
         Project project = pc.getProject(p1.getId());
         List<Task> tasks = project.getTasks();
@@ -94,6 +118,11 @@ public class CreateTaskScenarioTest {
                 
                 assertTrue(t.getStatus() instanceof Unavailable);
                 assertTrue(t.getPrerequisiteTasks().contains(t1));
+                
+                // required resources
+                assertTrue(2 == t.getRequiredResources().get(resType1));
+                assertTrue(4 == t.getRequiredResources().get(resType2));
+                assertEquals(2, t.getRequiredResources().size());
 
             }
         }
