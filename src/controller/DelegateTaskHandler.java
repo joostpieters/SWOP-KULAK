@@ -67,13 +67,15 @@ public class DelegateTaskHandler extends Handler {
 		return new ArrayList<>(manager.getAssignedUnplannedTasks());
 	}
         
-        /**
-         * 
-         * @return All branch offices in the system
-         */
-	public List<DetailedBranchOffice> getBranchOffices() {
-		
-		return new ArrayList<>(db.getOffices());
+    
+    /**
+     * 
+     * @return All the other branch offices in the system
+     */
+	public List<DetailedBranchOffice> getOtherBranchOffices() {
+		List<DetailedBranchOffice> otherOffices = new ArrayList<>(db.getOffices());
+		otherOffices.remove(manager);
+		return otherOffices;
 	}
         
         /**
