@@ -699,7 +699,7 @@ public class Task implements DetailedTask {
     public SortedSet<LocalDateTime> nextAvailableStartingTimes(ResourceContainer resContainer, LocalDateTime from, int n) {
     	SortedSet<LocalDateTime> result = new TreeSet<>();
     	Map<ResourceType, Integer> required = getRequiredResources();
-    	LocalDateTime next = from;
+    	LocalDateTime next = from.withMinute(0);
     	
     	while(result.size() < n) {
 			LocalDateTime end = getEstimatedDuration().getEndTimeFrom(next);
