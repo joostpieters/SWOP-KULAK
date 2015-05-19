@@ -22,6 +22,7 @@ import domain.ProjectContainer;
 import domain.Resource;
 import domain.ResourceContainer;
 import domain.ResourceType;
+import domain.dto.DetailedPlanning;
 import domain.dto.DetailedResource;
 import domain.dto.DetailedResourceType;
 import domain.dto.DetailedTask;
@@ -107,14 +108,19 @@ public class PlanTaskScenarioTest {
 		LocalDateTime selectedTime = first.plusHours(2);
 		
 		List<Entry<DetailedResourceType, DetailedResource>> requiredResources = handler.getRequiredResources(pId, tId, selectedTime);
-		System.out.println(requiredResources);
 		assertEquals(1, requiredResources.size()); //TODO: wordt hier evenveel resources als required verwacht?
 		Set<Resource> expectedResources = rc.getResourcesOfType(type0);
 		assertEquals(type0, requiredResources.get(0).getKey());
 		assertTrue(expectedResources.contains(requiredResources.get(0).getValue()));
 		
-	
-//		handler.planTask(pId, tId, selectedTime, resources);
+		List<Integer> resources = new ArrayList<>();
+		for(Entry<DetailedResourceType, DetailedResource> e : requiredResources) 
+			resources.add(e.getValue().getId());
+		handler.planTask(pId, tId, selectedTime, resources);
+		DetailedPlanning planning = selectedTask.getPlanning();
+		assertTrue(planning != null);
+		assertEquals(new Timespan(selectedTime, selectedTask.getEstimatedDuration()), planning.getTimespan());
+		assertEquals(Arrays.asList(requiredResources.get(0).getValue()), planning.getResources());
 	}
 
 }
