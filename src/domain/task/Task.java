@@ -496,8 +496,8 @@ public class Task implements DetailedTask {
      *
      * @param clock The clock to use to execute from
      */
-    public void execute(Clock clock, ResourceContainer container) {
-        getStatus().execute(this, clock, container);
+    public void execute(Clock clock) {
+        getStatus().execute(this, clock);
     }
 
     /**
@@ -671,17 +671,17 @@ public class Task implements DetailedTask {
      * Plan this task at the given start time
      *
      * @param startTime The time this task is planned to start
-     * @param resources The resources to assign to this task
-     * @param clock The clock the planning has to observe
+	 * @param resources The resources to assign to this task
+	 * @param clock The clock the planning has to observe
      * @return The plan command that has been executed by this method
      * @throws exception.ConflictException The task's reservations conflict with
      * another task
      */
-    public PlanTaskCommand plan(LocalDateTime startTime, List<Resource> resources, Clock clock, ResourceContainer container) 
+    public PlanTaskCommand plan(LocalDateTime startTime, List<Resource> resources, Clock clock) 
     		throws ConflictException {
         Timespan span = new Timespan(startTime, estimatedDuration);
         
-	PlanTaskCommand planCommand = new PlanTaskCommand(span, resources, this, clock, new ArrayList<>(container.getAvailableResources(span)));
+        PlanTaskCommand planCommand = new PlanTaskCommand(span, resources, this, clock);
         
         planCommand.execute();
         return planCommand;
@@ -699,7 +699,9 @@ public class Task implements DetailedTask {
     public SortedSet<LocalDateTime> nextAvailableStartingTimes(ResourceContainer resContainer, LocalDateTime from, int n) {
     	SortedSet<LocalDateTime> result = new TreeSet<>();
     	Map<ResourceType, Integer> required = getRequiredResources();
-    	LocalDateTime next = from.withMinute(0);
+    	LocalDateTime next = from;
+    	if(next.getMinute() != 0)
+    		next = next.withMinute(0).plusHours(1);
     	
     	while(result.size() < n) {
 			LocalDateTime end = getEstimatedDuration().getEndTimeFrom(next);

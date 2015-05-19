@@ -6,15 +6,19 @@ import domain.time.Duration;
 import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
 import exception.ObjectNotFoundException;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse; 
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,15 +52,14 @@ public class ProjectTest {
 	Project p0, p1, p2, pFinished;
 	Task t1, t2, t3, tFin;
     private Clock clock;
+    private ResourceContainer rc;
     
     @Before
     public void setUp() {
     	assertTrue(!create.isAfter(start));
     	assertTrue(!end.isAfter(due));
     	
-    	
-    	clock = new Clock(create);
-    	
+    	rc = new ResourceContainer();
     	p0 = new Project(name, descr, create, due);
     	
     	p1 = new Project(name, descr, create, due);
@@ -67,8 +70,12 @@ public class ProjectTest {
     	t3 = p2.createTask("implement system in native code", new Duration(960), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
     	
     	LocalDateTime hist = create.minusDays(DAYDIF);
+    	clock = new Clock(hist);
     	pFinished = new Project(name, descr, hist, create);
     	tFin = pFinished.createTask("design system", new Duration(480), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+		tFin.plan(hist, new ArrayList<>(), clock);
+    	tFin.execute(clock);
+    	clock.advanceTime(create);
     	tFin.finish(new Timespan(hist, hist.plusHours(HOURDIF)), clock.getTime());
     }
     
@@ -431,6 +438,8 @@ public class ProjectTest {
     	clock.advanceTime(end);
     	t1.fail(new Timespan(start, end), clock.getTime());
     	Task t = p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs, new HashMap<>());
+    	t.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t.execute(clock);
     	clock.advanceTime(due);
     	t.finish(new Timespan(start, due), clock.getTime());
     	assertTrue(p1.isOnTime(clock.getTime()));
@@ -578,14 +587,21 @@ public class ProjectTest {
     	assertEquals(Duration.ZERO, pFinished.getDelay(clock.getTime()));
     	
     	LocalDateTime end = estdur.getEndTimeFrom(start);
+    	t1.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t1.execute(clock);
     	clock.advanceTime(end);
     	t1.finish(new Timespan(start, end), clock.getTime());
     	assertFalse(end.isAfter(due));
     	assertEquals(Duration.ZERO, p1.getDelay(clock.getTime()));
-    	
+
+    	t2.plan(start, new ArrayList<>(), clock);
+    	t2.execute(clock);
+    	System.out.println(t2.getStatus());
     	clock.advanceTime(end.plusDays(1));
     	t2.finish(new Timespan(start, end.plusDays(1)), clock.getTime());
     	assertEquals(Duration.ZERO, p2.getDelay(clock.getTime()));
+    	t3.plan(start, new ArrayList<>(), clock);
+    	t3.execute(clock);
     	clock.advanceTime(end.plusDays(2));
     	t3.finish(new Timespan(start, end.plusDays(2)), clock.getTime());
     	assertEquals(Duration.ZERO, p2.getDelay(clock.getTime()));
@@ -596,11 +612,15 @@ public class ProjectTest {
      */
     @Test
     public void testGetDelayNotOnTime() {
+    	t1.plan(start, new ArrayList<>(), clock);
+    	t1.execute(clock);
     	clock.advanceTime(due.plusDays(1));
     	t1.finish(new Timespan(start, due.plusDays(1)), clock.getTime());
     	assertEquals(t1.getDelay(), p1.getDelay(clock.getTime()));
     	
     	t2.fail(new Timespan(start, end.plusDays(1)), clock.getTime());
+    	t3.plan(start, new ArrayList<>(), clock);
+    	t3.execute(clock);
     	t3.finish(new Timespan(start,  due.plusDays(1)), clock.getTime());
     	assertEquals(t2.getDelay().add(t3.getDelay()), p2.getDelay(clock.getTime()));
     }

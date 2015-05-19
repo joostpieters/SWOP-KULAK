@@ -451,7 +451,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
                 Task task = taskList.get(taskId);
                 BranchOffice office = projectOffice.get(task.getProject());
                 
-                task.plan(startTime, resources, clock, office.getResourceContainer());
+                task.plan(startTime, resources, clock);
                 
             }
 

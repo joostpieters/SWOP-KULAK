@@ -136,7 +136,7 @@ public class PlanTaskHandler extends Handler {
             res.add(manager.getResourceContainer().getResource(i));
         }
         //TODO: bad smell
-        simulatorCommand.add(manager.getProjectContainer().getProject(pId).getTask(tId).plan(startTime, res, clock, manager.getResourceContainer()));
+        simulatorCommand.add(manager.getProjectContainer().getProject(pId).getTask(tId).plan(startTime, res, clock));
     }
 
     //TODO: goeie oplossing? 
