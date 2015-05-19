@@ -285,6 +285,11 @@ public class ProjectTest {
     	assertTrue(p2.getAvailableTasks().contains(t2));
     	assertTrue(p2.getAvailableTasks().contains(t3));
     	assertFalse(p2.getAvailableTasks().contains(prereq));
+
+    	t2.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t2.execute(clock);
+    	t3.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t3.execute(clock);
     	
     	clock.advanceTime(end);
     	t2.finish(new Timespan(start, end), clock.getTime());
@@ -375,13 +380,19 @@ public class ProjectTest {
     	assertFalse(p0.isFinished());
     	
     	assertFalse(p1.isFinished());
+    	t1.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t1.execute(clock);
     	clock.advanceTime(end);
     	t1.finish(new Timespan(start, end), clock.getTime());
     	assertTrue(p1.isFinished());
     	
     	assertFalse(p2.isFinished());
+    	t2.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t2.execute(clock);
     	t2.finish(new Timespan(start, end), clock.getTime());
     	assertFalse(p2.isFinished());
+    	t3.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t3.execute(clock);
     	t3.finish(new Timespan(start, end), clock.getTime());
     	assertTrue(p2.isFinished());
     	
@@ -399,6 +410,8 @@ public class ProjectTest {
     	assertFalse(p1.isFinished());
     	Task t = p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs, new HashMap<>());
     	assertFalse(p1.isFinished());
+    	t.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t.execute(clock);
     	t.finish(new Timespan(start, end), clock.getTime());
     	assertTrue(p1.isFinished());
     }
@@ -411,11 +424,17 @@ public class ProjectTest {
     	clock.advanceTime(end);
     	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()), new HashMap<>());
     	assertFalse(p2.isFinished());
+    	t2.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t2.execute(clock);
     	t2.finish(new Timespan(start, end), clock.getTime());
     	assertFalse(p2.isFinished());
+    	t3.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t3.execute(clock);
     	t3.finish(new Timespan(start, end), clock.getTime());
     	assertFalse(p2.isFinished());
-
+    	
+    	t.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t.execute(clock);
     	clock.advanceTime(end.plusDays(5));
     	t.finish(new Timespan(end, end.plusDays(5)), clock.getTime());
     	assertTrue(p2.isFinished());
@@ -427,6 +446,8 @@ public class ProjectTest {
     @Test
     public void testIsOnTimeFinishedSimple() {
     	assertTrue(pFinished.isOnTime(clock.getTime()));
+    	t1.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t1.execute(clock);
     	clock.advanceTime(due.plusDays(1));
     	t1.finish(new Timespan(start, due.plusDays(1)), clock.getTime());
     	assertFalse(p1.isOnTime(clock.getTime()));
@@ -455,6 +476,8 @@ public class ProjectTest {
     	clock.advanceTime(due.plusHours(1));
     	t1.fail(new Timespan(start, due.plusHours(1)), clock.getTime());
     	Task t = p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs, new HashMap<>());
+    	t.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t.execute(clock);
     	t.finish(new Timespan(start, due), clock.getTime());
     	assertFalse(p1.isOnTime(clock.getTime()));
     }
@@ -465,10 +488,17 @@ public class ProjectTest {
     @Test
     public void testIsOnTimeFinishedPrereqs() {
     	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()), new HashMap<>());
+    	t2.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t2.execute(clock);
+    	t3.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t3.execute(clock);
+    	
     	clock.advanceTime(due);
     	t2.finish(new Timespan(start, due), clock.getTime());
     	t3.finish(new Timespan(start, end), clock.getTime());
     	clock.advanceTime(due.plusHours(1));
+    	t.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t.execute(clock);
     	t.finish(new Timespan(due, due.plusHours(1)), clock.getTime());
     	assertFalse(p2.isOnTime(clock.getTime()));
     }
@@ -561,6 +591,8 @@ public class ProjectTest {
     	
     	clock.advanceTime(create);
     	assertTrue(p.isOnTime(clock.getTime()));
+    	t1.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t1.execute(clock);
     	clock.advanceTime(create.plusDays(1));
     	t1.finish(new Timespan(LocalDateTime.of(2015, 2, 9, 9, 0), LocalDateTime.of(2015,  2, 9, 18, 0)), clock.getTime());
     	assertTrue(p.isOnTime(clock.getTime()));
@@ -570,9 +602,15 @@ public class ProjectTest {
     	assertTrue(p.isOnTime(clock.getTime()));
     	Task t5 = p.createTask("implement system with phonegap", new Duration(17,0), 100, t2.getId(), Arrays.asList(t1.getId()), new HashMap<>());
     	assertFalse(p.isOnTime(clock.getTime())); //FIXME: why for god's sake should this hold in case of 8-hour-duration, it should be true up to 16-hour-durations?
+    	t5.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t5.execute(clock);
     	clock.advanceTime(due);
     	t5.finish(new Timespan(LocalDateTime.of(2015,  2, 11, 9, 0), LocalDateTime.of(2015, 2, 11, 18, 0)), clock.getTime());
-       
+
+    	t3.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t3.execute(clock);
+    	t4.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t4.execute(clock);
     	t3.finish(new Timespan(LocalDateTime.of(2015,  2, 12, 9, 0), LocalDateTime.of(2015, 2, 12, 18, 0)), clock.getTime());
     	t4.finish(new Timespan(LocalDateTime.of(2015,  2, 13, 9, 0), LocalDateTime.of(2015, 2, 13, 18, 0)), clock.getTime());
     	assertTrue(p.isOnTime(clock.getTime()));
@@ -637,12 +675,15 @@ public class ProjectTest {
     	assertEquals(Duration.ZERO, p1.getTotalExecutionTime());
     	assertEquals(Duration.ZERO, p2.getTotalExecutionTime());
     	assertEquals(tFin.getTimeSpan().getDuration(), pFinished.getTotalExecutionTime());
-    	
+    	t1.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t1.execute(clock);
     	clock.advanceTime(end);
     	t1.finish(new Timespan(start, end), clock.getTime());
     	assertEquals(t1.getTimeSpan().getDuration(), p1.getTotalExecutionTime());
     	
     	Duration dur = new Duration(13, 30);
+    	t2.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t2.execute(clock);
     	clock.advanceTime(dur.getEndTimeFrom(start));
     	t2.finish(new Timespan(start, dur.getEndTimeFrom(start)), clock.getTime());
     	assertEquals(dur, p2.getTotalExecutionTime());
