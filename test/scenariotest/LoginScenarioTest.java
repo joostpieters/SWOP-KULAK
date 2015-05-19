@@ -43,7 +43,7 @@ public class LoginScenarioTest {
         auth = new Auth(db);
         acl = new Acl();
 
-        manager = new BranchOffice();
+        manager = new BranchOffice("Beijing");
         managerOffice2 = new GenericUser("John", "manager", manager);
         devOffice2 = new Developer("Layla", clock, manager);
         db.addUser(managerOffice2);

@@ -50,12 +50,16 @@ public class BranchOffice implements DetailedBranchOffice {
 	 * @param branchOffice The branch office to which the given task should be delegated to.
 	 * 
 	 * @throws IllegalArgumentException If the given task is not assigned to this branch office.
+	 * @throws IllegalStateException If the given task has already been planned.
 	 */
 	public void delegateTaskTo(Task task, BranchOffice branchOffice) throws IllegalArgumentException
 	{
 		if(!taskIsAssigned(task))
 			throw new IllegalArgumentException("An attempt has been made to delegate a"
 					+ "task from a branch office to which the task is not assigned to.");
+		if(task.isPlanned())
+			throw new IllegalStateException("An attempt has been made to delegate a task"
+					+ " which has already been planned.");
 		
 		if(containsDelegatedTask(task))
 			removeDelegatedTask(task);
