@@ -288,11 +288,11 @@ public class DelegateTaskFrame extends javax.swing.JFrame {
         if(officeList.getSelectedIndex() != -1){
             try {
                 handler.delegateTask(selectedProjectId, selectedTaskId, officeList.getSelectedIndex());
+                this.dispose();
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(rootPane, e.getMessage(), null, JOptionPane.ERROR_MESSAGE);
             }
-        }
-        else {
+        } else {
             JOptionPane.showMessageDialog(rootPane, "Please select an office.", null, JOptionPane.ERROR_MESSAGE);
         }
 
