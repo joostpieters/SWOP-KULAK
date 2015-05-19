@@ -85,7 +85,7 @@ public class HandlerFactory {
      * @return A new delegate task handler.
      */
     public DelegateTaskHandler getDelegatedTaskHandler(){
-        return new DelegateTaskHandler(manager, clock,auth, acl, db);
+        return new DelegateTaskHandler(manager,auth, acl, db);
     }
     
     /** 
