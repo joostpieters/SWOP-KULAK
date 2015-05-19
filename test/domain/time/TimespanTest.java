@@ -1,15 +1,11 @@
 package domain.time;
 
 import java.time.LocalDateTime;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 
-import domain.time.Duration;
-import domain.time.Timespan;
 
 /**
  *
@@ -120,6 +116,27 @@ public class TimespanTest {
         assertTrue(timespan2.endsBefore(timespan3));
        
         
+    }
+    
+    /**
+     * Test overlapswith methode of timespan
+     */
+    @Test
+    public void testCompareTo() {
+        LocalDateTime start1 = LocalDateTime.of(2015, 1, 6, 14, 0);
+        LocalDateTime end1 = LocalDateTime.of(2015, 1, 6, 15, 30);
+        Timespan timespan1 = new Timespan(start1, end1);
+        LocalDateTime start2 = LocalDateTime.of(2013, 1, 6, 15, 30);
+        LocalDateTime start3 = LocalDateTime.of(2016, 1, 6, 15, 30);
+        
+        
+        assertTrue(timespan1.compareTo(start2) > 0);
+        
+        assertTrue(timespan1.compareTo(start3) < 0);
+        
+        assertTrue(timespan1.compareTo(start1) == 0);
+        
+       
     }
     
     

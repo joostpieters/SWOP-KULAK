@@ -81,15 +81,6 @@ public final class Timespan implements Comparable<Timespan> {
     }
 
     /**
-     * Check whether this time span is infinite.
-     *
-     * @return	{@code true} if this represents an infinite time span.
-     */
-    public boolean isInfinite() {
-        return getEndTime() == LocalDateTime.MAX;
-    }
-
-    /**
      * Check whether this time span overlaps with the given time span
      *
      * @param anotherTimespan The time span to check the overlap with
@@ -176,7 +167,7 @@ public final class Timespan implements Comparable<Timespan> {
      *
      * @param time The time to compare with.
      * @return 0 if this time span overlaps with the given time, -1 if the given
-     * time is strictly before the start time of this time span, 1 otherwise.
+     * time is strictly after the start time of this time span, 1 otherwise.
      */
     public int compareTo(LocalDateTime time) {
         if (overlapsWith(time)) {
@@ -207,29 +198,6 @@ public final class Timespan implements Comparable<Timespan> {
     }
 
     /**
-     *
-     * @return
-     */
-    public Timespan roundStartingTime() {
-        if (getStartTime().getMinute() == 0) {
-            return this;
-        }
-
-        //inconsistentie indien seconden of nanoseconden != 0
-        LocalDateTime newStart = getStartTime().withMinute(0);
-        return new Timespan(newStart, getEndTime()).postponeHours(1);
-    }
-
-    public Timespan postponeHours(int hours) {
-        LocalDateTime newStart = getStartTime().plusHours(hours);
-        if (canHaveAsTimeInterval(newStart, getEndTime())) {
-            return new Timespan(newStart, getEndTime());
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * Checks whether this timespan starts after the given time.
      *
      * @param time The time to check.
@@ -250,7 +218,11 @@ public final class Timespan implements Comparable<Timespan> {
     public boolean startsBefore(LocalDateTime time) {
         return getStartTime().isBefore(time);
     }
-
+    
+    /**
+     * 
+     * @return A textual representation of this timespan. 
+     */
     @Override
     public String toString() {
         return "[" + startTime.toString() + " to " + endTime.toString() + "]";
