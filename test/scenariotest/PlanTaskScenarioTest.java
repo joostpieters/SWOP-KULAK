@@ -86,7 +86,7 @@ public class PlanTaskScenarioTest {
 		Auth auth = new Auth(db);
 		auth.login("name");
 		office = new BranchOffice("Het hol van de paashaas", pc, rc);
-		handler = new PlanTaskHandler(office, clock, auth, acl, db);
+		handler = new PlanTaskHandler(office, clock, auth, acl);
 	}
 
 	@Test

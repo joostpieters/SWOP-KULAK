@@ -356,6 +356,8 @@ public class ProjectTest {
     public void testGetUnacceptablyOverdueTasksPrereqs() {
     	Task t = p1.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t1.getId()), new HashMap<>());
     	assertTrue(p1.getUnacceptablyOverdueTasks(clock.getTime()).isEmpty());
+    	t1.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t1.execute(clock);
     	clock.advanceTime(due);
     	t1.finish(new Timespan(start, due), clock.getTime());
     	assertEquals(1, p1.getUnacceptablyOverdueTasks(clock.getTime()).size());
@@ -587,6 +589,7 @@ public class ProjectTest {
     	assertEquals(Duration.ZERO, pFinished.getDelay(clock.getTime()));
     	
     	LocalDateTime end = estdur.getEndTimeFrom(start);
+    	//TODO: geen exception als tijd voor clock-tijd is!!!
     	t1.plan(clock.getTime(), new ArrayList<>(), clock);
     	t1.execute(clock);
     	clock.advanceTime(end);
@@ -594,13 +597,13 @@ public class ProjectTest {
     	assertFalse(end.isAfter(due));
     	assertEquals(Duration.ZERO, p1.getDelay(clock.getTime()));
 
-    	t2.plan(start, new ArrayList<>(), clock);
+    	t2.plan(clock.getTime(), new ArrayList<>(), clock);
     	t2.execute(clock);
     	System.out.println(t2.getStatus());
     	clock.advanceTime(end.plusDays(1));
     	t2.finish(new Timespan(start, end.plusDays(1)), clock.getTime());
     	assertEquals(Duration.ZERO, p2.getDelay(clock.getTime()));
-    	t3.plan(start, new ArrayList<>(), clock);
+    	t3.plan(clock.getTime(), new ArrayList<>(), clock);
     	t3.execute(clock);
     	clock.advanceTime(end.plusDays(2));
     	t3.finish(new Timespan(start, end.plusDays(2)), clock.getTime());
@@ -619,7 +622,7 @@ public class ProjectTest {
     	assertEquals(t1.getDelay(), p1.getDelay(clock.getTime()));
     	
     	t2.fail(new Timespan(start, end.plusDays(1)), clock.getTime());
-    	t3.plan(start, new ArrayList<>(), clock);
+    	t3.plan(clock.getTime(), new ArrayList<>(), clock);
     	t3.execute(clock);
     	t3.finish(new Timespan(start,  due.plusDays(1)), clock.getTime());
     	assertEquals(t2.getDelay().add(t3.getDelay()), p2.getDelay(clock.getTime()));

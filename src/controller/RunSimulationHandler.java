@@ -76,7 +76,7 @@ public class RunSimulationHandler extends Handler{
      * @return A handler to simulate the planning of a task.
      */
     public PlanTaskHandler getPlanTaskSimulatorHandler() {
-    	return new PlanTaskHandler(manager, clock, auth, acl, db, simulatorCommand);
+    	return new PlanTaskHandler(manager, clock, auth, acl, simulatorCommand);
     } 
     
     /**

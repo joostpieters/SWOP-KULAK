@@ -656,6 +656,7 @@ public class Task implements DetailedTask {
      * @return True if and only if this task has a planned start time.
      */
     public boolean isPlanned() {
+    	//TODO: verandering door P-J, maar misschien niet precies het gewenste resultaat?
         return this.planning != null;
     }
     

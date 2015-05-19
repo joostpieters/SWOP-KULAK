@@ -13,6 +13,7 @@ public class Database {
 
     private final List<ResourceType> resourceTypes;
     private final List<User> users;
+    //TODO: weg met resources uit database!!!
     private final List<Resource> resources;
     private final List<BranchOffice> offices;
     

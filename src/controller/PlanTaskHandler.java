@@ -1,7 +1,6 @@
 package controller;
 
 import domain.BranchOffice;
-import domain.Database;
 import domain.Resource;
 import domain.ResourceType;
 import domain.command.SimulatorCommand;
@@ -14,6 +13,7 @@ import domain.time.Timespan;
 import domain.user.Acl;
 import domain.user.Auth;
 import exception.ConflictException;
+
 import java.time.LocalDateTime;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
@@ -30,7 +30,6 @@ public class PlanTaskHandler extends Handler {
 
     protected final BranchOffice manager;
     private final Clock clock;
-    private final Database db;
     
 	private SimulatorCommand simulatorCommand;
 
@@ -41,10 +40,9 @@ public class PlanTaskHandler extends Handler {
      * @param clock The clock to use in this handler
      * @param auth The authorization manager to use
      * @param acl The action control list to use
-     * @param db The database to use in this handler
      */
-    public PlanTaskHandler(BranchOffice manager, Clock clock, Auth auth, Acl acl, Database db) {
-    	this(manager, clock, auth, acl, db, new SimulatorCommand());
+    public PlanTaskHandler(BranchOffice manager, Clock clock, Auth auth, Acl acl) {
+    	this(manager, clock, auth, acl, new SimulatorCommand());
     }
     
     /**
@@ -54,15 +52,13 @@ public class PlanTaskHandler extends Handler {
      * @param clock The clock to use in this handler
      * @param auth The authorization manager to use
      * @param acl The action control list to use
-     * @param db The database to use in this handler
      * @param simulatorCommand The simulator command to which commands are added.
      */
-    public PlanTaskHandler(BranchOffice manager, Clock clock, Auth auth, Acl acl, Database db, SimulatorCommand simulatorCommand)
+    public PlanTaskHandler(BranchOffice manager, Clock clock, Auth auth, Acl acl, SimulatorCommand simulatorCommand)
     {
         super(auth, acl);
         this.manager = manager;
         this.clock = clock;
-        this.db = db;
         this.simulatorCommand = simulatorCommand;
     }
 
