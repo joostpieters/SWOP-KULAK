@@ -80,6 +80,7 @@ public class PlanTaskHandler extends Handler {
      * @return A list of proposed required resources, ascociated with their resourcetype.
      */
     public List<Entry<DetailedResourceType, DetailedResource>> getRequiredResources(int pId, int tId, LocalDateTime start) {
+    	//TODO: opnieuw!!!
         Task currentTask = manager.getProjectContainer().getProject(pId).getTask(tId);
         List<Entry<DetailedResourceType, DetailedResource>> resources = new ArrayList<>();
         for (Entry<ResourceType, Integer> entry : currentTask.getRequiredResources().entrySet()) {

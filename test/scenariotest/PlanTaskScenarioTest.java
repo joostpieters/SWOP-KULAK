@@ -3,6 +3,7 @@ package scenariotest;
 import controller.PlanTaskHandler;
 import domain.BranchOffice;
 import domain.Database;
+import domain.Planning;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.Resource;
@@ -18,8 +19,10 @@ import domain.time.Duration;
 import domain.time.Timespan;
 import domain.user.Acl;
 import domain.user.Auth;
+import domain.user.Developer;
 import domain.user.GenericUser;
 import domain.user.User;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,8 +31,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -46,6 +51,7 @@ public class PlanTaskScenarioTest {
 	private static ResourceContainer rc;
 	private static Task t1, t2, t3;
 	private static ResourceType type0, type1;
+	private static Developer dev0, dev1;
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
@@ -71,12 +77,13 @@ public class PlanTaskScenarioTest {
 				Project.NO_ALTERNATIVE, Arrays.asList(t1.getId()), requiredResources0);
 		t1.plan(START, new ArrayList<>(), clock);
 		t1.execute(clock);
-		//TODO: veranderen naar 90 minuten doet test failen...
 		clock.advanceTime(START.plusMinutes(30));
 		t1.fail(new Timespan(START, clock.getTime()), clock.getTime());
 		t3 = p.createTask("this is task 3 as alternative for task 1", new Duration(180), 0, 
 				t1.getId(), Project.NO_DEPENDENCIES, requiredResources1);
 
+		dev0 = new Developer("janssen", clock, office);
+		dev1 = new Developer("janssens", clock, office);
 		user = new GenericUser("name", "manager", office);
 		Acl acl = Acl.DEFAULT;
 		Database db = new Database();
@@ -89,60 +96,89 @@ public class PlanTaskScenarioTest {
 
 	@Test
 	public void testMainSuccesScenario() {
-		//Try planning t3
+		//Step 2 - show a list of all currently unplanned tasks of the branch office into which he is logged in
 		List<DetailedTask> unplannedTasks = handler.getUnplannedTasks();
 		assertEquals(2, unplannedTasks.size());
 		assertTrue(unplannedTasks.contains(t2));
 		assertTrue(unplannedTasks.contains(t3));
+		
+		//Step 3 - the user selects the task he wants to plan
 		DetailedTask selectedTask = t3;
 		int pId = selectedTask.getProject().getId();
 		int tId = selectedTask.getId();
 		
+		//Step 4 - show the first three possible starting times (only consid- ering exact hours) that a task can be planned
 		Set<LocalDateTime> times = handler.getPossibleStartTimesCurrentTask(pId, tId);
 		assertEquals(3, times.size());
 		LocalDateTime first = clock.getTime().plusMinutes(60 - clock.getTime().getMinute());
 		assertTrue(times.contains(first));
 		assertTrue(times.contains(first.plusHours(1)));
 		assertTrue(times.contains(first.plusHours(2)));
+		
+		//Step 5 - the user selects a proposed time.
 		LocalDateTime selectedTime = first.plusHours(2);
 		
+		//Step 6 - get required resource types and their necessary quantity as assigned by the project manager when creating the task
+		//         for each required resource type instance to perform the task, propose a specific resource to make a reservation for
 		List<Entry<DetailedResourceType, DetailedResource>> requiredResources = handler.getRequiredResources(pId, tId, selectedTime);
 		assertEquals(1, requiredResources.size()); //TODO: wordt hier evenveel resources als required verwacht?
 		Set<Resource> possibleResources = rc.getResourcesOfType(type0);
 		assertEquals(type0, requiredResources.get(0).getKey());
 		assertTrue(possibleResources.contains(requiredResources.get(0).getValue()));
 		
-		//TODO: main scenario provides possible resources without choosing specific ones, not sure whether this is correct...
+		//Step 7 - select the required resources
 		List<Integer> resources = new ArrayList<>();
 		for(Entry<DetailedResourceType, DetailedResource> e : requiredResources) 
 			resources.add(e.getValue().getId());
+		//Step 8 - get list of developers
+		//Step 9 - user selects the developers to perform the task.
+		//Step 10 - make required reservations and assign the selected developers
 		handler.planTask(pId, tId, selectedTime, resources);
 		DetailedPlanning planning = selectedTask.getPlanning();
 		assertTrue(planning != null);
 		assertEquals(new Timespan(selectedTime, selectedTask.getEstimatedDuration()), planning.getTimespan());
 		assertEquals(Arrays.asList(requiredResources.get(0).getValue()), planning.getResources());
-
-		//Try planning t2
+		
+		
+	}
+	
+	@Test
+	public void testCancelScenario() {
+		
+	}
+	
+	@Test
+	public void testRandomTimeScenario() {
+		
+	}
+	
+	@Test
+	public void testReservationConflictScenario() {
+		
+	}
+	
+	@Test
+	public void testSpecificResourceScenario() {
 		clock.advanceTime(clock.getTime().plusMinutes(40));
-		unplannedTasks = handler.getUnplannedTasks();
+		List<DetailedTask> unplannedTasks = handler.getUnplannedTasks();
 		assertEquals(1, unplannedTasks.size());
 		assertTrue(unplannedTasks.contains(t2));
-		selectedTask = t2;
-		pId = selectedTask.getProject().getId();
-		tId = selectedTask.getId();
+		Task selectedTask = t2;
+		int pId = selectedTask.getProject().getId();
+		int tId = selectedTask.getId();
 		
-		times = handler.getPossibleStartTimesCurrentTask(pId, tId);
+		Set<LocalDateTime> times = handler.getPossibleStartTimesCurrentTask(pId, tId);
 		assertEquals(3, times.size());
-		first = clock.getTime().withMinute(0).plusHours(1);
+		LocalDateTime first = clock.getTime().withMinute(0).plusHours(1);
 		assertTrue(times.contains(first));
 		assertTrue(times.contains(first.plusHours(1)));
 		assertTrue(times.contains(first.plusHours(2)));
-		selectedTime = first.plusHours(1);
+		LocalDateTime selectedTime = first.plusHours(1);
 		
-		requiredResources = handler.getRequiredResources(pId, tId, selectedTime);
+		List<Entry<DetailedResourceType, DetailedResource>> requiredResources = handler.getRequiredResources(pId, tId, selectedTime);
 		assertEquals(3, requiredResources.size());
 		//TODO: andere volgorde zorgt voor falen test!
-		possibleResources = rc.getResourcesOfType(type0);
+		Set<Resource> possibleResources = rc.getResourcesOfType(type0);
 		assertEquals(type0, requiredResources.get(0).getKey());
 		assertTrue(possibleResources.contains(requiredResources.get(0).getValue()));
 		assertEquals(type0, requiredResources.get(1).getKey());
@@ -151,7 +187,7 @@ public class PlanTaskScenarioTest {
 		assertEquals(type0, requiredResources.get(0).getKey());
 		assertTrue(possibleResources.contains(requiredResources.get(2).getValue()));
 		
-		resources = new ArrayList<>();
+		ArrayList<Integer> resources = new ArrayList<>();
 		for(Entry<DetailedResourceType, DetailedResource> e : requiredResources)
 			if(e.getKey().equals(type0)) {
 				DetailedResource temp = e.getValue();
@@ -159,10 +195,14 @@ public class PlanTaskScenarioTest {
 				break;
 			}
 		handler.planTask(pId, tId, selectedTime, resources);
-		planning = selectedTask.getPlanning();
+		Planning planning = selectedTask.getPlanning();
 		assertTrue(planning != null);
 		assertEquals(new Timespan(selectedTime, selectedTask.getEstimatedDuration()), planning.getTimespan());
 		assertEquals(Arrays.asList(requiredResources.get(0).getValue()), planning.getResources());
+	}
+	
+	@Test
+	public void testDeveloperConflictScenario() {
 		
 	}
 
