@@ -238,12 +238,18 @@ public class LoginFrame extends javax.swing.JFrame {
                 
                 // should the lunchbreak be changed?
                 if (handler.askLunchbreak()) {
-                    String begintime = JOptionPane.showInputDialog("If you want you can change the beginning of your lunch break, now it's 12 o'clock");
-                    if (begintime != null) {
-                        try {
-                            handler.setLunchbreak(begintime);
-                        } catch (HeadlessException | IllegalArgumentException exception) {
-                            JOptionPane.showMessageDialog(null, exception.getMessage(), null, JOptionPane.WARNING_MESSAGE);
+                    
+                    while (true) {                        
+                        String begintime = JOptionPane.showInputDialog("If you want you can change the beginning of your lunch break, now it's 12 o'clock");
+                        if (begintime != null) {
+                            try {
+                                handler.setLunchbreak(begintime);
+                                break;
+                            } catch (HeadlessException | IllegalArgumentException exception) {
+                                JOptionPane.showMessageDialog(null, exception.getMessage(), null, JOptionPane.WARNING_MESSAGE);
+                            }
+                        }else{
+                            break;
                         }
                     }
                 }
