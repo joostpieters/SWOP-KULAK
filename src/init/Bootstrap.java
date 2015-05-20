@@ -96,7 +96,7 @@ public class Bootstrap {
 
             try (FileReader fileReader = new FileReader(chooser.getSelectedFile())) {
 
-                ProjectContainerFileInitializor fileInitializor = new ProjectContainerFileInitializor(fileReader, clock, db);
+                FileInitializor fileInitializor = new FileInitializor(fileReader, clock, db);
                 fileInitializor.processFile();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, "An error occured while reading/processing the file, please try again.", null, JOptionPane.ERROR_MESSAGE);
