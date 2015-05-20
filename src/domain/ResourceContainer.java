@@ -1,9 +1,14 @@
 package domain;
 
+import domain.dto.DetailedResource;
 import domain.task.Task;
 import domain.time.Timespan;
 import exception.ConflictException;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class ResourceContainer {
@@ -55,6 +60,7 @@ public class ResourceContainer {
         resources.add(res);
     }
     
+    //TODO: commentaar
     public Set<Resource> getResourcesOfType(ResourceType type) {
     	Set<Resource> result = new HashSet<>();
     	for(Resource res : getResources()) {
@@ -101,6 +107,37 @@ public class ResourceContainer {
 
         return result;
     }
+
+	/**
+	 * @param currentTask
+	 * @param requirement
+	 * @param span
+	 * @return
+	 */
+	public List<DetailedResource> meetRequirements(Task currentTask, Map<ResourceType, Integer> requirement, Timespan span) 
+			throws ConflictException {
+		List<DetailedResource> resources = new ArrayList<>();
+		for(ResourceType type : requirement.keySet()) {
+			Set<Resource> availableResources = getNrOfAvailableResources(type, requirement.get(type), span);
+        	if(availableResources.size() < requirement.get(type))
+        		throw new ConflictException("There are not enough resource available at the given time span", 
+        				currentTask, findConflictingTasks(span));
+        	else
+        		resources.addAll(availableResources);
+		}
+        return resources;
+	}
+    
+    //TODO: commentaar
+    public Set<Resource> getNrOfAvailableResources(ResourceType type, int quantity, Timespan span) {
+    	Set<Resource> result = new HashSet<>();
+    	for(Resource r : getAvailableResources(type, span)) {
+    		result.add(r);
+    		if(result.size() >= quantity)
+    			break;
+    	}
+    	return result;
+    }
     
     /**
      * Checks whether the given quantity of instances are available of this
@@ -121,11 +158,21 @@ public class ResourceContainer {
   	 * @param span The time span the tasks conflict with.
   	 * @return	all tasks that reserved resources of this type in span.
   	 */
-    private Set<Task> findConflictingTasks(Timespan span) {
+    public Set<Task> findConflictingTasks(Timespan span) {
     	Set<Task> result = new HashSet<>();
     	for (Resource r : getResources()) {
     		result.addAll(r.findConflictingTasks(span));
     	}
     	return result;
     }
+
+    //TODO: commentaar
+	public boolean confirmTimespan(Map<ResourceType, Integer> requirements, Timespan span) {
+		for(ResourceType type : requirements.keySet()) {
+			if(getAvailableResources(type, span).size() < requirements.get(type))
+				return false;
+		}
+		return true;
+		
+	}
 }
