@@ -9,7 +9,10 @@ import domain.ResourceType;
  * @author Mathias, Frederic, Pieter-Jan
  */
 public interface DetailedResourceType {
-
+    
+    /**
+     * This constant represents the resourcetype of a developer. // TODO in interface?
+     */
     public static final ResourceType DEVELOPER = new ResourceType("developer");
 
     /**

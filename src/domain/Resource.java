@@ -106,6 +106,7 @@ public class Resource implements DetailedResource {
     /**
 	 * @return the type of this resource
 	 */
+    @Override
 	public ResourceType getType() {
 		return type;
 	}

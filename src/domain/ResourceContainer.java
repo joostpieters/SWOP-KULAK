@@ -5,10 +5,20 @@ import domain.time.Timespan;
 import java.util.HashSet;
 import java.util.Set;
 
+
+/**
+ * This class provides a container to hold resources.
+ * It also provides actions to perform on the resources.
+ * 
+ * @author Mathias
+ */
 public class ResourceContainer {
 
     private final Set<Resource> resources;
     
+    /**
+     * Initializes this resourcecontainer
+     */
     public ResourceContainer() {
         resources = new HashSet<>();
     }
@@ -55,6 +65,12 @@ public class ResourceContainer {
         resources.add(res);
     }
     
+    /**
+     * Returns all resources in this resourcecontainer of the given type.
+     * 
+     * @param type The type of the resources to retrieve
+     * @return A subset of resources of this resourcecontainer with the given type.
+     */
     public Set<Resource> getResourcesOfType(ResourceType type) {
     	Set<Resource> result = new HashSet<>();
     	for(Resource res : getResources()) {
@@ -116,6 +132,7 @@ public class ResourceContainer {
     }
     
     /**
+     * // TODO wordt nooit gebruikt?
      * Get the set of tasks that cause conflicts with the given time span.
   	 *
   	 * @param span The time span the tasks conflict with.

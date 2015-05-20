@@ -4,7 +4,6 @@ import domain.dto.DetailedPlanning;
 import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Timespan;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -127,7 +126,7 @@ public class Planning implements ClockObserver, DetailedPlanning{
     	 */
     	private Memento(List<Resource> resources, Task task)
     	{
-    		this.resources = new ArrayList<Resource>(resources);
+    		this.resources = new ArrayList<>(resources);
     		this.resourceMementos = new HashMap<>();
     		for(Resource r : resources)
     		{

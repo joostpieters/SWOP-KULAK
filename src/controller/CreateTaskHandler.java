@@ -1,8 +1,8 @@
 package controller;
 
+import domain.BranchOffice;
 import domain.Database;
 import domain.Project;
-import domain.BranchOffice;
 import domain.ResourceType;
 import domain.command.CreateTaskCommand;
 import domain.command.SimulatorCommand;
@@ -10,14 +10,15 @@ import domain.dto.DetailedProject;
 import domain.dto.DetailedResourceType;
 import domain.dto.DetailedTask;
 import domain.time.Duration;
-import exception.ResourceTypeConflictException;
-import exception.ResourceTypeMissingReqsException;
 import domain.user.Acl;
 import domain.user.Auth;
+import exception.ResourceTypeConflictException;
+import exception.ResourceTypeMissingReqsException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -98,8 +99,8 @@ public class CreateTaskHandler extends Handler{
             
             HashMap<ResourceType, Integer> resources = new HashMap<>();
             // convert id's to objects
-            for(Integer id : requiredResources.keySet()){
-                resources.put(db.getResourceTypes().get(id), requiredResources.get(id));
+            for(Entry<Integer, Integer> entry : requiredResources.entrySet()){
+                resources.put(db.getResourceTypes().get(entry.getKey()), entry.getValue());
             }
             
             simulatorCommand.addAndExecute(new CreateTaskCommand(project, description, duration, accDev, altfor, prereq, resources));

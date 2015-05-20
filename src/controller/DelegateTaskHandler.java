@@ -49,6 +49,7 @@ public class DelegateTaskHandler extends Handler {
         super(auth, acl);
         this.manager = manager;
         this.db = db;
+        // TODO
         this.simulatorCommand = simulatorCommand;
     }
     /**

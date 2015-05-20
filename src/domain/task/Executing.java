@@ -4,6 +4,12 @@ import domain.time.Duration;
 import domain.time.Timespan;
 
 
+/**
+ * This class represents the executing status of a task and implements all the actions
+ * of a task that are status dependent on executing.
+ * 
+ * @author Mathias
+ */
 public class Executing extends Status {
 
     /**

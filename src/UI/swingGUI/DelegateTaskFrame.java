@@ -7,7 +7,6 @@ import domain.dto.DetailedTask;
 import java.awt.CardLayout;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -71,33 +70,6 @@ public class DelegateTaskFrame extends javax.swing.JFrame {
         availableTaskTable.getColumnModel().getColumn(0).setMaxWidth(50);
     }
     
-      /**
-     * Fills the available task table with the appropriate data
-     */
-    private void initDeveloperTable(Set<DetailedResource> devs) {
-        String[] columnNames = {"Id", "Name"};
-        Object[][] data = new Object[devs.size()][];
-
-        int i = 0;
-        for (DetailedResource dev : devs) {
-            data[i] = new Object[]{
-                dev.getId(),
-                dev.getName(),
-            };
-            i++;
-        }
-
-        DefaultTableModel devModel = new DefaultTableModel(data, columnNames) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                //all cells false
-                return false;
-            }
-        };
-        
-    }
-
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

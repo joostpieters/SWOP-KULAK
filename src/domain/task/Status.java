@@ -11,7 +11,10 @@ import domain.time.Timespan;
  * @author Frederic, Mathias, Pieter-Jan
  */
 public abstract class Status {
-
+    
+    /**
+     * Initializes a new status
+     */
     public Status() {
     }
 

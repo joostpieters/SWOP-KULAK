@@ -4,10 +4,10 @@ import domain.dto.DetailedResourceType;
 import domain.time.WorkWeekConfiguration;
 import exception.ResourceTypeConflictException;
 import exception.ResourceTypeMissingReqsException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * This class represents a common type of resources
@@ -224,12 +224,12 @@ public class ResourceType implements DetailedResourceType {
      * resourcetype requires are included in the given list.
      */
     public boolean canHaveAsCombination(Map<ResourceType, Integer> resources) {
-        for (ResourceType resource : resources.keySet()) {
-            if (conflicts.contains(resource)) {
-                if (resource == this && resources.get(resource) > 1) {
+        for (Entry<ResourceType, Integer> entry : resources.entrySet()) {
+            if (conflicts.contains(entry.getKey())) {
+                if (entry.getKey() == this && entry.getValue() > 1) {
                     return false;
-                } else if (resource == this && resources.get(resource) == 1) {
-
+                } else if (entry.getKey() == this && entry.getValue() == 1) {
+//TODO bizar?
                 } else {
                     return false;
                 }
@@ -374,18 +374,18 @@ public class ResourceType implements DetailedResourceType {
     public void addTo(Map<ResourceType, Integer> resourceTypeMap, Map<ResourceType, Integer> finalResourceTypes) throws IllegalArgumentException {
 		
     	// Check for conflicts with the resource types in resourceTypeMap
-    	List<ResourceType> conflicts = getConflicts(finalResourceTypes);
-		if(!conflicts.isEmpty())
+    	List<ResourceType> conflictings = getConflicts(finalResourceTypes);
+		if(!conflictings.isEmpty())
 		{
 
-			String conflictsText = "['";
-			for(int i = 0; i < conflicts.size(); i++)
+			StringBuffer conflictsText = new StringBuffer("['");
+			for(int i = 0; i < conflictings.size(); i++)
 			{
-				conflictsText += conflicts.get(i).getName();
-				if(i < conflicts.size() - 1)
-					conflictsText += "', ";
+				conflictsText.append(conflictings.get(i).getName());
+				if(i < conflictings.size() - 1)
+					conflictsText.append("', ");
 			}
-			conflictsText += "']";
+			conflictsText.append("']");
 
 			throw new IllegalArgumentException(
 					"Resource type '"

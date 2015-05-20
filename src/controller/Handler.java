@@ -10,7 +10,14 @@ import exception.NoAccessException;
  * @author Mathias, Frederic, Pieter-Jan
  */
 public abstract class Handler {
+    /**
+     * The authorization manager to use
+     */
     protected Auth auth;
+    
+    /**
+     * The action control list, that specifies the permissions
+     */
     protected Acl acl;
     
     /**
