@@ -30,8 +30,13 @@ import java.util.TreeSet;
  * @author Frederic, Mathias, Pieter-Jan
  */
 public class Task implements DetailedTask {
+    /**
+     * A constant to indicate that a task requires no resources
+     */
+    public static final Map<ResourceType, Integer> NO_REQUIRED_RESOURCE_TYPES = new HashMap<>();
 
     private static int nextId = 0;
+    private static Map<ResourceType, Integer> standardRequiredResources = new HashMap<>();
 
     private final int id;
     private String description;
@@ -43,13 +48,8 @@ public class Task implements DetailedTask {
     private Status status;
     private Map<ResourceType, Integer> requiredResources;
     private final Project project;
-    private static Map<ResourceType, Integer> standardRequiredResources = new HashMap<>();
 
 	private BranchOffice delegatedBranchOffice; // TODO in constructor
-    /**
-     * A constant to indicate that a task requires no resources
-     */
-    public static Map<ResourceType, Integer> NO_REQUIRED_RESOURCE_TYPES = new HashMap<>();
     private Planning planning;
 
 
@@ -87,6 +87,7 @@ public class Task implements DetailedTask {
         
         
         Map<ResourceType, Integer> finalResources = new HashMap<>(resources);
+        //TODO: standardRequiredResources zijn leeg!!! 
         finalResources.putAll(standardRequiredResources);
         setRequiredResources(finalResources);
         
@@ -568,6 +569,11 @@ public class Task implements DetailedTask {
         }
         return false;
     }
+    
+    //TODO: commentaar
+    public Timespan getSpan(LocalDateTime start) {
+    	return new Timespan(start, getEstimatedDuration());
+    }
 
     /**
      * Checks whether the status of this task is equal to finished.
@@ -697,7 +703,7 @@ public class Task implements DetailedTask {
      * Get a set of certain number of possible starting times for this task from a certain
      * point in time.
      *
-     * @param resContainer The resourcecontainer to base the result on
+     * @param resContainer The resources that can be reserved by this task.
      * @param from The time after which the task should be started.
      * @param n The number of starting times to be returned.
      * @return	a sorted set of possible points in time this task may be started.
@@ -711,10 +717,10 @@ public class Task implements DetailedTask {
     		next = next.withMinute(0).plusHours(1);
     	
         for(ResourceType type : required.keySet()) {
-            
-    			if(resContainer.getResourcesOfType(type).size() < required.get(type)) {
-    				return result;
-    			}
+			if(resContainer.getResourcesOfType(type).size() < required.get(type)) {
+				//TODO: waarom "return result;" ?
+				throw new IllegalStateException("There are more resources required than there are available.");
+			}
     	}
     	while(result.size() < n) {
             
