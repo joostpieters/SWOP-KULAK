@@ -11,7 +11,6 @@ import domain.ResourceContainer;
 import domain.ResourceType;
 import domain.dto.DetailedPlanning;
 import domain.dto.DetailedResource;
-import domain.dto.DetailedResourceType;
 import domain.dto.DetailedTask;
 import domain.task.Task;
 import domain.time.Clock;
@@ -22,6 +21,7 @@ import domain.user.Auth;
 import domain.user.Developer;
 import domain.user.GenericUser;
 import domain.user.User;
+import exception.ConflictException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,13 +29,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 public class PlanTaskScenarioTest {
@@ -43,34 +44,35 @@ public class PlanTaskScenarioTest {
 	private static final LocalDateTime START = LocalDateTime.of(2014, 2, 4, 10, 0);
 	private static final LocalDateTime DUE = START.plusDays(7);
 
-	private static PlanTaskHandler handler;
-	private static Clock clock;
-	private static User user;
-	private static BranchOffice office;
-	private static ProjectContainer pc;
-	private static ResourceContainer rc;
-	private static Task t1, t2, t3;
-	private static ResourceType type0, type1;
-	private static Developer dev0, dev1;
+	private PlanTaskHandler handler;
+	private Clock clock;
+	private User user;
+	private BranchOffice office;
+	private ProjectContainer pc;
+	private ResourceContainer rc;
+	private Task t1, t2, t3;
+	private ResourceType type0, type1;
+	private Resource res0, res00, res000, res1;
+	private Developer dev0, dev1;
 
-	@BeforeClass
-	public static void setUpClass() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		clock = new Clock(START);
 		pc = new ProjectContainer();
 		Project p = pc.createProject("project x", "description", START, DUE);
 		rc = new ResourceContainer();
 		type0 = new ResourceType("very simple");
 		type1 = new ResourceType("rather simple", Arrays.asList(type0), Arrays.asList());
-		rc.createResource("resource a", type0);
-		rc.createResource("resource b", type0);
-		rc.createResource("resource c", type0);
-		rc.createResource("resource d", type1);
+		res0 = rc.createResource("resource a", type0);
+		res00 = rc.createResource("resource b", type0);
+		res000 = rc.createResource("resource c", type0);
+		res1 = rc.createResource("resource d", type1);
 		
 		Map<ResourceType, Integer> requiredResources0 = new HashMap<>();
 		requiredResources0.put(type0, 2);
 		requiredResources0.put(type1, 1);
 		Map<ResourceType, Integer> requiredResources1 = new HashMap<>();
-		requiredResources1.put(type0, 1);
+		requiredResources1.put(type0, 2);
 		t1 = p.createTask("this is task 1", new Duration(60), 10, 
 				Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
 		t2 = p.createTask("this is task 2 with task 1 as prerequisite", new Duration(120), 100, 
@@ -81,7 +83,7 @@ public class PlanTaskScenarioTest {
 		t1.fail(new Timespan(START, clock.getTime()), clock.getTime());
 		t3 = p.createTask("this is task 3 as alternative for task 1", new Duration(180), 0, 
 				t1.getId(), Project.NO_DEPENDENCIES, requiredResources1);
-
+		
 		dev0 = new Developer("janssen", clock, office);
 		dev1 = new Developer("janssens", clock, office);
 		user = new GenericUser("name", "manager", office);
@@ -90,7 +92,9 @@ public class PlanTaskScenarioTest {
 		db.addUser(user);
 		Auth auth = new Auth(db);
 		auth.login("name");
-		office = new BranchOffice("Het hol van de paashaas", pc, rc);
+		office = new BranchOffice("Het peperkoeken huis van de paashaas", pc, rc);
+		office.addUser(dev0);
+		office.addUser(dev1);
 		handler = new PlanTaskHandler(office, clock, auth, acl);
 	}
 
@@ -120,49 +124,100 @@ public class PlanTaskScenarioTest {
 		
 		//Step 6 - get required resource types and their necessary quantity as assigned by the project manager when creating the task
 		//         for each required resource type instance to perform the task, propose a specific resource to make a reservation for
-		List<Entry<DetailedResourceType, DetailedResource>> requiredResources = handler.getRequiredResources(pId, tId, selectedTime);
-		assertEquals(1, requiredResources.size()); //TODO: wordt hier evenveel resources als required verwacht?
+		List<DetailedResource> requiredResources = handler.getRequiredResources(pId, tId, selectedTime);
+		assertEquals(2, requiredResources.size());
 		Set<Resource> possibleResources = rc.getResourcesOfType(type0);
-		assertEquals(type0, requiredResources.get(0).getKey());
-		assertTrue(possibleResources.contains(requiredResources.get(0).getValue()));
+		assertEquals(type0, requiredResources.get(0).getType());
+		assertTrue(possibleResources.contains(requiredResources.get(0)));
+		assertEquals(type0, requiredResources.get(1).getType());
+		assertTrue(possibleResources.contains(requiredResources.get(1)));
 		
 		//Step 7 - select the required resources
 		List<Integer> resources = new ArrayList<>();
-		for(Entry<DetailedResourceType, DetailedResource> e : requiredResources) 
-			resources.add(e.getValue().getId());
+		for(DetailedResource e : requiredResources) 
+			resources.add(e.getId());
+		//TODO
 		//Step 8 - get list of developers
+		fail("step 8?");
 		//Step 9 - user selects the developers to perform the task.
 		//Step 10 - make required reservations and assign the selected developers
 		handler.planTask(pId, tId, selectedTime, resources);
 		DetailedPlanning planning = selectedTask.getPlanning();
 		assertTrue(planning != null);
 		assertEquals(new Timespan(selectedTime, selectedTask.getEstimatedDuration()), planning.getTimespan());
-		assertEquals(Arrays.asList(requiredResources.get(0).getValue()), planning.getResources());
+		assertEquals(Arrays.asList(requiredResources.get(0), requiredResources.get(1)), planning.getResources());
 		
-		
+		assertFalse(handler.getUnplannedTasks().contains(t3));
 	}
 	
 	@Test
 	public void testCancelScenario() {
-		
+		handler.getUnplannedTasks();
+		int pId = t2.getProject().getId();
+		int tId = t2.getId();
+		handler.getPossibleStartTimesCurrentTask(pId, tId);
+		handler.getRequiredResources(pId, tId, clock.getTime());
+		//last possible moment to cancel...
+		assertTrue(handler.getUnplannedTasks().contains(t2));
+		assertEquals(3, rc.getAvailableResources(type0, t2.getSpan(clock.getTime())).size());
+		assertEquals(1, rc.getAvailableResources(type1, t2.getSpan(clock.getTime())).size());
 	}
 	
 	@Test
 	public void testRandomTimeScenario() {
+		t3.plan(clock.getTime().plusDays(1), Arrays.asList(res0, res00), clock);
+		List<DetailedTask> unplannedTasks = handler.getUnplannedTasks();
+		assertEquals(1, unplannedTasks.size());
+		assertTrue(unplannedTasks.contains(t2));
+		Task selectedTask = t2;
+		int pId = selectedTask.getProject().getId();
+		int tId = selectedTask.getId();
+		LocalDateTime selectedTime = clock.getTime().plusMinutes(23);
 		
+		List<DetailedResource> requiredResources = handler.getRequiredResources(pId, tId, selectedTime);;
+		assertEquals(3, requiredResources.size());
+		Set<Resource> possibleResources = rc.getResourcesOfType(type1);
+		assertEquals(type1, requiredResources.get(0).getType());
+		assertTrue(possibleResources.contains(requiredResources.get(0)));
+		possibleResources = rc.getResourcesOfType(type0);
+		assertEquals(type0, requiredResources.get(1).getType());
+		assertTrue(possibleResources.contains(requiredResources.get(1)));
+		assertEquals(type0, requiredResources.get(2).getType());
+		assertTrue(possibleResources.contains(requiredResources.get(2)));
+		
+		List<Integer> resources = new ArrayList<>();
+		for(DetailedResource e : requiredResources) 
+			resources.add(e.getId());
+		
+		handler.planTask(pId, tId, selectedTime, resources);
+		DetailedPlanning planning = selectedTask.getPlanning();
+		assertTrue(planning != null);
+		assertEquals(new Timespan(selectedTime, selectedTask.getEstimatedDuration()), planning.getTimespan());
+		assertEquals(Arrays.asList(requiredResources.get(0), requiredResources.get(1), requiredResources.get(2)), planning.getResources());
+		
+		assertFalse(handler.getUnplannedTasks().contains(selectedTask));
 	}
 	
-	@Test
+	@Test(expected=ConflictException.class)
 	public void testReservationConflictScenario() {
-		
+		LocalDateTime selectedTime = clock.getTime().plusDays(1);
+		t3.plan(selectedTime, Arrays.asList(res0, res00), clock);
+		List<DetailedTask> unplannedTasks = handler.getUnplannedTasks();
+		assertEquals(1, unplannedTasks.size());
+		assertTrue(unplannedTasks.contains(t2));
+		Task selectedTask = t2;
+		int pId = selectedTask.getProject().getId();
+		int tId = selectedTask.getId();
+		handler.getRequiredResources(pId, tId, selectedTime);
 	}
 	
 	@Test
 	public void testSpecificResourceScenario() {
-		clock.advanceTime(clock.getTime().plusMinutes(40));
 		List<DetailedTask> unplannedTasks = handler.getUnplannedTasks();
-		assertEquals(1, unplannedTasks.size());
+		assertEquals(2, unplannedTasks.size());
 		assertTrue(unplannedTasks.contains(t2));
+		assertTrue(unplannedTasks.contains(t3));
+		
 		Task selectedTask = t2;
 		int pId = selectedTask.getProject().getId();
 		int tId = selectedTask.getId();
@@ -175,22 +230,22 @@ public class PlanTaskScenarioTest {
 		assertTrue(times.contains(first.plusHours(2)));
 		LocalDateTime selectedTime = first.plusHours(1);
 		
-		List<Entry<DetailedResourceType, DetailedResource>> requiredResources = handler.getRequiredResources(pId, tId, selectedTime);
+		List<DetailedResource> requiredResources = handler.getRequiredResources(pId, tId, selectedTime);
 		assertEquals(3, requiredResources.size());
 		//TODO: andere volgorde zorgt voor falen test!
 		Set<Resource> possibleResources = rc.getResourcesOfType(type0);
-		assertEquals(type0, requiredResources.get(0).getKey());
-		assertTrue(possibleResources.contains(requiredResources.get(0).getValue()));
-		assertEquals(type0, requiredResources.get(1).getKey());
-		assertTrue(possibleResources.contains(requiredResources.get(1).getValue()));
+		assertEquals(type0, requiredResources.get(0).getType());
+		assertTrue(possibleResources.contains(requiredResources.get(0)));
+		assertEquals(type0, requiredResources.get(1).getType());
+		assertTrue(possibleResources.contains(requiredResources.get(1)));
 		possibleResources = rc.getResourcesOfType(type1);
-		assertEquals(type0, requiredResources.get(0).getKey());
-		assertTrue(possibleResources.contains(requiredResources.get(2).getValue()));
+		assertEquals(type0, requiredResources.get(0).getType());
+		assertTrue(possibleResources.contains(requiredResources.get(2)));
 		
 		ArrayList<Integer> resources = new ArrayList<>();
-		for(Entry<DetailedResourceType, DetailedResource> e : requiredResources)
-			if(e.getKey().equals(type0)) {
-				DetailedResource temp = e.getValue();
+		for(DetailedResource e : requiredResources)
+			if(e.getType().equals(type0)) {
+				DetailedResource temp = e;
 				resources.add(temp.getId());
 				break;
 			}
@@ -198,12 +253,12 @@ public class PlanTaskScenarioTest {
 		Planning planning = selectedTask.getPlanning();
 		assertTrue(planning != null);
 		assertEquals(new Timespan(selectedTime, selectedTask.getEstimatedDuration()), planning.getTimespan());
-		assertEquals(Arrays.asList(requiredResources.get(0).getValue()), planning.getResources());
+		assertEquals(Arrays.asList(requiredResources.get(0)), planning.getResources());
 	}
 	
 	@Test
 	public void testDeveloperConflictScenario() {
-		
+		fail("Not implemented");
 	}
 
 }

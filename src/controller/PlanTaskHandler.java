@@ -1,6 +1,7 @@
 package controller;
 
 import domain.BranchOffice;
+import domain.Database;
 import domain.Resource;
 import domain.ResourceType;
 import domain.command.SimulatorCommand;
@@ -13,11 +14,11 @@ import domain.time.Timespan;
 import domain.user.Acl;
 import domain.user.Auth;
 import exception.ConflictException;
+
 import java.time.LocalDateTime;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -79,25 +80,10 @@ public class PlanTaskHandler extends Handler {
      * @param start The start time at which the resources should be available 
      * @return A list of proposed required resources, ascociated with their resourcetype.
      */
-    public List<Entry<DetailedResourceType, DetailedResource>> getRequiredResources(int pId, int tId, LocalDateTime start) {
-    	//TODO: opnieuw!!!
+    public List<DetailedResource> getRequiredResources(int pId, int tId, LocalDateTime start) {
         Task currentTask = manager.getProjectContainer().getProject(pId).getTask(tId);
-        List<Entry<DetailedResourceType, DetailedResource>> resources = new ArrayList<>();
-        for (Entry<ResourceType, Integer> entry : currentTask.getRequiredResources().entrySet()) {
-            
-            List<Resource> availableResources = new ArrayList<>(manager.getResourceContainer().getAvailableResources(entry.getKey(), new Timespan(start, currentTask.getEstimatedDuration()))); // TODO niet verantwoordelijkheid van plantaskhandler
-            for (int i = 0; i < entry.getValue(); i++) {
-                    // if there are not enough resources available add same resource
-                // multiple times
-                if (i == availableResources.size()) {
-                    resources.add(new SimpleEntry<>(entry.getKey(), availableResources.get(availableResources.size() - 1)));
-                } else {
-                    resources.add(new SimpleEntry<>(entry.getKey(), availableResources.get(i)));
-                }
-            }
-
-        }
-        return resources;
+        Map<ResourceType, Integer> requiredResources = currentTask.getRequiredResources();
+        return manager.getResourceContainer().meetRequirements(currentTask, requiredResources, currentTask.getSpan(start));
     }
 
     /**
@@ -137,7 +123,11 @@ public class PlanTaskHandler extends Handler {
 
     //TODO: goeie oplossing? 
 	public List<DetailedResource> getResources(DetailedResourceType type) {
-		return new ArrayList<>(manager.getResourceContainer().getResourcesOfType((ResourceType) type));
+		try {
+			return new ArrayList<>(manager.getResourceContainer().getResourcesOfType((ResourceType) type));
+		} catch(ClassCastException cce) {
+			throw new IllegalArgumentException("This type was not recognized by the system. \nPlease enter a valid type");
+		}
 	}
     
 }

@@ -20,9 +20,10 @@ public class Executing extends Status {
      */
     @Override
     void update(Task task) {
-        if(!task.hasPlanning()){
-            task.setStatus(new Available());
-        }
+    	//TODO: mag dit weg? Nieuwe methode isUnplanned() zou alles moeten oplossen...
+//        if(!task.hasPlanning()){
+//            task.setStatus(new Available());
+//        }
     }
     
     /**

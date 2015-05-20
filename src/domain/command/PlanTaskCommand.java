@@ -2,12 +2,15 @@ package domain.command;
 
 import domain.Planning;
 import domain.Resource;
+import domain.ResourceType;
 import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Timespan;
 import exception.ConflictException;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 /**
@@ -39,6 +42,8 @@ public class PlanTaskCommand implements ICommand {
     public PlanTaskCommand(Timespan timespan, List<Resource> resources, Task task, Clock clock) {
         this.task = task;
         this.resources = resources;
+        if(!requirementsMet())
+        	throw new IllegalArgumentException("The resources for this planning do not meet the requirements");
         this.timespan = timespan;
         this.clock = clock;
         reservations = new ArrayList<>();
@@ -48,7 +53,22 @@ public class PlanTaskCommand implements ICommand {
         }
     }
     
-    /**
+    //TODO: commentaar
+    private boolean requirementsMet() {
+		Map<ResourceType, Integer> requirements = task.getRequiredResources();
+		for(ResourceType type : requirements.keySet()) {
+			int count = 0;
+			for(Resource r : resources) {
+				if(r.getType().equals(type))
+					count++;
+			}
+			if(count < requirements.get(type))
+				return false;
+		}
+		return true;
+	}
+
+	/**
      * The tasks future reservations are cleared and the new reservations are made.
      */
     @Override

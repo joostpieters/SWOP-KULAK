@@ -359,13 +359,13 @@ public class PlanTaskFrame extends javax.swing.JFrame {
             selectedResources = new ArrayList<>();
             // init resource panel
             //TODO: handler.getResources om compile-errors op te lossen goed idee?
-            for (Map.Entry<DetailedResourceType, DetailedResource> entry : handler.getRequiredResources(selectedProjectId, selectedTaskId, start)) {
+            for (DetailedResource resource : handler.getRequiredResources(selectedProjectId, selectedTaskId, start)) {
                 
                 JComboBox<DetailedResource> comboBox = new JComboBox<>();
-                DetailedResource[] resources = handler.getResources(entry.getKey()).toArray(new DetailedResource[handler.getResources(entry.getKey()).size()]);
+                DetailedResource[] resources = handler.getResources(resource.getType()).toArray(new DetailedResource[handler.getResources(resource.getType()).size()]);
                 comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(resources));
                 
-                comboBox.setSelectedItem(entry.getValue());
+                comboBox.setSelectedItem(resource);
                 comboBox.setPreferredSize(new java.awt.Dimension(200, 30));
                 
                 resourcePanel.add(comboBox, BorderLayout.SOUTH);
