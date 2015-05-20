@@ -48,8 +48,8 @@ public class DelegateTaskScenarioTest {
     public void setUpClass() {
     	db = new Database();
     	
-    	ProjectContainer pc0 = new ProjectContainer();
-    	ProjectContainer pc1 = new ProjectContainer();
+    	pc0 = new ProjectContainer();
+    	pc1 = new ProjectContainer();
         
     	office0 = new BranchOffice("Kortrijk", pc0, new ResourceContainer());
         db.addOffice(office0);

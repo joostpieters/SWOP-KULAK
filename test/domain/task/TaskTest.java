@@ -41,7 +41,8 @@ public class TaskTest {
     private Project p;
     private ResourceContainer rc;
 	private Task t0, t1, t2, t3, t4, t5, t6, t7, t7alternative, t8, t10;
-	private ResourceType type0, type1, type2;
+//	private ResourceType type0, type1, type2;
+	private Resource res0, res1;
 	
     public TaskTest() {
     }
@@ -83,14 +84,14 @@ public class TaskTest {
     	t7alternative = p.createTask("alternative for t7", new Duration(10), 2, t7.getId(), Project.NO_DEPENDENCIES, new HashMap<>());
     	t8 = p.createTask("depends on t7", new Duration(33), 3, Project.NO_ALTERNATIVE, Arrays.asList(t7.getId()), new HashMap<>());
     	
-    	type0 = new ResourceType("Engine");
-    	type1 = new ResourceType("Car", Arrays.asList(type0), new ArrayList<>());
-    	type2 = new ResourceType("Jacket");
+    	ResourceType type0 = new ResourceType("Engine");
+    	ResourceType type1 = new ResourceType("Car", Arrays.asList(type0), new ArrayList<>());
+    	ResourceType type2 = new ResourceType("Jacket");
     	rc = new ResourceContainer();
-    	rc.createResource("V8", type0);
+    	res0 = rc.createResource("V8", type0);
     	rc.createResource("V10", type0);
     	rc.createResource("V12", type0);
-    	rc.createResource("Aston Martin", type1);
+    	res1 = rc.createResource("Aston Martin", type1);
     	rc.createResource("hooded", type2);
     	rc.createResource("armless", type2);
     	Map<ResourceType, Integer> requiredResources = new HashMap<>();
@@ -677,7 +678,7 @@ public class TaskTest {
     	assertTrue(nextAvailableStartingTimes.contains(from.plusHours(4)));
     	
     	try {
-    		rc.makeReservation(type0, t10, reserved, 1);  //more resources of this type available, thus no effect.
+    		res0.makeReservation(t10, reserved);  //more resources of this type available, thus no effect.
 		} catch (ConflictException e) {	}
     	nextAvailableStartingTimes = t10.nextAvailableStartingTimes(rc, from, 3);
     	assertEquals(3, nextAvailableStartingTimes.size());
@@ -689,7 +690,7 @@ public class TaskTest {
     	assertTrue(nextAvailableStartingTimes.contains(from));
     	
     	try {
-    		rc.makeReservation(type1, t10, reserved2, 1);
+    		res1.makeReservation(t10, reserved2);
     	} catch (ConflictException e) { }
     	nextAvailableStartingTimes = t10.nextAvailableStartingTimes(rc, from, 3);
     	assertTrue(nextAvailableStartingTimes.contains(from));

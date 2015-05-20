@@ -128,36 +128,4 @@ public class ResourceContainer {
     	}
     	return result;
     }
-
-	/**
-	 * Reserve a certain amount of resources of this type for a given task
-	 * during a given time span.
-	 *
-	 * @param task The task to make the reservation for.
-	 * @param span The time span during which it should be reserved.
-	 * @param quantity The number of resources to be reserved.
-	 * @return	the set of resources that got reserved.
-	 * @throws ConflictException if the reservation conflicted with other tasks.
-	 */
-	 public Set<Resource> makeReservation(ResourceType type, Task task, Timespan span, int quantity) throws ConflictException {
-	     if (quantity < 1) {
-	         throw new IllegalArgumentException("At least 1 resource should be reserved.");
-	     }
-	     if (getResourcesOfType(type).size() < quantity) {
-	         throw new IllegalArgumentException("There are less resources of this type than you want to reserve.");
-	     }
-	     Set<Resource> availableResources = getAvailableResources(type, span);
-	     if (availableResources.size() < quantity) {
-	         Set<Task> confl = findConflictingTasks(span);
-	         throw new ConflictException("There are not enough resources of the right type available.", task, confl);
-	     }
-		      Set<Resource> result = new HashSet<>();
-	     for (Resource r : availableResources) {
-	         r.makeReservation(task, span);
-	         result.add(r);
-	         if(result.size() >= quantity)
-	         	break;
-	     }
-	     return result;
-	 }
 }

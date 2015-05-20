@@ -126,44 +126,44 @@ public class ResourceContainerTest {
         assertFalse(rc3.hasAvailableOfType(type1, new Timespan(endRes), 3));
 	}
 
-    @Test
-    public void testMakeReservationValid() throws ConflictException {
-        Set<Resource> reservations = rc3.makeReservation(type0, t0, reserved, 1);
-        assertEquals(1, reservations.size());
-        assertTrue(reservations.contains(res0));
-        reservations = rc3.makeReservation(type1, t0, reserved, 1);
-        assertEquals(1, reservations.size());
-        assertTrue(reservations.contains(res2));
-        reservations = rc3.makeReservation(type1, t1, new Timespan(endRes, endRes.plusDays(1)), 2);
-        assertEquals(2, reservations.size());
-        assertTrue(reservations.contains(res1));
-        assertTrue(reservations.contains(res2));
-        Resource extra = rc3.createResource("extra", type1);
-        reservations = rc3.makeReservation(type1, t1, reserved, 1);
-        assertEquals(1, reservations.size());
-        assertTrue(reservations.contains(extra));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testMakeReservationNoResources() throws ConflictException {
-        rc0.makeReservation(type0, t0, reserved, 1);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testMakeEmptyReservation() throws ConflictException {
-        rc3.makeReservation(type0, t0, reserved, 0);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testMakeReservationSameTask() throws ConflictException {
-    	rc3.makeReservation(type0, t0, reserved, 1);
-        rc3.makeReservation(type0, t0, new Timespan(endRes, endRes.plusDays(1)), 1);
-    }
-
-    @Test(expected = ConflictException.class)
-    public void testMakeReservationOverlappingTime() throws ConflictException {
-    	res2.makeReservation(t0, reserved);
-        rc3.makeReservation(type1, t1, reserved, 1);
-    }
+//    @Test
+//    public void testMakeReservationValid() throws ConflictException {
+//        Set<Resource> reservations = rc3.makeReservation(type0, t0, reserved, 1);
+//        assertEquals(1, reservations.size());
+//        assertTrue(reservations.contains(res0));
+//        reservations = rc3.makeReservation(type1, t0, reserved, 1);
+//        assertEquals(1, reservations.size());
+//        assertTrue(reservations.contains(res2));
+//        reservations = rc3.makeReservation(type1, t1, new Timespan(endRes, endRes.plusDays(1)), 2);
+//        assertEquals(2, reservations.size());
+//        assertTrue(reservations.contains(res1));
+//        assertTrue(reservations.contains(res2));
+//        Resource extra = rc3.createResource("extra", type1);
+//        reservations = rc3.makeReservation(type1, t1, reserved, 1);
+//        assertEquals(1, reservations.size());
+//        assertTrue(reservations.contains(extra));
+//    }
+//
+//    @Test(expected = IllegalArgumentException.class)
+//    public void testMakeReservationNoResources() throws ConflictException {
+//        rc0.makeReservation(type0, t0, reserved, 1);
+//    }
+//
+//    @Test(expected = IllegalArgumentException.class)
+//    public void testMakeEmptyReservation() throws ConflictException {
+//        rc3.makeReservation(type0, t0, reserved, 0);
+//    }
+//
+//    @Test(expected = IllegalArgumentException.class)
+//    public void testMakeReservationSameTask() throws ConflictException {
+//    	rc3.makeReservation(type0, t0, reserved, 1);
+//        rc3.makeReservation(type0, t0, new Timespan(endRes, endRes.plusDays(1)), 1);
+//    }
+//
+//    @Test(expected = ConflictException.class)
+//    public void testMakeReservationOverlappingTime() throws ConflictException {
+//    	res2.makeReservation(t0, reserved);
+//        rc3.makeReservation(type1, t1, reserved, 1);
+//    }
 
 }
