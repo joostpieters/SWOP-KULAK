@@ -2,7 +2,6 @@ package domain;
 
 import domain.task.Task;
 import domain.time.Timespan;
-import exception.ConflictException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,6 +38,7 @@ public class ResourceContainer {
      *
      * @param name The name for the new resource.
      * @param type The type of the new resource.
+     * @return The created resource
      */
     public Resource createResource(String name, ResourceType type) {
         Resource res = new Resource(name, type);
@@ -67,7 +67,6 @@ public class ResourceContainer {
     /**
      * Get the set of available resources of a given type on a given period of time.
      *
-     * @param type The type of the resources that should be available.
      * @param span The time span the resources should be available in.
      * @return	all available resources of {@code type} at {@code span}.
      */
@@ -106,6 +105,7 @@ public class ResourceContainer {
      * Checks whether the given quantity of instances are available of this
      * resourcetype at the given timespan.
      *
+     * @param type The resource type to check the availability of
      * @param span The timespan to check availability on
      * @param quantity The quantity necessary of this resourcetype
      * @return True if and only if the given quantity of instances are available

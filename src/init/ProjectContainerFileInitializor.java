@@ -44,7 +44,6 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
      * projectcontainer
      *
      * @param r The reader to use to read in the file
-     * @param manager The projectContainer to initialize
      * @param clock The clock to use
      * @param db The database to initialize
      */

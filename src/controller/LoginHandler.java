@@ -108,7 +108,8 @@ public class LoginHandler{
    
    /**
     * Returns all the developers of the given branchoffice
-     * @param officeId
+    * 
+    * @param officeId The id of the branchoffice in the database
     * @return A list of developers of the office with the given id.
     */
    public List<User> getUsers(int officeId){

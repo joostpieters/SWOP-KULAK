@@ -6,8 +6,17 @@ import domain.time.Timespan;
 
 public class Executing extends Status {
 
+    /**
+     * If the planning of the given task is gone, the status of the task transitions
+     * to available.
+     * 
+     * @param task The task to update the status of.
+     */
     @Override
     void update(Task task) {
+        if(!task.hasPlanning()){
+            task.setStatus(new Available());
+        }
     }
     
     /**

@@ -13,7 +13,8 @@ public class ObjectNotFoundException extends IllegalArgumentException{
     
     /**
      * @see IllegalArgumentException
-     * @param message @see IllegalArgumentException
+     * @param message The message to display  
+     * @see IllegalArgumentException
      */
     public ObjectNotFoundException(String message) {
         super(message);
@@ -22,7 +23,8 @@ public class ObjectNotFoundException extends IllegalArgumentException{
     /**
      * Initialize this exception with the given message and id.
      * 
-     * @param message  @see IllegalArgumentException
+     * @param message  The message to display 
+     * @see IllegalArgumentException
      * @param id This is the id by which the object that isn't found is represented.
      */
     public ObjectNotFoundException(String message, int id) {

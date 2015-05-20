@@ -594,6 +594,8 @@ public class Task implements DetailedTask {
     }
     
     /**
+     * //TODO
+     * 
      * @param task
      * @param timeSpan
      * @return 
@@ -695,6 +697,7 @@ public class Task implements DetailedTask {
      * Get a set of certain number of possible starting times for this task from a certain
      * point in time.
      *
+     * @param resContainer The resourcecontainer to base the result on
      * @param from The time after which the task should be started.
      * @param n The number of starting times to be returned.
      * @return	a sorted set of possible points in time this task may be started.
