@@ -12,7 +12,8 @@ public class NoAccessException extends RuntimeException{
     
     /**
      * @see RuntimeException
-     * @param message @see IllegalArgumentException
+     * @param message The message to display 
+     * @see IllegalArgumentException
      */
     public NoAccessException(String message) {
         super(message);

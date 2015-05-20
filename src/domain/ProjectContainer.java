@@ -8,6 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class provides a container for holding all projects in the system.
+ * This class also provides several actions to perform on this set of projects.
+ * @author Mathias
+ */
 public class ProjectContainer {
 
     private final Map<Integer, Project> projects;

@@ -31,7 +31,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ProjectContainerFileInitializor extends StreamTokenizer {
+/**
+ * This class initializes all data structures, based on an input file
+ * 
+ * @author Mathias
+ */
+public class FileInitializor extends StreamTokenizer {
 
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -44,11 +49,10 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
      * projectcontainer
      *
      * @param r The reader to use to read in the file
-     * @param manager The projectContainer to initialize
      * @param clock The clock to use
      * @param db The database to initialize
      */
-    public ProjectContainerFileInitializor(Reader r, Clock clock, Database db) {
+    public FileInitializor(Reader r, Clock clock, Database db) {
         super(r);
 
         this.clock = clock;
@@ -254,7 +258,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
             }
         }
         expectLabel("resources");
-        ArrayList<Resource> resourcesList = new ArrayList<>();
+        
         while (ttype == '-') {
             expectChar('-');
             String name = expectStringField("name");
@@ -267,9 +271,6 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
 
             // add to db
             db.addResource(res);
-            // add to temp list
-            resourcesList.add(res);
-
         }
 
         expectLabel("managers");
@@ -341,7 +342,7 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
          * Tasks
          */
         expectLabel("tasks");
-        List<Task> taskList = new ArrayList<>();
+        
         while (ttype == '-') {
             expectChar('-');
             
@@ -376,14 +377,13 @@ public class ProjectContainerFileInitializor extends StreamTokenizer {
 
             Task task;
             
-            System.out.println(resourceMap);         
+             
             task = tempProjects.get(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, resourceMap);
              
-            // add to temporary list
-            taskList.add(task);
+           
             int planning = expectIntField("planned");
            
-            BranchOffice office = projectOffice.get(task.getProject());
+           
             if (planning == 1) {
                 LocalDateTime plannedStartTime = expectDateField("plannedStartTime");
                 expectLabel("developers");

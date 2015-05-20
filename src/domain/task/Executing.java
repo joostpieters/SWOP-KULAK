@@ -4,10 +4,25 @@ import domain.time.Duration;
 import domain.time.Timespan;
 
 
+/**
+ * This class represents the executing status of a task and implements all the actions
+ * of a task that are status dependent on executing.
+ * 
+ * @author Mathias
+ */
 public class Executing extends Status {
 
+    /**
+     * If the planning of the given task is gone, the status of the task transitions
+     * to available.
+     * 
+     * @param task The task to update the status of.
+     */
     @Override
     void update(Task task) {
+        if(!task.hasPlanning()){
+            task.setStatus(new Available());
+        }
     }
     
     /**

@@ -3,7 +3,6 @@ package domain;
 import domain.dto.DetailedBranchOffice;
 import domain.task.Task;
 import domain.user.User;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -193,7 +192,7 @@ public class BranchOffice implements DetailedBranchOffice {
     
     /**
      * @return The list of unplanned tasks which are assigned to this branch office.
-     * @see BranchOffice#taskIsAssigned()
+     * @see taskIsAssigned
      */
     public List<Task> getAssignedUnplannedTasks()
     {

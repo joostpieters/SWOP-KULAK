@@ -11,7 +11,10 @@ import domain.time.Timespan;
  * @author Frederic, Mathias, Pieter-Jan
  */
 public abstract class Status {
-
+    
+    /**
+     * Initializes a new status
+     */
     public Status() {
     }
 
@@ -132,7 +135,7 @@ public abstract class Status {
      * Moves the given task to the executing state
      * 
      * @param task The task to adjust
-     * @param now The system clock
+     * @param clock The system clock
      * @throws IllegalStateException The task can't move to executing from this
      * state.
      */

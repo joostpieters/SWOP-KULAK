@@ -7,7 +7,12 @@ import exception.ConflictException;
 import java.util.ArrayList;
 
 
-
+/**
+ * This class represents the available status of a task and implements all the actions
+ * of a task that are status dependent on available.
+ * 
+ * @author Mathias
+ */
 public class Available extends Status {
 
     /**

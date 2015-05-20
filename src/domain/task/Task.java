@@ -570,7 +570,13 @@ public class Task implements DetailedTask {
         return false;
     }
     
-    //TODO: commentaar
+    /**
+     * Returns the estimated span of a task based on the estimated duration.
+     * 
+     * @param start The start of the timespan
+     * @return A new timespan that begins at the given start time and ends,
+     * based on the estimated duration of this task.
+     */
     public Timespan getSpan(LocalDateTime start) {
     	return new Timespan(start, getEstimatedDuration());
     }
@@ -600,6 +606,8 @@ public class Task implements DetailedTask {
     }
     
     /**
+     * //TODO
+     * 
      * @param task
      * @param timeSpan
      * @return 
@@ -665,6 +673,12 @@ public class Task implements DetailedTask {
         return this.planning != null;
     }
     
+    /**
+     * Checks whether this task is unplanned
+     * 
+     * @return True if and only if this task doesn't have a planning and is not
+     * failed nor finished.
+     */
     public boolean isUnplanned() {
     	return !hasPlanning() && !isFailed() && !isFinished();
     }
@@ -714,8 +728,8 @@ public class Task implements DetailedTask {
     	if(next.getMinute() != 0)
     		next = next.withMinute(0).plusHours(1);
     	
-        for(ResourceType type : required.keySet()) {
-			if(resContainer.getResourcesOfType(type).size() < required.get(type)) {
+        for(Entry<ResourceType, Integer> entry : required.entrySet()) {
+			if(resContainer.getResourcesOfType(entry.getKey()).size() < entry.getValue()) {
 				//TODO: waarom "return result;" ?
 				throw new IllegalStateException("There are more resources required than there are available.");
 			}
@@ -793,6 +807,7 @@ public class Task implements DetailedTask {
      *
      * @return The planning of this task
      */
+    @Override
     public Planning getPlanning() {
         return this.planning;
     }

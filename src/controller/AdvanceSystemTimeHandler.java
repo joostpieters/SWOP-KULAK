@@ -1,12 +1,11 @@
 package controller;
 
+import domain.time.Clock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import domain.time.Clock;
 
 /**
  * This handler, handles the create task use case
@@ -20,7 +19,6 @@ public class AdvanceSystemTimeHandler {
     /**
      * Initialize a new advance system time handler with the given projectContainer.
      * 
-     * @param manager The manager to use in this handler
      * @param clock The clock to use to manipulate
      */   
     public AdvanceSystemTimeHandler(Clock clock){
