@@ -43,7 +43,7 @@ public class HandlerFactory {
      * @return A new show project handler, initialized with this manager.
      */
     public ShowProjectHandler getShowProjectHandler(){
-        return new ShowProjectHandler(manager, clock, null);
+        return new ShowProjectHandler(manager, clock, db);
     }
     
     /** 

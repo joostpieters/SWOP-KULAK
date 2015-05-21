@@ -4,7 +4,6 @@ import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
 import exception.ConflictException;
-import java.util.ArrayList;
 
 
 /**
@@ -114,14 +113,14 @@ public class Available extends Status {
     @Override
     public void execute(Task task, Clock clock) {
 
-        if (!task.isUnplanned()) {
+        if (task.hasPlanning()) {
             if (task.getPlanning().isBefore(clock.getTime())) {
                 task.setStatus(new Executing());
                 
             } else {
                 try {
                     // unplanned execution
-                    task.plan(clock.getTime(), new ArrayList<>(), clock);
+                    task.plan(clock.getTime(), task.getPlanning().getResources(), clock);
                     task.setStatus(new Executing());
                 } catch (ConflictException ex) {
                     throw new IllegalStateException("This task can't move to executing because there are not enough resources available");

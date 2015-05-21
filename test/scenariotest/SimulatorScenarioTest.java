@@ -55,8 +55,8 @@ public class SimulatorScenarioTest {
         LocalDateTime project1StartTime = LocalDateTime.of(2015, 03, 12, 17, 30);
         LocalDateTime project1EndTime = LocalDateTime.of(2015, 03, 16, 17, 30);
         p1 = pc.createProject(project1Name, project1Description, project1StartTime, project1EndTime);
-        t1 = p1.createTask("Prereq", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
-        t2 = p1.createTask("Alternative", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+        t1 = p1.createTask("Prereq", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
+        t2 = p1.createTask("Alternative", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
         
         
         clock = new Clock();

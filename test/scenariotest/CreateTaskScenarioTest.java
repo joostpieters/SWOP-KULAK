@@ -47,7 +47,6 @@ public class CreateTaskScenarioTest {
     private static Clock clock;
     private static Acl acl;
     private static Auth auth;
-    private static ResourceContainer rc;
     private static ResourceType resType1;
     private static ResourceType resType2;
 
@@ -55,7 +54,6 @@ public class CreateTaskScenarioTest {
     public void setUp() {
     	db = new Company();
         pc = new ProjectContainer();
-        rc = new ResourceContainer();
         // resourcetypes
         resType1 = ResourceType.DEVELOPER;
         db.addResourceType(resType1);
@@ -69,8 +67,8 @@ public class CreateTaskScenarioTest {
         LocalDateTime project1StartTime = LocalDateTime.of(2015, 03, 12, 17, 30);
         LocalDateTime project1EndTime = LocalDateTime.of(2015, 03, 16, 17, 30);
         p1 = pc.createProject(project1Name, project1Description, project1StartTime, project1EndTime);
-        t1 = p1.createTask("Prereq", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
-        t2 = p1.createTask("Alternative", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+        t1 = p1.createTask("Prereq", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
+        t2 = p1.createTask("Alternative", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
         
         clock = new Clock();
         auth = new Auth(db);
@@ -193,7 +191,6 @@ public class CreateTaskScenarioTest {
      */
     @Test(expected = IllegalStateException.class)
     public void testInvalidDataStartTime() {
-    	
         handler.createTask(p1.getId(), "Fun task6", 50, Arrays.asList(t1.getId()), 20, t2.getId(), new HashMap<>());
     }    
 

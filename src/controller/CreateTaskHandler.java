@@ -9,13 +9,14 @@ import domain.command.SimulatorCommand;
 import domain.dto.DetailedProject;
 import domain.dto.DetailedResourceType;
 import domain.dto.DetailedTask;
+import domain.task.Task;
 import domain.time.Duration;
 import domain.user.Acl;
 import domain.user.Auth;
 import exception.ResourceTypeConflictException;
 import exception.ResourceTypeMissingReqsException;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -97,7 +98,7 @@ public class CreateTaskHandler extends Handler{
             Project project = manager.getProjectContainer().getProject(pId);
             Duration duration = new Duration(estDurMinutes);
             
-            HashMap<ResourceType, Integer> resources = new HashMap<>();
+            Map<ResourceType, Integer> resources = Task.NO_REQUIRED_RESOURCE_TYPES;
             // convert id's to objects
             for(Entry<Integer, Integer> entry : requiredResources.entrySet()){
                 resources.put(db.getResourceTypes().get(entry.getKey()), entry.getValue());

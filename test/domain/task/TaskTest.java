@@ -11,7 +11,6 @@ import exception.ConflictException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
 import static org.junit.Assert.assertEquals;
@@ -39,7 +38,7 @@ public class TaskTest {
     private ResourceContainer rc;
 	private Task t0, t1, t2, t3, t4, t5, t6, t7, t7alternative, t8, t10;
 //	private ResourceType type0, type1, type2;
-	private Resource res0, res1;
+	private Resource res0, res1, dev;
 	
     public TaskTest() {
     }
@@ -47,6 +46,8 @@ public class TaskTest {
     @Before
     public void setUp() {
     	clock = new Clock(LocalDateTime.of(2060, 3, 4, 11, 48));
+    	
+    	dev = new Resource("name", ResourceType.DEVELOPER);
     	
     	p = new Project("Name", "Description", LocalDateTime.of(2001, 1, 9, 8, 0), LocalDateTime.of(2072, 10, 9, 8, 0));
         
@@ -61,8 +62,8 @@ public class TaskTest {
     			);
     	
     	t3 = p.createTask("t3 finished", new Duration(30), 40, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
-    	t3.plan(LocalDateTime.of(2060, 3, 5, 11, 48), new ArrayList<Resource>(), clock);
-    	assertTrue(t3.isUnplanned());
+    	t3.plan(LocalDateTime.of(2060, 3, 5, 11, 48), Arrays.asList(dev), clock);
+    	assertTrue(t3.hasPlanning());
     	assertTrue(t3.getStatus() instanceof Available);
     	t3.execute(clock);
     	assertTrue(t3.getStatus() instanceof Executing);
@@ -85,6 +86,7 @@ public class TaskTest {
     	ResourceType type1 = new ResourceType("Car", Arrays.asList(type0), new ArrayList<>());
     	ResourceType type2 = new ResourceType("Jacket");
     	rc = new ResourceContainer();
+    	rc.addResource(dev);
     	res0 = rc.createResource("V8", type0);
     	rc.createResource("V10", type0);
     	rc.createResource("V12", type0);
@@ -187,7 +189,7 @@ public class TaskTest {
     	Task taskA = p.createTask("finished, time spent = 10 minutes", new Duration(33), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
     			//new Task("finished, time spent = 10 minutes", new Duration(33), 0);
     	assertEquals(0, taskA.getTimeSpent().toMinutes());
-    	taskA.plan(LocalDateTime.of(2060,3,4,11,48), new ArrayList<Resource>(), clock);
+    	taskA.plan(LocalDateTime.of(2060,3,4,11,48), Arrays.asList(dev), clock);
     	taskA.execute(clock);
     	taskA.finish(new Timespan(startA, endA), clock.getTime());
     	assertEquals(10, taskA.getTimeSpent().toMinutes());
@@ -208,7 +210,7 @@ public class TaskTest {
     	assertEquals(new Available(), t0.getStatus());
     	LocalDateTime startTime = LocalDateTime.of(2016, 10, 30, 0, 0);
     	LocalDateTime endTime = LocalDateTime.of(2016, 11, 30, 0, 0);
-    	t0.plan(LocalDateTime.of(2060,3,4,11,48), new ArrayList<Resource>(), clock);
+    	t0.plan(LocalDateTime.of(2060,3,4,11,48), Arrays.asList(dev), clock);
         t0.execute(clock);
     	t0.finish(new Timespan(startTime, endTime), clock.getTime());
     	assertEquals(new Finished(), t0.getStatus()); 
@@ -238,7 +240,7 @@ public class TaskTest {
         assertEquals(new Failed(), t7.getStatus());
         assertEquals(new Available(), t7alternative.getStatus());
         assertEquals(new Unavailable(), t8.getStatus());
-        t7alternative.plan(LocalDateTime.of(2060,3,4,11,48), new ArrayList<Resource>(), clock);
+        t7alternative.plan(LocalDateTime.of(2060,3,4,11,48), Arrays.asList(dev), clock);
         t7alternative.execute(clock);
         t7alternative.finish(new Timespan(
         				LocalDateTime.of(2020, 10, 2, 14, 14), 
@@ -260,7 +262,7 @@ public class TaskTest {
         assertTrue(t3.isFulfilled());
         assertFalse(t8.isFulfilled());
         assertFalse(t7.isFulfilled());
-        t7alternative.plan(LocalDateTime.of(2060,3,4,11,48), new ArrayList<Resource>(), clock);
+        t7alternative.plan(LocalDateTime.of(2060,3,4,11,48), Arrays.asList(dev), clock);
         t7alternative.execute(clock);
         t7alternative.finish(new Timespan(
 				LocalDateTime.of(2020, 10, 2, 14, 14), 
@@ -524,7 +526,7 @@ public class TaskTest {
     	Timespan TS12 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 13, 54),
     			LocalDateTime.of(2015,  3, 4, 14, 6));
-    	someTask.plan(LocalDateTime.of(2060,3,4,11,48), new ArrayList<Resource>(), clock);
+    	someTask.plan(LocalDateTime.of(2060,3,4,11,48), Arrays.asList(dev), clock);
     	someTask.execute(clock);
     	someTask.finish(new Timespan(TS12.getStartTime(), TS12.getEndTime()), clock.getTime());
     	assertEquals(0, someTask.getDelay().toMinutes());
@@ -535,7 +537,7 @@ public class TaskTest {
     	Timespan TS20 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 13, 0),
     			LocalDateTime.of(2015,  3, 4, 13, 20));
-    	someTask2.plan(LocalDateTime.of(2060,3,4,11,48), new ArrayList<Resource>(), clock);
+    	someTask2.plan(LocalDateTime.of(2060,3,4,11,48), Arrays.asList(dev), clock);
     	someTask2.execute(clock);
     	someTask2.finish(new Timespan(TS20.getStartTime(), TS20.getEndTime()), clock.getTime());
     	assertEquals(0, someTask2.getDelay().toMinutes());
@@ -546,7 +548,7 @@ public class TaskTest {
     	Timespan TS35 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 13, 0),
     			LocalDateTime.of(2015,  3, 4, 13, 35));
-    	someTask3.plan(LocalDateTime.of(2060,3,4,11,48), new ArrayList<Resource>(), clock);
+    	someTask3.plan(LocalDateTime.of(2060,3,4,11,48), Arrays.asList(dev), clock);
     	someTask3.execute(clock);
     	someTask3.finish(new Timespan(TS35.getStartTime(), TS35.getEndTime()), clock.getTime());
     	assertEquals(2, someTask3.getDelay().toMinutes());
@@ -558,7 +560,7 @@ public class TaskTest {
     	Timespan TS123 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 13, 0),
     			LocalDateTime.of(2015,  3, 4, 15, 3));
-    	someTask4.plan(LocalDateTime.of(2060,3,4,11,48), new ArrayList<Resource>(), clock);
+    	someTask4.plan(LocalDateTime.of(2060,3,4,11,48), Arrays.asList(dev), clock);
     	someTask4.execute(clock);
     	someTask4.finish(new Timespan(TS123.getStartTime(), TS123.getEndTime()), clock.getTime());
     	assertEquals(87, someTask4.getDelay().toMinutes());
@@ -648,13 +650,13 @@ public class TaskTest {
     	assertEquals(0, t1.getTimeSpent().toMinutes());
     	assertEquals(165, t6.getTimeSpent().toMinutes());
     	
-    	t0.plan(LocalDateTime.of(2060,3,4,11,48), new ArrayList<Resource>(), clock);
+    	t0.plan(LocalDateTime.of(2060,3,4,11,48), Arrays.asList(dev), clock);
     	t0.execute(clock);
     	t0.finish(new Timespan(LocalDateTime.of(2015, 3, 10, 10, 0), LocalDateTime.of(2015, 3, 10, 11, 30)), clock.getTime());
     	assertEquals(90, t0.getTimeSpent().toMinutes());
         
     	Task task = p.createTask("task abc", new Duration(33), 54, Project.NO_ALTERNATIVE, Arrays.asList(t0.getId()), Task.NO_REQUIRED_RESOURCE_TYPES);
-    	task.plan(LocalDateTime.of(2060,3,4,11,48), new ArrayList<Resource>(), clock);
+    	task.plan(LocalDateTime.of(2060,3,4,11,48), Arrays.asList(dev), clock);
     	task.execute(clock);
     	task.finish(new Timespan(LocalDateTime.of(2015, 3, 11, 10, 0), LocalDateTime.of(2015, 3, 11, 15, 30)), clock.getTime());
     	assertEquals(90+4*60+30, task.getTimeSpent().toMinutes());
