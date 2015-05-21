@@ -83,7 +83,25 @@ public class PlanTaskHandler extends Handler {
         Task currentTask = manager.getProjectContainer().getProject(pId).getTask(tId);
         Map<ResourceType, Integer> requirement = currentTask.getRequiredResources();
         requirement.remove(ResourceType.DEVELOPER);
-        return manager.getResourceContainer().meetRequirements(currentTask, requirement, currentTask.getSpan(start));
+        return manager.getResourceContainer().meetRequirements(currentTask, requirement, currentTask.getSpan(start), new ArrayList<>());
+    }
+
+    /**
+     * Returns a list of proposed resources for each resourceType
+     * of the task with the given id
+     * 
+     * @param pId The id of the projec the task belongs to
+     * @param tId The id of the task
+     * @param start The start time at which the resources should be available 
+     * @param specificResources The ids of resources specifically asked for
+     * @return A list of proposed required resources, such that for every ResourceType the requirements are met.
+     * @throws ConflictException if there were not enough resources available.
+     */
+    public List<DetailedResource> getRequiredResources(int pId, int tId, LocalDateTime start, List<Integer> specificResources) throws ConflictException {
+        Task currentTask = manager.getProjectContainer().getProject(pId).getTask(tId);
+        Map<ResourceType, Integer> requirement = currentTask.getRequiredResources();
+        requirement.remove(ResourceType.DEVELOPER);
+        return manager.getResourceContainer().meetRequirements(currentTask, requirement, currentTask.getSpan(start), specificResources);
     }
     
     //TODO: commentaar

@@ -42,9 +42,8 @@ public class PlanTaskCommand implements ICommand {
     public PlanTaskCommand(Timespan timespan, List<Resource> resources, Task task, Clock clock) {
         this.task = task;
         this.resources = resources;
-        //TODO: oplossing hiervoor???????????
         if(!requirementsMet())
-        	throw new ConflictException("With the given resources, certain requirements are not met", task, null);
+        	throw new IllegalArgumentException("The resources for this planning do not meet the requirements");
         this.timespan = timespan;
         this.clock = clock;
         reservations = new ArrayList<>();
@@ -94,7 +93,6 @@ public class PlanTaskCommand implements ICommand {
         		executedCmds.pop().revert();
             throw ex;
         }
-        //TODO: waarom wordt hier geen task.plan() gebruikt? :'(
         task.setPlanning(new Planning(resources, timespan, task, clock));
     }
     

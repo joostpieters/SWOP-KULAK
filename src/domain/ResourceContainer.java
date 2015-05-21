@@ -130,11 +130,11 @@ public class ResourceContainer {
 	 * @param span
 	 * @return
 	 */
-	public List<DetailedResource> meetRequirements(Task currentTask, Map<ResourceType, Integer> requirement, Timespan span) 
-			throws ConflictException {
+	public List<DetailedResource> meetRequirements(Task currentTask, Map<ResourceType, Integer> requirement, 
+			Timespan span, List<Integer> specificResources) throws ConflictException {
 		List<DetailedResource> resources = new ArrayList<>();
 		for(ResourceType type : requirement.keySet()) {
-			Set<Resource> availableResources = getNrOfAvailableResources(type, requirement.get(type), span);
+			Set<Resource> availableResources = getNrOfAvailableResources(type, requirement.get(type), span, specificResources);
         	if(availableResources.size() < requirement.get(type))
         		throw new ConflictException("There are not enough resource available at the given time span", 
         				currentTask, findConflictingTasks(span));
@@ -145,12 +145,21 @@ public class ResourceContainer {
 	}
     
     //TODO: commentaar
-    private Set<Resource> getNrOfAvailableResources(ResourceType type, int quantity, Timespan span) {
+    private Set<Resource> getNrOfAvailableResources(ResourceType type, int quantity, Timespan span, List<Integer> specificResources) {
     	Set<Resource> result = new HashSet<>();
+    	for(int id : specificResources) {
+    		if(result.size() >= quantity)
+    			throw new IllegalArgumentException("There were too many tasks of type " + type.getName() + " in the specific resources list.");
+    		Resource resource = getResource(id);
+    		if(resource == null)
+    			throw new IllegalArgumentException("The resource with id " + id + " does not exist in this container");
+    		if(resource.getType().equals(type))
+    			result.add(resource);
+    	}
     	for(Resource r : getAvailableResources(type, span)) {
-    		result.add(r);
     		if(result.size() >= quantity)
     			break;
+    		result.add(r);
     	}
     	return result;
     }

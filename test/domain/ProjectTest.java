@@ -52,14 +52,12 @@ public class ProjectTest {
 	Project p0, p1, p2, pFinished;
 	Task t1, t2, t3, tFin;
     private Clock clock;
-    private ResourceContainer rc;
     
     @Before
     public void setUp() {
     	assertTrue(!create.isAfter(start));
     	assertTrue(!end.isAfter(due));
     	
-    	rc = new ResourceContainer();
     	p0 = new Project(name, descr, create, due);
     	
     	p1 = new Project(name, descr, create, due);

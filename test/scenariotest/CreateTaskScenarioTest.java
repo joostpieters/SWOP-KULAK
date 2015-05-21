@@ -18,12 +18,16 @@ import domain.time.Timespan;
 import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.GenericUser;
+
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -120,9 +124,12 @@ public class CreateTaskScenarioTest {
                 assertTrue(t.getPrerequisiteTasks().contains(t1));
                 
                 // required resources
-                assertTrue(2 == t.getRequiredResources().get(resType1));
-                assertTrue(4 == t.getRequiredResources().get(resType2));
-                assertEquals(2, t.getRequiredResources().size());
+                
+                Map<ResourceType, Integer> requiredResources = t.getRequiredResources();
+                //TODO: nullpointer!!
+				assertEquals(2, (int) requiredResources.get(resType1));
+                assertEquals(4, (int) requiredResources.get(resType2));
+                assertEquals(2, requiredResources.size());
 
             }
         }
