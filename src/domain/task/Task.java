@@ -13,7 +13,6 @@ import domain.time.Duration;
 import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
 import exception.ConflictException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,7 +104,13 @@ public class Task implements DetailedTask {
         this.project.addTask(this);
     }
     
-    //TODO: commentaar
+    /**
+     * Checks whether this task can hava the required resources as its resources.
+     * 
+     * @param resources The resourcetypes with there quantity to check.
+     * @return True if there are no conflicting and requirements + it contains
+     * a developer.
+     */
 	private boolean canHaveAsRequiredResources(Map<ResourceType, Integer> resources) {
 		if(resources == null)
 			return false;
