@@ -18,7 +18,6 @@ import domain.user.GenericUser;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -62,7 +61,7 @@ public class DelegateTaskScenarioTest {
         clock = new Clock();
         auth = new Auth(db);
         acl = new Acl();
-        db.addUser(new GenericUser("John", "manager", office0));
+        office1.addUser(new GenericUser("John", "manager", office0));
         acl.addEntry("manager", new ArrayList<>(Arrays.asList("DelegateTask")));
         auth.login("John");
         HandlerFactory controller = new HandlerFactory(office0, clock, auth, acl, db);

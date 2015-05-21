@@ -24,6 +24,7 @@ public class AuthTest {
     private static User user2;
     private Clock clock;
     private BranchOffice branchOffice;
+    private Database db;
     
     public AuthTest() {
     }
@@ -41,13 +42,15 @@ public class AuthTest {
     public void setUp() {
         clock = EasyMock.createNiceMock(Clock.class);
         branchOffice = EasyMock.createNiceMock(BranchOffice.class);
-        auth = new Auth(new Database());
+        db = new Database();
+        db.addOffice(branchOffice);
+        auth = new Auth(db);
         
 	user1 = new GenericUser("John", "manager", branchOffice);
         user2 = new Developer("Fred", clock, branchOffice);
         
-        auth.registerUser(user1);
-        auth.registerUser(user2);
+       branchOffice.addUser(user1);
+        branchOffice.addUser(user2);
     }
     
     @After

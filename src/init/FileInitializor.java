@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class initializes all data structures, based on an input file
@@ -282,9 +281,6 @@ public class FileInitializor extends StreamTokenizer {
             GenericUser manager = new GenericUser(name, "manager", db.getOffices().get(officeId));
             db.getOffices().get(officeId).addUser(manager);
 
-            // developer is user and resource at the same time
-            db.addUser(manager);
-
         }
 
         /**
@@ -307,7 +303,7 @@ public class FileInitializor extends StreamTokenizer {
             // TODO workweek conf?
 
             // developer is user and resource at the same time
-            db.addUser(dev);
+            
             tempList.add(dev);
 
         }

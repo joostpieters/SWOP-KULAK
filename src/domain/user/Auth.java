@@ -59,15 +59,7 @@ public class Auth {
         return user != null;
     }
     
-    /**
-     * Registers the given user to the list of users
-     * 
-     * @param user The user to register
-     */
-    public void registerUser(User user) {
-        db.addUser(user);
-    }
-    
+        
     /**
      * Logs out the currently logged in user.
      */

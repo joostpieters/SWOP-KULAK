@@ -6,7 +6,6 @@ import domain.Database;
 import domain.time.Clock;
 import domain.user.Acl;
 import domain.user.Auth;
-import domain.user.GenericUser;
 import java.io.FileReader;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -51,10 +50,7 @@ public class Bootstrap {
         }
 
         Auth auth = new Auth(db);
-        //TODO
-        auth.registerUser(new GenericUser("root", "admin", null));
-        auth.registerUser(new GenericUser("manager", "manager",null));
-        
+               
         Acl acl = initAcl();
         
         HandlerFactory factory = new HandlerFactory(null, clock, auth, acl, db);

@@ -3,14 +3,14 @@ package scenariotest;
 
 import controller.CreateProjectHandler;
 import controller.HandlerFactory;
-import domain.user.Acl;
-import domain.user.Auth;
-import domain.Database;
-import domain.user.GenericUser;
-import domain.Project;
 import domain.BranchOffice;
+import domain.Database;
+import domain.Project;
 import domain.dto.DetailedProject;
 import domain.time.Clock;
+import domain.user.Acl;
+import domain.user.Auth;
+import domain.user.GenericUser;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class CreateProjectScenarioTest {
         acl = new Acl();
 
         manager = new BranchOffice("Berlin");
-        db.addUser(new GenericUser("John", "manager", manager));
+        manager.addUser(new GenericUser("John", "manager", manager));
         acl.addEntry("manager", new ArrayList<>(Arrays.asList("CreateProject")));
         auth.login("John");
         

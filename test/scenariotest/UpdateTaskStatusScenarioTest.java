@@ -2,10 +2,10 @@ package scenariotest;
 
 import controller.HandlerFactory;
 import controller.UpdateTaskStatusHandler;
+import domain.BranchOffice;
 import domain.Database;
 import domain.Project;
 import domain.ProjectContainer;
-import domain.BranchOffice;
 import domain.ResourceContainer;
 import domain.task.Task;
 import domain.time.Clock;
@@ -13,12 +13,10 @@ import domain.time.Duration;
 import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.GenericUser;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -61,7 +59,8 @@ public class UpdateTaskStatusScenarioTest {
         
         auth = new Auth(db);
         acl = Acl.DEFAULT;
-        db.addUser(new GenericUser("John", "developer", manager));
+        db.addOffice(manager);
+        manager.addUser(new GenericUser("John", "developer", manager));
         auth.login("John");
 		HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
         handler = controller.getUpdateTaskHandler();

@@ -23,18 +23,15 @@ import domain.user.Developer;
 import domain.user.GenericUser;
 import domain.user.User;
 import exception.ConflictException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -88,7 +85,8 @@ public class PlanTaskScenarioTest {
 		user = new GenericUser("name", "manager", office);
 		Acl acl = Acl.DEFAULT;
 		Database db = new Database();
-		db.addUser(user);
+                db.addOffice(office);
+		office.addUser(user);
 		Auth auth = new Auth(db);
 		auth.login("name");
 		office = new BranchOffice("Het peperkoeken huis van de paashaas", pc, rc);

@@ -13,15 +13,13 @@ public class Database {
 
     private final List<ResourceType> resourceTypes;
     private final List<BranchOffice> offices;
-    //TODO: weg met resources en users uit database!!!
-    private final List<User> users;
+    
     
     /**
      * Initializes this new database
      */
     public Database(){
         resourceTypes = new ArrayList<>();
-        users = new ArrayList<>();
         offices = new ArrayList<>();
     }
     
@@ -43,20 +41,18 @@ public class Database {
     
     /**
      * 
-     * @return The users stored in this database
+     * @return The users from all bracnhoffices in this database
      */
     public List<User> getUsers(){
-        return new ArrayList<>(users);
+        List<User> users = new ArrayList<>();
+        for(BranchOffice office : offices){
+            users.addAll(office.getUsers());
+        }
+        
+        return users;
     }
     
-    /**
-     * Adds the given user to this database
-     * @param user The user to add
-     */
-    public void addUser(User user){
-        users.add(user);
-    }
-    
+   
      /**
      * 
      * @return The users stored in this database

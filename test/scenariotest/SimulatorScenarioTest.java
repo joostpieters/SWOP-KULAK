@@ -4,9 +4,9 @@ package scenariotest;
 import controller.CreateTaskHandler;
 import controller.HandlerFactory;
 import controller.RunSimulationHandler;
+import domain.BranchOffice;
 import domain.Database;
 import domain.Project;
-import domain.BranchOffice;
 import domain.ProjectContainer;
 import domain.ResourceContainer;
 import domain.task.Task;
@@ -17,15 +17,12 @@ import domain.time.Timespan;
 import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.GenericUser;
-
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -65,7 +62,8 @@ public class SimulatorScenarioTest {
         clock = new Clock();
         auth = new Auth(db);
         acl = new Acl();
-        db.addUser(new GenericUser("root", "admin", manager));
+        db.addOffice(manager);
+        manager.addUser(new GenericUser("root", "admin", manager));
         acl.addEntry("admin", Arrays.asList("UpdateTaskStatus", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "updateTaskStatus"));
         auth.login("root");
 		HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);

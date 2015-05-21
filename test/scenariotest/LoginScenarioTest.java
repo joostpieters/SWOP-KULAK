@@ -46,8 +46,8 @@ public class LoginScenarioTest {
         manager = new BranchOffice("Beijing");
         managerOffice2 = new GenericUser("John", "manager", manager);
         devOffice2 = new Developer("Layla", clock, manager);
-        db.addUser(managerOffice2);
-        db.addUser(devOffice2);
+        manager.addUser(managerOffice2);
+        manager.addUser(devOffice2);
 
         office1 = new BranchOffice("Brazil");
         office2 = new BranchOffice("Cuba");
