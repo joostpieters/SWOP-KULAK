@@ -602,7 +602,7 @@ public class ProjectTest {
         
     	assertTrue(p.isOnTime(clock.getTime()));
     	Task t5 = p.createTask("implement system with phonegap", new Duration(17,0), 100, t2.getId(), Arrays.asList(t1.getId()), new HashMap<>());
-    	assertFalse(p.isOnTime(clock.getTime())); //FIXME: why for god's sake should this hold in case of 8-hour-duration, it should be true up to 16-hour-durations?
+    	assertFalse(p.isOnTime(clock.getTime()));
     	t5.plan(clock.getTime(), new ArrayList<>(), clock);
     	t5.execute(clock);
     	clock.advanceTime(due);

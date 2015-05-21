@@ -46,6 +46,7 @@ public class UpdateTaskStatusScenarioTest {
     	db = new Database();
         pc = new ProjectContainer();
         manager = new BranchOffice("Monaco", pc, new ResourceContainer());
+        db.addOffice(manager);
         // only p1 has tasks
         p1 = pc.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
@@ -64,7 +65,7 @@ public class UpdateTaskStatusScenarioTest {
 		acl.addEntry("admin", acl.getPermissions("manager"));
         for(String permission : acl.getPermissions("developer"))
         	acl.addPermission("admin", permission);
-        db.addUser(new GenericUser("John", "developer", manager));
+        manager.addUser(new GenericUser("John", "developer", manager));
         auth.login("John");
 		HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
         handler = controller.getUpdateTaskHandler();

@@ -58,12 +58,13 @@ public class CreateTaskScenarioTest {
         pc = new ProjectContainer();
         rc = new ResourceContainer();
         // resourcetypes
-        resType1 = DetailedResourceType.DEVELOPER;
+        resType1 = ResourceType.DEVELOPER;
         db.addResourceType(resType1);
         resType2 = new ResourceType("car");
         db.addResourceType(resType2);
         
         manager = new BranchOffice("Kortrijk", pc, new ResourceContainer());
+        db.addOffice(manager);
         String project1Name = "project 1 :)";
         String project1Description = "This is project 1";
         LocalDateTime project1StartTime = LocalDateTime.of(2015, 03, 12, 17, 30);
@@ -80,7 +81,7 @@ public class CreateTaskScenarioTest {
 		acl.addEntry("admin", acl.getPermissions("manager"));
         for(String permission : acl.getPermissions("developer"))
         	acl.addPermission("admin", permission);
-        db.addUser(new GenericUser("John", "manager", manager));
+        manager.addUser(new GenericUser("John", "manager", manager));
         auth.login("John");
         HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
         handler = controller.getCreateTaskHandler();
