@@ -44,7 +44,7 @@ public class PlanTaskCommand implements ICommand {
         this.resources = resources;
         //TODO: oplossing hiervoor???????????
         if(!requirementsMet())
-        	throw new ConflictExcption("With the given resources, certain requirements are not met", task, null);
+        	throw new ConflictException("With the given resources, certain requirements are not met", task, null);
         this.timespan = timespan;
         this.clock = clock;
         reservations = new ArrayList<>();
