@@ -628,7 +628,6 @@ public class ProjectTest {
     	assertEquals(Duration.ZERO, pFinished.getDelay(clock.getTime()));
     	
     	LocalDateTime end = estdur.getEndTimeFrom(start);
-    	//TODO: geen exception als tijd voor clock-tijd is!!!
     	t1.plan(clock.getTime(), new ArrayList<>(), clock);
     	t1.execute(clock);
     	clock.advanceTime(end);
