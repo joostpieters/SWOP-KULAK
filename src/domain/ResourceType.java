@@ -388,21 +388,7 @@ public class ResourceType implements DetailedResourceType {
 		List<ResourceType> missingRequirements = getMissingReqs(finalResourceTypes);
 		if(!missingRequirements.isEmpty())
 		{
-
-			String missingRequirementsText = "['";
-			for(int i = 0; i < missingRequirements.size(); i++)
-			{
-				missingRequirementsText += missingRequirements.get(i).getName();
-				if(i < missingRequirements.size() - 1)
-					missingRequirementsText += "', ";
-			}
-			missingRequirementsText += "']";
-
-			throw new IllegalArgumentException(
-					"Resource type '"
-					+ this.getName()
-					+ "' misses requirements "
-					+ missingRequirementsText); // TODO misschien nieuwe exception?
+			throw new ResourceTypeMissingReqsException(this, missingRequirements);
 		}
 		
 		// Add this resource type to the given map resourceTypeMap
