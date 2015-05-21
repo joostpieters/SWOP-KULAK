@@ -356,7 +356,7 @@ public class PlanTaskFrame extends javax.swing.JFrame {
             }
             selectedResources = new ArrayList<>();
             // init resource panel
-            //TODO: handler.getResources om compile-errors op te lossen goed idee?
+            
             for (DetailedResource resource : handler.getRequiredResources(selectedProjectId, selectedTaskId, start)) {
                 
                 JComboBox<DetailedResource> comboBox = new JComboBox<>();

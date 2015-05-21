@@ -129,7 +129,7 @@ public class CreateTaskScenarioTest {
                 // required resources
                 
                 Map<ResourceType, Integer> requiredResources = t.getRequiredResources();
-                //TODO: nullpointer!!
+                
 				assertEquals(2, (int) requiredResources.get(resType1));
                 assertEquals(4, (int) requiredResources.get(resType2));
                 assertEquals(2, requiredResources.size());

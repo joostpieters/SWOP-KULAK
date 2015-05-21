@@ -296,6 +296,17 @@ public class Resource implements DetailedResource {
         }
         return availability.isValidWorkTime(time);
     }
+    
+     /**
+     * @return the availability of this resource if it is set, otherwise the 
+     * availabiliity of this resource its type is returned.
+     */
+    public WorkWeekConfiguration getAvailability() {
+         if(availability == null){
+            return type.getAvailability();
+        }
+        return availability;
+    }
 
     /**
      * Archives the reservations which are in the past compared to the given

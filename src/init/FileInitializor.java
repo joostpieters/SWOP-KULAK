@@ -296,12 +296,12 @@ public class FileInitializor extends StreamTokenizer {
             String name = expectStringField("name");
             int officeId = expectIntField("office");
             Developer dev = new Developer(name, clock, db.getOffices().get(officeId));
+            
             db.getOffices().get(officeId).addUser(dev);
             db.getOffices().get(officeId).getResourceContainer().addResource(dev);
             // add to temp list
             devList.add(dev);
-            // TODO workweek conf?
-
+            
             // developer is user and resource at the same time
             
             tempList.add(dev);
@@ -399,7 +399,7 @@ public class FileInitializor extends StreamTokenizer {
                 }
                 
                 
-                task.plan(plannedStartTime, resources, clock);
+                task.plan(plannedStartTime, resources, new Clock(plannedStartTime));
             }
             
             expectLabel("status");

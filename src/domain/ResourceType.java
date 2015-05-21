@@ -4,6 +4,7 @@ import domain.dto.DetailedResourceType;
 import domain.time.WorkWeekConfiguration;
 import exception.ResourceTypeConflictException;
 import exception.ResourceTypeMissingReqsException;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ public class ResourceType implements DetailedResourceType {
     /**
      * This constant represents the resourcetype of a developer. 
      */
-    public static final ResourceType DEVELOPER = new ResourceType("developer");
+    public static final ResourceType DEVELOPER = new ResourceType("developer", new WorkWeekConfiguration(LocalTime.of(8,0), LocalTime.of(17,0)));
 
     /**
      * Initialize a resource type with given name, required and conflicting
@@ -387,21 +388,7 @@ public class ResourceType implements DetailedResourceType {
 		List<ResourceType> missingRequirements = getMissingReqs(finalResourceTypes);
 		if(!missingRequirements.isEmpty())
 		{
-
-			String missingRequirementsText = "['";
-			for(int i = 0; i < missingRequirements.size(); i++)
-			{
-				missingRequirementsText += missingRequirements.get(i).getName();
-				if(i < missingRequirements.size() - 1)
-					missingRequirementsText += "', ";
-			}
-			missingRequirementsText += "']";
-
-			throw new IllegalArgumentException(
-					"Resource type '"
-					+ this.getName()
-					+ "' misses requirements "
-					+ missingRequirementsText); // TODO misschien nieuwe exception?
+			throw new ResourceTypeMissingReqsException(this, missingRequirements);
 		}
 		
 		// Add this resource type to the given map resourceTypeMap

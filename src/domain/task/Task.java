@@ -13,7 +13,6 @@ import domain.time.Duration;
 import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
 import exception.ConflictException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,12 +31,7 @@ public class Task implements DetailedTask {
     /**
      * A constant to indicate that a task requires no resources
      */
-    private static final Map<ResourceType, Integer> NO_REQUIRED_RESOURCE_TYPES = new HashMap<>();
-    static { NO_REQUIRED_RESOURCE_TYPES.put(ResourceType.DEVELOPER, 1); }
-    
-    public static Map<ResourceType, Integer> getDefaultRequiredResources() {
-    	return new HashMap<>(Task.NO_REQUIRED_RESOURCE_TYPES);
-    }
+    public static final Map<ResourceType, Integer> NO_REQUIRED_RESOURCE_TYPES = new HashMap<>();
 
     private static int nextId = 0;
 
@@ -74,7 +68,10 @@ public class Task implements DetailedTask {
      * @param project The project this task belongsto
      */
     public Task(String description, Duration duration, int accDev, List<Task> prereq, Map<ResourceType, Integer> resources, Project project) {
-        if(!canHaveAsRequiredResources(resources)) {
+        Map<ResourceType, Integer> resourcesPlusDevs = new HashMap<>();
+        resourcesPlusDevs.put(ResourceType.DEVELOPER, 1);
+        resourcesPlusDevs.putAll(resources);
+    	if(!canHaveAsRequiredResources(resourcesPlusDevs)) {
         	throw new IllegalArgumentException("The given resource requirements are not valid");
         }
         this.id = generateId();
@@ -92,7 +89,7 @@ public class Task implements DetailedTask {
         }
         
         
-        requiredResources = resources;
+        requiredResources = resourcesPlusDevs;
         
         initDuration(duration);
 
@@ -105,7 +102,13 @@ public class Task implements DetailedTask {
         this.project.addTask(this);
     }
     
-    //TODO: commentaar
+    /**
+     * Checks whether this task can hava the required resources as its resources.
+     * 
+     * @param resources The resourcetypes with there quantity to check.
+     * @return True if there are no conflicting and requirements + it contains
+     * a developer.
+     */
 	private boolean canHaveAsRequiredResources(Map<ResourceType, Integer> resources) {
 		if(resources == null)
 			return false;
@@ -671,9 +674,12 @@ public class Task implements DetailedTask {
      * @return The plan command that has been executed by this method
      * @throws exception.ConflictException The task's reservations conflict with
      * another task
+     * @throws IllegalArgumentException If the given startTime is before the current time of the clock.
      */
     public PlanTaskCommand plan(LocalDateTime startTime, List<Resource> resources, Clock clock) 
-    		throws ConflictException {
+    		throws ConflictException, IllegalArgumentException {
+    	if(startTime.isBefore(clock.getTime()))
+    		throw new IllegalArgumentException("The given planned start time is before the time of the clock");
         Timespan span = new Timespan(startTime, estimatedDuration);
         
         PlanTaskCommand planCommand = new PlanTaskCommand(span, resources, this, clock);

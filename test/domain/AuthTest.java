@@ -41,7 +41,7 @@ public class AuthTest {
     @Before
     public void setUp() {
         clock = EasyMock.createNiceMock(Clock.class);
-        branchOffice = EasyMock.createNiceMock(BranchOffice.class);
+        branchOffice = new BranchOffice("test");
         db = new Database();
         db.addOffice(branchOffice);
         auth = new Auth(db);

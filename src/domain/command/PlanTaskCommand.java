@@ -51,7 +51,11 @@ public class PlanTaskCommand implements ICommand {
         }
     }
     
-    //TODO: commentaar
+    /**
+     * 
+     * @return True if and only if this resources meet the requirements of 
+     * this task.
+     */
     private boolean requirementsMet() {
 		Map<ResourceType, Integer> requirements = task.getRequiredResources();
                
