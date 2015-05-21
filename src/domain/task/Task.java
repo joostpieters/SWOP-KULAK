@@ -31,12 +31,7 @@ public class Task implements DetailedTask {
     /**
      * A constant to indicate that a task requires no resources
      */
-    private static final Map<ResourceType, Integer> NO_REQUIRED_RESOURCE_TYPES = new HashMap<>();
-    static { NO_REQUIRED_RESOURCE_TYPES.put(ResourceType.DEVELOPER, 1); }
-    
-    public static Map<ResourceType, Integer> getDefaultRequiredResources() {
-    	return new HashMap<>(Task.NO_REQUIRED_RESOURCE_TYPES);
-    }
+    public static final Map<ResourceType, Integer> NO_REQUIRED_RESOURCE_TYPES = new HashMap<>();
 
     private static int nextId = 0;
 
@@ -73,7 +68,10 @@ public class Task implements DetailedTask {
      * @param project The project this task belongsto
      */
     public Task(String description, Duration duration, int accDev, List<Task> prereq, Map<ResourceType, Integer> resources, Project project) {
-        if(!canHaveAsRequiredResources(resources)) {
+        Map<ResourceType, Integer> resourcesPlusDevs = new HashMap<>();
+        resourcesPlusDevs.put(ResourceType.DEVELOPER, 1);
+        resourcesPlusDevs.putAll(resources);
+    	if(!canHaveAsRequiredResources(resourcesPlusDevs)) {
         	throw new IllegalArgumentException("The given resource requirements are not valid");
         }
         this.id = generateId();
@@ -91,7 +89,7 @@ public class Task implements DetailedTask {
         }
         
         
-        requiredResources = resources;
+        requiredResources = resourcesPlusDevs;
         
         initDuration(duration);
 

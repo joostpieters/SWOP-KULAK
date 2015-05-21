@@ -64,16 +64,16 @@ public class ProjectTest {
     	p0 = new Project(name, descr, create, due);
     	
     	p1 = new Project(name, descr, create, due);
-    	t1 = p1.createTask("design system", new Duration(480), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
+    	t1 = p1.createTask("design system", new Duration(480), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
     	
     	p2 = new Project(name, descr, create, due);
-    	t2 = p2.createTask("design system", new Duration(480), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
-    	t3 = p2.createTask("implement system in native code", new Duration(960), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
+    	t2 = p2.createTask("design system", new Duration(480), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
+    	t3 = p2.createTask("implement system in native code", new Duration(960), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
     	
     	LocalDateTime hist = create.minusDays(DAYDIF);
     	clock = new Clock(hist);
     	pFinished = new Project(name, descr, hist, create);
-    	tFin = pFinished.createTask("design system", new Duration(480), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
+    	tFin = pFinished.createTask("design system", new Duration(480), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
 		tFin.plan(hist, Arrays.asList(dev), clock);
     	tFin.execute(clock);
     	clock.advanceTime(create);
