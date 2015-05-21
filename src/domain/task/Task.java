@@ -13,9 +13,6 @@ import domain.time.Duration;
 import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
 import exception.ConflictException;
-import exception.ResourceTypeConflictException;
-import exception.ResourceTypeMissingReqsException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +47,7 @@ public class Task implements DetailedTask {
     private Map<ResourceType, Integer> requiredResources;
     private final Project project;
 
-	private BranchOffice delegatedBranchOffice; // TODO in constructor
+	private BranchOffice delegatedBranchOffice;
     private Planning planning;
 
 
@@ -573,13 +570,15 @@ public class Task implements DetailedTask {
         return getStatus().estimatedWorkTimeNeeded(this);
     }
     
-    /**
-     * //TODO
+      /**
+     * Checks whether the given task was fulfilled before the given time span.
+     *
+     * @param task The task to check.
+     * @param timeSpan The time span to check.
+     * @return True if this task is finished and this task ends before the given
+     * time span. Otherwise the result is equal to whether or not the
+     * alternative task of this task was fulfilled before the given time span.
      * 
-     * @param task
-     * @param timeSpan
-     * @return 
-     * @see Status#isFulfilledBefore
      */
     public boolean isFulfilledBefore(Task task, Timespan timeSpan)
     {
@@ -636,9 +635,8 @@ public class Task implements DetailedTask {
      *
      * @return True if and only if this task has a planned start time.
      */
-    public boolean hasPlanning() {
-    	//TODO: verandering door P-J, maar misschien niet precies het gewenste resultaat?
-        return this.planning != null;
+    private boolean hasPlanning() {
+    	return this.planning != null;
     }
     
     /**
@@ -698,7 +696,7 @@ public class Task implements DetailedTask {
     	
         for(Entry<ResourceType, Integer> entry : required.entrySet()) {
 			if(resContainer.getResourcesOfType(entry.getKey()).size() < entry.getValue()) {
-				//TODO: waarom "return result;" ?
+				
 				throw new IllegalStateException("There are more resources required than there are available.");
 			}
     	}

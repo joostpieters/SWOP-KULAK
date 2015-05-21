@@ -8,19 +8,16 @@ import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
 import exception.ConflictException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -65,7 +62,7 @@ public class TaskTest {
     	
     	t3 = p.createTask("t3 finished", new Duration(30), 40, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
     	t3.plan(LocalDateTime.of(2060, 3, 5, 11, 48), new ArrayList<Resource>(), clock);
-    	assertTrue(t3.hasPlanning());
+    	assertTrue(t3.isUnplanned());
     	assertTrue(t3.getStatus() instanceof Available);
     	t3.execute(clock);
     	assertTrue(t3.getStatus() instanceof Executing);

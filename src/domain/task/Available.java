@@ -114,7 +114,7 @@ public class Available extends Status {
     @Override
     public void execute(Task task, Clock clock) {
 
-        if (task.hasPlanning()) {
+        if (task.isUnplanned()) {
             if (task.getPlanning().isBefore(clock.getTime())) {
                 task.setStatus(new Executing());
                 

@@ -2,9 +2,9 @@ package scenariotest;
 
 import controller.DelegateTaskHandler;
 import controller.HandlerFactory;
+import domain.BranchOffice;
 import domain.Database;
 import domain.Project;
-import domain.BranchOffice;
 import domain.ProjectContainer;
 import domain.ResourceContainer;
 import domain.dto.DetailedBranchOffice;
@@ -15,15 +15,12 @@ import domain.time.Duration;
 import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.GenericUser;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
 import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -92,8 +89,7 @@ public class DelegateTaskScenarioTest {
         // Step 5 - The user selects one of the branch offices
         int chosenBranchOffice = 1; // The second branch office is chosen: 'Lauwe city'
         handler.delegateTask(chosenTaskProjectId, chosenTaskId, chosenBranchOffice);
-        //TODO: delete...
-        System.out.println(chosenTaskProjectId + " " + chosenTaskId + " " + chosenBranchOffice);
+        
         
         // check that the original branch office no longer contains the delegated task as one of its assigned tasks.
         for(Task task : office0.getAssignedTasks())
