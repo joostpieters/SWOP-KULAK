@@ -9,7 +9,6 @@ import domain.Project;
 import domain.ProjectContainer;
 import domain.ResourceContainer;
 import domain.ResourceType;
-import domain.dto.DetailedResourceType;
 import domain.task.Task;
 import domain.task.Unavailable;
 import domain.time.Clock;
@@ -55,7 +54,7 @@ public class CreateTaskScenarioTest {
         pc = new ProjectContainer();
         rc = new ResourceContainer();
         // resourcetypes
-        resType1 = DetailedResourceType.DEVELOPER;
+        resType1 = ResourceType.DEVELOPER;
         db.addResourceType(resType1);
         resType2 = new ResourceType("car");
         db.addResourceType(resType2);

@@ -51,7 +51,7 @@ public class LoginFrame extends javax.swing.JFrame {
      * Fills the user list with the given data
      */
     private void initUserList(List<User> users) {
-        // TODO dto?
+        
         DefaultListModel listModel = new DefaultListModel();
         for (User user : users) {
             listModel.addElement(user.getName());

@@ -20,6 +20,11 @@ public class ResourceType implements DetailedResourceType {
     private final List<ResourceType> requirements;
     private final List<ResourceType> conflicts;
     private final WorkWeekConfiguration availability;
+    
+    /**
+     * This constant represents the resourcetype of a developer. 
+     */
+    public static final ResourceType DEVELOPER = new ResourceType("developer");
 
     /**
      * Initialize a resource type with given name, required and conflicting

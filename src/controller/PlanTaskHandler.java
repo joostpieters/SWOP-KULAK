@@ -12,7 +12,6 @@ import domain.time.Clock;
 import domain.user.Acl;
 import domain.user.Auth;
 import exception.ConflictException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -140,11 +139,12 @@ public class PlanTaskHandler extends Handler {
         for(int i : resources){
             res.add(manager.getResourceContainer().getResource(i));
         }
-        //TODO: bad smell
-        simulatorCommand.add(manager.getProjectContainer().getProject(pId).getTask(tId).plan(startTime, res, clock));
+        Task task = manager.getProjectContainer().getProject(pId).getTask(tId);
+        
+        simulatorCommand.add(task.plan(startTime, res, clock));
     }
 
-    //TODO: goeie oplossing? 
+    //TODO: commentaar 
 	public List<DetailedResource> getResources(DetailedResourceType type) {
 		try {
 			return new ArrayList<>(manager.getResourceContainer().getResourcesOfType((ResourceType) type));

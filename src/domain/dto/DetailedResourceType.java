@@ -1,7 +1,5 @@
 package domain.dto;
 
-import domain.ResourceType;
-
 /**
  * This interface provides access to the properties of resourcetype, without 
  * exposing bussiness logic to the UI
@@ -10,10 +8,7 @@ import domain.ResourceType;
  */
 public interface DetailedResourceType {
     
-    /**
-     * This constant represents the resourcetype of a developer. // TODO in interface?
-     */
-    public static final ResourceType DEVELOPER = new ResourceType("developer");
+    
 
     /**
      *

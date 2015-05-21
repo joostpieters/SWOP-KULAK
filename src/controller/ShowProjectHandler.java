@@ -7,7 +7,6 @@ import domain.Project;
 import domain.dto.DetailedProject;
 import domain.dto.DetailedTask;
 import domain.time.Clock;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +30,7 @@ public class ShowProjectHandler {
      * 
      * @param manager The projectContainer to use in this handler. 
      * @param clock The clock to use in this handler
-     * @param database TODO
+     * @param database The database to use in this handler.
      */   
     public ShowProjectHandler(BranchOffice manager, Clock clock, Database database){
         this.manager = manager;
