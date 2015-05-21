@@ -35,9 +35,9 @@ public class Task implements DetailedTask {
      * A constant to indicate that a task requires no resources
      */
     public static final Map<ResourceType, Integer> NO_REQUIRED_RESOURCE_TYPES = new HashMap<>();
+    static { NO_REQUIRED_RESOURCE_TYPES.put(ResourceType.DEVELOPER, 1); }
 
     private static int nextId = 0;
-    private static Map<ResourceType, Integer> standardRequiredResources = new HashMap<>();
 
     private final int id;
     private String description;
@@ -72,6 +72,9 @@ public class Task implements DetailedTask {
      * @param project The project this task belongsto
      */
     public Task(String description, Duration duration, int accDev, List<Task> prereq, Map<ResourceType, Integer> resources, Project project) {
+        if(!canHaveAsRequiredResources(resources)) {
+        	throw new IllegalArgumentException("The given resource requirements are not valid");
+        }
         this.id = generateId();
         if (project == null) {
             throw new IllegalArgumentException("A task cannot exist without a project");
@@ -87,10 +90,7 @@ public class Task implements DetailedTask {
         }
         
         
-        Map<ResourceType, Integer> finalResources = new HashMap<>(resources);
-        //TODO: standardRequiredResources zijn leeg!!! 
-        finalResources.putAll(standardRequiredResources);
-        setRequiredResources(finalResources);
+        requiredResources = resources;
         
         initDuration(duration);
 
@@ -102,33 +102,17 @@ public class Task implements DetailedTask {
         
         this.project.addTask(this);
     }
-    /**
-     * Sets the list of required resource types to the given list of required resource types.
-     * 
-     * @param finalResources A map of resource types to their required number.
-     * @throws ResourceTypeConflictException
-     *         If there is a resource type conflict exception.
-     * @throws ResourceTypeMissingReqsException
-     *         If there is a resource type with missing requirements.
-     */
-    private void setRequiredResources(Map<ResourceType, Integer> finalResources)
-    		throws ResourceTypeConflictException, ResourceTypeMissingReqsException {
-    	// check for conflict exceptions
-        for(ResourceType resType : finalResources.keySet())
-        {
-        	ResourceTypeConflictException e = resType.createConflictException(finalResources);
-        	if(e != null)
-        		throw e;
-        }
-        // check for missing requirements exceptions
-        for(ResourceType resType : finalResources.keySet())
-        {
-        	ResourceTypeMissingReqsException e = resType.createMissingReqsException(finalResources);
-        	if(e != null)
-        		throw e;
-        }
-        // set the required resource to the given map
-        this.requiredResources = finalResources;
+    
+    //TODO: commentaar
+	private boolean canHaveAsRequiredResources(Map<ResourceType, Integer> resources) {
+		if(resources == null)
+			return false;
+		
+		for(ResourceType type : resources.keySet())
+			if(!type.canHaveAsCombination(resources))
+				return false;
+		
+		return true && resources.containsKey(ResourceType.DEVELOPER);
 	}
 
 	/**
@@ -367,21 +351,6 @@ public class Task implements DetailedTask {
     }
 
     /**
-     * Sets a map of resourcetypes acociated with their minimal quantity that
-     * are required for each task. This method should only be used once, before
-     * you start to create tasks.
-     *
-     * @param resourceTypes The resourceypes with their necessary quantity
-     */
-    public static void setStandardRequiredResources(Map<ResourceType, Integer> resourceTypes) {
-        
-        if (!canHaveAsResourceTypes(resourceTypes)) {
-            throw new IllegalArgumentException("This combination of resourcetypes is not valid.");
-        }
-        standardRequiredResources = new HashMap<>(resourceTypes);
-    }
-
-    /**
      * @return The status of this task.
      */
     @Override
@@ -426,12 +395,7 @@ public class Task implements DetailedTask {
      * standard required resources that are equal for all classes.
      */
     public Map<ResourceType, Integer> getRequiredResources() {
-        Map<ResourceType, Integer> allResourceTypes = new HashMap<>(requiredResources);
-        for(ResourceType type : standardRequiredResources.keySet()) {
-			Integer oldQuantity = (allResourceTypes.containsKey(type)) ? allResourceTypes.get(type) : 0;
-			allResourceTypes.put(type, oldQuantity + standardRequiredResources.get(type));
-		}
-        return allResourceTypes;
+        return new HashMap<>(requiredResources);
     }
 
     /**
