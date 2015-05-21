@@ -399,7 +399,7 @@ public class FileInitializor extends StreamTokenizer {
                 }
                 
                 
-                task.plan(plannedStartTime, resources, clock);
+                task.plan(plannedStartTime, resources, new Clock(plannedStartTime));
             }
             
             expectLabel("status");
