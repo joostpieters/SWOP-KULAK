@@ -18,13 +18,16 @@ import domain.time.Timespan;
 import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.GenericUser;
+
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -71,7 +74,12 @@ public class CreateTaskScenarioTest {
         
         clock = new Clock();
         auth = new Auth(db);
-        acl = Acl.DEFAULT;
+        acl = new Acl();
+		acl.addEntry("developer", Arrays.asList("UpdateTaskStatus"));
+		acl.addEntry("manager", Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "DelegateTask"));
+		acl.addEntry("admin", acl.getPermissions("manager"));
+        for(String permission : acl.getPermissions("developer"))
+        	acl.addPermission("admin", permission);
         db.addUser(new GenericUser("John", "manager", manager));
         auth.login("John");
         HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);

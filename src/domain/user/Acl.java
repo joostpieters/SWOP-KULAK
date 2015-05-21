@@ -13,19 +13,6 @@ import java.util.Map;
  * @author Mathias, Frederic, Pieter-Jan
  */
 public class Acl {
-        /**
-         * A constant representing a default acl with already intialized permissions and roles.
-         * // TODO is dit wel een goed ideen, gezien hergebruik?
-         */
-	public static final Acl DEFAULT = new Acl();
-	static {
-        DEFAULT.addEntry("developer", Arrays.asList("UpdateTaskStatus"));
-        DEFAULT.addEntry("manager", Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "DelegateTask"));
-        DEFAULT.addEntry("admin", DEFAULT.getPermissions("manager"));
-        for(String permission : DEFAULT.getPermissions("developer"))
-        	DEFAULT.addPermission("admin", permission);
-	}
-    
     
     private final Map<String, List<String>> permissions;
     
@@ -33,7 +20,6 @@ public class Acl {
      * Initializes a new Acl
      */
     public Acl(){
-        
        permissions = new HashMap<>();
     }
     

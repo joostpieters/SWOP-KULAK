@@ -1,8 +1,9 @@
 package domain.command;
 
 /**
- * TODO
- * @author Frederic
+ * This class represents a command which can be executed and can revert the last execution.
+ * 
+ * @author Frederic, Pieter-Jan, Mathias
  *
  */
 public interface ICommand {
