@@ -228,9 +228,7 @@ public class ResourceType implements DetailedResourceType {
             if (conflicts.contains(entry.getKey())) {
                 if (entry.getKey() == this && entry.getValue() > 1) {
                     return false;
-                } else if (entry.getKey() == this && entry.getValue() == 1) {
-//TODO bizar?
-                } else {
+                } else if (!(entry.getKey() == this && entry.getValue() == 1)) {
                     return false;
                 }
             }
