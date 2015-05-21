@@ -427,20 +427,11 @@ public class Task implements DetailedTask {
      */
     public Map<ResourceType, Integer> getRequiredResources() {
         Map<ResourceType, Integer> allResourceTypes = new HashMap<>(requiredResources);
-        allResourceTypes.remove(ResourceType.DEVELOPER);
         for(ResourceType type : standardRequiredResources.keySet()) {
 			Integer oldQuantity = (allResourceTypes.containsKey(type)) ? allResourceTypes.get(type) : 0;
 			allResourceTypes.put(type, oldQuantity + standardRequiredResources.get(type));
 		}
         return allResourceTypes;
-    }
-
-    /**
-     * @return the required developers of this task together with the standard required developers for all tasks.
-     */
-    public int getRequiredDevelopers() {
-        int temp = requiredResources.get(ResourceType.DEVELOPER);
-        return temp + standardRequiredResources.get(ResourceType.DEVELOPER);
     }
 
     /**
