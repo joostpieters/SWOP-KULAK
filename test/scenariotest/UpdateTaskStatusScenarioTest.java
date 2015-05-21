@@ -60,7 +60,12 @@ public class UpdateTaskStatusScenarioTest {
         pc.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         
         auth = new Auth(db);
-        acl = Acl.DEFAULT;
+        acl = new Acl();
+		acl.addEntry("developer", Arrays.asList("UpdateTaskStatus"));
+		acl.addEntry("manager", Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "DelegateTask"));
+		acl.addEntry("admin", acl.getPermissions("manager"));
+        for(String permission : acl.getPermissions("developer"))
+        	acl.addPermission("admin", permission);
         db.addUser(new GenericUser("John", "developer", manager));
         auth.login("John");
 		HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);

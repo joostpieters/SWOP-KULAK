@@ -86,7 +86,12 @@ public class PlanTaskScenarioTest {
 				t1.getId(), Project.NO_DEPENDENCIES, requiredResources1);
 		
 		user = new GenericUser("name", "manager", office);
-		Acl acl = Acl.DEFAULT;
+        Acl acl = new Acl();
+		acl.addEntry("developer", Arrays.asList("UpdateTaskStatus"));
+		acl.addEntry("manager", Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "DelegateTask"));
+		acl.addEntry("admin", acl.getPermissions("manager"));
+        for(String permission : acl.getPermissions("developer"))
+        	acl.addPermission("admin", permission);
 		Database db = new Database();
 		db.addUser(user);
 		Auth auth = new Auth(db);
