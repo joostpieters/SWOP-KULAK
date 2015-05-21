@@ -126,7 +126,7 @@ public class TaskTest {
     	String description3 = "task3 description!";
     	int estDur3 = 120;
     	int accDev3 = 55;
-    	Task task3 = new Task(description3, new Duration(estDur3), accDev3, Task.NO_REQUIRED_RESOURCE_TYPES, p);
+    	Task task3 = new Task(description3, new Duration(estDur3), accDev3, Task.getDefaultRequiredResources(), p);
     	assertEquals(description3, task3.getDescription());
     	assertEquals(estDur3, task3.getEstimatedDuration().toMinutes());
     	assertEquals(accDev3, task3.getAcceptableDeviation());
@@ -274,7 +274,7 @@ public class TaskTest {
      */
     @Test (expected = IllegalStateException.class)
     public void testEndsBeforeException() {
-        Task availableTask = new Task("doesn't have a time span", new Duration(10), 30, Task.NO_REQUIRED_RESOURCE_TYPES, p);
+        Task availableTask = new Task("doesn't have a time span", new Duration(10), 30, Task.getDefaultRequiredResources(), p);
         availableTask.endsBefore(new Timespan(
         		LocalDateTime.of(2015, 5, 4, 10, 2),
         		LocalDateTime.of(2015, 5, 4, 11, 2)));

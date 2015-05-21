@@ -13,6 +13,7 @@ import domain.time.Duration;
 import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
 import exception.ConflictException;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,8 +32,12 @@ public class Task implements DetailedTask {
     /**
      * A constant to indicate that a task requires no resources
      */
-    public static final Map<ResourceType, Integer> NO_REQUIRED_RESOURCE_TYPES = new HashMap<>();
+    private static final Map<ResourceType, Integer> NO_REQUIRED_RESOURCE_TYPES = new HashMap<>();
     static { NO_REQUIRED_RESOURCE_TYPES.put(ResourceType.DEVELOPER, 1); }
+    
+    public static Map<ResourceType, Integer> getDefaultRequiredResources() {
+    	return new HashMap<>(Task.NO_REQUIRED_RESOURCE_TYPES);
+    }
 
     private static int nextId = 0;
 
@@ -109,7 +114,7 @@ public class Task implements DetailedTask {
 			if(!type.canHaveAsCombination(resources))
 				return false;
 		
-		return true && resources.containsKey(ResourceType.DEVELOPER);
+		return resources.containsKey(ResourceType.DEVELOPER);
 	}
 
 	/**
