@@ -7,7 +7,6 @@ import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Timespan;
 import exception.ConflictException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -56,14 +55,18 @@ public class PlanTaskCommand implements ICommand {
     //TODO: commentaar
     private boolean requirementsMet() {
 		Map<ResourceType, Integer> requirements = task.getRequiredResources();
+               
 		for(ResourceType type : requirements.keySet()) {
 			int count = 0;
 			for(Resource r : resources) {
 				if(r.getType().equals(type))
 					count++;
 			}
-			if(count < requirements.get(type))
-				return false;
+			if(count < requirements.get(type)){
+                            
+                            return false;
+                        }
+				
 		}
 		return true;
 	}

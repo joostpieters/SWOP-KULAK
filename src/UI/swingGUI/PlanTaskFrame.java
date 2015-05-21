@@ -2,7 +2,6 @@ package UI.swingGUI;
 
 import controller.PlanTaskHandler;
 import domain.dto.DetailedResource;
-import domain.dto.DetailedResourceType;
 import domain.dto.DetailedTask;
 import exception.ConflictException;
 import java.awt.BorderLayout;
@@ -14,7 +13,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Box;
@@ -34,7 +32,7 @@ public class PlanTaskFrame extends javax.swing.JFrame {
 
     private final PlanTaskHandler handler;
     private DefaultTableModel taskModel;
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private LocalDateTime start;
     private int selectedTaskId, selectedProjectId;
     private List<JComboBox<DetailedResource>> selectedResources;
@@ -334,7 +332,7 @@ public class PlanTaskFrame extends javax.swing.JFrame {
 
     protected void initTimeList() {
         // init possible start times
-        DefaultListModel<String> listModel = new DefaultListModel<String>();
+        DefaultListModel<String> listModel = new DefaultListModel<>();
         for (LocalDateTime time : handler.getPossibleStartTimesCurrentTask(selectedProjectId, selectedTaskId)) {
             listModel.addElement(time.format(formatter));
         }

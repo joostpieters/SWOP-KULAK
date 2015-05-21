@@ -258,7 +258,7 @@ public class FileInitializor extends StreamTokenizer {
             }
         }
         expectLabel("resources");
-        
+        List<Resource> tempList = new ArrayList<>();
         while (ttype == '-') {
             expectChar('-');
             String name = expectStringField("name");
@@ -269,8 +269,8 @@ public class FileInitializor extends StreamTokenizer {
             // create and add resourcetype
             Resource res = db.getOffices().get(officeId).getResourceContainer().createResource(name, db.getResourceTypes().get(typeIndex));
 
-            // add to db
-            db.addResource(res);
+            // add to tempory list
+            tempList.add(res);
         }
 
         expectLabel("managers");
@@ -308,7 +308,7 @@ public class FileInitializor extends StreamTokenizer {
 
             // developer is user and resource at the same time
             db.addUser(dev);
-            db.addResource(dev);
+            tempList.add(dev);
 
         }
         Map<ResourceType, Integer> hashMap = new HashMap<>();
@@ -402,8 +402,8 @@ public class FileInitializor extends StreamTokenizer {
                 }
                 // add rest of resources
                 for (int id : resourcesIds) {
-                	//TODO: not done!!!
-                    resources.add(db.getResources().get(id));
+                	
+                    resources.add(tempList.get(id));
                 }
                 
                 
