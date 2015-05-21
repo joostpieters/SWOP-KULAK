@@ -9,7 +9,6 @@ import domain.Project;
 import domain.ProjectContainer;
 import domain.ResourceContainer;
 import domain.ResourceType;
-import domain.dto.DetailedResourceType;
 import domain.task.Task;
 import domain.task.Unavailable;
 import domain.time.Clock;
@@ -132,7 +131,7 @@ public class CreateTaskScenarioTest {
                 // required resources
                 
                 Map<ResourceType, Integer> requiredResources = t.getRequiredResources();
-                //TODO: nullpointer!!
+                
 				assertEquals(2, (int) requiredResources.get(resType1));
                 assertEquals(4, (int) requiredResources.get(resType2));
                 assertEquals(2, requiredResources.size());

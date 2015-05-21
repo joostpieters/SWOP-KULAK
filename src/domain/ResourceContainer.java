@@ -143,7 +143,16 @@ public class ResourceContainer {
         return resources;
 	}
     
-    //TODO: commentaar
+    /**
+     * Returns a set of resources that is available at the given timepspan of the given type
+     * in the given list of specific resources.
+     * 
+     * @param type The type of the resources
+     * @param quantity The necessary quantity
+     * @param span The span to check the availability at
+     * @param specificResources The id's of specific resources in this resource container.
+     * @return A subset of the given specific resources.
+     */
     private Set<Resource> getNrOfAvailableResources(ResourceType type, int quantity, Timespan span, List<Integer> specificResources) {
     	Set<Resource> result = new HashSet<>();
     	for(int id : specificResources) {

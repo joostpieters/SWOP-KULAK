@@ -177,9 +177,6 @@ public class BranchOffice implements DetailedBranchOffice {
      */
     public void addUser(User user){
         users.add(user);
-        //TODO: dit is f**king lelijk
-        if(user.getRole() == "developer")
-        	resourceContainer.addResource((Resource) user);
     }
     
     /**

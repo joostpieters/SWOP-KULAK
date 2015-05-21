@@ -10,6 +10,7 @@ import domain.user.Auth;
 import domain.user.Developer;
 import domain.user.GenericUser;
 import domain.user.User;
+import java.time.LocalTime;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -134,7 +135,8 @@ public class LoginScenarioTest {
         
         handler.setLunchbreak("12:00");
         
-        // TODO check lunchbreak
+        assertEquals(devOffice2.getAvailability().getBeginLunch(), LocalTime.of(12,00));
+         assertEquals(devOffice2.getAvailability().getEndLunch(), LocalTime.of(13,00));
         // logout
         handler.logout();
         
