@@ -51,7 +51,7 @@ public class AclTest {
         acl.addEntry("developer", new ArrayList<>(Arrays.asList("edit", "view")));
         
         user1 = new GenericUser("John", "manager", branchOffice);
-        user2 = new Developer("Fred", clock, branchOffice);
+        user2 = new Developer("Fred", branchOffice);
         
     }
     

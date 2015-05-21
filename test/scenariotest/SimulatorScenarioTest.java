@@ -5,7 +5,7 @@ import controller.CreateTaskHandler;
 import controller.HandlerFactory;
 import controller.RunSimulationHandler;
 import domain.BranchOffice;
-import domain.Database;
+import domain.Company;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.ResourceContainer;
@@ -33,7 +33,7 @@ import org.junit.Test;
  */
 public class SimulatorScenarioTest {
 
-	private static Database db;
+	private static Company db;
     private static ProjectContainer pc;
     private static BranchOffice manager;
     private static RunSimulationHandler simHandler;
@@ -47,7 +47,7 @@ public class SimulatorScenarioTest {
 
     @Before
     public void setUp() {
-    	db = new Database();
+    	db = new Company();
         pc = new ProjectContainer();
         manager = new BranchOffice("Madrid", pc, new ResourceContainer());
         String project1Name = "project 1 :)";

@@ -54,7 +54,7 @@ public class Planning implements ClockObserver, DetailedPlanning{
      * @return True if and only if the timespan belonging to this planning starts before
      */
     public boolean isBefore(LocalDateTime currentTime) {
-        return timespan.startsBefore(currentTime);
+        return timespan.startsBefore(currentTime) || timespan.getStartTime().equals(currentTime);
     }
     
     /**

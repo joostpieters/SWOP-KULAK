@@ -2,7 +2,7 @@ package scenariotest;
 
 import controller.PlanTaskHandler;
 import domain.BranchOffice;
-import domain.Database;
+import domain.Company;
 import domain.Planning;
 import domain.Project;
 import domain.ProjectContainer;
@@ -63,8 +63,8 @@ public class PlanTaskScenarioTest {
 		res00 = rc.createResource("resource b", type0);
 		res000 = rc.createResource("resource c", type0);
 		res1 = rc.createResource("resource d", type1);
-		dev0 = new Developer("janssen", clock, office);
-		dev1 = new Developer("janssens", clock, office);
+		dev0 = new Developer("janssen", office);
+		dev1 = new Developer("janssens", office);
 		
 		Map<ResourceType, Integer> requiredResources0 = Task.NO_REQUIRED_RESOURCE_TYPES;
 		requiredResources0.put(type0, 2);
@@ -89,7 +89,7 @@ public class PlanTaskScenarioTest {
 		acl.addEntry("admin", acl.getPermissions("manager"));
         for(String permission : acl.getPermissions("developer"))
         	acl.addPermission("admin", permission);
-		Database db = new Database();
+		Company db = new Company();
                 db.addOffice(office);
 		office.addUser(user);
 		Auth auth = new Auth(db);

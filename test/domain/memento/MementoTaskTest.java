@@ -2,6 +2,7 @@ package domain.memento;
 
 import domain.Planning;
 import domain.Project;
+import domain.Resource;
 import domain.ResourceType;
 import domain.task.Status;
 import domain.task.Task;

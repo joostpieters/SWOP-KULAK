@@ -4,7 +4,7 @@ package scenariotest;
 import controller.CreateTaskHandler;
 import controller.HandlerFactory;
 import domain.BranchOffice;
-import domain.Database;
+import domain.Company;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.ResourceContainer;
@@ -37,7 +37,7 @@ import org.junit.Test;
  */
 public class CreateTaskScenarioTest {
 
-	private static Database db;
+	private static Company db;
     private static ProjectContainer pc;
     private static BranchOffice manager;
     private static CreateTaskHandler handler;
@@ -53,7 +53,7 @@ public class CreateTaskScenarioTest {
 
     @Before
     public void setUp() {
-    	db = new Database();
+    	db = new Company();
         pc = new ProjectContainer();
         rc = new ResourceContainer();
         // resourcetypes

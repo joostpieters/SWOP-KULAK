@@ -3,7 +3,7 @@ package scenariotest;
 import controller.HandlerFactory;
 import controller.UpdateTaskStatusHandler;
 import domain.BranchOffice;
-import domain.Database;
+import domain.Company;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.ResourceContainer;
@@ -30,7 +30,7 @@ import org.junit.Test;
 
 public class UpdateTaskStatusScenarioTest {
     
-	private static Database db;
+	private static Company db;
     private static ProjectContainer pc;
     private static BranchOffice manager;
     private static UpdateTaskStatusHandler handler;
@@ -43,7 +43,7 @@ public class UpdateTaskStatusScenarioTest {
     @BeforeClass
     public static void setUpClass() {
         clock = new Clock();
-    	db = new Database();
+    	db = new Company();
         pc = new ProjectContainer();
         manager = new BranchOffice("Monaco", pc, new ResourceContainer());
         db.addOffice(manager);

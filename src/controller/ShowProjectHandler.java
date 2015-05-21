@@ -2,7 +2,7 @@ package controller;
 
 
 import domain.BranchOffice;
-import domain.Database;
+import domain.Company;
 import domain.Project;
 import domain.dto.DetailedProject;
 import domain.dto.DetailedTask;
@@ -23,7 +23,7 @@ public class ShowProjectHandler {
     
     private Project currentProject;
     private final Clock clock;
-    private final Database db;
+    private final Company db;
     
     /**
      * Initialize a new show project handler with the given projectContainer.
@@ -32,7 +32,7 @@ public class ShowProjectHandler {
      * @param clock The clock to use in this handler
      * @param database The database to use in this handler.
      */   
-    public ShowProjectHandler(BranchOffice manager, Clock clock, Database database){
+    public ShowProjectHandler(BranchOffice manager, Clock clock, Company database){
         this.manager = manager;
         this.clock = clock;
         this.db = database;

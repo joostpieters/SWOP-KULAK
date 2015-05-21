@@ -4,7 +4,7 @@ import controller.HandlerFactory;
 import controller.ShowProjectHandler;
 import domain.user.Acl;
 import domain.user.Auth;
-import domain.Database;
+import domain.Company;
 import domain.dto.DetailedProject;
 import domain.dto.DetailedTask;
 import domain.BranchOffice;
@@ -38,7 +38,7 @@ import domain.time.Duration;
 
 public class ShowProjectScenarioTest {
     
-	private static Database db;
+	private static Company db;
     private static ProjectContainer pc;
     private static BranchOffice manager;
     private static ShowProjectHandler handler;
@@ -53,7 +53,7 @@ public class ShowProjectScenarioTest {
     
     @BeforeClass
     public static void setUpBeforeClass() {
-    	db = new Database();
+    	db = new Company();
         pc = new ProjectContainer();
         manager = new BranchOffice("Helsinki", pc, new ResourceContainer());
         // only p1 has tasks

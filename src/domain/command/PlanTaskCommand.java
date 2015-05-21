@@ -59,16 +59,18 @@ public class PlanTaskCommand implements ICommand {
     private boolean requirementsMet() {
 		Map<ResourceType, Integer> requirements = task.getRequiredResources();
                
-		for(ResourceType type : requirements.keySet()) {
+		for(ResourceType type : requirements.keySet())
+		{
 			int count = 0;
-			for(Resource r : resources) {
+			for(Resource r : resources)
+			{
 				if(r.getType().equals(type))
 					count++;
 			}
-			if(count < requirements.get(type)){
-                            
-                            return false;
-                        }
+			if(count < requirements.get(type))
+			{
+				return false;
+			}
 				
 		}
 		return true;

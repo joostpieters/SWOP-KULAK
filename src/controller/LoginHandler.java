@@ -1,7 +1,7 @@
 package controller;
 
 import domain.BranchOffice;
-import domain.Database;
+import domain.Company;
 import domain.Resource;
 import domain.dto.DetailedBranchOffice;
 import domain.time.WorkWeekConfiguration;
@@ -23,7 +23,7 @@ import java.util.List;
 public class LoginHandler {
 
     private final Auth auth;
-    private final Database db;
+    private final Company db;
     private final HandlerFactory factory;
 
     /**
@@ -33,7 +33,7 @@ public class LoginHandler {
      * @param db The database to use
      * @param factory The handler factory
      */
-    public LoginHandler(Auth auth, Database db, HandlerFactory factory) {
+    public LoginHandler(Auth auth, Company db, HandlerFactory factory) {
         this.auth = auth;
         this.db = db;
         this.factory = factory;

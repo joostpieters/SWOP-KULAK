@@ -3,7 +3,7 @@ package scenariotest;
 import controller.HandlerFactory;
 import controller.LoginHandler;
 import domain.BranchOffice;
-import domain.Database;
+import domain.Company;
 import domain.time.Clock;
 import domain.user.Acl;
 import domain.user.Auth;
@@ -25,7 +25,7 @@ import org.junit.Test;
  */
 public class LoginScenarioTest {
 
-    private static Database db;
+    private static Company db;
     private static BranchOffice manager;
     private static LoginHandler handler;
     private static Clock clock;
@@ -39,14 +39,14 @@ public class LoginScenarioTest {
 
     @BeforeClass
     public static void setUpClass() {
-        db = new Database();
+        db = new Company();
         clock = new Clock();
         auth = new Auth(db);
         acl = new Acl();
 
         manager = new BranchOffice("Beijing");
         managerOffice2 = new GenericUser("John", "manager", manager);
-        devOffice2 = new Developer("Layla", clock, manager);
+        devOffice2 = new Developer("Layla", manager);
         manager.addUser(managerOffice2);
         manager.addUser(devOffice2);
 

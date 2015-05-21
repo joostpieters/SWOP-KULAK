@@ -1,7 +1,7 @@
 package controller;
 
 import domain.BranchOffice;
-import domain.Database;
+import domain.Company;
 import domain.time.Clock;
 import domain.user.Acl;
 import domain.user.Auth;
@@ -18,7 +18,7 @@ public class HandlerFactory {
     private final Clock clock;
     private final Acl acl;
     private final Auth auth;
-    private final Database db;
+    private final Company db;
     
     
     
@@ -31,7 +31,7 @@ public class HandlerFactory {
      * @param acl The action control list to use
      * @param db The database to use
      */   
-    public HandlerFactory(BranchOffice manager, Clock clock, Auth auth, Acl acl, Database db){
+    public HandlerFactory(BranchOffice manager, Clock clock, Auth auth, Acl acl, Company db){
         this.acl = acl;
         this.auth = auth;
         this.manager = manager;

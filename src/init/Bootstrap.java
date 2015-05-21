@@ -2,7 +2,7 @@ package init;
 
 import UI.swingGUI.MainFrame;
 import controller.HandlerFactory;
-import domain.Database;
+import domain.Company;
 import domain.time.Clock;
 import domain.user.Acl;
 import domain.user.Auth;
@@ -40,7 +40,7 @@ public class Bootstrap {
         }
 
         Clock clock = new Clock();
-        Database db = new Database();
+        Company db = new Company();
         int option = JOptionPane.showConfirmDialog(null, "Would you like to initialize the system with an input file?");
         
         if (option == 0) {
@@ -79,7 +79,7 @@ public class Bootstrap {
      *
      * 
      */
-    private static void initManagerFromFile(Clock clock, Database db) {
+    private static void initManagerFromFile(Clock clock, Company db) {
 
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Task Man inputfile", "tman");

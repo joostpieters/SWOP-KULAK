@@ -7,7 +7,7 @@ package init;
  * @author Frederic, Mathias, Pieter-Jan
  */
 import domain.BranchOffice;
-import domain.Database;
+import domain.Company;
 import domain.Project;
 import domain.Resource;
 import domain.ResourceType;
@@ -40,7 +40,7 @@ public class FileInitializor extends StreamTokenizer {
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
     private final Clock clock;
-    private final Database db;
+    private final Company db;
     private WorkWeekConfiguration dailyAvailability;
 
     /**
@@ -51,7 +51,7 @@ public class FileInitializor extends StreamTokenizer {
      * @param clock The clock to use
      * @param db The database to initialize
      */
-    public FileInitializor(Reader r, Clock clock, Database db) {
+    public FileInitializor(Reader r, Clock clock, Company db) {
         super(r);
 
         this.clock = clock;
@@ -295,7 +295,7 @@ public class FileInitializor extends StreamTokenizer {
             expectChar('-');
             String name = expectStringField("name");
             int officeId = expectIntField("office");
-            Developer dev = new Developer(name, clock, db.getOffices().get(officeId));
+            Developer dev = new Developer(name, db.getOffices().get(officeId));
             
             db.getOffices().get(officeId).addUser(dev);
             db.getOffices().get(officeId).getResourceContainer().addResource(dev);

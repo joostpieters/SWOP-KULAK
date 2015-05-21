@@ -1,7 +1,7 @@
 package controller;
 
 import domain.BranchOffice;
-import domain.Database;
+import domain.Company;
 import domain.dto.DetailedBranchOffice;
 import domain.dto.DetailedTask;
 import domain.task.Task;
@@ -18,7 +18,7 @@ import java.util.List;
 public class DelegateTaskHandler extends Handler {
 
     protected final BranchOffice manager;
-    private final Database db;
+    private final Company db;
     
 	
 
@@ -31,7 +31,7 @@ public class DelegateTaskHandler extends Handler {
      * @param acl The action control list to use
      * @param db The database to use in this handler
      */
-    public DelegateTaskHandler(BranchOffice manager, Auth auth, Acl acl, Database db)
+    public DelegateTaskHandler(BranchOffice manager, Auth auth, Acl acl, Company db)
     {
         super(auth, acl);
         this.manager = manager;
