@@ -67,6 +67,8 @@ public class PlanTaskScenarioTest {
 		res00 = rc.createResource("resource b", type0);
 		res000 = rc.createResource("resource c", type0);
 		res1 = rc.createResource("resource d", type1);
+		dev0 = new Developer("janssen", clock, office);
+		dev1 = new Developer("janssens", clock, office);
 		
 		Map<ResourceType, Integer> requiredResources0 = new HashMap<>();
 		requiredResources0.put(type0, 2);
@@ -77,15 +79,13 @@ public class PlanTaskScenarioTest {
 				Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
 		t2 = p.createTask("this is task 2 with task 1 as prerequisite", new Duration(120), 100, 
 				Project.NO_ALTERNATIVE, Arrays.asList(t1.getId()), requiredResources0);
-		t1.plan(START, new ArrayList<>(), clock);
+		t1.plan(START, Arrays.asList(dev0), clock);
 		t1.execute(clock);
 		clock.advanceTime(START.plusMinutes(30));
 		t1.fail(new Timespan(START, clock.getTime()), clock.getTime());
 		t3 = p.createTask("this is task 3 as alternative for task 1", new Duration(180), 0, 
 				t1.getId(), Project.NO_DEPENDENCIES, requiredResources1);
 		
-		dev0 = new Developer("janssen", clock, office);
-		dev1 = new Developer("janssens", clock, office);
 		user = new GenericUser("name", "manager", office);
 		Acl acl = Acl.DEFAULT;
 		Database db = new Database();
@@ -138,14 +138,19 @@ public class PlanTaskScenarioTest {
 			resources.add(e.getId());
 		//TODO
 		//Step 8 - get list of developers
-		fail("step 8?");
+		List<DetailedResource> developers = handler.getDevelopers();
+		assertEquals(2, developers.size());
+		assertTrue(developers.contains(dev0));
+		assertTrue(developers.contains(dev1));
 		//Step 9 - user selects the developers to perform the task.
+		List<Integer> selectedDev = Arrays.asList(dev1.getId());
 		//Step 10 - make required reservations and assign the selected developers
+		resources.addAll(selectedDev);
 		handler.planTask(pId, tId, selectedTime, resources);
 		DetailedPlanning planning = selectedTask.getPlanning();
 		assertTrue(planning != null);
 		assertEquals(new Timespan(selectedTime, selectedTask.getEstimatedDuration()), planning.getTimespan());
-		assertEquals(Arrays.asList(requiredResources.get(0), requiredResources.get(1)), planning.getResources());
+		assertEquals(Arrays.asList(requiredResources.get(0), requiredResources.get(1), dev1), planning.getResources());
 		
 		assertFalse(handler.getUnplannedTasks().contains(t3));
 	}
@@ -157,10 +162,12 @@ public class PlanTaskScenarioTest {
 		int tId = t2.getId();
 		handler.getPossibleStartTimesCurrentTask(pId, tId);
 		handler.getRequiredResources(pId, tId, clock.getTime());
+		handler.getDevelopers();
 		//last possible moment to cancel...
 		assertTrue(handler.getUnplannedTasks().contains(t2));
 		assertEquals(3, rc.getAvailableResources(type0, t2.getSpan(clock.getTime())).size());
 		assertEquals(1, rc.getAvailableResources(type1, t2.getSpan(clock.getTime())).size());
+		assertEquals(2, rc.getAvailableResources(ResourceType.DEVELOPER, t2.getSpan(clock.getTime())).size());
 	}
 	
 	@Test
@@ -189,6 +196,8 @@ public class PlanTaskScenarioTest {
 		for(DetailedResource e : requiredResources) 
 			resources.add(e.getId());
 		
+		
+		
 		handler.planTask(pId, tId, selectedTime, resources);
 		DetailedPlanning planning = selectedTask.getPlanning();
 		assertTrue(planning != null);
@@ -201,7 +210,7 @@ public class PlanTaskScenarioTest {
 	@Test(expected=ConflictException.class)
 	public void testReservationConflictScenario() {
 		LocalDateTime selectedTime = clock.getTime().plusDays(1);
-		t3.plan(selectedTime, Arrays.asList(res0, res00), clock);
+		t3.plan(selectedTime, Arrays.asList(res0, res00, dev1), clock);
 		List<DetailedTask> unplannedTasks = handler.getUnplannedTasks();
 		assertEquals(1, unplannedTasks.size());
 		assertTrue(unplannedTasks.contains(t2));

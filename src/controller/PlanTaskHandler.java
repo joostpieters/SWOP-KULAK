@@ -1,7 +1,6 @@
 package controller;
 
 import domain.BranchOffice;
-import domain.Database;
 import domain.Resource;
 import domain.ResourceType;
 import domain.command.SimulatorCommand;
@@ -10,7 +9,6 @@ import domain.dto.DetailedResourceType;
 import domain.dto.DetailedTask;
 import domain.task.Task;
 import domain.time.Clock;
-import domain.time.Timespan;
 import domain.user.Acl;
 import domain.user.Auth;
 import exception.ConflictException;
@@ -72,18 +70,25 @@ public class PlanTaskHandler extends Handler {
     }
 
     /**
-     * Returns the required resources, with resource propositions
+     * Returns a list of proposed resources for each resourceType
      * of the task with the given id
      * 
      * @param pId The id of the projec the task belongs to
      * @param tId The id of the task
      * @param start The start time at which the resources should be available 
-     * @return A list of proposed required resources, ascociated with their resourcetype.
+     * @return A list of proposed required resources, such that for every ResourceType the requirements are met.
+     * @throws ConflictException if there were not enough resources available.
      */
-    public List<DetailedResource> getRequiredResources(int pId, int tId, LocalDateTime start) {
+    public List<DetailedResource> getRequiredResources(int pId, int tId, LocalDateTime start) throws ConflictException {
         Task currentTask = manager.getProjectContainer().getProject(pId).getTask(tId);
-        Map<ResourceType, Integer> requiredResources = currentTask.getRequiredResources();
-        return manager.getResourceContainer().meetRequirements(currentTask, requiredResources, currentTask.getSpan(start));
+        Map<ResourceType, Integer> requirement = currentTask.getRequiredResources();
+        requirement.remove(ResourceType.DEVELOPER);
+        return manager.getResourceContainer().meetRequirements(currentTask, requirement, currentTask.getSpan(start));
+    }
+    
+    //TODO: commentaar
+    public List<DetailedResource> getDevelopers() {
+    	return new ArrayList<>(manager.getResourceContainer().getResourcesOfType(ResourceType.DEVELOPER));
     }
 
     /**

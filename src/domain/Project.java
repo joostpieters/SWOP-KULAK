@@ -5,6 +5,7 @@ import domain.task.Task;
 import domain.time.Duration;
 import domain.time.Timespan;
 import exception.ObjectNotFoundException;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,7 +66,11 @@ public class Project implements DetailedProject {
         this.name = name;
         this.description = descr;
         this.creationDueTime = new Timespan(creation, due);
-
+        
+        //TODO: goed idee?
+        Map<ResourceType, Integer> temp = new HashMap<>();
+        temp.put(ResourceType.DEVELOPER, 1);
+		Task.setStandardRequiredResources(temp);
     }
 
     /**

@@ -402,6 +402,7 @@ public class FileInitializor extends StreamTokenizer {
                 }
                 // add rest of resources
                 for (int id : resourcesIds) {
+                	//TODO: not done!!!
                     resources.add(db.getResources().get(id));
                 }
                 

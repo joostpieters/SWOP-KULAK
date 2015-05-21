@@ -145,7 +145,7 @@ public class ResourceContainer {
 	}
     
     //TODO: commentaar
-    public Set<Resource> getNrOfAvailableResources(ResourceType type, int quantity, Timespan span) {
+    private Set<Resource> getNrOfAvailableResources(ResourceType type, int quantity, Timespan span) {
     	Set<Resource> result = new HashSet<>();
     	for(Resource r : getAvailableResources(type, span)) {
     		result.add(r);
@@ -176,21 +176,11 @@ public class ResourceContainer {
   	 * @param span The time span the tasks conflict with.
   	 * @return	all tasks that reserved resources of this type in span.
   	 */
-    public Set<Task> findConflictingTasks(Timespan span) {
+    private Set<Task> findConflictingTasks(Timespan span) {
     	Set<Task> result = new HashSet<>();
     	for (Resource r : getResources()) {
     		result.addAll(r.findConflictingTasks(span));
     	}
     	return result;
     }
-
-    //TODO: commentaar
-	public boolean confirmTimespan(Map<ResourceType, Integer> requirements, Timespan span) {
-		for(ResourceType type : requirements.keySet()) {
-			if(getAvailableResources(type, span).size() < requirements.get(type))
-				return false;
-		}
-		return true;
-		
-	}
 }
