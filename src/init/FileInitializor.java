@@ -311,10 +311,6 @@ public class FileInitializor extends StreamTokenizer {
             tempList.add(dev);
 
         }
-        Map<ResourceType, Integer> hashMap = new HashMap<>();
-        hashMap.put(devType, 1);
-        // dev is standard requirement
-        Task.setStandardRequiredResources(hashMap);
 
         /**
          * Projects

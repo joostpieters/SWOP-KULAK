@@ -4,6 +4,7 @@ import domain.time.Clock;
 import domain.time.Duration;
 import domain.time.Timespan;
 import exception.ConflictException;
+
 import java.util.ArrayList;
 
 
@@ -113,7 +114,6 @@ public class Available extends Status {
      */
     @Override
     public void execute(Task task, Clock clock) {
-
         if (task.hasPlanning()) {
             if (task.getPlanning().isBefore(clock.getTime())) {
                 task.setStatus(new Executing());

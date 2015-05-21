@@ -76,7 +76,7 @@ public class PlanTaskScenarioTest {
 		Map<ResourceType, Integer> requiredResources1 = new HashMap<>();
 		requiredResources1.put(type0, 2);
 		t1 = p.createTask("this is task 1", new Duration(60), 10, 
-				Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
+				Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
 		t2 = p.createTask("this is task 2 with task 1 as prerequisite", new Duration(120), 100, 
 				Project.NO_ALTERNATIVE, Arrays.asList(t1.getId()), requiredResources0);
 		t1.plan(START, Arrays.asList(dev0), clock);
