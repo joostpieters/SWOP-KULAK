@@ -2,6 +2,8 @@ package domain.memento;
 
 import domain.Project;
 import domain.ProjectContainer;
+import domain.Resource;
+import domain.ResourceType;
 import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Duration;
@@ -9,7 +11,6 @@ import domain.time.Timespan;
 import exception.ObjectNotFoundException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
@@ -29,6 +30,7 @@ public class MementoTest {
 	private static Clock clock;
     private static Project p1, p2, p3;
     private static Task t1, t2, t3;
+    private static Resource dev;
     
     private static ProjectContainer container;
     
@@ -36,6 +38,7 @@ public class MementoTest {
     public static void setUpClass() {
         container = new ProjectContainer();
         clock = new Clock();
+        dev = new Resource("name", ResourceType.DEVELOPER);
         container.createProject("Test", "Description", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 12, 17, 50));
         p1 = container.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         // available
@@ -48,7 +51,7 @@ public class MementoTest {
         //available
         t3 =  p2.createTask("Another difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
         
-        t3.plan(clock.getTime(), new ArrayList<>(), clock);
+        t3.plan(clock.getTime(), Arrays.asList(dev), clock);
         t3.execute(clock);
         clock.advanceTime(p2.getDueTime());
         t3.finish(new Timespan(p2.getCreationTime(), p2.getDueTime()), clock.getTime());

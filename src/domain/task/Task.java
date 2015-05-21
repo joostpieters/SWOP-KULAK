@@ -640,7 +640,7 @@ public class Task implements DetailedTask {
      *
      * @return True if and only if this task has a planned start time.
      */
-    private boolean hasPlanning() {
+    boolean hasPlanning() {
     	return this.planning != null;
     }
     
@@ -699,9 +699,8 @@ public class Task implements DetailedTask {
     	if(next.getMinute() != 0)
     		next = next.withMinute(0).plusHours(1);
     	
-        for(Entry<ResourceType, Integer> entry : required.entrySet()) {
-			if(resContainer.getResourcesOfType(entry.getKey()).size() < entry.getValue()) {
-				
+        for(ResourceType type : required.keySet()) {
+			if(resContainer.getResourcesOfType(type).size() < required.get(type)) {
 				throw new IllegalStateException("There are more resources required than there are available.");
 			}
     	}

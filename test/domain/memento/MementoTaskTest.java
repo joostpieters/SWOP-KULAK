@@ -2,6 +2,7 @@ package domain.memento;
 
 import domain.Planning;
 import domain.Project;
+import domain.Resource;
 import domain.ResourceType;
 import domain.task.Status;
 import domain.task.Task;
@@ -12,7 +13,6 @@ import domain.time.Timespan;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import org.easymock.EasyMock;
@@ -38,9 +38,9 @@ public class MementoTaskTest {
 	public void setUp() throws Exception {
 		clock = new Clock();
 		p0 = new Project("project 0", "this is project 0", LocalDateTime.of(2015, 5, 18, 10, 20), LocalDateTime.of(2015, 5, 30, 13, 0));
-		t0 = new Task("task 0", new Duration(30), 54, new HashMap<ResourceType, Integer>(), p0);
-		t1 = new Task("task 1", new Duration(31), 55, Arrays.asList(t0), new HashMap<ResourceType, Integer>(), p0);
-		t2 = new Task("task 2", new Duration(24), 23, new HashMap<ResourceType, Integer>(), p0);
+		t0 = new Task("task 0", new Duration(30), 54, Task.getDefaultRequiredResources(), p0);
+		t1 = new Task("task 1", new Duration(31), 55, Arrays.asList(t0), Task.getDefaultRequiredResources(), p0);
+		t2 = new Task("task 2", new Duration(24), 23, Task.getDefaultRequiredResources(), p0);
 		
 	}
 	
@@ -60,7 +60,7 @@ public class MementoTaskTest {
 				LocalDateTime.of(2015, 5, 18, 15, 0),
 				LocalDateTime.of(2015, 5, 19, 15, 0));
         
-    	t0.plan(clock.getTime(), new ArrayList<>(), clock);
+    	t0.plan(clock.getTime(), Arrays.asList(new Resource("name", ResourceType.DEVELOPER)), clock);
     	t0.execute(clock);
 		t0.finish(t0finishTS,
 				LocalDateTime.of(2015, 5, 20, 10, 0));
@@ -90,7 +90,6 @@ public class MementoTaskTest {
 						LocalDateTime.of(2015, 5, 18, 15, 0),
 						LocalDateTime.of(2015, 5, 19, 15, 0)),
 				LocalDateTime.of(2015, 5, 20, 10, 0));
-		Task.Memento t0memento2 = t0.createMemento();
 		TaskProperties t0properties2 = new TaskProperties(t0);
 		t0properties2.checkEquals(t0);
 

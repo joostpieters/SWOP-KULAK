@@ -20,6 +20,9 @@ public class GenericUser implements User {
      * @param branchOffice The office this user belongs to
      */
     public GenericUser(String name, String role, BranchOffice branchOffice) {
+    	//TODO: kijk eens welke mooie illustratie van hoe vervelend het kan zijn dat developer = resource...
+    	if(role.equals(null) || role.equals("developer"))
+    		throw new IllegalArgumentException("You can't make a developer this way");
         this.name = name;
         this.role = role;
        this.branchoffice = branchOffice;
