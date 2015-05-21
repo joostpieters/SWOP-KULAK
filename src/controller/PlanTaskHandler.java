@@ -122,7 +122,11 @@ public class PlanTaskHandler extends Handler {
         simulatorCommand.add(task.plan(startTime, res, clock));
     }
 
-    //TODO: commentaar 
+    /**
+     * Returns the list of resources of the given resource type of the branch office. 
+     * @param type The resource type.
+     * @return The list of all resources of the given resource type of the branch office of this plan task handler.
+     */
 	public List<DetailedResource> getResources(DetailedResourceType type) {
 		try {
 			return new ArrayList<>(manager.getResourceContainer().getResourcesOfType((ResourceType) type));
