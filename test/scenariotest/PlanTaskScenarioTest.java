@@ -27,7 +27,6 @@ import exception.ConflictException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -70,10 +69,10 @@ public class PlanTaskScenarioTest {
 		dev0 = new Developer("janssen", clock, office);
 		dev1 = new Developer("janssens", clock, office);
 		
-		Map<ResourceType, Integer> requiredResources0 = new HashMap<>();
+		Map<ResourceType, Integer> requiredResources0 = Task.getDefaultRequiredResources();
 		requiredResources0.put(type0, 2);
 		requiredResources0.put(type1, 1);
-		Map<ResourceType, Integer> requiredResources1 = new HashMap<>();
+		Map<ResourceType, Integer> requiredResources1 = Task.getDefaultRequiredResources();
 		requiredResources1.put(type0, 2);
 		t1 = p.createTask("this is task 1", new Duration(60), 10, 
 				Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());

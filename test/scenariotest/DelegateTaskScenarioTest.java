@@ -37,7 +37,6 @@ public class DelegateTaskScenarioTest {
     private BranchOffice office0, office1;
     private DelegateTaskHandler handler;
     private Project p1;
-    private Task t1, t2;
     private Acl acl;
     private static Auth auth;
 
@@ -58,7 +57,7 @@ public class DelegateTaskScenarioTest {
         LocalDateTime project1StartTime = LocalDateTime.of(2015, 03, 12, 17, 30);
         LocalDateTime project1EndTime = LocalDateTime.of(2015, 03, 16, 17, 30);
         p1 = pc0.createProject(project1Name, project1Description, project1StartTime, project1EndTime);
-        t1 = p1.createTask("Task 0", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+        p1.createTask("Task 0", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
         
         clock = new Clock();
         auth = new Auth(db);

@@ -144,7 +144,7 @@ public class PlanTaskHandler extends Handler {
         simulatorCommand.add(manager.getProjectContainer().getProject(pId).getTask(tId).plan(startTime, res, clock));
     }
 
-    //TODO: goeie oplossing? 
+    //TODO: commentaar
 	public List<DetailedResource> getResources(DetailedResourceType type) {
 		try {
 			return new ArrayList<>(manager.getResourceContainer().getResourcesOfType((ResourceType) type));
