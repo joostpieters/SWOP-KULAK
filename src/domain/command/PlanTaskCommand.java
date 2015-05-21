@@ -22,7 +22,6 @@ public class PlanTaskCommand implements ICommand {
     private final Task task;
     private final List<Resource> resources;
     private final List<CreateReservationCommand> reservations;
-    //TODO: PlanTaskCommand lijkt niet verantwoordelijk voor bijhouden Clock.
     private final Clock clock;
     
     private final Timespan timespan;

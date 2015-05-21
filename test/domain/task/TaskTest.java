@@ -53,36 +53,36 @@ public class TaskTest {
     	
     	p = new Project("Name", "Description", LocalDateTime.of(2001, 1, 9, 8, 0), LocalDateTime.of(2072, 10, 9, 8, 0));
         
-    	t0 = p.createTask("description!", new Duration(10), 20, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+    	t0 = p.createTask("description!", new Duration(10), 20, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
         
-    	t1 = p.createTask("t1", new Duration(10), 10, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
-    	t2 = p.createTask("t2", new Duration(20), 10, Project.NO_ALTERNATIVE, Arrays.asList(t0.getId(), t1.getId()), new HashMap<>());
+    	t1 = p.createTask("t1", new Duration(10), 10, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
+    	t2 = p.createTask("t2", new Duration(20), 10, Project.NO_ALTERNATIVE, Arrays.asList(t0.getId(), t1.getId()), Task.getDefaultRequiredResources());
     	
     	Timespan t3ts = new Timespan(
     			LocalDateTime.of(2015, 3, 4, 11, 48), 
     			LocalDateTime.of(2015, 3, 4, 15, 33)
     			);
     	
-    	t3 = p.createTask("t3 finished", new Duration(30), 40, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+    	t3 = p.createTask("t3 finished", new Duration(30), 40, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
     	t3.plan(LocalDateTime.of(2060, 3, 5, 11, 48), new ArrayList<Resource>(), clock);
     	assertTrue(t3.hasPlanning());
     	assertTrue(t3.getStatus() instanceof Available);
     	t3.execute(clock);
     	assertTrue(t3.getStatus() instanceof Executing);
     	t3.finish(new Timespan(t3ts.getStartTime(), t3ts.getEndTime()), clock.getTime());
-    	t4 = p.createTask("t4", new Duration(30), 10, Project.NO_ALTERNATIVE, Arrays.asList(t3.getId()), new HashMap<>());
-    	t5 = p.createTask("t5", new Duration(20), 5, Project.NO_ALTERNATIVE, Arrays.asList(t3.getId(), t2.getId()), new HashMap<>());
+    	t4 = p.createTask("t4", new Duration(30), 10, Project.NO_ALTERNATIVE, Arrays.asList(t3.getId()), Task.getDefaultRequiredResources());
+    	t5 = p.createTask("t5", new Duration(20), 5, Project.NO_ALTERNATIVE, Arrays.asList(t3.getId(), t2.getId()), Task.getDefaultRequiredResources());
     	Timespan t6ts = new Timespan(
     			LocalDateTime.of(2015, 3, 4, 11, 48), 
     			LocalDateTime.of(2015, 3, 4, 15, 33)
     			);
     	
-    	t6 = p.createTask("t6", new Duration(10), 3, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+    	t6 = p.createTask("t6", new Duration(10), 3, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
     	t6.fail(new Timespan(t6ts.getStartTime(), t6ts.getEndTime()), clock.getTime());
-    	t7 = p.createTask("t7", new Duration(15), 4, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+    	t7 = p.createTask("t7", new Duration(15), 4, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
     	t7.fail(new Timespan(t6ts.getStartTime(), t6ts.getEndTime()), clock.getTime());
-    	t7alternative = p.createTask("alternative for t7", new Duration(10), 2, t7.getId(), Project.NO_DEPENDENCIES, new HashMap<>());
-    	t8 = p.createTask("depends on t7", new Duration(33), 3, Project.NO_ALTERNATIVE, Arrays.asList(t7.getId()), new HashMap<>());
+    	t7alternative = p.createTask("alternative for t7", new Duration(10), 2, t7.getId(), Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
+    	t8 = p.createTask("depends on t7", new Duration(33), 3, Project.NO_ALTERNATIVE, Arrays.asList(t7.getId()), Task.getDefaultRequiredResources());
     	
     	ResourceType type0 = new ResourceType("Engine");
     	ResourceType type1 = new ResourceType("Car", Arrays.asList(type0), new ArrayList<>());
@@ -94,7 +94,7 @@ public class TaskTest {
     	res1 = rc.createResource("Aston Martin", type1);
     	rc.createResource("hooded", type2);
     	rc.createResource("armless", type2);
-    	Map<ResourceType, Integer> requiredResources = new HashMap<>();
+    	Map<ResourceType, Integer> requiredResources = Task.getDefaultRequiredResources();
     	requiredResources.put(type0, 1);
     	requiredResources.put(type1, 1);
     	requiredResources.put(type2, 2);
@@ -113,7 +113,7 @@ public class TaskTest {
     	int estDur = 10;
     	int accDev = 30;
     	ArrayList<Task> prereq = new ArrayList<>(Arrays.asList(t3));
-        Map<ResourceType, Integer> resources = new HashMap<>();
+        Map<ResourceType, Integer> resources = Task.getDefaultRequiredResources();
             ResourceType resourceType = new ResourceType("test");
         resources.put(resourceType, 5);
     	Task task0 = new Task(description, new Duration(estDur), accDev,  prereq, resources, p);
@@ -141,9 +141,9 @@ public class TaskTest {
     @Test
     public void testGetId() {
         
-        Task instance = p.createTask("description", new Duration(40), 20, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+        Task instance = p.createTask("description", new Duration(40), 20, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
         		//new Task("description", new Duration(40), 20);
-        Task instance2 = p.createTask("Other description", new Duration(30), 10, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+        Task instance2 = p.createTask("Other description", new Duration(30), 10, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
         		//new Task("Other description", new Duration(30), 10);
         
         assertNotEquals(instance.getId(), instance2.getId());
@@ -187,7 +187,7 @@ public class TaskTest {
     	LocalDateTime startA = LocalDateTime.of(2014, 10, 30, 10, 10);
     	LocalDateTime endA = LocalDateTime.of(2014, 10, 30, 10, 20);
 
-    	Task taskA = p.createTask("finished, time spent = 10 minutes", new Duration(33), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+    	Task taskA = p.createTask("finished, time spent = 10 minutes", new Duration(33), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
     			//new Task("finished, time spent = 10 minutes", new Duration(33), 0);
     	assertEquals(0, taskA.getTimeSpent().toMinutes());
     	taskA.plan(LocalDateTime.of(2060,3,4,11,48), new ArrayList<Resource>(), clock);
@@ -195,7 +195,7 @@ public class TaskTest {
     	taskA.finish(new Timespan(startA, endA), clock.getTime());
     	assertEquals(10, taskA.getTimeSpent().toMinutes());
 
-    	Task taskB = p.createTask("failed, time spent = 10 minutes", new Duration(33), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+    	Task taskB = p.createTask("failed, time spent = 10 minutes", new Duration(33), 0, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
     			//new Task("failed, time spent = 10 minutes", new Duration(33), 0);
     	taskB.fail(new Timespan(startA, endA), clock.getTime());
     	assertEquals(10, taskA.getTimeSpent().toMinutes());
@@ -439,7 +439,7 @@ public class TaskTest {
     public void testSetAlternativeTaskException5()
     {
     	Project p1 = new Project("p1", "not p", LocalDateTime.of(2000, 11, 12, 13, 14), LocalDateTime.of(2030, 11, 12, 13, 14));
-    	Task p1t0 = p1.createTask("task belonging to p1", new Duration(120), 33, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+    	Task p1t0 = p1.createTask("task belonging to p1", new Duration(120), 33, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
     	t6.setAlternativeTask(p1t0);
     }
     
@@ -451,7 +451,7 @@ public class TaskTest {
     public void testSetAlternativeTaskException6()
     {
     	Project p1 = new Project("p1", "not p", LocalDateTime.of(2000, 11, 12, 13, 14), LocalDateTime.of(2030, 11, 12, 13, 14));
-    	Task p1t0 = p1.createTask("task belonging to p1", new Duration(120), 33, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+    	Task p1t0 = p1.createTask("task belonging to p1", new Duration(120), 33, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
     	t6.setAlternativeTask(p1t0);
     }
     
@@ -492,7 +492,7 @@ public class TaskTest {
     	assertTrue(t7.canBeFulfilled());
     	assertTrue(t8.canBeFulfilled());
     	
-        assertFalse(new Task("description", new Duration(10), 30, Arrays.asList(t6), new HashMap<>(), p).canBeFulfilled());
+        assertFalse(new Task("description", new Duration(10), 30, Arrays.asList(t6), Task.getDefaultRequiredResources(), p).canBeFulfilled());
     }
 //    /**
 //     * Test of canHaveAsAlternativeTask method, of class Task.
@@ -523,7 +523,7 @@ public class TaskTest {
     	
     	// duration 10, acceptable deviation 20 => max duration 12 minutes
     	// checking time span duration == max duration
-    	Task someTask = p.createTask("10, 20", new Duration(10), 20, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+    	Task someTask = p.createTask("10, 20", new Duration(10), 20, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
     	Timespan TS12 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 13, 54),
     			LocalDateTime.of(2015,  3, 4, 14, 6));
@@ -534,7 +534,7 @@ public class TaskTest {
     	
     	// duration 20, acceptable deviation 20 => max duration 24 minutes
     	// checking time span duration < max duration
-    	Task someTask2 = p.createTask("20, 20", new Duration(20), 20, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+    	Task someTask2 = p.createTask("20, 20", new Duration(20), 20, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
     	Timespan TS20 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 13, 0),
     			LocalDateTime.of(2015,  3, 4, 13, 20));
@@ -545,7 +545,7 @@ public class TaskTest {
     	
     	// duration 30, acceptable deviation 10 => max duration 33 minutes
     	// checking time span duration > max duration
-    	Task someTask3 = p.createTask("30, 10", new Duration(30), 10, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+    	Task someTask3 = p.createTask("30, 10", new Duration(30), 10, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
     	Timespan TS35 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 13, 0),
     			LocalDateTime.of(2015,  3, 4, 13, 35));
@@ -556,7 +556,7 @@ public class TaskTest {
     	
     	// duration 30, acceptable deviation 20 => max duration 36 minutes
     	// checking time span duration > max duration
-    	Task someTask4 = p.createTask("30, 20", new Duration(30), 20, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
+    	Task someTask4 = p.createTask("30, 20", new Duration(30), 20, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
     			//new Task("30, 20", new Duration(30), 20);
     	Timespan TS123 = new Timespan(
     			LocalDateTime.of(2015,  3, 4, 13, 0),
@@ -609,7 +609,7 @@ public class TaskTest {
     	assertEquals(new Available(), t0.getStatus());
     	assertEquals(t0.getEstimatedDuration().toMinutes(), t0.estimatedWorkTimeNeeded().toMinutes());
     	
-    	Task unavailableTask = p.createTask("unavailable", new Duration(33), 22, Project.NO_ALTERNATIVE, Arrays.asList(t0.getId()), new HashMap<>());
+    	Task unavailableTask = p.createTask("unavailable", new Duration(33), 22, Project.NO_ALTERNATIVE, Arrays.asList(t0.getId()), Task.getDefaultRequiredResources());
     	assertEquals(new Unavailable(), unavailableTask.getStatus());
     	long estimatedWorkTimeExpected = t0.estimatedWorkTimeNeeded().toMinutes() + unavailableTask.getEstimatedDuration().toMinutes();
     	assertEquals(estimatedWorkTimeExpected, unavailableTask.estimatedWorkTimeNeeded().toMinutes());
@@ -656,7 +656,7 @@ public class TaskTest {
     	t0.finish(new Timespan(LocalDateTime.of(2015, 3, 10, 10, 0), LocalDateTime.of(2015, 3, 10, 11, 30)), clock.getTime());
     	assertEquals(90, t0.getTimeSpent().toMinutes());
         
-    	Task task = p.createTask("task abc", new Duration(33), 54, Project.NO_ALTERNATIVE, Arrays.asList(t0.getId()), new HashMap<>());
+    	Task task = p.createTask("task abc", new Duration(33), 54, Project.NO_ALTERNATIVE, Arrays.asList(t0.getId()), Task.getDefaultRequiredResources());
     	task.plan(LocalDateTime.of(2060,3,4,11,48), new ArrayList<Resource>(), clock);
     	task.execute(clock);
     	task.finish(new Timespan(LocalDateTime.of(2015, 3, 11, 10, 0), LocalDateTime.of(2015, 3, 11, 15, 30)), clock.getTime());
