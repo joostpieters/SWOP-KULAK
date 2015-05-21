@@ -2,7 +2,6 @@ package controller;
 
 import domain.BranchOffice;
 import domain.Database;
-import domain.command.SimulatorCommand;
 import domain.dto.DetailedBranchOffice;
 import domain.dto.DetailedTask;
 import domain.task.Task;
@@ -21,19 +20,8 @@ public class DelegateTaskHandler extends Handler {
     protected final BranchOffice manager;
     private final Database db;
     
-	private SimulatorCommand simulatorCommand;
+	
 
-    /**
-     * Initialize a new create task handler with the given projectContainer.
-     *
-     * @param manager The projectContainer to use in this handler.
-     * @param auth The authorization manager to use
-     * @param acl The action control list to use
-     * @param db The database to use in this handler
-     */
-    public DelegateTaskHandler(BranchOffice manager, Auth auth, Acl acl, Database db) {
-    	this(manager, auth, acl, db, new SimulatorCommand());
-    }
     
     /**
      * Initialize a new create task handler with the given projectContainer.
@@ -42,24 +30,15 @@ public class DelegateTaskHandler extends Handler {
      * @param auth The authorization manager to use
      * @param acl The action control list to use
      * @param db The database to use in this handler
-     * @param simulatorCommand The simulator command to which commands are added.
      */
-    public DelegateTaskHandler(BranchOffice manager, Auth auth, Acl acl, Database db, SimulatorCommand simulatorCommand)
+    public DelegateTaskHandler(BranchOffice manager, Auth auth, Acl acl, Database db)
     {
         super(auth, acl);
         this.manager = manager;
         this.db = db;
-        // TODO
-        this.simulatorCommand = simulatorCommand;
+       
     }
-    /**
-     * 
-     * @return All unplanned tasks in this branchoffice 
-     */
-	public List<DetailedTask> getUnplannedTasks() { // TODO mss zal dit later onnodige methode zijn
-		return new ArrayList<>(manager.getUnplannedTasks());
-	}
-	
+
 	/**
 	 * @return All unplanned tasks which are assigned to this branch office.
 	 */

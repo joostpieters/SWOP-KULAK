@@ -27,7 +27,6 @@ public class Resource implements DetailedResource {
     private final ResourceType type;
     private final Set<Reservation> reservations;
     private final List<Reservation> previousReservations;
-    //TODO: weg ermee
     private WorkWeekConfiguration availability;
 
     /**
@@ -99,7 +98,7 @@ public class Resource implements DetailedResource {
      * @param type The type to check
      * @return True if and only if the given type is not null.
      */
-    public boolean canHaveAsType(ResourceType type) {
+    public final boolean canHaveAsType(ResourceType type) {
 		return type != null;
 	}
 
@@ -290,8 +289,10 @@ public class Resource implements DetailedResource {
      * of this resource or if the resource has no workweekconfiguration
      */
     public boolean isAvailable(LocalDateTime time){
+        // if this resource doesn't have a workweekconfiguration of itself, use that of its type
+        
         if(availability == null){
-            return true;
+            return type.getAvailability().isValidWorkTime(time);
         }
         return availability.isValidWorkTime(time);
     }

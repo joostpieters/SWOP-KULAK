@@ -13,17 +13,12 @@ import domain.time.Timespan;
 public class Executing extends Status {
 
     /**
-     * If the planning of the given task is gone, the status of the task transitions
-     * to available.
+     * Updates the status to the according status.
      * 
      * @param task The task to update the status of.
      */
     @Override
     void update(Task task) {
-    	//TODO: mag dit weg? Nieuwe methode isUnplanned() zou alles moeten oplossen...
-//        if(!task.hasPlanning()){
-//            task.setStatus(new Available());
-//        }
     }
     
     /**

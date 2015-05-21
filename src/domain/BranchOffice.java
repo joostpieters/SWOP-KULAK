@@ -59,7 +59,7 @@ public class BranchOffice implements DetailedBranchOffice {
 		if(!taskIsAssigned(task))
 			throw new IllegalArgumentException("An attempt has been made to delegate a"
 					+ "task from a branch office to which the task is not assigned to.");
-		if(task.hasPlanning())
+		if(task.isUnplanned())
 			throw new IllegalStateException("An attempt has been made to delegate a task"
 					+ " which has already been planned.");
 		
@@ -226,7 +226,7 @@ public class BranchOffice implements DetailedBranchOffice {
         List<Task> tasks = new ArrayList<>();
         
         for(Task task : delegatedTasks)
-            if(!task.hasPlanning())
+            if(!task.isUnplanned())
                 tasks.add(task);
         
         return tasks;

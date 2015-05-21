@@ -228,9 +228,7 @@ public class ResourceType implements DetailedResourceType {
             if (conflicts.contains(entry.getKey())) {
                 if (entry.getKey() == this && entry.getValue() > 1) {
                     return false;
-                } else if (entry.getKey() == this && entry.getValue() == 1) {
-//TODO bizar?
-                } else {
+                } else if (!(entry.getKey() == this && entry.getValue() == 1)) {
                     return false;
                 }
             }
@@ -377,21 +375,7 @@ public class ResourceType implements DetailedResourceType {
     	List<ResourceType> conflictings = getConflicts(finalResourceTypes);
 		if(!conflictings.isEmpty())
 		{
-
-			StringBuffer conflictsText = new StringBuffer("['");
-			for(int i = 0; i < conflictings.size(); i++)
-			{
-				conflictsText.append(conflictings.get(i).getName());
-				if(i < conflictings.size() - 1)
-					conflictsText.append("', ");
-			}
-			conflictsText.append("']");
-
-			throw new IllegalArgumentException(
-					"Resource type '"
-					+ this.getName()
-					+ "' conflicts with "
-					+ conflictsText); // TODO misschien nieuwe exception?
+			throw new ResourceTypeConflictException(this, conflictings);
 		}
 		
 		// Check for missing requirements in finalResourceTypes

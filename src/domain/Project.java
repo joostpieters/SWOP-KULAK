@@ -5,7 +5,6 @@ import domain.task.Task;
 import domain.time.Duration;
 import domain.time.Timespan;
 import exception.ObjectNotFoundException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -315,7 +314,7 @@ public class Project implements DetailedProject {
     public List<Task> getCanBePlannedTasks() {
         List<Task> result = new LinkedList<>();
         for (Task t : getTasks()) {
-            if (t.hasPlanning()) {
+            if (t.isUnplanned()) {
                 result.add(t);
             }
         }

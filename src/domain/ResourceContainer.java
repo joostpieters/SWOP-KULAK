@@ -4,7 +4,6 @@ import domain.dto.DetailedResource;
 import domain.task.Task;
 import domain.time.Timespan;
 import exception.ConflictException;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -179,8 +178,7 @@ public class ResourceContainer {
     }
     
     /**
-     * // TODO wordt nooit gebruikt?
-     * Get the set of tasks that cause conflicts with the given time span.
+       * Get the set of tasks that cause conflicts with the given time span.
   	 *
   	 * @param span The time span the tasks conflict with.
   	 * @return	all tasks that reserved resources of this type in span.
