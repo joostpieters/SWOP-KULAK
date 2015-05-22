@@ -1,7 +1,7 @@
 package controller;
 
 import domain.Project;
-import domain.BranchOffice;
+import domain.ProjectContainer;
 import domain.Resource;
 import domain.dto.DetailedProject;
 import domain.dto.DetailedTask;
@@ -25,7 +25,7 @@ import java.util.logging.Logger;
  */
 public class UpdateTaskStatusHandler extends Handler {
 
-    private final BranchOffice manager;
+    private final ProjectContainer pc;
 
     private Task currentTask;
     private Project currentProject;
@@ -34,14 +34,14 @@ public class UpdateTaskStatusHandler extends Handler {
     /**
      * Initialize a new create task handler with the given projectContainer.
      *
-     * @param manager The projectContainer to use in this handler.
+     * @param projectContainer The projectContainer to use in this handler.
      * @param clock The clock to use in this handler
      * @param auth The authorization manager to use
      * @param acl The action control list to use
      */
-    public UpdateTaskStatusHandler(BranchOffice manager, Clock clock, Auth auth, Acl acl) {
+    public UpdateTaskStatusHandler(ProjectContainer projectContainer, Clock clock, Auth auth, Acl acl) {
         super(auth, acl);
-        this.manager = manager;
+        this.pc = projectContainer;
         this.clock = clock;
     }
 
@@ -53,7 +53,7 @@ public class UpdateTaskStatusHandler extends Handler {
      */
     public Map<DetailedTask, DetailedProject> getAvailableTasks() {
 
-        return new HashMap<>(manager.getProjectContainer().getAllAvailableTasks());
+        return new HashMap<>(pc.getAllAvailableTasks());
     }
 
     /**
@@ -64,7 +64,7 @@ public class UpdateTaskStatusHandler extends Handler {
      * @param tId The id of the task to select.
      */
     public void selectTask(int pId, int tId) {
-    	Project project = manager.getProjectContainer().getProject(pId);
+    	Project project = pc.getProject(pId);
         currentTask = project.getTask(tId);
         currentProject = project;
     }
@@ -106,7 +106,7 @@ public class UpdateTaskStatusHandler extends Handler {
      * Execute the currently selected task
      * @throws RuntimeException something went wrong when executing the task
      */
-    public void executeCurrentTask() throws RuntimeException{
+    public void executeCurrentTask() throws RuntimeException {
         
         if (currentTask == null || currentProject == null) {
             throw new IllegalStateException("No task currently selected.");

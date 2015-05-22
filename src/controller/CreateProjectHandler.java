@@ -23,7 +23,7 @@ public class CreateProjectHandler extends Handler{
      * @param auth The authorization manager to use
      * @param acl The action control list to use
      */
-    public CreateProjectHandler(BranchOffice office, Auth auth, Acl acl){
+    public CreateProjectHandler(BranchOffice office, Auth auth, Acl acl) {
         super(auth, acl);
         this.office = office;
     }
@@ -37,8 +37,7 @@ public class CreateProjectHandler extends Handler{
      * @param dueTime The due time of the new project.
      * @throws RuntimeException an error occured in processing the create project request.
      */
-    public void createProject(String name, String description, LocalDateTime creationTime, LocalDateTime dueTime) throws RuntimeException{
-       
+    public void createProject(String name, String description, LocalDateTime creationTime, LocalDateTime dueTime) throws RuntimeException {
         try{
             office.getProjectContainer().createProject(name, description, creationTime, dueTime);
         }catch(IllegalArgumentException | IllegalStateException e){
@@ -49,8 +48,6 @@ public class CreateProjectHandler extends Handler{
             throw new RuntimeException("An unexpected error occured, please contact the system admin.");
             
         }
-        
-        
         
     } 
 }

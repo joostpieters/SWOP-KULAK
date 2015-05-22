@@ -1,5 +1,6 @@
 package controller;
 
+import domain.BranchOffice;
 import domain.Company;
 import domain.time.Clock;
 import domain.user.Acl;
@@ -28,73 +29,79 @@ public class HandlerFactory {
      * @param acl The action control list to use
      * @param clock The system clock to use in this factory
      */   
-    public HandlerFactory(Company company, Auth auth, Acl acl, Clock clock){
+    public HandlerFactory(Company company, Auth auth, Acl acl, Clock clock) {
+        this.company = company;
         this.acl = acl;
         this.auth = auth;
         this.clock = clock;
-        this.company = company;
     }
     
     /** 
-     * @return A new show project handler, initialized with this manager.
+     * @return A new show project handler, initialized for this company.
      */
-    public ShowProjectHandler getShowProjectHandler(){
+    public ShowProjectHandler getShowProjectHandler() {
         return new ShowProjectHandler(company, clock);
     }
     
     /** 
-     * @return A new create project handler, initialized with this manager.
+     * @return A new create project handler, initialized with branch office of the current user.
      */
-    public CreateProjectHandler getCreateProjectHandler(){
-        return new CreateProjectHandler(auth.getUser().getBranchOffice(), auth, acl);
+    public CreateProjectHandler getCreateProjectHandler() {
+        BranchOffice currentBranchOffice = auth.getUser().getBranchOffice();
+		return new CreateProjectHandler(currentBranchOffice, auth, acl);
     }
     
     /** 
      * @return A new create task handler, initialized with this manager.
      */
-    public CreateTaskHandler getCreateTaskHandler(){
-        return new CreateTaskHandler(auth.getUser().getBranchOffice(), company.getResourceTypes(), auth, acl);
+    public CreateTaskHandler getCreateTaskHandler() {
+        BranchOffice currentBranchOffice = auth.getUser().getBranchOffice();
+		return new CreateTaskHandler(currentBranchOffice, company.getResourceTypes(), auth, acl);
     }
     
     /** 
      * @return A new update task handler, initialized with this manager.
      */
-    public UpdateTaskStatusHandler getUpdateTaskHandler(){
-        return new UpdateTaskStatusHandler(auth.getUser().getBranchOffice(), clock, auth, acl);
+    public UpdateTaskStatusHandler getUpdateTaskHandler() {
+        BranchOffice currentBranchOffice = auth.getUser().getBranchOffice();
+		return new UpdateTaskStatusHandler(currentBranchOffice.getProjectContainer(), clock, auth, acl);
     }
     
      /** 
      * @return A new advance system time handler, initialized with this manager.
      */
-    public AdvanceSystemTimeHandler getAdvanceSystemTimeHandler(){
+    public AdvanceSystemTimeHandler getAdvanceSystemTimeHandler() {
         return new AdvanceSystemTimeHandler(clock);
     }
     
     /** 
      * @return A new plan task handler, initialized with this manager.
      */
-    public PlanTaskHandler getPlanTaskHandler(){
-        return new PlanTaskHandler(auth.getUser().getBranchOffice(), clock,auth, acl);
+    public PlanTaskHandler getPlanTaskHandler() {
+        BranchOffice currentBranchOffice = auth.getUser().getBranchOffice();
+		return new PlanTaskHandler(currentBranchOffice, clock,auth, acl);
     }
     
     /** 
      * @return A new delegate task handler.
      */
-    public DelegateTaskHandler getDelegatedTaskHandler(){
-        return new DelegateTaskHandler(company, auth.getUser().getBranchOffice(), auth, acl);
+    public DelegateTaskHandler getDelegatedTaskHandler() {
+        BranchOffice currentBranchOffice = auth.getUser().getBranchOffice();
+        return new DelegateTaskHandler(company, currentBranchOffice, auth, acl);
     }
     
     /** 
      * @return A new run simulation handler, initialized with this manager.
      */
-    public RunSimulationHandler getSimulationHandler(){
-        return new RunSimulationHandler(auth.getUser().getBranchOffice(), company.getResourceTypes(), clock, auth, acl);
+    public RunSimulationHandler getSimulationHandler() {
+        BranchOffice currentBranchOffice = auth.getUser().getBranchOffice();
+        return new RunSimulationHandler(currentBranchOffice, company.getResourceTypes(), clock, auth, acl);
     }
     
     /** 
      * @return A new login handler.
      */
-    public LoginHandler getLoginHandler(){
+    public LoginHandler getLoginHandler() {
         return new LoginHandler(company, auth);
     }
     
