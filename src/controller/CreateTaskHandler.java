@@ -98,7 +98,7 @@ public class CreateTaskHandler extends Handler{
             Project project = manager.getProjectContainer().getProject(pId);
             Duration duration = new Duration(estDurMinutes);
             
-            Map<ResourceType, Integer> resources = Task.NO_REQUIRED_RESOURCE_TYPES;
+            Map<ResourceType, Integer> resources = Task.getDefaultRequiredResources();
             // convert id's to objects
             for(Entry<Integer, Integer> entry : requiredResources.entrySet()){
                 resources.put(db.getResourceTypes().get(entry.getKey()), entry.getValue());
