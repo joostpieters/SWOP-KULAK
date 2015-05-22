@@ -849,6 +849,14 @@ public class Task implements DetailedTask {
 	public void setNotDelegated() {
 		this.delegatedBranchOffice = null;
 	}
+        
+        /**
+         * 
+         * @return True if and only if the status of this task is executing
+         */
+    public boolean isExecuting() {
+        return getStatus() instanceof Executing;
+    }
 	
     /**
      * This memento represents the internal state of this task

@@ -288,15 +288,16 @@ public class Project implements DetailedProject {
     /**
      * Return all tasks from this project which are available.
      *
-     * @return	a list of tasks which are available, an empty list if this
+     * @return	a list of tasks which are available or executing, an empty list if this
      * project is already finished.
      *
      * @see	Task#isAvailable()
+     * @see	Task#isExecuting()
      */
     public List<Task> getAvailableTasks() {
         List<Task> result = new LinkedList<>();
         for (Task t : getTasks()) {
-            if (t.isAvailable()) {
+            if (t.isAvailable() || t.isExecuting()) {
                 result.add(t);
             }
         }
