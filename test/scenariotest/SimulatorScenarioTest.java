@@ -17,12 +17,16 @@ import domain.time.Timespan;
 import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.GenericUser;
+import domain.user.Role;
+
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -55,18 +59,18 @@ public class SimulatorScenarioTest {
         LocalDateTime project1StartTime = LocalDateTime.of(2015, 03, 12, 17, 30);
         LocalDateTime project1EndTime = LocalDateTime.of(2015, 03, 16, 17, 30);
         p1 = pc.createProject(project1Name, project1Description, project1StartTime, project1EndTime);
-        t1 = p1.createTask("Prereq", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
-        t2 = p1.createTask("Alternative", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
+        t1 = p1.createTask("Prereq", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
+        t2 = p1.createTask("Alternative", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
         
         
         clock = new Clock();
         auth = new Auth(db);
         acl = new Acl();
         db.addOffice(manager);
-        manager.addUser(new GenericUser("root", "admin", manager));
-        acl.addEntry("admin", Arrays.asList("UpdateTaskStatus", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "updateTaskStatus"));
+        manager.addUser(new GenericUser("root", Role.ADMIN, manager));
+        acl.addEntry(Role.ADMIN, Arrays.asList("UpdateTaskStatus", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "updateTaskStatus"));
         auth.login("root");
-		HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
+		HandlerFactory controller = new HandlerFactory(db, auth, acl, clock);
         simHandler = controller.getSimulationHandler();
         createTaskSimHandler  = simHandler.getCreateTaskSimulatorHandler();
     }

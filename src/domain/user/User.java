@@ -16,17 +16,10 @@ public interface User {
     public String getName();
     
     /**
-     * Sets the name of this user
-     * 
-     * @param name The name to set 
-     */
-    public void setName(String name);
-    
-    /**
      * 
      * @return The role of this user 
      */
-    public String getRole();
+    public Role getRole();
     
      /**
      * 

@@ -15,12 +15,10 @@ import domain.time.Duration;
 import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.Developer;
-import domain.user.GenericUser;
+import domain.user.Role;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -58,25 +56,25 @@ public class UpdateTaskStatusScenarioTest {
         db.addOffice(manager);
         // only p1 has tasks
         p1 = pc.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
-        t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
+        t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
         t1.plan(clock.getTime(), Arrays.asList(dev), clock);
         t1.execute(clock);
         
-        p1.createTask("A difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Arrays.asList(t1.getId()), Task.NO_REQUIRED_RESOURCE_TYPES);
+        p1.createTask("A difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Arrays.asList(t1.getId()), Task.getDefaultRequiredResources());
         
         pc.createProject("Test 2", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         pc.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         
         auth = new Auth(db);
         acl = new Acl();
-		acl.addEntry("developer", Arrays.asList("UpdateTaskStatus"));
-		acl.addEntry("manager", Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "DelegateTask"));
-		acl.addEntry("admin", acl.getPermissions("manager"));
-        for(String permission : acl.getPermissions("developer"))
-        	acl.addPermission("admin", permission);
+		acl.addEntry(Role.DEVELOPER, Arrays.asList("UpdateTaskStatus"));
+		acl.addEntry(Role.MANAGER, Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "DelegateTask"));
+		acl.addEntry(Role.ADMIN, acl.getPermissions(Role.MANAGER));
+        for(String permission : acl.getPermissions(Role.DEVELOPER))
+        	acl.addPermission(Role.ADMIN, permission);
         manager.addUser(new Developer("John", manager));
         auth.login("John");
-		HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
+		HandlerFactory controller = new HandlerFactory(db, auth, acl, clock);
         handler = controller.getUpdateTaskHandler();
         clock.advanceTime(LocalDateTime.of(2015,03,17,14,10));
     }

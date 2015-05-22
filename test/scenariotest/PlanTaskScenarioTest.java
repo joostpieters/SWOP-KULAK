@@ -3,7 +3,6 @@ package scenariotest;
 import controller.PlanTaskHandler;
 import domain.BranchOffice;
 import domain.Company;
-import domain.Planning;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.Resource;
@@ -11,7 +10,6 @@ import domain.ResourceContainer;
 import domain.ResourceType;
 import domain.dto.DetailedPlanning;
 import domain.dto.DetailedResource;
-import domain.dto.DetailedResourceType;
 import domain.dto.DetailedTask;
 import domain.task.Task;
 import domain.time.Clock;
@@ -21,17 +19,21 @@ import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.Developer;
 import domain.user.GenericUser;
+import domain.user.Role;
 import domain.user.User;
 import exception.ConflictException;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -66,13 +68,13 @@ public class PlanTaskScenarioTest {
 		dev0 = new Developer("janssen", office);
 		dev1 = new Developer("janssens", office);
 		
-		Map<ResourceType, Integer> requiredResources0 = Task.NO_REQUIRED_RESOURCE_TYPES;
+		Map<ResourceType, Integer> requiredResources0 = Task.getDefaultRequiredResources();
 		requiredResources0.put(type0, 2);
 		requiredResources0.put(type1, 1);
-		Map<ResourceType, Integer> requiredResources1 = Task.NO_REQUIRED_RESOURCE_TYPES;
+		Map<ResourceType, Integer> requiredResources1 = Task.getDefaultRequiredResources();
 		requiredResources1.put(type0, 2);
 		t1 = p.createTask("this is task 1", new Duration(60), 10, 
-				Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
+				Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
 		t2 = p.createTask("this is task 2 with task 1 as prerequisite", new Duration(120), 100, 
 				Project.NO_ALTERNATIVE, Arrays.asList(t1.getId()), requiredResources0);
 		t1.plan(START, Arrays.asList(dev0), clock);
@@ -82,17 +84,20 @@ public class PlanTaskScenarioTest {
 		t3 = p.createTask("this is task 3 as alternative for task 1", new Duration(180), 0, 
 				t1.getId(), Project.NO_DEPENDENCIES, requiredResources1);
 		
-		user = new GenericUser("name", "manager", office);
+		user = new GenericUser("name", Role.MANAGER, office);
 		office = new BranchOffice("Het peperkoeken huis van de paashaas", pc, rc);
 		office.addUser(user);
 		office.addUser(dev0);
 		office.addUser(dev1);
+		rc.addResource(dev0);
+		rc.addResource(dev1);
+		
         Acl acl = new Acl();
-		acl.addEntry("developer", Arrays.asList("UpdateTaskStatus"));
-		acl.addEntry("manager", Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "DelegateTask"));
-		acl.addEntry("admin", acl.getPermissions("manager"));
-        for(String permission : acl.getPermissions("developer"))
-        	acl.addPermission("admin", permission);
+		acl.addEntry(Role.DEVELOPER, Arrays.asList("UpdateTaskStatus"));
+		acl.addEntry(Role.MANAGER, Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "DelegateTask"));
+		acl.addEntry(Role.ADMIN, acl.getPermissions(Role.MANAGER));
+        for(String permission : acl.getPermissions(Role.DEVELOPER))
+        	acl.addPermission(Role.ADMIN, permission);
 		Company db = new Company();
                 db.addOffice(office);
 		Auth auth = new Auth(db);
@@ -128,12 +133,9 @@ public class PlanTaskScenarioTest {
 		//         for each required resource type instance to perform the task, propose a specific resource to make a reservation for
 		List<DetailedResource> requiredResources = handler.getRequiredResources(pId, tId, selectedTime);
 		assertEquals(3, requiredResources.size());
-		Set<Resource> possibleResources = rc.getResourcesOfType(type0);
-		assertEquals(type0, requiredResources.get(0).getType());
-		assertTrue(possibleResources.contains(requiredResources.get(0)));
-		assertEquals(type0, requiredResources.get(1).getType());
-		assertTrue(possibleResources.contains(requiredResources.get(1)));
-		assertFalse(requiredResources.get(0).equals(requiredResources.get(1)));
+		assertTrue(requiredResources.contains(res0) && requiredResources.contains(res00) ||
+				requiredResources.contains(res0) && requiredResources.contains(res000) ||
+				requiredResources.contains(res00) && requiredResources.contains(res000));
 		assertTrue(requiredResources.contains(dev0) || requiredResources.contains(dev1));
 		
 		//Step 7 - select the required resources

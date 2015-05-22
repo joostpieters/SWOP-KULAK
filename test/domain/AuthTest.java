@@ -1,16 +1,15 @@
 package domain;
 
-import domain.time.Clock;
 import domain.user.Auth;
-import domain.user.Developer;
 import domain.user.GenericUser;
+import domain.user.Role;
 import domain.user.User;
-import org.easymock.EasyMock;
+
 import org.junit.After;
-import org.junit.AfterClass;
+
 import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -21,36 +20,19 @@ import org.junit.Test;
 public class AuthTest {
     private static Auth auth;
     private static User user1;
-    private static User user2;
-    private Clock clock;
     private BranchOffice branchOffice;
-    private Company db;
-    
-    public AuthTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-        
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
+    private Company company;
     
     @Before
     public void setUp() {
-        clock = EasyMock.createNiceMock(Clock.class);
         branchOffice = new BranchOffice("test");
-        db = new Company();
-        db.addOffice(branchOffice);
-        auth = new Auth(db);
+        company = new Company();
+        company.addOffice(branchOffice);
+        auth = new Auth(company);
         
-	user1 = new GenericUser("John", "manager", branchOffice);
-        user2 = new Developer("Fred", branchOffice);
+        user1 = new GenericUser("John", Role.MANAGER, branchOffice);
         
        branchOffice.addUser(user1);
-        branchOffice.addUser(user2);
     }
     
     @After

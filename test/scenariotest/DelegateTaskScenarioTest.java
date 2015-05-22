@@ -7,7 +7,6 @@ import domain.Company;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.ResourceContainer;
-import domain.dto.DetailedBranchOffice;
 import domain.dto.DetailedTask;
 import domain.task.Task;
 import domain.time.Clock;
@@ -15,11 +14,15 @@ import domain.time.Duration;
 import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.GenericUser;
+import domain.user.Role;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -56,15 +59,15 @@ public class DelegateTaskScenarioTest {
         LocalDateTime project1StartTime = LocalDateTime.of(2015, 03, 12, 17, 30);
         LocalDateTime project1EndTime = LocalDateTime.of(2015, 03, 16, 17, 30);
         p1 = pc0.createProject(project1Name, project1Description, project1StartTime, project1EndTime);
-        p1.createTask("Task 0", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
+        p1.createTask("Task 0", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
         
         clock = new Clock();
         auth = new Auth(db);
         acl = new Acl();
-        office1.addUser(new GenericUser("John", "manager", office0));
-        acl.addEntry("manager", new ArrayList<>(Arrays.asList("DelegateTask")));
+        office1.addUser(new GenericUser("John", Role.MANAGER, office0));
+        acl.addEntry(Role.MANAGER, new ArrayList<>(Arrays.asList("DelegateTask")));
         auth.login("John");
-        HandlerFactory controller = new HandlerFactory(office0, clock, auth, acl, db);
+        HandlerFactory controller = new HandlerFactory(db, auth, acl, clock);
         handler = controller.getDelegatedTaskHandler();
     }
 
@@ -82,7 +85,7 @@ public class DelegateTaskScenarioTest {
         int chosenTaskProjectId = chosenTask.getProject().getId();
         
         // Step 4 - Show an overview of the different branch offices
-        List<DetailedBranchOffice> branchOffices = handler.getOtherBranchOffices();
+        handler.getOtherBranchOffices();
         
         // Step 5 - The user selects one of the branch offices
         int chosenBranchOffice = 1; // The second branch office is chosen: 'Lauwe city'

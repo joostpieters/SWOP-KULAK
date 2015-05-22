@@ -9,12 +9,16 @@ import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.Developer;
 import domain.user.GenericUser;
+import domain.user.Role;
 import domain.user.User;
+
 import java.time.LocalTime;
 import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -45,7 +49,7 @@ public class LoginScenarioTest {
         acl = new Acl();
 
         manager = new BranchOffice("Beijing");
-        managerOffice2 = new GenericUser("John", "manager", manager);
+        managerOffice2 = new GenericUser("John", Role.MANAGER, manager);
         devOffice2 = new Developer("Layla", manager);
         manager.addUser(managerOffice2);
         manager.addUser(devOffice2);
@@ -63,7 +67,7 @@ public class LoginScenarioTest {
         office2.addUser(managerOffice2);
         
 
-        HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
+        HandlerFactory controller = new HandlerFactory(db, auth, acl, clock);
         handler = controller.getLoginHandler();
     }
 

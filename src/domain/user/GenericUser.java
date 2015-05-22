@@ -9,7 +9,7 @@ import domain.BranchOffice;
  */
 public class GenericUser implements User {
     private String name;
-    private final String role;
+    private final Role role;
     private final BranchOffice branchoffice;
 
     /**
@@ -19,10 +19,10 @@ public class GenericUser implements User {
      * @param role The role of the user
      * @param branchOffice The office this user belongs to
      */
-    public GenericUser(String name, String role, BranchOffice branchOffice) {
+    public GenericUser(String name, Role role, BranchOffice branchOffice) {
     	//TODO: kijk eens welke mooie illustratie van hoe vervelend het kan zijn dat developer = resource...
-    	if(role.equals(null) || role.equals("developer"))
-    		throw new IllegalArgumentException("You can't make a developer this way");
+    	//if(role.equals(null) || role.equals(Role.DEVELOPER))
+    	//	throw new IllegalArgumentException("The given role is invalid.");
         this.name = name;
         this.role = role;
        this.branchoffice = branchOffice;
@@ -38,21 +38,11 @@ public class GenericUser implements User {
     }
     
     /**
-     * Sets the name of this user
-     * 
-     * @param name The name to set 
-     */
-     @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    /**
      * 
      * @return The role of this user 
      */
      @Override
-    public String getRole() {
+    public Role getRole() {
         return role;
     }  
     

@@ -21,24 +21,29 @@ public abstract class Handler {
     protected Acl acl;
     
     /**
-     * Initializes this handler with the given auth and acl object?
+     * Initializes this handler with the given auth and acl object
      * @param auth The authorization manager
      * @param acl The access control list
      */
-    public Handler(Auth auth, Acl acl) throws NoAccessException{
+    public Handler(Auth auth, Acl acl) throws NoAccessException {
         this.auth = auth;
-       this.acl = acl;
+        this.acl = acl;
         checkLogin();
         checkPermission();        
     }
     
-    
+    /**
+     * @throws NoAccessException if there is no user logged in in the authorization manager
+     */
     protected void checkLogin() throws NoAccessException{
         if(!auth.loggedIn()){
             throw new NoAccessException("Sorry you have to be logged in to perform this action.");
         }
     }
     
+    /**
+     * @throws NoAccessException if the user currently logged in does not have the permission to access this handler
+     */
     protected void checkPermission() throws NoAccessException{
         String permission = this.getClass().getSimpleName().replaceAll("Handler", "");
         if(!acl.hasPermission(auth.getUser(), permission)){

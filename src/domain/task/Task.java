@@ -31,7 +31,8 @@ public class Task implements DetailedTask {
     /**
      * A constant to indicate that a task requires no resources
      */
-    public static final Map<ResourceType, Integer> NO_REQUIRED_RESOURCE_TYPES = new HashMap<>();
+    private static final Map<ResourceType, Integer> NO_REQUIRED_RESOURCE_TYPES = new HashMap<>();
+    static { NO_REQUIRED_RESOURCE_TYPES.put(ResourceType.DEVELOPER, 1); }
 
     private static int nextId = 0;
 
@@ -140,6 +141,7 @@ public class Task implements DetailedTask {
      * Getters & Setters & Checkers	*
      ***************************************
      */
+    
     /**
      * Generates an id for a new task.
      *
@@ -147,6 +149,14 @@ public class Task implements DetailedTask {
      */
     private static int generateId() {
         return nextId++;
+    }
+    
+    /**
+     * @return a map representing the default requirements for a task.
+     * This map contains all necessary resource types, but no more.
+     */
+    public static Map<ResourceType, Integer> getDefaultRequiredResources() {
+    	return new HashMap<>(Task.NO_REQUIRED_RESOURCE_TYPES);
     }
 
     /**
@@ -673,9 +683,9 @@ public class Task implements DetailedTask {
 	 * @param resources The resources to assign to this task
 	 * @param clock The clock the planning has to observe
      * @return The plan command that has been executed by this method
-     * @throws exception.ConflictException The task's reservations conflict with
+     * @throws ConflictException if the task's reservations conflict with
      * another task
-     * @throws IllegalArgumentException If the given startTime is before the current time of the clock.
+     * @throws IllegalArgumentException if the given startTime is before the current time of the clock.
      */
     public PlanTaskCommand plan(LocalDateTime startTime, List<Resource> resources, Clock clock) 
     		throws ConflictException, IllegalArgumentException {

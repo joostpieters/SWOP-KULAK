@@ -1,18 +1,22 @@
 package domain;
 
-import domain.time.Clock;
 import domain.user.Acl;
 import domain.user.Developer;
 import domain.user.GenericUser;
+import domain.user.Role;
 import domain.user.User;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.AfterClass;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,7 +30,6 @@ public class AclTest {
     private static Acl acl;
     private static User user1;
     private static User user2;
-    private Clock clock;
     private BranchOffice branchOffice;
     
     public AclTest() {
@@ -43,14 +46,13 @@ public class AclTest {
     
     @Before
     public void setUp() {
-        clock = EasyMock.createNiceMock(Clock.class);
         branchOffice = EasyMock.createNiceMock(BranchOffice.class);
         acl = new Acl();
         
-        acl.addEntry("manager", new ArrayList<>(Arrays.asList("edit", "remove", "view")));
-        acl.addEntry("developer", new ArrayList<>(Arrays.asList("edit", "view")));
+        acl.addEntry(Role.MANAGER, new ArrayList<>(Arrays.asList("edit", "remove", "view")));
+        acl.addEntry(Role.DEVELOPER, new ArrayList<>(Arrays.asList("edit", "view")));
         
-        user1 = new GenericUser("John", "manager", branchOffice);
+        user1 = new GenericUser("John", Role.MANAGER, branchOffice);
         user2 = new Developer("Fred", branchOffice);
         
     }
@@ -97,7 +99,7 @@ public class AclTest {
     @Test
     public void testGetPermissions_String() {
         
-        String role = "manager";
+        Role role = Role.MANAGER;
         
         List<String> result = acl.getPermissions(role);
         
@@ -113,7 +115,7 @@ public class AclTest {
     @Test
     public void testAddPermission() {
         
-        String role = "admin";
+        Role role = Role.ADMIN;
         String permission = "hide";
         
         acl.addPermission(role, permission);
@@ -122,8 +124,8 @@ public class AclTest {
         assertTrue(result.contains("hide"));
         
         // add permission to unexisting role
-        acl.addPermission("user", "view");
-        List<String> result2 = acl.getPermissions("user");
+        acl.addPermission(Role.USER, "view");
+        List<String> result2 = acl.getPermissions(Role.USER);
         assertTrue(result2.contains("view"));
         assertEquals(1, result2.size());
     }
@@ -134,12 +136,12 @@ public class AclTest {
     @Test
     public void testAddEntry() {
         
-        String role = "tester";
+        Role role = Role.ADMIN;
         List<String> permissionList = new ArrayList<>(Arrays.asList("test"));
         
         acl.addEntry(role, permissionList);
         
-        List<String> result = acl.getPermissions("tester");
+        List<String> result = acl.getPermissions(role);
         assertTrue(result.contains("test"));
         assertEquals(1, result.size());
     }

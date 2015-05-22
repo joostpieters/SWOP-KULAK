@@ -1,7 +1,6 @@
 package controller;
 
 import domain.BranchOffice;
-import domain.Company;
 import domain.Project;
 import domain.ResourceType;
 import domain.command.CreateTaskCommand;
@@ -30,24 +29,24 @@ import java.util.logging.Logger;
  */
 public class CreateTaskHandler extends Handler{
     
-    protected final BranchOffice manager;
-    protected final Company db;
+    protected final BranchOffice office;
+    protected final List<ResourceType> resourceTypes;
     
     protected final SimulatorCommand simulatorCommand;
     
     /**
      * Initialize a new create task handler with the given projectContainer.
      * 
-     * @param manager The projectContainer to use in this handler. 
+     * @param office The branch office to use in this handler. 
+     * @param resourceTypes The list of all resource types
      * @param auth The authorization manager to use
      * @param acl The action control list to use
-     * @param db The database to use
      * @param simulatorCommand The command to use, to store all executed commands
      */   
-    public CreateTaskHandler(BranchOffice manager, Auth auth, Acl acl, Company db, SimulatorCommand simulatorCommand){
+    public CreateTaskHandler(BranchOffice office, List<ResourceType> resourceTypes, Auth auth, Acl acl, SimulatorCommand simulatorCommand){
         super(auth, acl);
-        this.manager = manager;
-        this.db = db;
+        this.office = office;
+        this.resourceTypes = resourceTypes;
         this.simulatorCommand = simulatorCommand;
     }
     
@@ -55,12 +54,12 @@ public class CreateTaskHandler extends Handler{
      * Initialize a new create task handler with the given projectContainer.
      * 
      * @param manager The projectContainer to use in this handler. 
+     * @param resourceTypes The database to use
      * @param auth The authorization manager to use
      * @param acl The action control list to use
-     * @param db The database to use
      */   
-    public CreateTaskHandler(BranchOffice manager, Auth auth, Acl acl, Company db) {
-        this(manager, auth, acl, db, new SimulatorCommand());
+    public CreateTaskHandler(BranchOffice manager, List<ResourceType> resourceTypes, Auth auth, Acl acl) {
+        this(manager, resourceTypes, auth, acl, new SimulatorCommand());
     }
     
     
@@ -71,7 +70,7 @@ public class CreateTaskHandler extends Handler{
      * @return A list containing all the tasks of the project with the given id.
      */   
     public List<DetailedTask>  getTasksByProject(int Pid){
-        return new ArrayList<>(manager.getProjectContainer().getProject(Pid).getTasks());
+        return new ArrayList<>(office.getProjectContainer().getProject(Pid).getTasks());
     }
     
     /**
@@ -95,13 +94,13 @@ public class CreateTaskHandler extends Handler{
             altfor = Project.NO_ALTERNATIVE;
         }
         try {
-            Project project = manager.getProjectContainer().getProject(pId);
+            Project project = office.getProjectContainer().getProject(pId);
             Duration duration = new Duration(estDurMinutes);
             
-            Map<ResourceType, Integer> resources = Task.NO_REQUIRED_RESOURCE_TYPES;
+            Map<ResourceType, Integer> resources = Task.getDefaultRequiredResources();
             // convert id's to objects
             for(Entry<Integer, Integer> entry : requiredResources.entrySet()){
-                resources.put(db.getResourceTypes().get(entry.getKey()), entry.getValue());
+                resources.put(resourceTypes.get(entry.getKey()), entry.getValue());
             }
             
             simulatorCommand.addAndExecute(new CreateTaskCommand(project, description, duration, accDev, altfor, prereq, resources));
@@ -124,7 +123,7 @@ public class CreateTaskHandler extends Handler{
      * @throws IllegalStateException No unfinished projects are available.
      */
     public List<DetailedProject> getUnfinishedProjects() throws IllegalStateException{
-        ArrayList<DetailedProject> projects = new ArrayList<>(manager.getProjectContainer().getUnfinishedProjects());
+        ArrayList<DetailedProject> projects = new ArrayList<>(office.getProjectContainer().getUnfinishedProjects());
         if(projects.isEmpty()){
             throw new IllegalStateException("No unfinished projects are available.");
         }
@@ -136,7 +135,7 @@ public class CreateTaskHandler extends Handler{
      * @return A list of all the tasks available in this manager. 
      */
     public List<DetailedTask> getAllTasks(){
-        return new ArrayList<>(manager.getProjectContainer().getAllTasks());
+        return new ArrayList<>(office.getProjectContainer().getAllTasks());
     }
     
     /**
@@ -144,7 +143,7 @@ public class CreateTaskHandler extends Handler{
      * 
      * @return A list containing all the resourcetypes registered in this database.
      */   
-    public List<DetailedResourceType>  getResourceTypes(){
-        return new ArrayList<>(db.getResourceTypes());
+    public List<DetailedResourceType> getResourceTypes(){
+        return new ArrayList<>(resourceTypes);
     }
 }

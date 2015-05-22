@@ -124,14 +124,17 @@ public class ResourceContainer {
     }
 
 	/**
+	 * Return a list of resources meeting the requirements of 
+	 * 
 	 * @param currentTask
 	 * @param requirement
 	 * @param span
 	 * @return
 	 */
-	public List<DetailedResource> meetRequirements(Task currentTask, Map<ResourceType, Integer> requirement, 
+	public List<DetailedResource> meetRequirements(Task currentTask, 
 			Timespan span, List<Integer> specificResources) throws ConflictException {
 		List<DetailedResource> resources = new ArrayList<>();
+		Map<ResourceType, Integer> requirement = currentTask.getRequiredResources();
 		for(ResourceType type : requirement.keySet()) {
 			Set<Resource> availableResources = getNrOfAvailableResources(type, requirement.get(type), span, specificResources);
         	if(availableResources.size() < requirement.get(type))

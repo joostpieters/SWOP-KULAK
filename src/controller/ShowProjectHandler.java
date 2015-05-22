@@ -1,12 +1,12 @@
 package controller;
 
 
-import domain.BranchOffice;
 import domain.Company;
 import domain.Project;
 import domain.dto.DetailedProject;
 import domain.dto.DetailedTask;
 import domain.time.Clock;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,42 +19,37 @@ import java.util.List;
  */
 public class ShowProjectHandler {
     
-    private final BranchOffice manager;
-    
-    private Project currentProject;
+    private final Company company;
     private final Clock clock;
-    private final Company db;
+    private Project currentProject;
     
     /**
      * Initialize a new show project handler with the given projectContainer.
      * 
-     * @param manager The projectContainer to use in this handler. 
+     * @param company The company to use in this handler.
      * @param clock The clock to use in this handler
-     * @param database The database to use in this handler.
      */   
-    public ShowProjectHandler(BranchOffice manager, Clock clock, Company database){
-        this.manager = manager;
+    public ShowProjectHandler(Company company, Clock clock) {
+        this.company = company;
         this.clock = clock;
-        this.db = database;
     }
     
     /**
      * 
-     * @return A list of projects of this projectContainer
+     * @return A list of projects of the company
      */
-    public List<DetailedProject> getProjects(){
-        
-        return new ArrayList<>(db.getProjects());
+    public List<DetailedProject> getProjects() {
+        return new ArrayList<>(company.getProjects());
     }
     
     /**
-     * Select the project with the given id in this projectContainer and set it as
-     * this current project to show
+     * Select the project with the given id in the company and 
+     * set it as the current project to show
      * 
-     * @param projectId The id of the project ro retrieve 
+     * @param projectId The id of the project to retrieve 
      */
-    public void selectProject(int projectId){
-        currentProject = manager.getProjectContainer().getProject(projectId);
+    public void selectProject(int projectId) {
+    	currentProject = company.getProject(projectId);
     }
     /**
      * @return The current project of this handler.
@@ -64,11 +59,12 @@ public class ShowProjectHandler {
     }
     
     /**
-     * Returns the task with the given id of the project with the given id.
+     * Returns the task with the given id of the current project of this handler.
      * 
      * @param taskId The id of the task to retrieve.
      * @return The task with the given id in the current project of this handler.
-     * @throws IllegalStateException The current project is null.
+     * @throws IllegalStateException if the current project is null.
+     * @see #getProject()
      */
     public DetailedTask getTask(int taskId) throws IllegalStateException{
         if(currentProject == null){

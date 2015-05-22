@@ -1,7 +1,6 @@
 package domain.user;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,7 @@ import java.util.Map;
  */
 public class Acl {
     
-    private final Map<String, List<String>> permissions;
+    private final Map<Role, List<String>> permissions;
     
     /**
      * Initializes a new Acl
@@ -54,7 +53,7 @@ public class Acl {
      * @param role The role to get the permissions of
      * @return The list of permissions ascociated to the given user
      */
-    public List<String> getPermissions(String role){
+    public List<String> getPermissions(Role role){
         return permissions.get(role);
     }
     
@@ -64,7 +63,7 @@ public class Acl {
      * @param role The role to add the permission to
      * @param permission The permission to add
      */
-    public void addPermission(String role, String permission){
+    public void addPermission(Role role, String permission){
         if(!permissions.containsKey(role))
             permissions.put(role, new ArrayList<>());
         permissions.get(role).add(permission);
@@ -78,7 +77,7 @@ public class Acl {
      * @param role The role to add
      * @param permissionList The permissions to ascociate with the given role
      */
-    public void addEntry(String role, List<String> permissionList){
+    public void addEntry(Role role, List<String> permissionList){
         if(permissionList == null)
             permissionList = new ArrayList<>();
         permissions.put(role, new ArrayList<>(permissionList));

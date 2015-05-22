@@ -6,10 +6,13 @@ import domain.Company;
 import domain.time.Clock;
 import domain.user.Acl;
 import domain.user.Auth;
+import domain.user.Role;
+
 import java.io.FileReader;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -40,20 +43,20 @@ public class Bootstrap {
         }
 
         Clock clock = new Clock();
-        Company db = new Company();
+        Company company = new Company();
         int option = JOptionPane.showConfirmDialog(null, "Would you like to initialize the system with an input file?");
         
         if (option == 0) {
-            initManagerFromFile(clock, db);
+            initManagerFromFile(clock, company);
         } else if (option == 2) {
             return;
         }
 
-        Auth auth = new Auth(db);
+        Auth auth = new Auth(company);
                
         Acl acl = initAcl();
         
-        HandlerFactory factory = new HandlerFactory(null, clock, auth, acl, db);
+        HandlerFactory factory = new HandlerFactory(company, auth, acl, clock);
         //display uncaught exceptions
         Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
             JOptionPane.showMessageDialog(null, e.getMessage(), null, JOptionPane.WARNING_MESSAGE);
@@ -67,9 +70,9 @@ public class Bootstrap {
 
     private static Acl initAcl() {
         Acl acl = new Acl();
-        acl.addEntry("admin", Arrays.asList("UpdateTaskStatus", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "updateTaskStatus", "DelegateTask"));
-        acl.addEntry("developer", Arrays.asList("UpdateTaskStatus"));
-        acl.addEntry("manager", Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "DelegateTask"));
+        acl.addEntry(Role.ADMIN, Arrays.asList("UpdateTaskStatus", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "updateTaskStatus", "DelegateTask"));
+        acl.addEntry(Role.DEVELOPER, Arrays.asList("UpdateTaskStatus"));
+        acl.addEntry(Role.MANAGER, Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "DelegateTask"));
         return acl;
     }
 
