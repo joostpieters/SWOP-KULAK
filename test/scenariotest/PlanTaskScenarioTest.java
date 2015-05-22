@@ -131,7 +131,7 @@ public class PlanTaskScenarioTest {
 		
 		//Step 6 - get required resource types and their necessary quantity as assigned by the project manager when creating the task
 		//         for each required resource type instance to perform the task, propose a specific resource to make a reservation for
-		List<DetailedResource> requiredResources = handler.getRequiredResources(pId, tId, selectedTime);
+		List<? extends DetailedResource> requiredResources = handler.getRequiredResources(pId, tId, selectedTime);
 		assertEquals(3, requiredResources.size());
 		assertTrue(requiredResources.contains(res0) && requiredResources.contains(res00) ||
 				requiredResources.contains(res0) && requiredResources.contains(res000) ||
@@ -183,7 +183,7 @@ public class PlanTaskScenarioTest {
 		//Step 5a - the user indicates he wants to select another time
 		LocalDateTime selectedTime = clock.getTime().plusMinutes(73);
 		
-		List<DetailedResource> requiredResources = handler.getRequiredResources(pId, tId, selectedTime);;
+		List<? extends DetailedResource> requiredResources = handler.getRequiredResources(pId, tId, selectedTime);;
 		assertEquals(4, requiredResources.size());
 		assertTrue(requiredResources.contains(res0) && requiredResources.contains(res00) || 
 				requiredResources.contains(res0) && requiredResources.contains(res000) ||
@@ -231,7 +231,7 @@ public class PlanTaskScenarioTest {
 		int tId = selectedTask.getId();
 		LocalDateTime selectedTime = clock.getTime().withMinute(0).plusHours(1);
 		
-		List<DetailedResource> requiredResources = handler.getRequiredResources(pId, tId, selectedTime);
+		List<? extends DetailedResource> requiredResources = handler.getRequiredResources(pId, tId, selectedTime);
 		assertEquals(4, requiredResources.size());
 		assertTrue(requiredResources.contains(res0) && requiredResources.contains(res00) || 
 				requiredResources.contains(res0) && requiredResources.contains(res000) ||
@@ -255,7 +255,7 @@ public class PlanTaskScenarioTest {
 		int tId = selectedTask.getId();
 		LocalDateTime selectedTime = clock.getTime().plusHours(1);
 		
-		List<DetailedResource> requiredResources = handler.getRequiredResources(pId, tId, selectedTime);
+		List<? extends DetailedResource> requiredResources = handler.getRequiredResources(pId, tId, selectedTime);
 		assertEquals(4, requiredResources.size());
 		
 		List<Integer> resources = new ArrayList<>();

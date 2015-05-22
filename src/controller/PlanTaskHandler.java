@@ -82,7 +82,7 @@ public class PlanTaskHandler extends Handler {
      * @return A list of proposed required resources, such that for every ResourceType the requirements are met.
      * @throws ConflictException if there were not enough resources available.
      */
-    public List<DetailedResource> getRequiredResources(int pId, int tId, LocalDateTime start) throws ConflictException {
+    public List<? extends DetailedResource> getRequiredResources(int pId, int tId, LocalDateTime start) throws ConflictException {
         Task currentTask = pc.getProject(pId).getTask(tId);
         return rc.meetRequirements(currentTask, currentTask.getSpan(start), new ArrayList<>());
     }

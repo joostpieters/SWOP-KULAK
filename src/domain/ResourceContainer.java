@@ -1,9 +1,10 @@
 package domain;
 
-import domain.dto.DetailedResource;
 import domain.task.Task;
 import domain.time.Timespan;
 import exception.ConflictException;
+import exception.ObjectNotFoundException;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -29,7 +30,7 @@ public class ResourceContainer {
     }
 
     /**
-     * @return the resources that are instances of this resourcetype
+     * @return the resources that are instances of this resource type
      */
     public Set<Resource> getResources() {
         return new HashSet<>(resources);
@@ -39,13 +40,14 @@ public class ResourceContainer {
      * Return a resource based on its id.
      * 
      * @param id The id of the resource looking for.
-     * @return the resource with the given id or null if it is not in this container.
+     * @return the resource with the given id.
+     * @throws ObjectNotFoundException if there is no such resource with the given id.
      */
-    public Resource getResource(int id) {
+    public Resource getResource(int id) throws ObjectNotFoundException {
     	for(Resource r : getResources())
     		if(r.getId() == id)
     			return r;
-    	return null;
+    	throw new ObjectNotFoundException("The resource with id " + id + " does not exist in this container");
     }
 
     /**
@@ -124,48 +126,79 @@ public class ResourceContainer {
     }
 
 	/**
-	 * Return a list of resources meeting the requirements of 
+	 * Return a list of resources meeting the requirements of a given task at a given time span.
+	 * The given specific resource-id's defines which resources should be in the resulting list.
 	 * 
-	 * @param currentTask
-	 * @param requirement
-	 * @param span
-	 * @return
+	 * @param task The task to meet the requirements
+	 * @param span The time span during which the requirements need to be met
+	 * @param specificIds The list of id's of resources that should be in the resulting set
+	 * @return a list of resources containing every resource from {@code specificIds} 
+	 * which are available during {@code span} and meet the requirements for {@code task}
+	 * @throws ConflictException if there are not enough available resources of a certain type or if one of the specific resources is not available
+	 * @throws ObjectNotFoundException if one of the given id's does not represent a resource in this container
+	 * @throws IllegalArgumentException if there are more specific resources of a type than required
 	 */
-	public List<DetailedResource> meetRequirements(Task currentTask, 
-			Timespan span, List<Integer> specificResources) throws ConflictException {
-		List<DetailedResource> resources = new ArrayList<>();
-		Map<ResourceType, Integer> requirement = currentTask.getRequiredResources();
+	public List<Resource> meetRequirements(Task task, Timespan span, List<Integer> specificIds) 
+			throws ConflictException, ObjectNotFoundException, IllegalArgumentException {
+		List<Resource> resources = new ArrayList<>();
+		Map<ResourceType, Integer> requirement = task.getRequiredResources();
+		List<Resource> specific = getAvailableResourcesFromIds(specificIds, span);
+		if(specific.size() < specificIds.size())
+			throw new ConflictException("One of the resources in the specific resources are not available at the given time span", 
+					task, findConflictingTasks(span));
+		
 		for(ResourceType type : requirement.keySet()) {
-			Set<Resource> availableResources = getNrOfAvailableResources(type, requirement.get(type), span, specificResources);
+			Set<Resource> availableResources = getNrOfAvailableResources(type, requirement.get(type), span, specific);
         	if(availableResources.size() < requirement.get(type))
-        		throw new ConflictException("There are not enough resource available at the given time span", 
-        				currentTask, findConflictingTasks(span));
+        		if(getResourcesOfType(type).size() < requirement.get(type))
+        			throw new IllegalStateException("The requirements of the task can not be met");
+        		else
+        			throw new ConflictException("There are not enough resource available at the given time span", 
+        					task, findConflictingTasks(span));
         	else
         		resources.addAll(availableResources);
 		}
+		
         return resources;
 	}
     
-    /**
-     * Returns a set of resources that is available at the given timepspan of the given type
-     * in the given list of specific resources.
+	/**
+	 * Get a list of available resources from a given list of IDs during a given span.
+	 * 
+	 * @param specificResources The list with resource-id's
+	 * @param span The span in which the resources need to be available
+	 * @return a list with for every id in {@code specificResources} an actual resource with that id if that resource is available.
+	 * @throws ObjectNotFoundException if one of the given id's does not represent a resource in this container
+	 */
+    private List<Resource> getAvailableResourcesFromIds(List<Integer> specificResources, Timespan span) throws ObjectNotFoundException {
+    	List<Resource> result = new ArrayList<>();
+		for(int id : specificResources) {
+			Resource resource = getResource(id);
+			if(resource.isAvailable(span))
+				result.add(resource);
+		}
+		return result;
+	}
+
+	/**
+     * Returns a set of resources that is available at the given time span of the given type.
+     * The given specific resources will be in the resulting set.
      * 
      * @param type The type of the resources
      * @param quantity The necessary quantity
      * @param span The span to check the availability at
-     * @param specificResources The id's of specific resources in this resource container.
-     * @return A subset of the given specific resources.
+     * @param specificResources The resources which should surely be in this set.
+     * @return a set with {@code quantity} elements of type {@code type} which are available in {@code span} 
+     * containing all resources from {@code specificResources}
+     * @throws IllegalArgumentException if the specificResources contains more resources of a type than quantity.
      */
-    private Set<Resource> getNrOfAvailableResources(ResourceType type, int quantity, Timespan span, List<Integer> specificResources) {
+    private Set<Resource> getNrOfAvailableResources(ResourceType type, int quantity, Timespan span, List<Resource> specificResources) throws IllegalArgumentException {
     	Set<Resource> result = new HashSet<>();
-    	for(int id : specificResources) {
-    		if(result.size() >= quantity)
-    			throw new IllegalArgumentException("There were too many tasks of type " + type.getName() + " in the specific resources list.");
-    		Resource resource = getResource(id);
-    		if(resource == null)
-    			throw new IllegalArgumentException("The resource with id " + id + " does not exist in this container");
-    		if(resource.getType().equals(type))
-    			result.add(resource);
+    	for(Resource r : specificResources) {
+     		if(result.size() >= quantity)
+    			throw new IllegalArgumentException("There were too many resources of type " + type.getName() + " in the specific resources list.");
+     		if(r.getType().equals(type))
+     			result.add(r);
     	}
     	for(Resource r : getAvailableResources(type, span)) {
     		if(result.size() >= quantity)
@@ -190,10 +223,10 @@ public class ResourceContainer {
     }
     
     /**
-       * Get the set of tasks that cause conflicts with the given time span.
+     * Get the set of tasks that cause conflicts with the given time span.
   	 *
   	 * @param span The time span the tasks conflict with.
-  	 * @return	all tasks that reserved resources of this type in span.
+  	 * @return all tasks that reserved resources of this type in span.
   	 */
     private Set<Task> findConflictingTasks(Timespan span) {
     	Set<Task> result = new HashSet<>();
