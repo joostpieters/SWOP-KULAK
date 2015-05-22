@@ -9,7 +9,7 @@ import java.util.List;
  * 
  * @author Mathias, Frederic, Pieter-Jan
  */
-public class Database {
+public class Company {
 
     private final List<ResourceType> resourceTypes;
     private final List<BranchOffice> offices;
@@ -18,7 +18,7 @@ public class Database {
     /**
      * Initializes this new database
      */
-    public Database(){
+    public Company(){
         resourceTypes = new ArrayList<>();
         offices = new ArrayList<>();
     }

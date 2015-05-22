@@ -20,10 +20,9 @@ public class Developer extends Resource implements User {
      * Initializes a new developer with the given name and role
      * 
      * @param name The name of the developer
-     * @param clock The clock this developer should observe 
      * @param branchOffice The office this developer belongs to
      */
-    public Developer(String name, Clock clock, BranchOffice branchOffice) {
+    public Developer(String name, BranchOffice branchOffice) {
         super(name, ResourceType.DEVELOPER);
         this.name = name;
         this.role = "developer";

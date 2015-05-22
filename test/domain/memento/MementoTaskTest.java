@@ -38,9 +38,9 @@ public class MementoTaskTest {
 	public void setUp() throws Exception {
 		clock = new Clock();
 		p0 = new Project("project 0", "this is project 0", LocalDateTime.of(2015, 5, 18, 10, 20), LocalDateTime.of(2015, 5, 30, 13, 0));
-		t0 = new Task("task 0", new Duration(30), 54, Task.getDefaultRequiredResources(), p0);
-		t1 = new Task("task 1", new Duration(31), 55, Arrays.asList(t0), Task.getDefaultRequiredResources(), p0);
-		t2 = new Task("task 2", new Duration(24), 23, Task.getDefaultRequiredResources(), p0);
+		t0 = new Task("task 0", new Duration(30), 54, Task.NO_REQUIRED_RESOURCE_TYPES, p0);
+		t1 = new Task("task 1", new Duration(31), 55, Arrays.asList(t0), Task.NO_REQUIRED_RESOURCE_TYPES, p0);
+		t2 = new Task("task 2", new Duration(24), 23, Task.NO_REQUIRED_RESOURCE_TYPES, p0);
 		
 	}
 	

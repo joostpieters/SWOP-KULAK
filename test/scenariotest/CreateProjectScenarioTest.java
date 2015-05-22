@@ -4,7 +4,7 @@ package scenariotest;
 import controller.CreateProjectHandler;
 import controller.HandlerFactory;
 import domain.BranchOffice;
-import domain.Database;
+import domain.Company;
 import domain.Project;
 import domain.dto.DetailedProject;
 import domain.time.Clock;
@@ -27,7 +27,7 @@ import org.junit.Test;
  */
 public class CreateProjectScenarioTest {
 	
-	private static Database db;
+	private static Company db;
 	private static BranchOffice manager;
 	private static CreateProjectHandler handler;
     private static Clock clock;
@@ -36,7 +36,7 @@ public class CreateProjectScenarioTest {
     
     @BeforeClass
     public static void setUpClass() {
-    	db = new Database();
+    	db = new Company();
         clock = new Clock();
          auth = new Auth(db);
         acl = new Acl();

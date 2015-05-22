@@ -61,15 +61,9 @@ public class TaskTest {
     			LocalDateTime.of(2015, 3, 4, 15, 33)
     			);
     	
-<<<<<<< HEAD
-    	t3 = p.createTask("t3 finished", new Duration(30), 40, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
+    	t3 = p.createTask("t3 finished", new Duration(30), 40, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
     	t3.plan(LocalDateTime.of(2060, 3, 5, 11, 48), Arrays.asList(dev), clock);
     	assertTrue(t3.hasPlanning());
-=======
-    	t3 = p.createTask("t3 finished", new Duration(30), 40, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
-    	t3.plan(LocalDateTime.of(2060, 3, 5, 11, 48), new ArrayList<Resource>(), clock);
-    	assertTrue(t3.isUnplanned());
->>>>>>> branch 'master' of ssh://git@github.com/mrTsjolder/SWOP-KULAK.git
     	assertTrue(t3.getStatus() instanceof Available);
     	t3.execute(clock);
     	assertTrue(t3.getStatus() instanceof Executing);
@@ -661,13 +655,8 @@ public class TaskTest {
     	t0.finish(new Timespan(LocalDateTime.of(2015, 3, 10, 10, 0), LocalDateTime.of(2015, 3, 10, 11, 30)), clock.getTime());
     	assertEquals(90, t0.getTimeSpent().toMinutes());
         
-<<<<<<< HEAD
-    	Task task = p.createTask("task abc", new Duration(33), 54, Project.NO_ALTERNATIVE, Arrays.asList(t0.getId()), Task.getDefaultRequiredResources());
-    	task.plan(LocalDateTime.of(2060,3,4,11,48), Arrays.asList(dev), clock);
-=======
     	Task task = p.createTask("task abc", new Duration(33), 54, Project.NO_ALTERNATIVE, Arrays.asList(t0.getId()), Task.NO_REQUIRED_RESOURCE_TYPES);
-    	task.plan(LocalDateTime.of(2060,3,4,11,48), new ArrayList<Resource>(), clock);
->>>>>>> branch 'master' of ssh://git@github.com/mrTsjolder/SWOP-KULAK.git
+    	task.plan(LocalDateTime.of(2060,3,4,11,48), Arrays.asList(dev), clock);
     	task.execute(clock);
     	task.finish(new Timespan(LocalDateTime.of(2015, 3, 11, 10, 0), LocalDateTime.of(2015, 3, 11, 15, 30)), clock.getTime());
     	assertEquals(90+4*60+30, task.getTimeSpent().toMinutes());

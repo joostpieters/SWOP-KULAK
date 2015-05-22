@@ -1,6 +1,6 @@
 package domain.user;
 
-import domain.Database;
+import domain.Company;
 
 /**
  * This class handles the authorization of user and keeps track of the logged
@@ -13,14 +13,14 @@ public class Auth {
     
     
     private User user;
-    private final Database db;
+    private final Company db;
     
     /**
      * Initializes this authorization class with the given database
      * 
      * @param db The database to use to retrieve the users
      */
-    public Auth(Database db){
+    public Auth(Company db){
         this.db = db;
     }
     

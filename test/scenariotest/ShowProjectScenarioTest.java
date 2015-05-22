@@ -4,7 +4,7 @@ import controller.HandlerFactory;
 import controller.ShowProjectHandler;
 import domain.user.Acl;
 import domain.user.Auth;
-import domain.Database;
+import domain.Company;
 import domain.dto.DetailedProject;
 import domain.dto.DetailedTask;
 import domain.BranchOffice;
@@ -37,7 +37,7 @@ import domain.time.Duration;
 
 public class ShowProjectScenarioTest {
     
-	private static Database db;
+	private static Company db;
     private static ProjectContainer pc;
     private static BranchOffice manager;
     private static ShowProjectHandler handler;
@@ -52,14 +52,14 @@ public class ShowProjectScenarioTest {
     
     @BeforeClass
     public static void setUpBeforeClass() {
-    	db = new Database();
+    	db = new Company();
         pc = new ProjectContainer();
         manager = new BranchOffice("Helsinki", pc, new ResourceContainer());
         // only p1 has tasks
         p1 = pc.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
-        t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
+        t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
         
-        t2 = p1.createTask("A difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Arrays.asList(t1.getId()), Task.getDefaultRequiredResources());
+        t2 = p1.createTask("A difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Arrays.asList(t1.getId()), Task.NO_REQUIRED_RESOURCE_TYPES);
         
         p2 = pc.createProject("Test 2", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         p3 = pc.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));

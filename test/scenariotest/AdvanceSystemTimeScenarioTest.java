@@ -5,7 +5,7 @@ import controller.HandlerFactory;
 import domain.user.Acl;
 import domain.user.Auth;
 import domain.BranchOffice;
-import domain.Database;
+import domain.Company;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.ResourceContainer;
@@ -30,7 +30,7 @@ import domain.time.Duration;
  */
 public class AdvanceSystemTimeScenarioTest {
 
-	private static Database db;
+	private static Company db;
     private static ProjectContainer manager;
     private static AdvanceSystemTimeHandler handler;
     private static Project p1;
@@ -41,13 +41,13 @@ public class AdvanceSystemTimeScenarioTest {
 
     @BeforeClass
     public static void setUpClass() {
-    	db = new Database();
+    	db = new Company();
         manager = new ProjectContainer();
         // only p1 has tasks
         p1 = manager.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 30, 17, 50));
-        t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
+        t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
 
-        t2 = p1.createTask("A difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Arrays.asList(t1.getId()), Task.getDefaultRequiredResources());
+        t2 = p1.createTask("A difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Arrays.asList(t1.getId()), Task.NO_REQUIRED_RESOURCE_TYPES);
 
         manager.createProject("Test 2", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         manager.createProject("Test 3", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));

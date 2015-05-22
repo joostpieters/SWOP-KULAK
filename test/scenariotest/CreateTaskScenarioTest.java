@@ -4,7 +4,7 @@ package scenariotest;
 import controller.CreateTaskHandler;
 import controller.HandlerFactory;
 import domain.BranchOffice;
-import domain.Database;
+import domain.Company;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.ResourceContainer;
@@ -37,7 +37,7 @@ import org.junit.Test;
  */
 public class CreateTaskScenarioTest {
 
-	private static Database db;
+	private static Company db;
     private static ProjectContainer pc;
     private static BranchOffice manager;
     private static CreateTaskHandler handler;
@@ -52,7 +52,7 @@ public class CreateTaskScenarioTest {
 
     @Before
     public void setUp() {
-    	db = new Database();
+    	db = new Company();
         pc = new ProjectContainer();
         // resourcetypes
         resType1 = ResourceType.DEVELOPER;
@@ -67,8 +67,8 @@ public class CreateTaskScenarioTest {
         LocalDateTime project1StartTime = LocalDateTime.of(2015, 03, 12, 17, 30);
         LocalDateTime project1EndTime = LocalDateTime.of(2015, 03, 16, 17, 30);
         p1 = pc.createProject(project1Name, project1Description, project1StartTime, project1EndTime);
-        t1 = p1.createTask("Prereq", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
-        t2 = p1.createTask("Alternative", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
+        t1 = p1.createTask("Prereq", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
+        t2 = p1.createTask("Alternative", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.NO_REQUIRED_RESOURCE_TYPES);
         
         clock = new Clock();
         auth = new Auth(db);

@@ -8,6 +8,7 @@ import domain.time.WorkWeekConfiguration;
 import exception.ObjectNotFoundException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -153,7 +154,7 @@ public class ProjectTest {
     @Test
     public void testCanhaveAsTask() {
     	assertFalse(p0.canHaveAsTask(null));
-    	Task t = p0.createTask(taskdescr, estdur, accdev, altFor, prereqs, Task.getDefaultRequiredResources());
+    	Task t = p0.createTask(taskdescr, estdur, accdev, altFor, prereqs, Task.NO_REQUIRED_RESOURCE_TYPES);
     	assertFalse(p0.canHaveAsTask(t));
     	assertFalse(p0.canHaveAsTask(tFin));
     }
@@ -163,7 +164,7 @@ public class ProjectTest {
      */
     @Test
     public void testCreateTaskSimple() {
-    	Task t = p0.createTask(taskdescr, estdur, accdev, altFor, prereqs, Task.getDefaultRequiredResources());
+    	Task t = p0.createTask(taskdescr, estdur, accdev, altFor, prereqs, Task.NO_REQUIRED_RESOURCE_TYPES);
     	
     	assertTrue(p0.getTasks().contains(t));
     	assertEquals(taskdescr, t.getDescription());
@@ -183,7 +184,7 @@ public class ProjectTest {
     	t1.fail(new Timespan(start, end), clock.getTime());
     	
     	int altFor = t1.getId();
-    	Task t = p1.createTask(taskdescr, estdur, accdev, altFor, prereqs, Task.getDefaultRequiredResources());
+    	Task t = p1.createTask(taskdescr, estdur, accdev, altFor, prereqs, Task.NO_REQUIRED_RESOURCE_TYPES);
     	
     	assertTrue(p1.getTasks().contains(t));
     	assertEquals(taskdescr, t.getDescription());
@@ -200,7 +201,7 @@ public class ProjectTest {
      */
     @Test
     public void testCreateTaskPrereqs() {
-    	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()), Task.getDefaultRequiredResources());
+    	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()), Task.NO_REQUIRED_RESOURCE_TYPES);
     	
     	assertTrue(p2.getTasks().contains(t));
     	assertEquals(taskdescr, t.getDescription());
@@ -220,7 +221,7 @@ public class ProjectTest {
     	t1.fail(new Timespan(start, end), clock.getTime());
     	
     	int altFor = t1.getId();
-    	p2.createTask(taskdescr, estdur, accdev, altFor, prereqs, Task.getDefaultRequiredResources());
+    	p2.createTask(taskdescr, estdur, accdev, altFor, prereqs, Task.NO_REQUIRED_RESOURCE_TYPES);
     }
     
     /**
@@ -228,7 +229,7 @@ public class ProjectTest {
      */
     @Test (expected = ObjectNotFoundException.class)
     public void testCreateTaskInvalidPrereqs() {
-    	p1.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()), Task.getDefaultRequiredResources());
+    	p1.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()), Task.NO_REQUIRED_RESOURCE_TYPES);
     }
     
     /**
@@ -236,7 +237,7 @@ public class ProjectTest {
      */
     @Test (expected = ObjectNotFoundException.class)
     public void testCreateTaskInvalidPrereqs2() {
-    	p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t1.getId(), t2.getId()), Task.getDefaultRequiredResources());
+    	p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t1.getId(), t2.getId()), Task.NO_REQUIRED_RESOURCE_TYPES);
     }
     
     /**
@@ -244,7 +245,7 @@ public class ProjectTest {
      */
     @Test (expected = IllegalStateException.class)
     public void testCreateTaskFinished() {
-    	pFinished.createTask(taskdescr, estdur, accdev, altFor, prereqs, Task.getDefaultRequiredResources());
+    	pFinished.createTask(taskdescr, estdur, accdev, altFor, prereqs, Task.NO_REQUIRED_RESOURCE_TYPES);
     }
     
     /**
@@ -269,7 +270,7 @@ public class ProjectTest {
     public void testGetAvailableTasksAlternative() {
     	clock.advanceTime(end);
     	t1.fail(new Timespan(start, end), clock.getTime());
-    	Task alt = p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs, Task.getDefaultRequiredResources());
+    	Task alt = p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs, Task.NO_REQUIRED_RESOURCE_TYPES);
     	assertEquals(1, p1.getAvailableTasks().size());
     	assertFalse(p1.getAvailableTasks().contains(t1));
     	assertTrue(p1.getAvailableTasks().contains(alt));
@@ -280,15 +281,15 @@ public class ProjectTest {
      */
     @Test
     public void testGetAvailableTasksPrereqs() {
-    	Task prereq = p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()), Task.getDefaultRequiredResources());
+    	Task prereq = p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()), Task.NO_REQUIRED_RESOURCE_TYPES);
     	assertEquals(2, p2.getAvailableTasks().size());
     	assertTrue(p2.getAvailableTasks().contains(t2));
     	assertTrue(p2.getAvailableTasks().contains(t3));
     	assertFalse(p2.getAvailableTasks().contains(prereq));
 
-    	t2.plan(clock.getTime(), Arrays.asList(dev), clock);
+    	t2.plan(clock.getTime(), new ArrayList<Resource>(Arrays.asList(dev)), clock);
     	t2.execute(clock);
-    	t3.plan(clock.getTime(), Arrays.asList(dev2), clock);
+    	t3.plan(clock.getTime(), new ArrayList<Resource>(Arrays.asList(dev)), clock);
     	t3.execute(clock);
     	
     	clock.advanceTime(end);
@@ -319,13 +320,13 @@ public class ProjectTest {
     	assertTrue(p2.getUnacceptablyOverdueTasks(clock.getTime()).isEmpty());
     	assertTrue(pFinished.getUnacceptablyOverdueTasks(clock.getTime()).isEmpty());
     	
-    	Task t = p1.createTask(taskdescr, new Duration(create, due.plusDays(DAYDIF)), accdev, altFor, prereqs, Task.getDefaultRequiredResources());
+    	Task t = p1.createTask(taskdescr, new Duration(create, due.plusDays(DAYDIF)), accdev, altFor, prereqs, Task.NO_REQUIRED_RESOURCE_TYPES);
     	Map<Task, Double> unacceptablyOverdueTasks = p1.getUnacceptablyOverdueTasks(clock.getTime());
     	assertEquals(1, unacceptablyOverdueTasks.size());
     	assertTrue(unacceptablyOverdueTasks.containsKey(t));
     	assertEquals((double) (DAYDIF - 2) / DAYDIF, (double) unacceptablyOverdueTasks.get(t), EPS); //weekend: -2
     	
-    	Task tt = p1.createTask(taskdescr, new Duration(create, due.plusDays(1)), accdev, altFor, prereqs, Task.getDefaultRequiredResources());
+    	Task tt = p1.createTask(taskdescr, new Duration(create, due.plusDays(1)), accdev, altFor, prereqs, Task.NO_REQUIRED_RESOURCE_TYPES);
     	unacceptablyOverdueTasks = p1.getUnacceptablyOverdueTasks(clock.getTime());
     	assertEquals(2, unacceptablyOverdueTasks.size());
     	assertTrue(unacceptablyOverdueTasks.containsKey(t));
@@ -347,7 +348,7 @@ public class ProjectTest {
     public void testGetUnacceptablyOverdueTasksAlternative() {
     	clock.advanceTime(end);
     	t1.fail(new Timespan(start, end), clock.getTime());
-    	Task t = p1.createTask(taskdescr, new Duration(create, due), accdev, t1.getId(), prereqs, Task.getDefaultRequiredResources());
+    	Task t = p1.createTask(taskdescr, new Duration(create, due), accdev, t1.getId(), prereqs, Task.NO_REQUIRED_RESOURCE_TYPES);
     	assertEquals(1, p1.getUnacceptablyOverdueTasks(clock.getTime()).size());
     	assertTrue(p1.getUnacceptablyOverdueTasks(clock.getTime()).containsKey(t));
     	assertEquals((double) new Duration(create, end).toMinutes() / (DAYDIF * week.getMinutesOfWorkDay()), 
@@ -359,9 +360,9 @@ public class ProjectTest {
      */
     @Test
     public void testGetUnacceptablyOverdueTasksPrereqs() {
-    	Task t = p1.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t1.getId()), Task.getDefaultRequiredResources());
+    	Task t = p1.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t1.getId()), Task.NO_REQUIRED_RESOURCE_TYPES);
     	assertTrue(p1.getUnacceptablyOverdueTasks(clock.getTime()).isEmpty());
-    	t1.plan(clock.getTime(), Arrays.asList(dev), clock);
+    	t1.plan(clock.getTime(),new ArrayList<Resource>(Arrays.asList(dev)), clock);
     	t1.execute(clock);
     	clock.advanceTime(due);
     	t1.finish(new Timespan(start, due), clock.getTime());
@@ -380,14 +381,14 @@ public class ProjectTest {
     	assertFalse(p0.isFinished());
     	
     	assertFalse(p1.isFinished());
-    	t1.plan(clock.getTime(), Arrays.asList(dev), clock);
+    	t1.plan(clock.getTime(), new ArrayList<Resource>(Arrays.asList(dev)), clock);
     	t1.execute(clock);
     	clock.advanceTime(end);
     	t1.finish(new Timespan(start, end), clock.getTime());
     	assertTrue(p1.isFinished());
     	
     	assertFalse(p2.isFinished());
-    	t2.plan(clock.getTime(), Arrays.asList(dev), clock);
+    	t2.plan(clock.getTime(), new ArrayList<Resource>(Arrays.asList(dev)), clock);
     	t2.execute(clock);
     	t2.finish(new Timespan(start, end), clock.getTime());
     	assertFalse(p2.isFinished());
@@ -408,7 +409,7 @@ public class ProjectTest {
     	clock.advanceTime(end);
     	t1.fail(new Timespan(start, end), clock.getTime());
     	assertFalse(p1.isFinished());
-    	Task t = p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs, Task.getDefaultRequiredResources());
+    	Task t = p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs, Task.NO_REQUIRED_RESOURCE_TYPES);
     	assertFalse(p1.isFinished());
     	t.plan(clock.getTime(), Arrays.asList(dev), clock);
     	t.execute(clock);
@@ -422,7 +423,7 @@ public class ProjectTest {
     @Test
     public void testIsFinishedPrereqs() {
     	clock.advanceTime(end);
-    	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()), Task.getDefaultRequiredResources());
+    	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()), Task.NO_REQUIRED_RESOURCE_TYPES);
     	assertFalse(p2.isFinished());
     	t2.plan(clock.getTime(), Arrays.asList(dev), clock);
     	t2.execute(clock);
@@ -460,7 +461,7 @@ public class ProjectTest {
     public void testIsOnTimeFinishedAlternative() {
     	clock.advanceTime(end);
     	t1.fail(new Timespan(start, end), clock.getTime());
-    	Task t = p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs, Task.getDefaultRequiredResources());
+    	Task t = p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs, Task.NO_REQUIRED_RESOURCE_TYPES);
     	t.plan(clock.getTime(), Arrays.asList(dev), clock);
     	t.execute(clock);
     	clock.advanceTime(due);
@@ -475,7 +476,7 @@ public class ProjectTest {
     public void testIsOnTimeFinishedAlternative2() {
     	clock.advanceTime(due.plusHours(1));
     	t1.fail(new Timespan(start, due.plusHours(1)), clock.getTime());
-    	Task t = p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs, Task.getDefaultRequiredResources());
+    	Task t = p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs, Task.NO_REQUIRED_RESOURCE_TYPES);
     	t.plan(clock.getTime(), Arrays.asList(dev), clock);
     	t.execute(clock);
     	t.finish(new Timespan(start, due), clock.getTime());
@@ -487,7 +488,7 @@ public class ProjectTest {
      */
     @Test
     public void testIsOnTimeFinishedPrereqs() {
-    	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()), Task.getDefaultRequiredResources());
+    	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()), Task.NO_REQUIRED_RESOURCE_TYPES);
     	t2.plan(clock.getTime(), Arrays.asList(dev), clock);
     	t2.execute(clock);
     	t3.plan(clock.getTime(), Arrays.asList(dev2), clock);
@@ -513,7 +514,7 @@ public class ProjectTest {
     	assertTrue(p2.isOnTime(clock.getTime()));
     	
     	p1.createTask(taskdescr, new Duration(ProjectTest.DAYDIF * week.getMinutesOfWorkDay()).add(10), 
-    			accdev, altFor, prereqs, Task.getDefaultRequiredResources());
+    			accdev, altFor, prereqs, Task.NO_REQUIRED_RESOURCE_TYPES);
     	assertFalse(p1.isOnTime(clock.getTime()));
     	
     	clock.advanceTime(due);
@@ -552,13 +553,13 @@ public class ProjectTest {
     public void testIsOnTimeUnFinishedAlternative() {
     	clock.advanceTime(end);
     	t1.fail(new Timespan(start, end), clock.getTime());
-    	p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs, Task.getDefaultRequiredResources());
+    	p1.createTask(taskdescr, estdur, accdev, t1.getId(), prereqs, Task.NO_REQUIRED_RESOURCE_TYPES);
     	assertTrue(p1.isOnTime(clock.getTime()));
     	
     	t2.fail(new Timespan(start, end), clock.getTime());
     	assertTrue(p2.isOnTime(clock.getTime()));
     	p2.createTask(taskdescr, new Duration(ProjectTest.DAYDIF * week.getMinutesOfWorkDay()), 
-    			accdev, t2.getId(), prereqs, Task.getDefaultRequiredResources());
+    			accdev, t2.getId(), prereqs, Task.NO_REQUIRED_RESOURCE_TYPES);
     	assertFalse(p2.isOnTime(clock.getTime()));
     }
     
@@ -567,10 +568,10 @@ public class ProjectTest {
      */
     @Test
     public void testIsOnTimeUnFinishedPrereqs() {
-    	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()), Task.getDefaultRequiredResources());
+    	Task t = p2.createTask(taskdescr, estdur, accdev, altFor, Arrays.asList(t2.getId(), t3.getId()), Task.NO_REQUIRED_RESOURCE_TYPES);
     	assertTrue(p2.isOnTime(clock.getTime()));
     	p2.createTask(taskdescr, new Duration(ProjectTest.DAYDIF * week.getMinutesOfWorkDay()), 
-    			accdev, altFor, Arrays.asList(t.getId()), Task.getDefaultRequiredResources());
+    			accdev, altFor, Arrays.asList(t.getId()), Task.NO_REQUIRED_RESOURCE_TYPES);
     	assertFalse(p2.isOnTime(clock.getTime()));
     }
     
@@ -583,11 +584,11 @@ public class ProjectTest {
     	LocalDateTime due = LocalDateTime.of(2015, 2, 13, 19, 0);
     	
     	Project p = new Project(name, descr, create, due);
-    	Task t1 = p.createTask("design system", new Duration(8,0), 0, altFor, prereqs, Task.getDefaultRequiredResources());
-    	Task t2 = p.createTask("implement system in native code", new Duration(16,0), 50, altFor, Arrays.asList(t1.getId()), Task.getDefaultRequiredResources());
-    	Task t3 = p.createTask("test system", new Duration(8,0), 0, altFor, Arrays.asList(t2.getId()), Task.getDefaultRequiredResources());
+    	Task t1 = p.createTask("design system", new Duration(8,0), 0, altFor, prereqs, Task.NO_REQUIRED_RESOURCE_TYPES);
+    	Task t2 = p.createTask("implement system in native code", new Duration(16,0), 50, altFor, Arrays.asList(t1.getId()), Task.NO_REQUIRED_RESOURCE_TYPES);
+    	Task t3 = p.createTask("test system", new Duration(8,0), 0, altFor, Arrays.asList(t2.getId()), Task.NO_REQUIRED_RESOURCE_TYPES);
         
-    	Task t4 = p.createTask("write documentation", new Duration(8,0), 0, altFor, Arrays.asList(t2.getId()), Task.getDefaultRequiredResources());
+    	Task t4 = p.createTask("write documentation", new Duration(8,0), 0, altFor, Arrays.asList(t2.getId()), Task.NO_REQUIRED_RESOURCE_TYPES);
     	
     	clock.advanceTime(create);
     	assertTrue(p.isOnTime(clock.getTime()));
@@ -600,7 +601,7 @@ public class ProjectTest {
     	t2.fail(new Timespan(LocalDateTime.of(2015, 2, 10, 9, 0), LocalDateTime.of(2015,  2, 10, 18, 0)), clock.getTime());
         
     	assertTrue(p.isOnTime(clock.getTime()));
-    	Task t5 = p.createTask("implement system with phonegap", new Duration(17,0), 100, t2.getId(), Arrays.asList(t1.getId()), Task.getDefaultRequiredResources());
+    	Task t5 = p.createTask("implement system with phonegap", new Duration(17,0), 100, t2.getId(), Arrays.asList(t1.getId()), Task.NO_REQUIRED_RESOURCE_TYPES);
     	assertFalse(p.isOnTime(clock.getTime()));
     	t5.plan(clock.getTime(), Arrays.asList(dev), clock);
     	t5.execute(clock);
@@ -627,12 +628,8 @@ public class ProjectTest {
     	assertEquals(Duration.ZERO, pFinished.getDelay(clock.getTime()));
     	
     	LocalDateTime end = estdur.getEndTimeFrom(start);
-<<<<<<< HEAD
     	//TODO: geen exception als tijd voor clock-tijd is!!!
     	t1.plan(clock.getTime(), Arrays.asList(dev), clock);
-=======
-    	t1.plan(clock.getTime(), new ArrayList<>(), clock);
->>>>>>> branch 'master' of ssh://git@github.com/mrTsjolder/SWOP-KULAK.git
     	t1.execute(clock);
     	clock.advanceTime(end);
     	t1.finish(new Timespan(start, end), clock.getTime());

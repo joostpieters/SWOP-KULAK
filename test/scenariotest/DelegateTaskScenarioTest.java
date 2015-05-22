@@ -3,7 +3,7 @@ package scenariotest;
 import controller.DelegateTaskHandler;
 import controller.HandlerFactory;
 import domain.BranchOffice;
-import domain.Database;
+import domain.Company;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.ResourceContainer;
@@ -31,7 +31,7 @@ import org.junit.Test;
 public class DelegateTaskScenarioTest {
 
 	private Clock clock;
-	private Database db;
+	private Company db;
     private ProjectContainer pc0, pc1;
     private BranchOffice office0, office1;
     private DelegateTaskHandler handler;
@@ -41,7 +41,7 @@ public class DelegateTaskScenarioTest {
 
     @Before
     public void setUpClass() {
-    	db = new Database();
+    	db = new Company();
     	
     	pc0 = new ProjectContainer();
     	pc1 = new ProjectContainer();
