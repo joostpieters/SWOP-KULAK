@@ -68,7 +68,7 @@ public class ShowProjectScenarioTest {
         clock = new Clock();
         auth = new Auth(db);
         acl = new Acl();
-        HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
+        HandlerFactory controller = new HandlerFactory(db, auth, acl, clock);
         handler = controller.getShowProjectHandler();
     }
 

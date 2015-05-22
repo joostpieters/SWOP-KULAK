@@ -40,20 +40,20 @@ public class Bootstrap {
         }
 
         Clock clock = new Clock();
-        Company db = new Company();
+        Company company = new Company();
         int option = JOptionPane.showConfirmDialog(null, "Would you like to initialize the system with an input file?");
         
         if (option == 0) {
-            initManagerFromFile(clock, db);
+            initManagerFromFile(clock, company);
         } else if (option == 2) {
             return;
         }
 
-        Auth auth = new Auth(db);
+        Auth auth = new Auth(company);
                
         Acl acl = initAcl();
         
-        HandlerFactory factory = new HandlerFactory(null, clock, auth, acl, db);
+        HandlerFactory factory = new HandlerFactory(company, auth, acl, clock);
         //display uncaught exceptions
         Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
             JOptionPane.showMessageDialog(null, e.getMessage(), null, JOptionPane.WARNING_MESSAGE);

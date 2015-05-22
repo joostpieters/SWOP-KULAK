@@ -63,7 +63,7 @@ public class LoginScenarioTest {
         office2.addUser(managerOffice2);
         
 
-        HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
+        HandlerFactory controller = new HandlerFactory(db, auth, acl, clock);
         handler = controller.getLoginHandler();
     }
 

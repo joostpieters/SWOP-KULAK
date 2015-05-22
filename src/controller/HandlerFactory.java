@@ -1,6 +1,5 @@
 package controller;
 
-import domain.BranchOffice;
 import domain.Company;
 import domain.time.Clock;
 import domain.user.Acl;
@@ -13,58 +12,55 @@ import domain.user.Auth;
  * @author Frederic, Mathias, Pieter-Jan
  */
 public class HandlerFactory {
-    
-    private BranchOffice manager;
-    private final Clock clock;
+
+    private final Company company;
     private final Acl acl;
     private final Auth auth;
-    private final Company db;
+    private final Clock clock;
     
     
     
     /**
-     * Initialize a new front controller with the given projectContainer.
+     * Initialize a new front controller with the given company, authentication manager, action control list and clock.
      * 
-     * @param manager The projectContainer to use in this factory. 
-     * @param clock The system clock to use in this factory
+     * @param company The company to use
      * @param auth The authorization manager to use
      * @param acl The action control list to use
-     * @param db The database to use
+     * @param clock The system clock to use in this factory
      */   
-    public HandlerFactory(BranchOffice manager, Clock clock, Auth auth, Acl acl, Company db){
+    public HandlerFactory(Company company, Auth auth, Acl acl, Clock clock){
         this.acl = acl;
         this.auth = auth;
-        this.manager = manager;
         this.clock = clock;
-        this.db = db;
+        this.company = company;
     }
     
     /** 
      * @return A new show project handler, initialized with this manager.
      */
     public ShowProjectHandler getShowProjectHandler(){
-        return new ShowProjectHandler(manager, clock, db);
+        return new ShowProjectHandler(company, clock);
     }
     
     /** 
      * @return A new create project handler, initialized with this manager.
      */
     public CreateProjectHandler getCreateProjectHandler(){
-        return new CreateProjectHandler(manager, auth, acl);
+        return new CreateProjectHandler(auth.getUser().getBranchOffice(), auth, acl);
     }
     
     /** 
      * @return A new create task handler, initialized with this manager.
      */
     public CreateTaskHandler getCreateTaskHandler(){
-        return new CreateTaskHandler(manager, auth, acl, db);
+        return new CreateTaskHandler(auth.getUser().getBranchOffice(), auth, acl, company);
     }
     
     /** 
      * @return A new update task handler, initialized with this manager.
      */
     public UpdateTaskStatusHandler getUpdateTaskHandler(){
-        return new UpdateTaskStatusHandler(manager, clock, auth, acl);
+        return new UpdateTaskStatusHandler(auth.getUser().getBranchOffice(), clock, auth, acl);
     }
     
      /** 
@@ -78,36 +74,28 @@ public class HandlerFactory {
      * @return A new plan task handler, initialized with this manager.
      */
     public PlanTaskHandler getPlanTaskHandler(){
-        return new PlanTaskHandler(manager, clock,auth, acl);
+        return new PlanTaskHandler(auth.getUser().getBranchOffice(), clock,auth, acl);
     }
     
     /** 
      * @return A new delegate task handler.
      */
     public DelegateTaskHandler getDelegatedTaskHandler(){
-        return new DelegateTaskHandler(manager,auth, acl, db);
+        return new DelegateTaskHandler(auth.getUser().getBranchOffice(), auth, acl, company);
     }
     
     /** 
      * @return A new run simulation handler, initialized with this manager.
      */
     public RunSimulationHandler getSimulationHandler(){
-        return new RunSimulationHandler(manager, clock, auth, acl, db);
+        return new RunSimulationHandler(auth.getUser().getBranchOffice(), clock, auth, acl, company);
     }
     
     /** 
      * @return A new login handler.
      */
     public LoginHandler getLoginHandler(){
-        return new LoginHandler(auth, db, this);
-    }
-    /**
-     * Sets the branchoffice of this factory
-     * 
-     * @param manager The office to set
-     */
-    public void setManager(BranchOffice manager) {
-        this.manager = manager;
+        return new LoginHandler(auth, company, this);
     }
     
 }

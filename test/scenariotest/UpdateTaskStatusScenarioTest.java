@@ -76,7 +76,7 @@ public class UpdateTaskStatusScenarioTest {
         	acl.addPermission("admin", permission);
         manager.addUser(new Developer("John", manager));
         auth.login("John");
-		HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
+		HandlerFactory controller = new HandlerFactory(db, auth, acl, clock);
         handler = controller.getUpdateTaskHandler();
         clock.advanceTime(LocalDateTime.of(2015,03,17,14,10));
     }

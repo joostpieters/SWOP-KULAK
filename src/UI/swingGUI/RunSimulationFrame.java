@@ -4,7 +4,6 @@ import controller.HandlerFactory;
 import controller.RunSimulationHandler;
 import exception.NoAccessException;
 import java.awt.Frame;
-import java.time.format.DateTimeFormatter;
 import javax.swing.JFrame;
 
 /**
@@ -17,7 +16,6 @@ public class RunSimulationFrame extends javax.swing.JFrame {
     private static final long serialVersionUID = -8172848294908727774L;
     private final HandlerFactory factory;
     private final RunSimulationHandler handler;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     /**
      * Creates new form CreateProjectFrame

@@ -66,7 +66,7 @@ public class SimulatorScenarioTest {
         manager.addUser(new GenericUser("root", "admin", manager));
         acl.addEntry("admin", Arrays.asList("UpdateTaskStatus", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "updateTaskStatus"));
         auth.login("root");
-		HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
+		HandlerFactory controller = new HandlerFactory(db, auth, acl, clock);
         simHandler = controller.getSimulationHandler();
         createTaskSimHandler  = simHandler.getCreateTaskSimulatorHandler();
     }

@@ -49,8 +49,6 @@ public class LoginHandler {
         if (!auth.login(username)) {
             throw new NoAccessException("The login failed");
         }
-
-        factory.setManager(auth.getUser().getBranchOffice());
     }
 
     /**

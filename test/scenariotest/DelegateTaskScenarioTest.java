@@ -64,7 +64,7 @@ public class DelegateTaskScenarioTest {
         office1.addUser(new GenericUser("John", "manager", office0));
         acl.addEntry("manager", new ArrayList<>(Arrays.asList("DelegateTask")));
         auth.login("John");
-        HandlerFactory controller = new HandlerFactory(office0, clock, auth, acl, db);
+        HandlerFactory controller = new HandlerFactory(db, auth, acl, clock);
         handler = controller.getDelegatedTaskHandler();
     }
 

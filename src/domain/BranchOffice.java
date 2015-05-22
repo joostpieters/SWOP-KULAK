@@ -3,6 +3,8 @@ package domain;
 import domain.dto.DetailedBranchOffice;
 import domain.task.Task;
 import domain.user.User;
+import exception.ObjectNotFoundException;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -179,8 +181,27 @@ public class BranchOffice implements DetailedBranchOffice {
         users.add(user);
     }
     
+    //TODO: wordt dit niet weer incohesive? (zie onder)
+    
     /**
+     * @return all projects from this branch office.
+     */
+    public List<Project> getProjects() {
+    	return getProjectContainer().getProjects();
+    }
+
+    /**
+     * Try to get the project with the given id from this branch office.
      * 
+     * @param id The id of the project looking for
+     * @return the project with the given id if it exists
+     * @throws ObjectNotFoundException if there is no such project in this office
+     */
+	public Project getProject(int id) throws ObjectNotFoundException {
+		return getProjectContainer().getProject(id);
+	}
+    
+    /**
      * @return All unplanned tasks in this branchoffice, including the delegated
      * tasks.
      */

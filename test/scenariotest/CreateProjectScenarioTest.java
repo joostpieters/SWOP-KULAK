@@ -47,7 +47,7 @@ public class CreateProjectScenarioTest {
         db.addOffice(manager);
         auth.login("John");
         
-        HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
+        HandlerFactory controller = new HandlerFactory(db, auth, acl, clock);
         handler = controller.getCreateProjectHandler();
     }
     

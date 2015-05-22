@@ -80,7 +80,7 @@ public class CreateTaskScenarioTest {
         	acl.addPermission("admin", permission);
         manager.addUser(new GenericUser("John", "manager", manager));
         auth.login("John");
-        HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
+        HandlerFactory controller = new HandlerFactory(db, auth, acl, clock);
         handler = controller.getCreateTaskHandler();
     }
 
