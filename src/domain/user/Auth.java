@@ -13,15 +13,15 @@ public class Auth {
     
     
     private User user;
-    private final Company db;
+    private final Company company;
     
     /**
      * Initializes this authorization class with the given database
      * 
-     * @param db The database to use to retrieve the users
+     * @param company The company to use to retrieve the users
      */
-    public Auth(Company db){
-        this.db = db;
+    public Auth(Company company){
+        this.company = company;
     }
     
     /**
@@ -31,7 +31,7 @@ public class Auth {
      * @return True if and only if the login succeeded.
      */
     public boolean login(String username){
-        for(User user : db.getUsers()){
+        for(User user : company.getUsers()){
             if(user.getName().equalsIgnoreCase(username)){
                 this.user = user;
                 return true;

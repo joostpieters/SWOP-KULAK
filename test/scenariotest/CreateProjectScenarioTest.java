@@ -11,13 +11,17 @@ import domain.time.Clock;
 import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.GenericUser;
+import domain.user.Role;
+
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 /**
@@ -42,8 +46,8 @@ public class CreateProjectScenarioTest {
         acl = new Acl();
 
         manager = new BranchOffice("Berlin");
-        manager.addUser(new GenericUser("John", "manager", manager));
-        acl.addEntry("manager", new ArrayList<>(Arrays.asList("CreateProject")));
+        manager.addUser(new GenericUser("John", Role.MANAGER, manager));
+        acl.addEntry(Role.MANAGER, new ArrayList<>(Arrays.asList("CreateProject")));
         db.addOffice(manager);
         auth.login("John");
         

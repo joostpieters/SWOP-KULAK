@@ -7,7 +7,6 @@ import domain.Company;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.ResourceContainer;
-import domain.dto.DetailedBranchOffice;
 import domain.dto.DetailedTask;
 import domain.task.Task;
 import domain.time.Clock;
@@ -15,11 +14,15 @@ import domain.time.Duration;
 import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.GenericUser;
+import domain.user.Role;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,8 +64,8 @@ public class DelegateTaskScenarioTest {
         clock = new Clock();
         auth = new Auth(db);
         acl = new Acl();
-        office1.addUser(new GenericUser("John", "manager", office0));
-        acl.addEntry("manager", new ArrayList<>(Arrays.asList("DelegateTask")));
+        office1.addUser(new GenericUser("John", Role.MANAGER, office0));
+        acl.addEntry(Role.MANAGER, new ArrayList<>(Arrays.asList("DelegateTask")));
         auth.login("John");
         HandlerFactory controller = new HandlerFactory(db, auth, acl, clock);
         handler = controller.getDelegatedTaskHandler();

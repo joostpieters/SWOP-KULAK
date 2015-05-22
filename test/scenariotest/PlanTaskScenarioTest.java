@@ -19,17 +19,21 @@ import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.Developer;
 import domain.user.GenericUser;
+import domain.user.Role;
 import domain.user.User;
 import exception.ConflictException;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -80,7 +84,7 @@ public class PlanTaskScenarioTest {
 		t3 = p.createTask("this is task 3 as alternative for task 1", new Duration(180), 0, 
 				t1.getId(), Project.NO_DEPENDENCIES, requiredResources1);
 		
-		user = new GenericUser("name", "manager", office);
+		user = new GenericUser("name", Role.MANAGER, office);
 		office = new BranchOffice("Het peperkoeken huis van de paashaas", pc, rc);
 		office.addUser(user);
 		office.addUser(dev0);
@@ -89,11 +93,11 @@ public class PlanTaskScenarioTest {
 		rc.addResource(dev1);
 		
         Acl acl = new Acl();
-		acl.addEntry("developer", Arrays.asList("UpdateTaskStatus"));
-		acl.addEntry("manager", Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "DelegateTask"));
-		acl.addEntry("admin", acl.getPermissions("manager"));
-        for(String permission : acl.getPermissions("developer"))
-        	acl.addPermission("admin", permission);
+		acl.addEntry(Role.DEVELOPER, Arrays.asList("UpdateTaskStatus"));
+		acl.addEntry(Role.MANAGER, Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "DelegateTask"));
+		acl.addEntry(Role.ADMIN, acl.getPermissions(Role.MANAGER));
+        for(String permission : acl.getPermissions(Role.DEVELOPER))
+        	acl.addPermission(Role.ADMIN, permission);
 		Company db = new Company();
                 db.addOffice(office);
 		Auth auth = new Auth(db);

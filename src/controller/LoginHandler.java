@@ -6,8 +6,10 @@ import domain.Resource;
 import domain.dto.DetailedBranchOffice;
 import domain.time.WorkWeekConfiguration;
 import domain.user.Auth;
+import domain.user.Role;
 import domain.user.User;
 import exception.NoAccessException;
+
 import java.awt.HeadlessException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -23,20 +25,16 @@ import java.util.List;
 public class LoginHandler {
 
     private final Auth auth;
-    private final Company db;
-    private final HandlerFactory factory;
+    private final Company company;
 
     /**
-     * Initialize a new create task handler with the given projectContainer.
-     *
+     * Initialize a new login handler for the given company.
+     * @param company The company to use
      * @param auth The authorization manager to use
-     * @param db The database to use
-     * @param factory The handler factory
      */
-    public LoginHandler(Auth auth, Company db, HandlerFactory factory) {
+    public LoginHandler(Company company, Auth auth) {
         this.auth = auth;
-        this.db = db;
-        this.factory = factory;
+        this.company = company;
     }
 
     /**
@@ -52,13 +50,13 @@ public class LoginHandler {
     }
 
     /**
-     * Set the start of the one hour lunchbreak for the currently loggedin
+     * Set the start of the one hour lunch break for the currently logged-in
      * developer.
      *
-     * @param begintime The start time of the lunchbreak.
+     * @param begintime The start time of the lunch break.
      */
     public void setLunchbreak(String begintime) {
-        if (auth.loggedIn() && auth.getUser().getRole().equals("developer")) {
+        if (auth.loggedIn() && auth.getUser().getRole().equals(Role.DEVELOPER)) {
 
             if (begintime != null) {
 
@@ -80,43 +78,42 @@ public class LoginHandler {
         }
     }
 
+    /**
+     * @return {@code true} if a developer is logged in to the authentication manager.
+     */
     public boolean askLunchbreak() {
-        return auth.loggedIn() && auth.getUser().getRole().equals("developer");
+        return auth.loggedIn() && auth.getUser().getRole().equals(Role.DEVELOPER);
     }
 
     /**
-     * Logs out the currently loggedin user
-     *
+     * Logs out the currently logged-in user
      */
     public void logout() {
         auth.logout();
     }
 
     /**
-     *
-     *
-     * @return True if and only if a user is logged in
+     * @return {@code true} if and only if a user is logged in
      */
     public boolean loggedIn() {
         return auth.loggedIn();
     }
 
     /**
-     *
-     * @return A list of all brancoffices in this company
+     * @return A list of all branch offices in this company
      */
     public List<DetailedBranchOffice> getOffices() {
-        return new ArrayList<>(db.getOffices());
+        return new ArrayList<>(company.getOffices());
     }
 
     /**
-     * Returns all the developers of the given branchoffice
+     * Returns all the developers of the given branch office
      *
-     * @param officeId The id of the branchoffice in the database
-     * @return A list of developers of the office with the given id.
+     * @param officeId The id of the branch office in the company
+     * @return A list of users of the office with the given id.
      */
     public List<User> getUsers(int officeId) {
-        BranchOffice office = db.getOffices().get(officeId);
+        BranchOffice office = company.getOffices().get(officeId);
 
         return new ArrayList<>(office.getUsers());
     }

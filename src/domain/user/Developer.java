@@ -3,7 +3,6 @@ package domain.user;
 import domain.BranchOffice;
 import domain.Resource;
 import domain.ResourceType;
-import domain.time.Clock;
 
 /**
  * This class represents a developer in the system
@@ -12,40 +11,19 @@ import domain.time.Clock;
  */
 public class Developer extends Resource implements User {
     
-    private String name;
-    private final String role;
+    private final Role role;
     private final BranchOffice branchoffice;
     
     /**
-     * Initializes a new developer with the given name and role
+     * Initializes a new developer with the given name for a given office
      * 
      * @param name The name of the developer
      * @param branchOffice The office this developer belongs to
      */
     public Developer(String name, BranchOffice branchOffice) {
         super(name, ResourceType.DEVELOPER);
-        this.name = name;
-        this.role = "developer";
+        this.role = Role.DEVELOPER;
         this.branchoffice = branchOffice;
-    }
-    
-    /**
-     * 
-     * @return The name of this user 
-     */
-     @Override
-    public String getName() {
-        return name;
-    }
-    
-    /**
-     * Sets the name of this user
-     * 
-     * @param name The name to set 
-     */
-     @Override
-    public void setName(String name) {
-        this.name = name;
     }
     
     /**
@@ -53,7 +31,7 @@ public class Developer extends Resource implements User {
      * @return The role of this user 
      */
      @Override
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
     

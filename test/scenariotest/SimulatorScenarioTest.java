@@ -17,12 +17,16 @@ import domain.time.Timespan;
 import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.GenericUser;
+import domain.user.Role;
+
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -63,8 +67,8 @@ public class SimulatorScenarioTest {
         auth = new Auth(db);
         acl = new Acl();
         db.addOffice(manager);
-        manager.addUser(new GenericUser("root", "admin", manager));
-        acl.addEntry("admin", Arrays.asList("UpdateTaskStatus", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "updateTaskStatus"));
+        manager.addUser(new GenericUser("root", Role.ADMIN, manager));
+        acl.addEntry(Role.ADMIN, Arrays.asList("UpdateTaskStatus", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "updateTaskStatus"));
         auth.login("root");
 		HandlerFactory controller = new HandlerFactory(db, auth, acl, clock);
         simHandler = controller.getSimulationHandler();

@@ -18,7 +18,9 @@ import domain.time.Timespan;
 import domain.time.WorkWeekConfiguration;
 import domain.user.Developer;
 import domain.user.GenericUser;
+import domain.user.Role;
 import exception.ConflictException;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StreamTokenizer;
@@ -278,7 +280,7 @@ public class FileInitializor extends StreamTokenizer {
             expectChar('-');
             String name = expectStringField("name");
             int officeId = expectIntField("office");
-            GenericUser manager = new GenericUser(name, "manager", db.getOffices().get(officeId));
+            GenericUser manager = new GenericUser(name, Role.MANAGER, db.getOffices().get(officeId));
             db.getOffices().get(officeId).addUser(manager);
 
         }

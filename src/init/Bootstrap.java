@@ -6,10 +6,13 @@ import domain.Company;
 import domain.time.Clock;
 import domain.user.Acl;
 import domain.user.Auth;
+import domain.user.Role;
+
 import java.io.FileReader;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -67,9 +70,9 @@ public class Bootstrap {
 
     private static Acl initAcl() {
         Acl acl = new Acl();
-        acl.addEntry("admin", Arrays.asList("UpdateTaskStatus", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "updateTaskStatus", "DelegateTask"));
-        acl.addEntry("developer", Arrays.asList("UpdateTaskStatus"));
-        acl.addEntry("manager", Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "DelegateTask"));
+        acl.addEntry(Role.ADMIN, Arrays.asList("UpdateTaskStatus", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "updateTaskStatus", "DelegateTask"));
+        acl.addEntry(Role.DEVELOPER, Arrays.asList("UpdateTaskStatus"));
+        acl.addEntry(Role.MANAGER, Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "DelegateTask"));
         return acl;
     }
 

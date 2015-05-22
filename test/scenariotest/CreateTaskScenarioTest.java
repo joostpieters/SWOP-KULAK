@@ -17,6 +17,7 @@ import domain.time.Timespan;
 import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.GenericUser;
+import domain.user.Role;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -73,12 +74,12 @@ public class CreateTaskScenarioTest {
         clock = new Clock();
         auth = new Auth(db);
         acl = new Acl();
-		acl.addEntry("developer", Arrays.asList("UpdateTaskStatus"));
-		acl.addEntry("manager", Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "DelegateTask"));
-		acl.addEntry("admin", acl.getPermissions("manager"));
-        for(String permission : acl.getPermissions("developer"))
-        	acl.addPermission("admin", permission);
-        manager.addUser(new GenericUser("John", "manager", manager));
+		acl.addEntry(Role.DEVELOPER, Arrays.asList("UpdateTaskStatus"));
+		acl.addEntry(Role.MANAGER, Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "DelegateTask"));
+		acl.addEntry(Role.ADMIN, acl.getPermissions(Role.MANAGER));
+        for(String permission : acl.getPermissions(Role.DEVELOPER))
+        	acl.addPermission(Role.ADMIN, permission);
+        manager.addUser(new GenericUser("John", Role.MANAGER, manager));
         auth.login("John");
         HandlerFactory controller = new HandlerFactory(db, auth, acl, clock);
         handler = controller.getCreateTaskHandler();

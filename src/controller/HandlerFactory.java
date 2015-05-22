@@ -95,7 +95,7 @@ public class HandlerFactory {
      * @return A new login handler.
      */
     public LoginHandler getLoginHandler(){
-        return new LoginHandler(auth, company, this);
+        return new LoginHandler(company, auth);
     }
     
 }
