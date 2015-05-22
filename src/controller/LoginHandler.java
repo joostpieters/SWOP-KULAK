@@ -24,8 +24,8 @@ import java.util.List;
  */
 public class LoginHandler {
 
-    private final Auth auth;
     private final Company company;
+    private final Auth auth;
 
     /**
      * Initialize a new login handler for the given company.
@@ -33,8 +33,8 @@ public class LoginHandler {
      * @param auth The authorization manager to use
      */
     public LoginHandler(Company company, Auth auth) {
-        this.auth = auth;
         this.company = company;
+        this.auth = auth;
     }
 
     /**
@@ -114,7 +114,6 @@ public class LoginHandler {
      */
     public List<User> getUsers(int officeId) {
         BranchOffice office = company.getOffices().get(officeId);
-
         return new ArrayList<>(office.getUsers());
     }
 

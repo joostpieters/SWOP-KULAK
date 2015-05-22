@@ -1,7 +1,9 @@
 package controller;
 
 import domain.BranchOffice;
+import domain.ProjectContainer;
 import domain.Resource;
+import domain.ResourceContainer;
 import domain.ResourceType;
 import domain.command.SimulatorCommand;
 import domain.dto.DetailedResource;
@@ -12,6 +14,7 @@ import domain.time.Clock;
 import domain.user.Acl;
 import domain.user.Auth;
 import exception.ConflictException;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +27,8 @@ import java.util.Set;
  */
 public class PlanTaskHandler extends Handler {
 
-    protected final BranchOffice manager;
+    protected final ProjectContainer pc;
+    protected final ResourceContainer rc;
     private final Clock clock;
     
 	private SimulatorCommand simulatorCommand;
@@ -32,28 +36,29 @@ public class PlanTaskHandler extends Handler {
     /**
      * Initialize a new create task handler with the given projectContainer.
      *
-     * @param manager The projectContainer to use in this handler.
+     * @param office The branch office to use in this handler.
      * @param clock The clock to use in this handler
      * @param auth The authorization manager to use
      * @param acl The action control list to use
      */
-    public PlanTaskHandler(BranchOffice manager, Clock clock, Auth auth, Acl acl) {
-    	this(manager, clock, auth, acl, new SimulatorCommand());
+    public PlanTaskHandler(BranchOffice office, Clock clock, Auth auth, Acl acl) {
+    	this(office, clock, auth, acl, new SimulatorCommand());
     }
     
     /**
      * Initialize a new create task handler with the given projectContainer.
      *
-     * @param manager The projectContainer to use in this handler.
+     * @param office The branch office to use in this handler.
      * @param clock The clock to use in this handler
      * @param auth The authorization manager to use
      * @param acl The action control list to use
      * @param simulatorCommand The simulator command to which commands are added.
      */
-    public PlanTaskHandler(BranchOffice manager, Clock clock, Auth auth, Acl acl, SimulatorCommand simulatorCommand)
+    public PlanTaskHandler(BranchOffice office, Clock clock, Auth auth, Acl acl, SimulatorCommand simulatorCommand)
     {
         super(auth, acl);
-        this.manager = manager;
+        this.rc = office.getResourceContainer();
+        this.pc = office.getProjectContainer();
         this.clock = clock;
         this.simulatorCommand = simulatorCommand;
     }
@@ -64,7 +69,7 @@ public class PlanTaskHandler extends Handler {
      * @return All unplanned tasks in the projectContainer of this handler.
      */
     public List<DetailedTask> getUnplannedTasks() {
-        return new ArrayList<>(manager.getProjectContainer().getUnplannedTasks());
+        return new ArrayList<>(pc.getUnplannedTasks());
     }
 
     /**
@@ -78,8 +83,8 @@ public class PlanTaskHandler extends Handler {
      * @throws ConflictException if there were not enough resources available.
      */
     public List<DetailedResource> getRequiredResources(int pId, int tId, LocalDateTime start) throws ConflictException {
-        Task currentTask = manager.getProjectContainer().getProject(pId).getTask(tId);
-        return manager.getResourceContainer().meetRequirements(currentTask, currentTask.getSpan(start), new ArrayList<>());
+        Task currentTask = pc.getProject(pId).getTask(tId);
+        return rc.meetRequirements(currentTask, currentTask.getSpan(start), new ArrayList<>());
     }
 
 
@@ -91,31 +96,31 @@ public class PlanTaskHandler extends Handler {
      * @param pId The id of the project the task belongs to
      * @param tId The id of the task
      * @return A set containing hours at which the task currently being planned
-     * could posiible be started
+     * could possible be started
      */
     public Set<LocalDateTime> getPossibleStartTimesCurrentTask(int pId, int tId) {
-        return manager.getProjectContainer().getProject(pId).getTask(tId).nextAvailableStartingTimes(manager.getResourceContainer(), clock.getTime(), 3);
+        return pc.getProject(pId).getTask(tId).nextAvailableStartingTimes(rc, clock.getTime(), 3);
     }
 
     /**
      * Update the start and end time and status of this current task.
      *
-     * @param pId The id of the projec the task belongs to
+     * @param pId The id of the project the task belongs to
      * @param tId The id of the task
      * @param startTime The start time of the task (yyyy-MM-dd HH:mm)
-     * @param resources The resource to make a planning for
-     * @throws exception.ConflictException The plainning of this task conflicts with
+     * @param resources The resources to make a planning for
+     * @throws exception.ConflictException The planning of this task conflicts with
      * at least one other task
-     * @throws RuntimeException An error occured whilte updating the currently
+     * @throws RuntimeException An error occurred while updating the currently
      * selected task.
      */
     public void planTask(int pId, int tId, LocalDateTime startTime, List<Integer> resources) throws ConflictException, RuntimeException {
         ArrayList<Resource> res = new ArrayList<>();
         // id's to resources
         for(int i : resources){
-            res.add(manager.getResourceContainer().getResource(i));
+            res.add(rc.getResource(i));
         }
-        Task task = manager.getProjectContainer().getProject(pId).getTask(tId);
+        Task task = pc.getProject(pId).getTask(tId);
         
         simulatorCommand.add(task.plan(startTime, res, clock));
     }
@@ -127,7 +132,7 @@ public class PlanTaskHandler extends Handler {
      */
 	public List<DetailedResource> getResources(DetailedResourceType type) {
 		try {
-			return new ArrayList<>(manager.getResourceContainer().getResourcesOfType((ResourceType) type));
+			return new ArrayList<>(rc.getResourcesOfType((ResourceType) type));
 		} catch(ClassCastException cce) {
 			throw new IllegalArgumentException("This type was not recognized by the system. \nPlease enter a valid type");
 		}

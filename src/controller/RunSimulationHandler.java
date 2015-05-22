@@ -1,41 +1,44 @@
 package controller;
 
-import domain.Company;
 import domain.BranchOffice;
+import domain.ResourceType;
 import domain.command.SimulatorCommand;
 import domain.time.Clock;
 import domain.user.Acl;
 import domain.user.Auth;
+
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This handler, handles the create project use case
+ * This handler handles the create project use case
  * 
  * @author Frederic, Mathias, Pieter-Jan
  */
-public class RunSimulationHandler extends Handler{
-    private final BranchOffice manager;
+public class RunSimulationHandler extends Handler {
+	
+    private final BranchOffice office;
+    private final List<ResourceType> resourceTypes;
     private final Clock clock;
-    private final Company db;
     
     private final SimulatorCommand simulatorCommand;
     
     /**
-     * Initialize this createprojecthandler with the given projectContainer.
+     * Initialize this handler with the given branch office.
      * 
-     * @param manager The projectContainer to use in this handler. 
+     * @param office The branch office to use in this handler. 
+     * @param resourceTypes All resource types in the company.
      * @param clock The clock to use in this handler
      * @param auth The authorization manager to use
      * @param acl The action control list to use
-     * @param db The database to use in conjunction with this handler
      */
-    public RunSimulationHandler(BranchOffice manager, Clock clock, Auth auth, Acl acl, Company db){
+    public RunSimulationHandler(BranchOffice office, List<ResourceType> resourceTypes, Clock clock, Auth auth, Acl acl){
         super(auth, acl);
-        this.manager = manager;
+        this.office = office;
+        this.resourceTypes = resourceTypes;
         this.clock = clock;
-        this.db = db;
         this.simulatorCommand = new SimulatorCommand();
     }
     
@@ -51,7 +54,7 @@ public class RunSimulationHandler extends Handler{
     public void createProject(String name, String description, LocalDateTime creationTime, LocalDateTime dueTime) throws RuntimeException{
        
         try{
-            manager.getProjectContainer().createProject(name, description, creationTime, dueTime);
+            office.getProjectContainer().createProject(name, description, creationTime, dueTime);
         }catch(IllegalArgumentException | IllegalStateException e){
             throw e;
         }catch(Exception e){
@@ -68,7 +71,7 @@ public class RunSimulationHandler extends Handler{
      * @return A handler to simulate the creation of a task.
      */
     public CreateTaskHandler getCreateTaskSimulatorHandler() {
-    	return new CreateTaskHandler(manager, auth, acl, db, simulatorCommand);
+    	return new CreateTaskHandler(office, resourceTypes, auth, acl, simulatorCommand);
     } 
     
     /**
@@ -76,7 +79,7 @@ public class RunSimulationHandler extends Handler{
      * @return A handler to simulate the planning of a task.
      */
     public PlanTaskHandler getPlanTaskSimulatorHandler() {
-    	return new PlanTaskHandler(manager, clock, auth, acl, simulatorCommand);
+    	return new PlanTaskHandler(office, clock, auth, acl, simulatorCommand);
     } 
     
     /**

@@ -56,8 +56,7 @@ public class Company {
     }
     
    
-     /**
-     * 
+    /**
      * @return The users stored in this company
      */
     public List<BranchOffice> getOffices(){

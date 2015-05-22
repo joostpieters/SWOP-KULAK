@@ -17,34 +17,28 @@ import java.util.List;
  */
 public class DelegateTaskHandler extends Handler {
 
-    protected final BranchOffice manager;
-    private final Company db;
-    
-	
-
+    protected final BranchOffice office;
+    private final Company company;
     
     /**
      * Initialize a new create task handler with the given projectContainer.
-     *
-     * @param manager The projectContainer to use in this handler.
+     * @param company The company to use in this handler
+     * @param office The branch office to use in this handler.
      * @param auth The authorization manager to use
      * @param acl The action control list to use
-     * @param db The database to use in this handler
      */
-    public DelegateTaskHandler(BranchOffice manager, Auth auth, Acl acl, Company db)
-    {
+    public DelegateTaskHandler(Company company, BranchOffice office, Auth auth, Acl acl) {
         super(auth, acl);
-        this.manager = manager;
-        this.db = db;
+        this.office = office;
+        this.company = company;
        
     }
 
 	/**
 	 * @return All unplanned tasks which are assigned to this branch office.
 	 */
-	public List<DetailedTask> getUnplannedAssignedTasks()
-	{
-		return new ArrayList<>(manager.getAssignedUnplannedTasks());
+	public List<DetailedTask> getUnplannedAssignedTasks() {
+		return new ArrayList<>(office.getAssignedUnplannedTasks());
 	}
         
     
@@ -53,21 +47,21 @@ public class DelegateTaskHandler extends Handler {
      * @return All the other branch offices in the system
      */
 	public List<DetailedBranchOffice> getOtherBranchOffices() {
-		List<DetailedBranchOffice> otherOffices = new ArrayList<>(db.getOffices());
-		otherOffices.remove(manager);
+		List<DetailedBranchOffice> otherOffices = new ArrayList<>(company.getOffices());
+		otherOffices.remove(office);
 		return otherOffices;
 	}
         
-        /**
-         * Delegates the task with the given id to the given branchoffice
-         * 
-         * @param pId The project id of the task
-         * @param tId The id of the task to delegate
-         * @param officeId The id of the office to delegate to
-         */
-        public void delegateTask(int pId, int tId, int officeId){
-            Task task = manager.getProjectContainer().getProject(pId).getTask(tId);
-            manager.delegateTaskTo(task, db.getOffices().get(officeId));
-        }
+    /**
+     * Delegates the task with the given id to the given branch office
+     * 
+     * @param pId The project id of the task
+     * @param tId The id of the task to delegate
+     * @param officeId The id of the office to delegate to
+     */
+    public void delegateTask(int pId, int tId, int officeId) {
+        Task task = office.getProjectContainer().getProject(pId).getTask(tId);
+        office.delegateTaskTo(task, company.getOffices().get(officeId));
+    }
     
 }

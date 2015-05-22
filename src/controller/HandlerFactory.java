@@ -53,7 +53,7 @@ public class HandlerFactory {
      * @return A new create task handler, initialized with this manager.
      */
     public CreateTaskHandler getCreateTaskHandler(){
-        return new CreateTaskHandler(auth.getUser().getBranchOffice(), auth, acl, company);
+        return new CreateTaskHandler(auth.getUser().getBranchOffice(), company.getResourceTypes(), auth, acl);
     }
     
     /** 
@@ -81,14 +81,14 @@ public class HandlerFactory {
      * @return A new delegate task handler.
      */
     public DelegateTaskHandler getDelegatedTaskHandler(){
-        return new DelegateTaskHandler(auth.getUser().getBranchOffice(), auth, acl, company);
+        return new DelegateTaskHandler(company, auth.getUser().getBranchOffice(), auth, acl);
     }
     
     /** 
      * @return A new run simulation handler, initialized with this manager.
      */
     public RunSimulationHandler getSimulationHandler(){
-        return new RunSimulationHandler(auth.getUser().getBranchOffice(), clock, auth, acl, company);
+        return new RunSimulationHandler(auth.getUser().getBranchOffice(), company.getResourceTypes(), clock, auth, acl);
     }
     
     /** 

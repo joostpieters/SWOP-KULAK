@@ -15,13 +15,10 @@ import domain.time.Duration;
 import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.Developer;
-import domain.user.GenericUser;
 import domain.user.Role;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
