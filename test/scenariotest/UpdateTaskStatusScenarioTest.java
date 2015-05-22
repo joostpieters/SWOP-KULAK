@@ -47,6 +47,7 @@ public class UpdateTaskStatusScenarioTest {
     private static Acl acl;
     private static Resource dev;
 	private static ResourceContainer rc;
+    private Developer dev2;
     
     @Before
     public void setUp() {
@@ -61,8 +62,8 @@ public class UpdateTaskStatusScenarioTest {
         p1 = pc.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
         t1.plan(clock.getTime(), Arrays.asList(dev), clock);
-        t1.execute(clock);
         
+        t1.execute(clock);
         p1.createTask("A difficult task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Arrays.asList(t1.getId()), Task.getDefaultRequiredResources());
         
         pc.createProject("Test 2", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
@@ -75,7 +76,8 @@ public class UpdateTaskStatusScenarioTest {
 		acl.addEntry(Role.ADMIN, acl.getPermissions(Role.MANAGER));
         for(String permission : acl.getPermissions(Role.DEVELOPER))
         	acl.addPermission(Role.ADMIN, permission);
-        branchOffice.addUser(new Developer("John", branchOffice));
+           dev2 = new Developer("John", branchOffice);
+        branchOffice.addUser(dev2);
         auth.login("John");
 		HandlerFactory controller = new HandlerFactory(db, auth, acl, clock);
         handler = controller.getUpdateTaskHandler();
@@ -87,6 +89,7 @@ public class UpdateTaskStatusScenarioTest {
      */
     @Test
     public void testMainSuccessScenario() {
+        
     	// Step 2: The system shows a list of all available tasks and the project
     	//         they belong to.
     	handler.getAvailableTasks();
@@ -104,6 +107,7 @@ public class UpdateTaskStatusScenarioTest {
      */
     @Test
     public void testMainSuccessScenario2() {
+        
     	// Step 2: The system shows a list of all available tasks and the project
     	//         they belong to.
     	handler.getAvailableTasks();
@@ -121,15 +125,19 @@ public class UpdateTaskStatusScenarioTest {
      */
     @Test
     public void testMainSuccessScenario3() {
-        t1.plan(clock.getTime(), Arrays.asList(new Developer("Test", branchOffice)), clock);
+        Task t2 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
+        t2.plan(clock.getTime(), Arrays.asList(dev2), clock);
+        
+        
     	// Step 2: The system shows a list of all available tasks and the project
     	//         they belong to.
     	handler.getAvailableTasks();
     	// Step 3: The user selects the task he wants to change.
-    	handler.selectTask(p1.getId(), t1.getId());
+    	handler.selectTask(p1.getId(), t2.getId());
     	// Step 6: The system updates the task status.
     	handler.executeCurrentTask();
-        assertTrue(t1.getStatus() instanceof Executing);
+        
+        assertTrue(t2.getStatus() instanceof Executing);
         
     }
     /**

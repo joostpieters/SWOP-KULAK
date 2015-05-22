@@ -115,6 +115,7 @@ public class Available extends Status {
 
         if (task.hasPlanning()) {
             if (task.getPlanning().isBefore(clock.getTime())) {
+                
                 task.setStatus(new Executing());
                 
             } else {
