@@ -397,5 +397,13 @@ public class ResourceType implements DetailedResourceType {
 			number += resourceTypeMap.remove(this);
 		resourceTypeMap.put(this, number);
 	}
+    /**
+     * 
+     * @return The name of this resourcetype
+     */
+        @Override
+    public String toString(){
+        return name;
+    }
 
 }

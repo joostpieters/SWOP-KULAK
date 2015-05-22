@@ -399,6 +399,7 @@ public class Task implements DetailedTask {
      * @return the requiredResources of this specific task, combined with the
      * standard required resources that are equal for all classes.
      */
+    @Override
     public Map<ResourceType, Integer> getRequiredResources() {
         return new HashMap<>(requiredResources);
     }

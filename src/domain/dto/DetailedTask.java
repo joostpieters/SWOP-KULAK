@@ -4,6 +4,7 @@ import domain.task.Status;
 import domain.time.Duration;
 import domain.time.Timespan;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This interface provides methods to retrieve all data from a task object.
@@ -80,5 +81,11 @@ public interface DetailedTask {
 	 *         null if the task is assigned to the same branch office to which its project belongs to.
 	 */
 	public DetailedBranchOffice getDelegatedBranchOffice();
+         /**
+     
+     * @return the requiredResources of this specific task, combined with the
+     * standard required resources that are equal for all classes.
+     */
+    public Map<? extends DetailedResourceType, Integer> getRequiredResources();
     
 }
