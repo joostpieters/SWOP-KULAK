@@ -11,7 +11,6 @@ import domain.time.Timespan;
 import domain.user.Acl;
 import domain.user.Auth;
 import exception.NoAccessException;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -114,6 +113,7 @@ public class UpdateTaskStatusHandler extends Handler {
         try {
             if (((Resource) auth.getUser()).getReservation(currentTask) != null) {
                 currentTask.execute(clock);
+                
             }            
             
         } catch (ClassCastException e) {

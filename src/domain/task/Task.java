@@ -370,6 +370,7 @@ public class Task implements DetailedTask {
      */
     @Override
     public final Status getStatus() {
+        
         status.update(this);
         return this.status;
     }
