@@ -15,7 +15,6 @@ import exception.ConflictException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -80,8 +79,7 @@ public class PlanTaskHandler extends Handler {
      */
     public List<DetailedResource> getRequiredResources(int pId, int tId, LocalDateTime start) throws ConflictException {
         Task currentTask = manager.getProjectContainer().getProject(pId).getTask(tId);
-        Map<ResourceType, Integer> requirement = currentTask.getRequiredResources();
-        return manager.getResourceContainer().meetRequirements(currentTask, requirement, currentTask.getSpan(start), new ArrayList<>());
+        return manager.getResourceContainer().meetRequirements(currentTask, currentTask.getSpan(start), new ArrayList<>());
     }
 
 

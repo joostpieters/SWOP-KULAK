@@ -3,7 +3,6 @@ package scenariotest;
 import controller.PlanTaskHandler;
 import domain.BranchOffice;
 import domain.Company;
-import domain.Planning;
 import domain.Project;
 import domain.ProjectContainer;
 import domain.Resource;
@@ -11,7 +10,6 @@ import domain.ResourceContainer;
 import domain.ResourceType;
 import domain.dto.DetailedPlanning;
 import domain.dto.DetailedResource;
-import domain.dto.DetailedResourceType;
 import domain.dto.DetailedTask;
 import domain.task.Task;
 import domain.time.Clock;
@@ -87,6 +85,9 @@ public class PlanTaskScenarioTest {
 		office.addUser(user);
 		office.addUser(dev0);
 		office.addUser(dev1);
+		rc.addResource(dev0);
+		rc.addResource(dev1);
+		
         Acl acl = new Acl();
 		acl.addEntry("developer", Arrays.asList("UpdateTaskStatus"));
 		acl.addEntry("manager", Arrays.asList("CreateTask", "CreateProject", "PlanTask", "RunSimulation", "CreateTask", "CreateTaskSimulator", "PlanTaskSimulator", "DelegateTask"));
@@ -128,12 +129,9 @@ public class PlanTaskScenarioTest {
 		//         for each required resource type instance to perform the task, propose a specific resource to make a reservation for
 		List<DetailedResource> requiredResources = handler.getRequiredResources(pId, tId, selectedTime);
 		assertEquals(3, requiredResources.size());
-		Set<Resource> possibleResources = rc.getResourcesOfType(type0);
-		assertEquals(type0, requiredResources.get(0).getType());
-		assertTrue(possibleResources.contains(requiredResources.get(0)));
-		assertEquals(type0, requiredResources.get(1).getType());
-		assertTrue(possibleResources.contains(requiredResources.get(1)));
-		assertFalse(requiredResources.get(0).equals(requiredResources.get(1)));
+		assertTrue(requiredResources.contains(res0) && requiredResources.contains(res00) ||
+				requiredResources.contains(res0) && requiredResources.contains(res000) ||
+				requiredResources.contains(res00) && requiredResources.contains(res000));
 		assertTrue(requiredResources.contains(dev0) || requiredResources.contains(dev1));
 		
 		//Step 7 - select the required resources

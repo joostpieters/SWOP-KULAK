@@ -38,12 +38,13 @@ public class CreateProjectScenarioTest {
     public static void setUpClass() {
     	db = new Company();
         clock = new Clock();
-         auth = new Auth(db);
+        auth = new Auth(db);
         acl = new Acl();
 
         manager = new BranchOffice("Berlin");
         manager.addUser(new GenericUser("John", "manager", manager));
         acl.addEntry("manager", new ArrayList<>(Arrays.asList("CreateProject")));
+        db.addOffice(manager);
         auth.login("John");
         
         HandlerFactory controller = new HandlerFactory(manager, clock, auth, acl, db);
