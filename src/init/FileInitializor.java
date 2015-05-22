@@ -20,7 +20,6 @@ import domain.user.Developer;
 import domain.user.GenericUser;
 import domain.user.Role;
 import exception.ConflictException;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StreamTokenizer;
@@ -374,6 +373,11 @@ public class FileInitializor extends StreamTokenizer {
              
             task = tempProjects.get(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, resourceMap);
              
+            expectLabel("delegatedTo");
+            if (ttype == TT_NUMBER) {
+                int delegatedOfficeId = expectInt();
+                projectOffice.get(task.getProject()).delegateTaskTo(task, db.getOffices().get(delegatedOfficeId));
+            }
            
             int planning = expectIntField("planned");
            
@@ -399,7 +403,6 @@ public class FileInitializor extends StreamTokenizer {
                 	
                     resources.add(tempList.get(id));
                 }
-                
                 
                 task.plan(plannedStartTime, resources, new Clock(plannedStartTime));
             }
