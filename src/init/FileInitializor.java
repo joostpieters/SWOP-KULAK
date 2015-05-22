@@ -41,7 +41,7 @@ public class FileInitializor extends StreamTokenizer {
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
     private final Clock clock;
-    private final Company db;
+    private final Company company;
     private WorkWeekConfiguration dailyAvailability;
 
     /**
@@ -50,13 +50,13 @@ public class FileInitializor extends StreamTokenizer {
      *
      * @param r The reader to use to read in the file
      * @param clock The clock to use
-     * @param db The database to initialize
+     * @param company The database to initialize
      */
-    public FileInitializor(Reader r, Clock clock, Company db) {
+    public FileInitializor(Reader r, Clock clock, Company company) {
         super(r);
 
         this.clock = clock;
-        this.db = db;
+        this.company = company;
     }
 
     /**
@@ -205,7 +205,7 @@ public class FileInitializor extends StreamTokenizer {
             expectChar('-');
             String location = expectStringField("location");
 
-            db.addOffice(new BranchOffice(location));
+            company.addOffice(new BranchOffice(location));
         }
 
         /**
@@ -243,7 +243,7 @@ public class FileInitializor extends StreamTokenizer {
                 // always available
                 resourceType = new ResourceType(name, requirements, conflicts);
             }
-            db.addResourceType(resourceType);
+            company.addResourceType(resourceType);
 
         }
 
@@ -251,10 +251,10 @@ public class FileInitializor extends StreamTokenizer {
         // this happens afterwards so a resource type can conflict with a resource type that's lower in the init file
         for (int i = 0; i < reqList.size(); i++) {
             for (Integer j : reqIntList.get(i)) {
-                reqList.get(i).add(db.getResourceTypes().get(j));
+                reqList.get(i).add(company.getResourceTypes().get(j));
             }
             for (Integer j : conflictIntList.get(i)) {
-                conflictList.get(i).add(db.getResourceTypes().get(j));
+                conflictList.get(i).add(company.getResourceTypes().get(j));
             }
         }
         expectLabel("resources");
@@ -267,7 +267,7 @@ public class FileInitializor extends StreamTokenizer {
             expectLabel("office");
             int officeId = expectInt();
             // create and add resourcetype
-            Resource res = db.getOffices().get(officeId).getResourceContainer().createResource(name, db.getResourceTypes().get(typeIndex));
+            Resource res = company.getOffices().get(officeId).getResourceContainer().createResource(name, company.getResourceTypes().get(typeIndex));
 
             // add to tempory list
             tempList.add(res);
@@ -279,8 +279,8 @@ public class FileInitializor extends StreamTokenizer {
             expectChar('-');
             String name = expectStringField("name");
             int officeId = expectIntField("office");
-            GenericUser manager = new GenericUser(name, Role.MANAGER, db.getOffices().get(officeId));
-            db.getOffices().get(officeId).addUser(manager);
+            GenericUser manager = new GenericUser(name, Role.MANAGER, company.getOffices().get(officeId));
+            company.getOffices().get(officeId).addUser(manager);
 
         }
 
@@ -291,15 +291,15 @@ public class FileInitializor extends StreamTokenizer {
         // new resourcetype for developers
         ArrayList<Resource> devList = new ArrayList<>();
         ResourceType devType = ResourceType.DEVELOPER;
-        db.addResourceType(devType);
+        company.addResourceType(devType);
         while (ttype == '-') {
             expectChar('-');
             String name = expectStringField("name");
             int officeId = expectIntField("office");
-            Developer dev = new Developer(name, db.getOffices().get(officeId));
+            Developer dev = new Developer(name, company.getOffices().get(officeId));
             
-            db.getOffices().get(officeId).addUser(dev);
-            db.getOffices().get(officeId).getResourceContainer().addResource(dev);
+            company.getOffices().get(officeId).addUser(dev);
+            company.getOffices().get(officeId).getResourceContainer().addResource(dev);
             // add to temp list
             devList.add(dev);
             
@@ -324,7 +324,7 @@ public class FileInitializor extends StreamTokenizer {
             LocalDateTime dueTime = expectDateField("dueTime");
             int officeId = expectIntField("office");
 
-            BranchOffice office = db.getOffices().get(officeId);
+            BranchOffice office = company.getOffices().get(officeId);
             Project project = office.getProjectContainer().createProject(name, description, creationTime, dueTime);
             projectOffice.put(project, office);
             tempProjects.add(project);
@@ -365,7 +365,7 @@ public class FileInitializor extends StreamTokenizer {
             List<IntPair> requirements = expectLabeledPairList("type", "quantity");
             HashMap<ResourceType, Integer> resourceMap = new LinkedHashMap<>();
             for (IntPair pair : requirements) {
-                resourceMap.put(db.getResourceTypes().get(pair.first), pair.second);
+                resourceMap.put(company.getResourceTypes().get(pair.first), pair.second);
             }
 
             Task task;
@@ -376,7 +376,7 @@ public class FileInitializor extends StreamTokenizer {
             expectLabel("delegatedTo");
             if (ttype == TT_NUMBER) {
                 int delegatedOfficeId = expectInt();
-                projectOffice.get(task.getProject()).delegateTaskTo(task, db.getOffices().get(delegatedOfficeId));
+                projectOffice.get(task.getProject()).delegateTaskTo(task, company.getOffices().get(delegatedOfficeId));
             }
            
             int planning = expectIntField("planned");

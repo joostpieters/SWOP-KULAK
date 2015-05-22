@@ -9,6 +9,9 @@ import domain.ProjectContainer;
 import domain.Resource;
 import domain.ResourceContainer;
 import domain.ResourceType;
+import domain.task.Executing;
+import domain.task.Failed;
+import domain.task.Finished;
 import domain.task.Task;
 import domain.time.Clock;
 import domain.time.Duration;
@@ -16,11 +19,11 @@ import domain.user.Acl;
 import domain.user.Auth;
 import domain.user.Developer;
 import domain.user.Role;
-
 import java.time.LocalDateTime;
 import java.util.Arrays;
-
-import org.junit.BeforeClass;
+import org.junit.Assert;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
 import org.junit.Test;
 
 
@@ -35,7 +38,7 @@ public class UpdateTaskStatusScenarioTest {
     
 	private static Company db;
     private static ProjectContainer pc;
-    private static BranchOffice manager;
+    private static BranchOffice branchOffice;
     private static UpdateTaskStatusHandler handler;
     private static Project p1;
     private static Task t1;
@@ -45,15 +48,15 @@ public class UpdateTaskStatusScenarioTest {
     private static Resource dev;
 	private static ResourceContainer rc;
     
-    @BeforeClass
-    public static void setUpClass() {
+    @Before
+    public void setUp() {
         clock = new Clock();
     	db = new Company();
         pc = new ProjectContainer();
         rc = new ResourceContainer();
         dev = rc.createResource("jef", ResourceType.DEVELOPER);
-		manager = new BranchOffice("Monaco", pc, rc);
-        db.addOffice(manager);
+		branchOffice = new BranchOffice("Monaco", pc, rc);
+        db.addOffice(branchOffice);
         // only p1 has tasks
         p1 = pc.createProject("Mobile Steps", "A description.", LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015, 3, 22, 17, 50));
         t1 = p1.createTask("An easy task.", new Duration(500), 50, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, Task.getDefaultRequiredResources());
@@ -72,7 +75,7 @@ public class UpdateTaskStatusScenarioTest {
 		acl.addEntry(Role.ADMIN, acl.getPermissions(Role.MANAGER));
         for(String permission : acl.getPermissions(Role.DEVELOPER))
         	acl.addPermission(Role.ADMIN, permission);
-        manager.addUser(new Developer("John", manager));
+        branchOffice.addUser(new Developer("John", branchOffice));
         auth.login("John");
 		HandlerFactory controller = new HandlerFactory(db, auth, acl, clock);
         handler = controller.getUpdateTaskHandler();
@@ -91,8 +94,44 @@ public class UpdateTaskStatusScenarioTest {
     	handler.selectTask(p1.getId(), t1.getId());
     	// Step 6: The system updates the task status.
     	handler.updateCurrentTask(LocalDateTime.of(2015,03,14,10,10), LocalDateTime.of(2015,03,17,14,10), "Finished");
+        assertTrue(t1.getStatus() instanceof Finished);
+        Assert.assertEquals(LocalDateTime.of(2015,03,14,10,10), t1.getTimeSpan().getStartTime());
+         Assert.assertEquals(LocalDateTime.of(2015,03,17,14,10), t1.getTimeSpan().getEndTime());
     }
     
+     /**
+     * Tests the main success scenario of the "Update Task Status" use case
+     */
+    @Test
+    public void testMainSuccessScenario2() {
+    	// Step 2: The system shows a list of all available tasks and the project
+    	//         they belong to.
+    	handler.getAvailableTasks();
+    	// Step 3: The user selects the task he wants to change.
+    	handler.selectTask(p1.getId(), t1.getId());
+    	// Step 6: The system updates the task status.
+    	handler.updateCurrentTask(LocalDateTime.of(2015,03,14,10,10), LocalDateTime.of(2015,03,17,14,10), "Failed");
+        assertTrue(t1.getStatus() instanceof Failed);
+         Assert.assertEquals(LocalDateTime.of(2015,03,14,10,10), t1.getTimeSpan().getStartTime());
+         Assert.assertEquals(LocalDateTime.of(2015,03,17,14,10), t1.getTimeSpan().getEndTime());
+    }
+    
+    /**
+     * Tests the main success scenario of the "Update Task Status" use case update to execute
+     */
+    @Test
+    public void testMainSuccessScenario3() {
+        t1.plan(clock.getTime(), Arrays.asList(new Developer("Test", branchOffice)), clock);
+    	// Step 2: The system shows a list of all available tasks and the project
+    	//         they belong to.
+    	handler.getAvailableTasks();
+    	// Step 3: The user selects the task he wants to change.
+    	handler.selectTask(p1.getId(), t1.getId());
+    	// Step 6: The system updates the task status.
+    	handler.executeCurrentTask();
+        assertTrue(t1.getStatus() instanceof Executing);
+        
+    }
     /**
      * Tests use case extension 6a, with an invalid start time.
      */
@@ -156,5 +195,21 @@ public class UpdateTaskStatusScenarioTest {
     	handler.selectTask(p1.getId(), t1.getId());
     	// Step 6: The system updates the task status.
     	handler.updateCurrentTask(LocalDateTime.of(2015, 3, 12, 17, 30), invalidEndDateTime, "Finished");
+    }
+    
+    /**
+     * Tests use case extension 6a, with an invalid stauts.
+     */
+    @Test (expected = Exception.class)
+    public void testInvalidStatus()
+    {
+    	
+    	// Step 2: The system shows a list of all available tasks and the project
+    	//         they belong to.
+    	handler.getAvailableTasks();
+    	// Step 3: The user selects the task he wants to change.
+    	handler.selectTask(p1.getId(), t1.getId());
+    	// Step 6: The system updates the task status.
+    	handler.updateCurrentTask(LocalDateTime.of(2015, 3, 12, 17, 30), LocalDateTime.of(2015,03,17,14,10), "Fddsfsd");
     }
 }
