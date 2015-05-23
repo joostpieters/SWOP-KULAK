@@ -4,7 +4,6 @@ import domain.task.Task;
 import domain.time.Timespan;
 import exception.ConflictException;
 import exception.ObjectNotFoundException;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -88,9 +87,8 @@ public class ResourceContainer {
     }
 
     /**
-     * Get the set of available resources of a given type on a given period of time.
+     * Get the set of available resources on a given period of time.
      *
-     * @param type The type of the resources that should be available.
      * @param span The time span the resources should be available in.
      * @return	all available resources of {@code type} at {@code span}.
      */

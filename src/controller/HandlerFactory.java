@@ -5,6 +5,7 @@ import domain.Company;
 import domain.time.Clock;
 import domain.user.Acl;
 import domain.user.Auth;
+import exception.NoAccessException;
 
 
 /**
@@ -47,24 +48,21 @@ public class HandlerFactory {
      * @return A new create project handler, initialized with branch office of the current user.
      */
     public CreateProjectHandler getCreateProjectHandler() {
-        BranchOffice currentBranchOffice = auth.getUser().getBranchOffice();
-		return new CreateProjectHandler(currentBranchOffice, auth, acl);
+        return new CreateProjectHandler(getCurrentBranchOffice(), auth, acl);
     }
     
     /** 
      * @return A new create task handler, initialized with this manager.
      */
     public CreateTaskHandler getCreateTaskHandler() {
-        BranchOffice currentBranchOffice = auth.getUser().getBranchOffice();
-		return new CreateTaskHandler(currentBranchOffice, company.getResourceTypes(), auth, acl);
+        return new CreateTaskHandler(getCurrentBranchOffice(), company.getResourceTypes(), auth, acl);
     }
     
     /** 
      * @return A new update task handler, initialized with this manager.
      */
     public UpdateTaskStatusHandler getUpdateTaskHandler() {
-        BranchOffice currentBranchOffice = auth.getUser().getBranchOffice();
-		return new UpdateTaskStatusHandler(currentBranchOffice.getProjectContainer(), clock, auth, acl);
+        return new UpdateTaskStatusHandler(getCurrentBranchOffice().getProjectContainer(), clock, auth, acl);
     }
     
      /** 
@@ -78,24 +76,21 @@ public class HandlerFactory {
      * @return A new plan task handler, initialized with this manager.
      */
     public PlanTaskHandler getPlanTaskHandler() {
-        BranchOffice currentBranchOffice = auth.getUser().getBranchOffice();
-		return new PlanTaskHandler(currentBranchOffice, clock,auth, acl);
+        return new PlanTaskHandler(getCurrentBranchOffice(), clock,auth, acl);
     }
     
     /** 
      * @return A new delegate task handler.
      */
     public DelegateTaskHandler getDelegatedTaskHandler() {
-        BranchOffice currentBranchOffice = auth.getUser().getBranchOffice();
-        return new DelegateTaskHandler(company, currentBranchOffice, auth, acl);
+        return new DelegateTaskHandler(company, getCurrentBranchOffice(), auth, acl);
     }
     
     /** 
      * @return A new run simulation handler, initialized with this manager.
      */
     public RunSimulationHandler getSimulationHandler() {
-        BranchOffice currentBranchOffice = auth.getUser().getBranchOffice();
-        return new RunSimulationHandler(currentBranchOffice, company.getResourceTypes(), clock, auth, acl);
+        return new RunSimulationHandler(getCurrentBranchOffice(), company.getResourceTypes(), clock, auth, acl);
     }
     
     /** 
@@ -105,4 +100,11 @@ public class HandlerFactory {
         return new LoginHandler(company, auth);
     }
     
+    private BranchOffice getCurrentBranchOffice(){
+        if(auth.loggedIn()){
+            return auth.getUser().getBranchOffice();
+        }else{
+            throw new NoAccessException("You have to be logged in to perform this action.");
+        }
+    }
 }
