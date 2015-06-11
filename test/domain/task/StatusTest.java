@@ -1,6 +1,5 @@
 package domain.task;
 
-import domain.BranchOffice;
 import domain.Project;
 import domain.time.Clock;
 import domain.time.Duration;
@@ -21,8 +20,7 @@ public class StatusTest {
 	
 	private Clock clock;
     private Project p;
-    private BranchOffice pm;
-	private Task t0, t1, t2, t3, t4, t5, t6, t7, t7alternative, t8;
+	private Task t0, t1, t3, t4, t6, t7;
 	private Timespan ts0, ts1, ts2;
     @Before
     public void setUp() {
@@ -31,7 +29,6 @@ public class StatusTest {
     	p = new Project("Name", "Description", LocalDateTime.of(2001, 1, 9, 8, 0), LocalDateTime.of(2072, 10, 9, 8, 0));
     	t0 = p.createTask("description!", new Duration(10), 20, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
     	t1 = p.createTask("t1", new Duration(10), 10, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
-    	t2 = p.createTask("t2", new Duration(20), 10, Project.NO_ALTERNATIVE, Arrays.asList(t0.getId(), t1.getId()), new HashMap<>());
     	
     	ts0= new Timespan(
     			LocalDateTime.of(2015, 3, 4, 11, 48), 
@@ -48,15 +45,12 @@ public class StatusTest {
     	t3 = p.createTask("t3 finished", new Duration(30), 40, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
     	t3.fail(new Timespan(ts0.getStartTime(), ts0.getEndTime()), clock.getTime());
     	t4 = p.createTask("t4", new Duration(30), 10, Project.NO_ALTERNATIVE, Arrays.asList(t3.getId()), new HashMap<>());
-    	t5 = p.createTask("t5", new Duration(20), 5, Project.NO_ALTERNATIVE, Arrays.asList(t3.getId(), t2.getId()), new HashMap<>());
 
     	//pm.advanceSystemTime(t6ts.getEndTime());
     	t6 = p.createTask("t6", new Duration(10), 3, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
     	t6.finish(new Timespan(ts1.getStartTime(), ts1.getEndTime()), clock.getTime());
     	t7 = p.createTask("t7", new Duration(15), 4, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
     	t7.fail(new Timespan(ts1.getStartTime(), ts1.getEndTime()), clock.getTime());
-    	t7alternative = p.createTask("alternative for t7", new Duration(10), 2, t7.getId(), Project.NO_DEPENDENCIES, new HashMap<>());
-    	t8 = p.createTask("depends on t7", new Duration(33), 3, Project.NO_ALTERNATIVE, Arrays.asList(t7.getId()), new HashMap<>());
     }
     
     @Test

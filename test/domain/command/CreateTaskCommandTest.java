@@ -1,6 +1,5 @@
 package domain.command;
 
-import domain.BranchOffice;
 import domain.Project;
 import domain.task.Task;
 import domain.time.Duration;
@@ -19,10 +18,8 @@ import org.junit.Test;
  * @author Mathias
  */
 public class CreateTaskCommandTest {
-    private BranchOffice pc;
     private Project p;
     private Task t0;
-    private Task t1;
     private CreateTaskCommand createTaskCommand;
     
    
@@ -32,8 +29,6 @@ public class CreateTaskCommandTest {
         
     	t0 = p.createTask("description!", new Duration(10), 20, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
         t0.fail(new Timespan(LocalDateTime.MIN, LocalDateTime.MAX), LocalDateTime.MAX);
-        
-    	t1 = p.createTask("t1", new Duration(10), 10, Project.NO_ALTERNATIVE, Project.NO_DEPENDENCIES, new HashMap<>());
     	
         createTaskCommand = new CreateTaskCommand(p, "test", new Duration(10), 10, t0.getId(), Project.NO_DEPENDENCIES, new HashMap<>());
     }
