@@ -72,6 +72,10 @@ public class Clock {
     	this.time = time;
         report();
     }
+	
+	/****************************************
+	 * Time                                 * 
+	 ****************************************/
     
     /**
      * Advance the current system time to the given time.
@@ -81,7 +85,7 @@ public class Clock {
      * @throws 	IllegalArgumentException 
      * 			if the given time lays strictly in the past, compared to this clocks time.
      */
-    public void advanceTime(LocalDateTime time) throws IllegalArgumentException{
+    public void advanceTime(LocalDateTime time) throws IllegalArgumentException {
         if(time.isBefore(this.time)){
             throw new IllegalArgumentException("The given timestamp is strictly before the current system time.");
         }
@@ -107,16 +111,20 @@ public class Clock {
      * @return True if and only if the given time is strictly more in the past
      * than the time of this clock.
      */
-    public boolean isBefore(LocalDateTime time){
+    public boolean isBefore(LocalDateTime time) {
         return getTime().isBefore(time);
     }
+	
+	/****************************************
+	 * Observers                            * 
+	 ****************************************/
     
     /**
-     * Atttach the given observer to the list of observers of this clock
+     * Attach the given observer to the list of observers of this clock
      * 
      * @param observer The observer to attach
      */
-    public void attach(ClockObserver observer){
+    public void attach(ClockObserver observer) {
         observers.add(observer);
     }
     
@@ -125,7 +133,7 @@ public class Clock {
      * 
      * @param observer The observer to detach
      */
-    public void detach(ClockObserver observer){
+    public void detach(ClockObserver observer) {
         observers.remove(observer);
     }
     
@@ -137,10 +145,13 @@ public class Clock {
             observer.update(time);
         }
     }
-    
+	
+	/****************************************
+	 * Useful                               * 
+	 ****************************************/
     
     /**
-     * Check wether the given object is equal to this clock.
+     * Check whether the given object is equal to this clock.
      * 
      * @param o The other object to check.
      * @return True if and only if the given object is a Clock and it has the 
@@ -151,12 +162,13 @@ public class Clock {
         if(!(o instanceof Clock)){
             return false;
         }
+        
     	return ((Clock) o).getTime().equals(getTime());
     }
+    
     /**
-     * 
-     * @return The hahcode for this clock, clocks with the same time, have the 
-     * same hashcode.
+     * @return The hash code for this clock, clocks with the same time, have the 
+     * same hash code.
      */
     @Override
     public int hashCode() {

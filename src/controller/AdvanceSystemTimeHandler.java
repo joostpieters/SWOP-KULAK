@@ -21,17 +21,16 @@ public class AdvanceSystemTimeHandler {
      * 
      * @param clock The clock to use to manipulate
      */   
-    public AdvanceSystemTimeHandler(Clock clock){
+    public AdvanceSystemTimeHandler(Clock clock) {
         this.clock = clock;
     }
-    
     
     /**
      * Advance the system clock to the given timestamp
      * 
      * @param timestamp The timestamp to advance the systemclock to (yyyy-MM-dd HH:mm).
      */   
-    public void  advanceTime(String timestamp){
+    public void  advanceTime(String timestamp) {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             LocalDateTime time = LocalDateTime.parse(timestamp, formatter);
@@ -53,7 +52,7 @@ public class AdvanceSystemTimeHandler {
      * 
      * @return The current time as indicated by the system clock 
      */
-    public LocalDateTime getCurrentTime(){
+    public LocalDateTime getCurrentTime() {
         return clock.getTime();
     }
 }

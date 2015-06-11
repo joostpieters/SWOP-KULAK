@@ -56,8 +56,7 @@ public class BranchOffice implements DetailedBranchOffice {
 	 * @throws IllegalArgumentException If the given task is not assigned to this branch office.
 	 * @throws IllegalStateException If the given task has already been planned.
 	 */
-	public void delegateTaskTo(Task task, BranchOffice branchOffice) throws IllegalArgumentException
-	{
+	public void delegateTaskTo(Task task, BranchOffice branchOffice) throws IllegalArgumentException {
 		if(!taskIsAssigned(task))
 			throw new IllegalArgumentException("An attempt has been made to delegate a"
 					+ "task from a branch office to which the task is not assigned to.");
@@ -77,8 +76,7 @@ public class BranchOffice implements DetailedBranchOffice {
 	 * 
 	 * @param task The task to add to this branch offices list of delegated tasks.
 	 */
-	private void addDelegatedTask(Task task)
-	{
+	private void addDelegatedTask(Task task) {
 		// if this task originally belonged to this branch office
 		// we simply set isDelegated to false
 		if(getProjectContainer().containsTask(task)) 
@@ -99,12 +97,12 @@ public class BranchOffice implements DetailedBranchOffice {
 	 * @post This branch office does not contain the given task as one of its delegated tasks.
 	 *       | !containsDelegatedTask(task)
 	 */
-	private void removeDelegatedTask(Task task) throws IllegalArgumentException
-	{
+	private void removeDelegatedTask(Task task) throws IllegalArgumentException {
 		if(!containsDelegatedTask(task))
 			throw new IllegalArgumentException(
 					"An attempt has been made to remove a delegated task from a branch office"
 					+ " which does not contain the given task as one of its delegated tasks.");
+		
 		this.delegatedTasks.remove(task);
 	}
 	
@@ -117,8 +115,7 @@ public class BranchOffice implements DetailedBranchOffice {
 	 *         False otherwise.
 	 *         
 	 */
-	public boolean taskIsAssigned(Task task)
-	{
+	public boolean taskIsAssigned(Task task) {
 		if(containsDelegatedTask(task))
 			return true;
 		if(!task.isDelegated() && projectContainer.containsTask(task))
@@ -135,8 +132,7 @@ public class BranchOffice implements DetailedBranchOffice {
 	 * @return True if and only if the list of delegated tasks belonging to this
 	 *         branch office contains the given task.
 	 */
-	private boolean containsDelegatedTask(Task task)
-	{
+	private boolean containsDelegatedTask(Task task) {
 		return delegatedTasks.contains(task);
 	}
 	
@@ -153,7 +149,6 @@ public class BranchOffice implements DetailedBranchOffice {
 	public ResourceContainer getResourceContainer() {
 		return resourceContainer;
 	}
-
 	
     /**
     * 
@@ -168,7 +163,7 @@ public class BranchOffice implements DetailedBranchOffice {
      * 
      * @return The users working in this branchoffice
      */
-    public List<User> getUsers(){
+    public List<User> getUsers() {
         return new ArrayList<>(users);
     }
     
@@ -177,7 +172,7 @@ public class BranchOffice implements DetailedBranchOffice {
      * 
      * @param user The user to add
      */
-    public void addUser(User user){
+    public void addUser(User user) {
         users.add(user);
     }
     
@@ -205,7 +200,7 @@ public class BranchOffice implements DetailedBranchOffice {
      * @return All unplanned tasks in this branchoffice, including the delegated
      * tasks.
      */
-    public List<Task> getUnplannedTasks(){
+    public List<Task> getUnplannedTasks() {
         List<Task> unplannedTasks = projectContainer.getUnplannedTasks();
         unplannedTasks.addAll(getDelegatedUnplannedTasks());
         return unplannedTasks;
@@ -215,24 +210,26 @@ public class BranchOffice implements DetailedBranchOffice {
      * @return The list of unplanned tasks which are assigned to this branch office.
      * @see taskIsAssigned
      */
-    public List<Task> getAssignedUnplannedTasks()
-    {
+    public List<Task> getAssignedUnplannedTasks() {
     	List<Task> assignedUnplannedTasks = new ArrayList<>();
+    	
     	for(Task task : projectContainer.getUnplannedTasks())
     		if(taskIsAssigned(task))
     			assignedUnplannedTasks.add(task);
+    	
     	return assignedUnplannedTasks;
     }
     
     /**
      * @return The list of tasks assigned to this branch office.
      */
-    public List<Task> getAssignedTasks()
-    {
+    public List<Task> getAssignedTasks() {
     	Set<Task> assignedTasks = new HashSet<>();
+    	
     	for(Task task : projectContainer.getAllTasks())
     		if(taskIsAssigned(task))
     			assignedTasks.add(task);
+    	
     	assignedTasks.addAll(delegatedTasks);
     	return new ArrayList<>(assignedTasks);
     }

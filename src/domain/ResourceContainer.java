@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
 /**
  * This class provides a container to hold resources.
  * It also provides actions to perform on the resources.

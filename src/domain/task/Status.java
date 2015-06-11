@@ -15,8 +15,7 @@ public abstract class Status {
     /**
      * Initializes a new status
      */
-    public Status() {
-    }
+    public Status() { }
 
     /**
      * Sets the alternative task of the given task to the given alternative
@@ -123,11 +122,11 @@ public abstract class Status {
      */
     protected boolean canHaveAsTimeSpan(Task task, Timespan timeSpan) {
         for (Task t : task.getPrerequisiteTasks()) {
-            
             if (t.isFulfilled() && !t.isFulfilledBefore(t,timeSpan)) {
                 return false;
             }
         }
+        
         return true;
     }
     

@@ -51,7 +51,6 @@ public class Bootstrap {
         }
 
         Auth auth = new Auth(company);
-               
         Acl acl = initAcl();
         
         HandlerFactory factory = new HandlerFactory(company, auth, acl, clock);
@@ -77,25 +76,22 @@ public class Bootstrap {
     /**
      * Show an input file dialog and initialize the given manager from the
      * chosen file.
-     *
-     * 
      */
     private static void initManagerFromFile(Clock clock, Company db) {
-
         JFileChooser chooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Task Man inputfile", "tman");
         chooser.setFileFilter(filter);
+        
         //Solve the chooser deadlock bug
         try {
             Thread.sleep(10);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+        
         int returnVal = chooser.showOpenDialog(null);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-
             try (FileReader fileReader = new FileReader(chooser.getSelectedFile())) {
-
                 FileInitializor fileInitializor = new FileInitializor(fileReader, clock, db);
                 fileInitializor.processFile();
             } catch (Exception ex) {

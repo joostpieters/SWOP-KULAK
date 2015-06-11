@@ -27,37 +27,7 @@ public class CreateTaskCommand implements ICommand {
     private Project.Memento projectMemento;
     private Task altforTask;
     private Task.Memento altforTaskMemento;
-
     private Task createdTask;
-    
-
-    /**
-     * @return The task which was created upon execution of this command, null if
-     * the command was reverted or ir the task isn't created.
-     */
-    public Task getCreatedTask() {
-        return createdTask;
-    }
-    
-    /**
-     * Creates a new task based on the paramaters stored in this command
-     */
-    @Override
-    public void execute() {
-
-        // Save state
-        projectMemento = project.createMemento();
-        if (project.hasTask(altfor)) {
-            altforTask = project.getTask(altfor);
-            altforTaskMemento = project.getTask(altfor).createMemento();
-        } else {
-            altforTask = null;
-            altforTaskMemento = null;
-        }
-
-        // Actual execution
-        createdTask = project.createTask(description, estdur, accDev, altfor, prereq, requiredResources);
-    }
 
     /**
      * Initializes this create task command with the given parameters associated
@@ -82,6 +52,33 @@ public class CreateTaskCommand implements ICommand {
         this.prereq = new ArrayList<>(prereqs);
         this.requiredResources = new HashMap<>(requiredResources);
         this.accDev = accdev;
+    }
+
+    /**
+     * @return The task which was created upon execution of this command, null if
+     * the command was reverted or if the task isn't created.
+     */
+    public Task getCreatedTask() {
+        return createdTask;
+    }
+    
+    /**
+     * Creates a new task based on the parameters stored in this command
+     */
+    @Override
+    public void execute() {
+        // Save state
+        projectMemento = project.createMemento();
+        if (project.hasTask(altfor)) {
+            altforTask = project.getTask(altfor);
+            altforTaskMemento = project.getTask(altfor).createMemento();
+        } else {
+            altforTask = null;
+            altforTaskMemento = null;
+        }
+
+        // Actual execution
+        createdTask = project.createTask(description, estdur, accDev, altfor, prereq, requiredResources);
     }
     
     /**

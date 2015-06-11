@@ -32,7 +32,7 @@ public class PlanTaskCommand implements ICommand {
     /**
      * Creates a new plan task command representing the action of planning a task based on the given parameters.
      * 
-     * @param timespan The timespan during which the task is planned.
+     * @param timespan The time span during which the task is planned.
      * @param resources The resources belonging to the task.
      * @param task The task to be planned.
      * @param clock The clock to use with this planning
@@ -42,6 +42,7 @@ public class PlanTaskCommand implements ICommand {
         this.resources = resources;
         if(!requirementsMet())
         	throw new IllegalArgumentException("The resources for this planning do not meet the requirements");
+        
         this.timespan = timespan;
         this.clock = clock;
         reservations = new ArrayList<>();
@@ -59,20 +60,19 @@ public class PlanTaskCommand implements ICommand {
     private boolean requirementsMet() {
 		Map<ResourceType, Integer> requirements = task.getRequiredResources();
                
-		for(ResourceType type : requirements.keySet())
-		{
+		for(ResourceType type : requirements.keySet()) {
 			int count = 0;
-			for(Resource r : resources)
-			{
+			
+			for(Resource r : resources) {
 				if(r.getType().equals(type))
 					count++;
 			}
-			if(count < requirements.get(type))
-			{
+			
+			if(count < requirements.get(type)) {
 				return false;
-			}
-				
+			}	
 		}
+		
 		return true;
 	}
 
@@ -83,14 +83,13 @@ public class PlanTaskCommand implements ICommand {
     public void execute() throws ConflictException {
     	originalTaskPlanning = task.getPlanning();
         
-    	if(originalTaskPlanning != null)
-    	{
-            
+    	if(originalTaskPlanning != null) {
     		originalTaskPlanningMemento = originalTaskPlanning.createMemento();
     		originalTaskPlanning.clearFutureReservations(clock.getTime());
     	}
     	
     	Stack<CreateReservationCommand> executedCmds = new Stack<>();
+    	
         try {
             for (CreateReservationCommand command : reservations) {
                 command.execute();
@@ -101,6 +100,7 @@ public class PlanTaskCommand implements ICommand {
         		executedCmds.pop().revert();
             throw ex;
         }
+        
         task.setPlanning(new Planning(resources, timespan, task, clock));
     }
     
@@ -116,8 +116,7 @@ public class PlanTaskCommand implements ICommand {
             command.revert();
         }
     	
-        if(originalTaskPlanning != null && originalTaskPlanningMemento != null)
-        {
+        if(originalTaskPlanning != null && originalTaskPlanningMemento != null) {
         	originalTaskPlanning.setMemento(originalTaskPlanningMemento);
         }
     }

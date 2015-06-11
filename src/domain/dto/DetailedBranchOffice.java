@@ -8,9 +8,7 @@ package domain.dto;
 public interface DetailedBranchOffice {
 
     /**
-     *
      * @return The location of this branch office
      */
-    String getLocation();
-    
+    String getLocation();  
 }

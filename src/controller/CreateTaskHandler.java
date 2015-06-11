@@ -43,7 +43,7 @@ public class CreateTaskHandler extends Handler{
      * @param acl The action control list to use
      * @param simulatorCommand The command to use, to store all executed commands
      */   
-    public CreateTaskHandler(BranchOffice office, List<ResourceType> resourceTypes, Auth auth, Acl acl, SimulatorCommand simulatorCommand){
+    public CreateTaskHandler(BranchOffice office, List<ResourceType> resourceTypes, Auth auth, Acl acl, SimulatorCommand simulatorCommand) {
         super(auth, acl);
         this.office = office;
         this.resourceTypes = resourceTypes;
@@ -62,14 +62,13 @@ public class CreateTaskHandler extends Handler{
         this(manager, resourceTypes, auth, acl, new SimulatorCommand());
     }
     
-    
     /**
      * Get the list of tasks that belongs to the project with the given id.
      * 
      * @param Pid The id of the project to get the tasks from.
      * @return A list containing all the tasks of the project with the given id.
      */   
-    public List<DetailedTask>  getTasksByProject(int Pid){
+    public List<DetailedTask>  getTasksByProject(int Pid) {
         return new ArrayList<>(office.getProjectContainer().getProject(Pid).getTasks());
     }
     
@@ -85,7 +84,7 @@ public class CreateTaskHandler extends Handler{
      * than 0, if no alternative. 
      * @param requiredResources The resources that are required for this task.
      */
-    public void createTask(int pId, String description, int accDev, List<Integer> prereq, int estDurMinutes, int altfor, Map<Integer, Integer> requiredResources){       
+    public void createTask(int pId, String description, int accDev, List<Integer> prereq, int estDurMinutes, int altfor, Map<Integer, Integer> requiredResources) {       
         if(prereq == null){
             prereq = Project.NO_DEPENDENCIES;
         }
@@ -122,7 +121,7 @@ public class CreateTaskHandler extends Handler{
      * @return A list of all projects in this projectContainer.
      * @throws IllegalStateException No unfinished projects are available.
      */
-    public List<DetailedProject> getUnfinishedProjects() throws IllegalStateException{
+    public List<DetailedProject> getUnfinishedProjects() throws IllegalStateException {
         ArrayList<DetailedProject> projects = new ArrayList<>(office.getProjectContainer().getUnfinishedProjects());
         if(projects.isEmpty()){
             throw new IllegalStateException("No unfinished projects are available.");
@@ -134,7 +133,7 @@ public class CreateTaskHandler extends Handler{
      * 
      * @return A list of all the tasks available in this manager. 
      */
-    public List<DetailedTask> getAllTasks(){
+    public List<DetailedTask> getAllTasks() {
         return new ArrayList<>(office.getProjectContainer().getAllTasks());
     }
     

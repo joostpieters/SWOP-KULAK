@@ -63,5 +63,4 @@ public class DelegateTaskHandler extends Handler {
         Task task = office.getProjectContainer().getProject(pId).getTask(tId);
         office.delegateTaskTo(task, company.getOffices().get(officeId));
     }
-    
 }

@@ -21,11 +21,9 @@ public final class Timespan implements Comparable<Timespan> {
      * form a valid interval.
      */
     public Timespan(LocalDateTime startTime, LocalDateTime endTime) throws IllegalArgumentException {
-
         if (!canHaveAsTime(startTime) || !canHaveAsTime(endTime)) {
             throw new IllegalArgumentException("The start time is not valid.");
         }
-
         if (!canHaveAsTimeInterval(startTime, endTime)) {
             throw new IllegalArgumentException("The start time is later than the end time.");
         }
@@ -67,14 +65,14 @@ public final class Timespan implements Comparable<Timespan> {
     }
 
     /**
-     * @return The time this timespan starts
+     * @return The time this time span starts
      */
     public LocalDateTime getStartTime() {
         return startTime;
     }
 
     /**
-     * @return The time this timespan ends
+     * @return The time this time span ends
      */
     public LocalDateTime getEndTime() {
         return endTime;
@@ -88,8 +86,7 @@ public final class Timespan implements Comparable<Timespan> {
      * time.
      */
     public boolean overlapsWith(Timespan anotherTimespan) {
-
-        return anotherTimespan.getStartTime().compareTo(this.getEndTime()) < 0
+    	return anotherTimespan.getStartTime().compareTo(this.getEndTime()) < 0
                 && this.getStartTime().compareTo(anotherTimespan.getEndTime()) < 0;
     }
 
@@ -123,14 +120,14 @@ public final class Timespan implements Comparable<Timespan> {
     }
 
     /**
-     * @return The duration of this timespan
+     * @return The duration of this time span
      */
     public Duration getDuration() {
         return new Duration(startTime, endTime);
     }
 
     /**
-     * Check whether this timespan can have the given time as its time.
+     * Check whether this time span can have the given time as its time.
      *
      * @param time The time to check
      * @return True if and only if the given time is not null.
@@ -140,22 +137,22 @@ public final class Timespan implements Comparable<Timespan> {
     }
 
     /**
-     * Check whether this timespan ends before the given timespan, not
+     * Check whether this time span ends before the given time span, not
      * necessarily strictly before
      *
-     * @param anotherTimespan The timespan to compare to
-     * @return True if and only if the end time of this timespan is before or
-     * equals the start time of the given timespan.
+     * @param anotherTimespan The time span to compare to
+     * @return True if and only if the end time of this time span is before or
+     * equals the start time of the given time span.
      */
     public boolean endsBefore(Timespan anotherTimespan) {
         return getEndTime().compareTo(anotherTimespan.getStartTime()) <= 0;
     }
 
     /**
-     * Check whether the given time is before the end of this timespan.
+     * Check whether the given time is before the end of this time span.
      *
      * @param time The time to check
-     * @return True if and only if the end time of this timespan happens
+     * @return True if and only if the end time of this time span happens
      * strictly before the given time.
      */
     public boolean endsAfter(LocalDateTime time) {
@@ -184,24 +181,26 @@ public final class Timespan implements Comparable<Timespan> {
      * starting times. In case of equal start times, end times are being
      * compared.
      *
-     * @param	other The Timespan to be compared with.
+     * @param	other The time span to be compared with.
      * @return	0 if this time span equals other, negative if other starts or
      * ends before this, positive if other starts or ends after this.
      */
     @Override
     public int compareTo(Timespan other) {
         int res = this.getStartTime().compareTo(other.getStartTime());
+        
         if (res == 0) {
             res = this.getEndTime().compareTo(other.getEndTime());
         }
+        
         return res;
     }
 
     /**
-     * Checks whether this timespan starts after the given time.
+     * Checks whether this time span starts after the given time.
      *
      * @param time The time to check.
-     * @return True if and only if the start time of this timespan is after the
+     * @return True if and only if the start time of this time span is after the
      * given time.
      */
     public boolean startsAfter(LocalDateTime time) {
@@ -209,10 +208,10 @@ public final class Timespan implements Comparable<Timespan> {
     }
 
     /**
-     * Checks whether this timespan starts before the given time.
+     * Checks whether this time span starts before the given time.
      *
      * @param time The time to check.
-     * @return True if and only if the start time of this timespan is before the
+     * @return True if and only if the start time of this time span is before the
      * given time.
      */
     public boolean startsBefore(LocalDateTime time) {
@@ -221,7 +220,7 @@ public final class Timespan implements Comparable<Timespan> {
     
     /**
      * 
-     * @return A textual representation of this timespan. 
+     * @return A textual representation of this time span. 
      */
     @Override
     public String toString() {
@@ -229,12 +228,12 @@ public final class Timespan implements Comparable<Timespan> {
     }
 
     /**
-     * Checks whether the given object is a timespan and whether it represents
-     * the same span over time as this timespan.
+     * Checks whether the given object is a time span and whether it represents
+     * the same span over time as this time span.
      *
      * @param other The object to compare with
-     * @return True if and only if the other object is also a timespan and the
-     * hashcode of the other timespan matches the hashcode of this timespan.
+     * @return True if and only if the other object is also a time span and the
+     * hash code of the other time span matches the hash code of this time span.
      */
     @Override
     public boolean equals(Object other) {
@@ -246,7 +245,7 @@ public final class Timespan implements Comparable<Timespan> {
 
     /**
      *
-     * @return a hashcode based on the start and end time of this timespan.
+     * @return a hash code based on the start and end time of this time span.
      */
     @Override
     public int hashCode() {

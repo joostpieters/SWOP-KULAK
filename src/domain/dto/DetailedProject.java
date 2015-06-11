@@ -35,11 +35,10 @@ public interface DetailedProject {
      */
     public Duration getDelay(LocalDateTime now);
 
-    /**
-     * **************************************
-     * Getters & setters	*
-     ***************************************
-     */
+    /****************************************
+     * Getters & setters	                *
+     ****************************************/
+    
     /**
      * @return the id of this project.
      */
@@ -70,7 +69,6 @@ public interface DetailedProject {
     boolean isOnTime(LocalDateTime now);
 
     /**
-     *
      * @return A list containing all projects ascociated with this project.
      */
     List<? extends DetailedTask> getTasks();
@@ -91,9 +89,6 @@ public interface DetailedProject {
      * Get the amount of working hours that have been put into this project thus far.
      * 
      * @return	the sum of durations of the time spans of all tasks in this project.
-     * 
-     * 
      */
     public Duration getTotalExecutionTime();
-    
 }

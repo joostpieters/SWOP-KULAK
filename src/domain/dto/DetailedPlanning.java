@@ -11,15 +11,12 @@ import java.util.List;
 public interface DetailedPlanning {
 
     /**
-     *
      * @return The resources assigned to this planning
      */
     List<? extends DetailedResource > getResources();
 
     /**
-     *
      * @return The timespan of this planning
      */
     Timespan getTimespan();
-    
 }

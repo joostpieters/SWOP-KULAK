@@ -30,6 +30,10 @@ public class ProjectContainer {
     public List<Project> getProjects() {
         return new ArrayList<>(projects.values());
     }
+	
+	/****************************************
+	 * Projects                             * 
+	 ****************************************/
 
     /**
      * @return the list of unfinished projects contained by this
@@ -37,39 +41,14 @@ public class ProjectContainer {
      */
     public List<Project> getUnfinishedProjects() {
         List<Project> unfinishedProjects = new ArrayList<>();
+        
         for (Project project : projects.values()) {
             if (!project.isFinished()) {
                 unfinishedProjects.add(project);
             }
         }
+        
         return unfinishedProjects;
-    }
-
-    /**
-     * Creates a new project with the given details and add it to this
-     * projectContainer. The new project gets an id that equals the number of
-     * projects in this projectContainer.
-     *
-     * @param name The name of the project
-     * @param description The description of the project
-     * @param startTime The start time of the project
-     * @param dueTime The time by which the project should be ended.
-     * @return	the project that has been created.
-     */
-    public Project createProject(String name, String description, LocalDateTime startTime, LocalDateTime dueTime) {
-
-        Project p = new Project(name, description, startTime, dueTime);
-        addProject(p);
-        return p;
-    }
-
-    /**
-     * Adds the given project to this project container.
-     *
-     * @param project The project to add.
-     */
-    private void addProject(Project project) {
-        projects.put(project.getId(), project);
     }
 
     /**
@@ -84,17 +63,46 @@ public class ProjectContainer {
         if (!projects.containsKey(pId)) {
             throw new ObjectNotFoundException("The project with the specified id doesn't exist.", pId);
         }
+        
         return projects.get(pId);
-
     }
 
     /**
-     *
      * @return The number of projects that are managed by this projectContainer.
      */
     public int getNbProjects() {
         return projects.size();
     }
+
+    /**
+     * Creates a new project with the given details and add it to this
+     * projectContainer. The new project gets an id that equals the number of
+     * projects in this projectContainer.
+     *
+     * @param name The name of the project
+     * @param description The description of the project
+     * @param startTime The start time of the project
+     * @param dueTime The time by which the project should be ended.
+     * @return	the project that has been created.
+     */
+    public Project createProject(String name, String description, LocalDateTime startTime, LocalDateTime dueTime) {
+        Project p = new Project(name, description, startTime, dueTime);
+        addProject(p);
+        return p;
+    }
+
+    /**
+     * Adds the given project to this project container.
+     *
+     * @param project The project to add.
+     */
+    private void addProject(Project project) {
+        projects.put(project.getId(), project);
+    }
+	
+	/****************************************
+	 * Tasks                                * 
+	 ****************************************/
 
     /**
      * Returns a map with all available tasks in this projectContainer
@@ -104,13 +112,14 @@ public class ProjectContainer {
      * project the task belongs to.
      */
     public Map<Task, Project> getAllAvailableTasks() {
-
         Map<Task, Project> availableTasks = new HashMap<>();
+        
         for (Project project : projects.values()) {
             for (Task task : project.getAvailableTasks()) {
                 availableTasks.put(task, project);
             }
         }
+        
         return availableTasks;
     }
     
@@ -122,8 +131,7 @@ public class ProjectContainer {
      *         project container contains the given task.
      * @see ProjectContainer#getAllTasks()
      */
-    boolean containsTask(Task task)
-    {
+    boolean containsTask(Task task) {
     	return getAllTasks().contains(task);
     }
 
@@ -134,12 +142,12 @@ public class ProjectContainer {
      * @return A list with all tasks of all projects in this projectContainer.
      */
     public List<Task> getAllTasks() {
-
         List<Task> tasks = new ArrayList<>();
+        
         for (Project project : projects.values()) {
             tasks.addAll(project.getTasks());
-
         }
+        
         return tasks;
     }
     
@@ -152,10 +160,16 @@ public class ProjectContainer {
      */
     public List<Task> getUnplannedTasks() {
     	List<Task> unplannedTasks = new ArrayList<>();
+    	
     	for (Project project: projects.values())
     		unplannedTasks.addAll(project.getUnplannedTasks());
+    	
     	return unplannedTasks;
     }
+	
+	/****************************************
+	 * Memento                              * 
+	 ****************************************/
     
     /**
      * Creates a memento for this project container.
@@ -179,7 +193,7 @@ public class ProjectContainer {
     }
     
     /**
-     * This memento represents the internal state of this projectcontainer
+     * This memento represents the internal state of this project container
      */
     public class Memento {
 

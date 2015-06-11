@@ -10,6 +10,7 @@ import exception.NoAccessException;
  * @author Mathias, Frederic, Pieter-Jan
  */
 public abstract class Handler {
+	
     /**
      * The authorization manager to use
      */
@@ -35,7 +36,7 @@ public abstract class Handler {
     /**
      * @throws NoAccessException if there is no user logged in in the authorization manager
      */
-    protected void checkLogin() throws NoAccessException{
+    protected void checkLogin() throws NoAccessException {
         if(!auth.loggedIn()){
             throw new NoAccessException("Sorry you have to be logged in to perform this action.");
         }
@@ -44,7 +45,7 @@ public abstract class Handler {
     /**
      * @throws NoAccessException if the user currently logged in does not have the permission to access this handler
      */
-    protected void checkPermission() throws NoAccessException{
+    protected void checkPermission() throws NoAccessException {
         String permission = this.getClass().getSimpleName().replaceAll("Handler", "");
         if(!acl.hasPermission(auth.getUser(), permission)){
             throw new NoAccessException("Sorry you don't have the right permission to perform this action.");

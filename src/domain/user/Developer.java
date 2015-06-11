@@ -27,7 +27,6 @@ public class Developer extends Resource implements User {
     }
     
     /**
-     * 
      * @return The role of this user 
      */
      @Override
@@ -35,13 +34,11 @@ public class Developer extends Resource implements User {
         return role;
     }
     
-     /**
-     * 
-     * @return The branchoffice this user belongs to
+    /**
+     * @return The branch office this user belongs to
      */
     @Override
     public BranchOffice getBranchOffice(){
         return branchoffice;
-        
     }
 }

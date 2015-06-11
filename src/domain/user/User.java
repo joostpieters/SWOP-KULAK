@@ -10,21 +10,17 @@ import domain.BranchOffice;
 public interface User {
       
     /**
-     * 
      * @return The name of this user 
      */
     public String getName();
     
     /**
-     * 
      * @return The role of this user 
      */
     public Role getRole();
     
-     /**
-     * 
-     * @return The branchoffice this user belongs to
+    /**
+     * @return The branch office this user belongs to
      */
     public BranchOffice getBranchOffice();
-
 }

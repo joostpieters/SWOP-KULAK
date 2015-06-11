@@ -85,11 +85,10 @@ public class ResourceType implements DetailedResourceType {
         this(name, new ArrayList<>(), new ArrayList<>());
     }
 
-    /**
-     * **************************************************
+    /****************************************************
      * Getters & Setters *
-	 ***************************************************
-     */
+	 ****************************************************/
+    
     /**
      * @return the name of this resourcetype
      */
@@ -158,76 +157,14 @@ public class ResourceType implements DetailedResourceType {
      * Others                                           *
 	 ****************************************************/
 
-//    /**
-//     * Checks whether the given quantity of instances are available of this
-//     * resourcetype at the given timespan.
-//     *
-//     * @param span The timespan to check availability on
-//     * @param quantity The quantity necessary of this resourcetype
-//     * @return True if and only if the given quantity of instances are available
-//     * at the given timespan.
-//     */
-//    public boolean hasAvailableResources(Timespan span, int quantity) {
-//        return (quantity < 0) ? false : getAvailableResources(span).size() >= quantity;
-//    }
-//
-//    /**
-//     * Get the set of tasks that cause conflicts with the given time span.
-//     *
-//     * @param span The time span the tasks conflict with.
-//     * @return	all tasks that reserved resources of this type in span.
-//     */
-//    private Set<Task> findConflictingTasks(Timespan span) {
-//        Set<Task> result = new HashSet<>();
-//
-//        for (Resource r : getResources()) {
-//            result.addAll(r.findConflictingTasks(span));
-//        }
-//
-//        return result;
-//    }
-//
-//    /**
-//     * Reserve a certain amount of resources of this type for a given task
-//     * during a given time span.
-//     *
-//     * @param task The task to make the reservation for.
-//     * @param span The time span during which it should be reserved.
-//     * @param quantity The number of resources to be reserved.
-//     * @return	the set of resources that got reserved.
-//     * @throws ConflictException if the reservation conflicted with other tasks.
-//     */
-//    public Set<Resource> makeReservation(Task task, Timespan span, int quantity) throws ConflictException {
-//        if (quantity < 1) {
-//            throw new IllegalArgumentException("At least 1 resource should be reserved.");
-//        }
-//        if (getResources().size() < quantity) {
-//            throw new IllegalArgumentException("There are less resources of this type than you want to reserve.");
-//        }
-//        Set<Resource> availableResources = getAvailableResources(span);
-//        if (availableResources.size() < quantity) {
-//            Set<Task> confl = findConflictingTasks(span);
-//            throw new ConflictException("There are not enough resources of the right type available.", task, confl);
-//        }
-//
-//        Set<Resource> result = new HashSet<>();
-//        for (Resource r : availableResources) {
-//            r.makeReservation(task, span);
-//            result.add(r);
-//            if(result.size() >= quantity)
-//            	break;
-//        }
-//        return result;
-//    }
-
     /**
-     * Checks whether the given list of resourcetypes is compatible with this
-     * resourcetype
+     * Checks whether the given list of resource types is compatible with this
+     * resource type
      *
-     * @param resources The resourcetype to check, including this resourcetype
+     * @param resources The resource type to check, including this resource type
      * @return True if and only if this resource does not conflict with any of
-     * the given resourcetypes and that all the resourcetypes that this
-     * resourcetype requires are included in the given list.
+     * the given resource types and that all the resource types that this
+     * resource type requires are included in the given list.
      */
     public boolean canHaveAsCombination(Map<ResourceType, Integer> resources) {
         for (Entry<ResourceType, Integer> entry : resources.entrySet()) {
@@ -246,7 +183,6 @@ public class ResourceType implements DetailedResourceType {
         }
 
         return true;
-
     }
 
     /**
@@ -258,11 +194,13 @@ public class ResourceType implements DetailedResourceType {
      */
     public int numberOfResources(List<Resource> resources) {
         int result = 0;
+        
         for (Resource r : resources) {
             if (r.getType().equals(this)) {
                 result++;
             }
         }
+        
         return result;
     }
 
@@ -285,19 +223,17 @@ public class ResourceType implements DetailedResourceType {
      *                     This list should contain this resource type.
      * @return The list of conflicts of this resource found in allResources.
      */
-    public List<ResourceType> getConflicts(Map<ResourceType, Integer> allResources)
-    {
+    public List<ResourceType> getConflicts(Map<ResourceType, Integer> allResources) {
     	List<ResourceType> conflictResult = new ArrayList<>();
-    	for(ResourceType conflict : getConflicts())
-    	{
-    		if(conflict == this)
-    		{
+    	
+    	for(ResourceType conflict : getConflicts()) {
+    		if(conflict == this) {
     			if(allResources.containsKey(conflict) && allResources.get(conflict) > 1)
     				conflictResult.add(conflict);
-    		}
-    		else if(allResources.containsKey(conflict) && allResources.get(conflict) > 0)
+    		} else if(allResources.containsKey(conflict) && allResources.get(conflict) > 0)
     			conflictResult.add(conflict);
     	}
+    	
     	return conflictResult;
     }
     
@@ -308,19 +244,17 @@ public class ResourceType implements DetailedResourceType {
      *                     This list should contain this resource type.
      * @return The list of requirements missing from allResources.
      */
-    public List<ResourceType> getMissingReqs(Map<ResourceType, Integer> allResources)
-    {
+    public List<ResourceType> getMissingReqs(Map<ResourceType, Integer> allResources) {
     	List<ResourceType> missingReqResult = new ArrayList<>();
-    	for(ResourceType req : getRequirements())
-    	{
-    		if(req == this)
-    		{
+    	
+    	for(ResourceType req : getRequirements()) {
+    		if(req == this) {
     			if((allResources.containsKey(req) && allResources.get(req) < 2) || !allResources.containsKey(req))
     				missingReqResult.add(req);
-    		}
-    		else if ((allResources.containsKey(req) && allResources.get(req) < 1) || !allResources.containsKey(req))
+    		} else if ((allResources.containsKey(req) && allResources.get(req) < 1) || !allResources.containsKey(req))
     			missingReqResult.add(req);
     	}
+    	
     	return missingReqResult;
     }
     
@@ -334,11 +268,11 @@ public class ResourceType implements DetailedResourceType {
      *         a ResourceTypeConflictException, describing the conflict, is returned.
      *         If there are no conflicts, null is returned.
      */
-	public ResourceTypeConflictException createConflictException(Map<ResourceType, Integer> allResources)
-	{
+	public ResourceTypeConflictException createConflictException(Map<ResourceType, Integer> allResources) {
 		List<ResourceType> conflicts = getConflicts(allResources);
 		if(conflicts.isEmpty())
 			return null;
+		
 		return new ResourceTypeConflictException(this, conflicts);
 	}
 	
@@ -352,11 +286,11 @@ public class ResourceType implements DetailedResourceType {
 	 *         a ResourceTypeMissingReqsException, describing the missing requirements, is returned.
 	 *         If there are no missing requirements, null is returned.
 	 */
-	public ResourceTypeMissingReqsException createMissingReqsException(Map<ResourceType, Integer> allResources)
-	{
+	public ResourceTypeMissingReqsException createMissingReqsException(Map<ResourceType, Integer> allResources) {
 		List<ResourceType> missingReqs = getMissingReqs(allResources);
 		if(missingReqs.isEmpty())
 			return null;
+		
 		return new ResourceTypeMissingReqsException(this, getMissingReqs(allResources));
 	}
 	
@@ -375,19 +309,16 @@ public class ResourceType implements DetailedResourceType {
      *         If this resource type misses requirements in finalResourceTypes
      * @see ResourceType#conflictsWith
      */
-    public void addTo(Map<ResourceType, Integer> resourceTypeMap, Map<ResourceType, Integer> finalResourceTypes) throws IllegalArgumentException {
-		
+    public void addTo(Map<ResourceType, Integer> resourceTypeMap, Map<ResourceType, Integer> finalResourceTypes) throws IllegalArgumentException {	
     	// Check for conflicts with the resource types in resourceTypeMap
     	List<ResourceType> conflictings = getConflicts(finalResourceTypes);
-		if(!conflictings.isEmpty())
-		{
+		if(!conflictings.isEmpty()) {
 			throw new ResourceTypeConflictException(this, conflictings);
 		}
 		
 		// Check for missing requirements in finalResourceTypes
 		List<ResourceType> missingRequirements = getMissingReqs(finalResourceTypes);
-		if(!missingRequirements.isEmpty())
-		{
+		if(!missingRequirements.isEmpty()) {
 			throw new ResourceTypeMissingReqsException(this, missingRequirements);
 		}
 		
@@ -397,6 +328,7 @@ public class ResourceType implements DetailedResourceType {
 			number += resourceTypeMap.remove(this);
 		resourceTypeMap.put(this, number);
 	}
+    
     /**
      * 
      * @return The name of this resourcetype

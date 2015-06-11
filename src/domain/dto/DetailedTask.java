@@ -64,25 +64,24 @@ public interface DetailedTask {
 	DetailedTask getAlternativeTask();
         
     /**
-     * 
      * @return The project this task belongs to 
      */
     public DetailedProject getProject();
     
     /**
-     *
      * @return The planning of this task
      */
     public DetailedPlanning getPlanning();
     
     /**
 	 * Returns the branch office to which this task has been delegated to.
+	 * 
 	 * @return The branch office to which this task has been delegated to.
 	 *         null if the task is assigned to the same branch office to which its project belongs to.
 	 */
 	public DetailedBranchOffice getDelegatedBranchOffice();
-         /**
-     
+         
+	/** 
      * @return the requiredResources of this specific task, combined with the
      * standard required resources that are equal for all classes.
      */

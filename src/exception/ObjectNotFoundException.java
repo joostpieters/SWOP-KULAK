@@ -33,13 +33,9 @@ public class ObjectNotFoundException extends IllegalArgumentException{
     }
     
     /**
-     * 
      * @return The id by which the object that isn't found is represented.
      */
     public int getId() {
         return id;
     }
-    
-    
-    
 }

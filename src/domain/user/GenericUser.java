@@ -29,7 +29,6 @@ public class GenericUser implements User {
     }
     
     /**
-     * 
      * @return The name of this user 
      */
      @Override
@@ -46,14 +45,12 @@ public class GenericUser implements User {
         return role;
     }  
     
-    
-     /**
+    /**
      * 
-     * @return The branchoffice this user belongs to
+     * @return The branch office this user belongs to
      */
     @Override
     public BranchOffice getBranchOffice(){
         return branchoffice;
-        
     }
 }

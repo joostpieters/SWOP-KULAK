@@ -116,5 +116,4 @@ public class LoginHandler {
         BranchOffice office = company.getOffices().get(officeId);
         return new ArrayList<>(office.getUsers());
     }
-
 }
