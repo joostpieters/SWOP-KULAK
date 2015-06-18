@@ -44,11 +44,10 @@ public class DelegateTaskHandler extends Handler {
     
     /**
      * 
-     * @return All the other branch offices in the system
+     * @return All the branch offices in the system
      */
-	public List<DetailedBranchOffice> getOtherBranchOffices() {
+	public List<DetailedBranchOffice> getBranchOffices() {
 		List<DetailedBranchOffice> otherOffices = new ArrayList<>(company.getOffices());
-		otherOffices.remove(office);
 		return otherOffices;
 	}
         

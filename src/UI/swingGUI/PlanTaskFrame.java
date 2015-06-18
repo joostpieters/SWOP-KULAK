@@ -407,6 +407,7 @@ public class PlanTaskFrame extends javax.swing.JFrame {
             this.setVisible(false);
             
         } catch (RuntimeException e) {
+            
             JOptionPane.showMessageDialog(rootPane, e.getMessage(), null, JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(PlanTaskFrame.class.getName()).log(Level.SEVERE, null, e);
         }

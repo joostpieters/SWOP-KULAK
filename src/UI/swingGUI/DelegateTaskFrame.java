@@ -2,13 +2,10 @@ package UI.swingGUI;
 
 import controller.DelegateTaskHandler;
 import domain.dto.DetailedBranchOffice;
-import domain.dto.DetailedResource;
 import domain.dto.DetailedTask;
 import java.awt.CardLayout;
-import java.time.LocalDateTime;
 import java.util.List;
 import javax.swing.DefaultListModel;
-import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -23,9 +20,8 @@ public class DelegateTaskFrame extends javax.swing.JFrame {
 
     private final DelegateTaskHandler handler;
     private DefaultTableModel taskModel;
-    private LocalDateTime start;
     private int selectedTaskId, selectedProjectId;
-    private List<JComboBox<DetailedResource>> selectedResources;
+    
 
     /**
      * Creates new form ListProjectsFrame
@@ -243,7 +239,7 @@ public class DelegateTaskFrame extends javax.swing.JFrame {
     protected void initBranchOfficeList() {
         
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        for (DetailedBranchOffice branchOffice : handler.getOtherBranchOffices()) {
+        for (DetailedBranchOffice branchOffice : handler.getBranchOffices()) {
             listModel.addElement(branchOffice.getLocation());
         }
         

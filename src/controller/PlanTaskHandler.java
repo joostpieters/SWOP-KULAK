@@ -14,7 +14,6 @@ import domain.time.Clock;
 import domain.user.Acl;
 import domain.user.Auth;
 import exception.ConflictException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +31,7 @@ public class PlanTaskHandler extends Handler {
     private final Clock clock;
     
 	private SimulatorCommand simulatorCommand;
+    private final BranchOffice office;
 
     /**
      * Initialize a new create task handler with the given projectContainer.
@@ -61,6 +61,8 @@ public class PlanTaskHandler extends Handler {
         this.pc = office.getProjectContainer();
         this.clock = clock;
         this.simulatorCommand = simulatorCommand;
+        this.office = office;
+        
     }
 
     /**
@@ -69,7 +71,7 @@ public class PlanTaskHandler extends Handler {
      * @return All unplanned tasks in the projectContainer of this handler.
      */
     public List<DetailedTask> getUnplannedTasks() {
-        return new ArrayList<>(pc.getUnplannedTasks());
+        return new ArrayList<>(office.getUnplannedTasks());
     }
 
     /**
@@ -99,7 +101,7 @@ public class PlanTaskHandler extends Handler {
      * could possible be started
      */
     public Set<LocalDateTime> getPossibleStartTimesCurrentTask(int pId, int tId) {
-        return pc.getProject(pId).getTask(tId).nextAvailableStartingTimes(rc, clock.getTime(), 3);
+        return office.getProject(pId).getTask(tId).nextAvailableStartingTimes(rc, clock.getTime(), 3);
     }
 
     /**
@@ -120,7 +122,7 @@ public class PlanTaskHandler extends Handler {
         for(int i : resources){
             res.add(rc.getResource(i));
         }
-        Task task = pc.getProject(pId).getTask(tId);
+        Task task = office.getProject(pId).getTask(tId);
         
         simulatorCommand.add(task.plan(startTime, res, clock));
     }
