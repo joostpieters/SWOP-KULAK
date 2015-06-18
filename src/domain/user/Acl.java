@@ -18,7 +18,7 @@ public class Acl {
     /**
      * Initializes a new Acl
      */
-    public Acl(){
+    public Acl() {
        permissions = new HashMap<>();
     }
     
@@ -30,30 +30,31 @@ public class Acl {
      * @return True if and only if the role of the user exists in this acl and
      * if the role of the given user has the given permission.
      */
-    public boolean hasPermission(User user, String permission){
+    public boolean hasPermission(User user, String permission) {
         if(!permissions.containsKey(user.getRole())){
             return false;
         }
-       return permissions.get(user.getRole()).contains(permission);
+        
+        return permissions.get(user.getRole()).contains(permission);
     }
     
     /**
-     * Returns the permissions ascociated with the given user.
+     * Returns the permissions associated with the given user.
      * 
      * @param user The user to get the permissions of
-     * @return The list of permissions ascociated to the given user
+     * @return The list of permissions associated to the given user
      */
-    public List<String> getPermissions(User user){
+    public List<String> getPermissions(User user) {
         return permissions.get(user.getRole());
     }
     
      /**
-     * Returns the permissions ascociated with the given user.
+     * Returns the permissions associated with the given user.
      * 
      * @param role The role to get the permissions of
-     * @return The list of permissions ascociated to the given user
+     * @return The list of permissions associated to the given user
      */
-    public List<String> getPermissions(Role role){
+    public List<String> getPermissions(Role role) {
         return permissions.get(role);
     }
     
@@ -63,24 +64,25 @@ public class Acl {
      * @param role The role to add the permission to
      * @param permission The permission to add
      */
-    public void addPermission(Role role, String permission){
+    public void addPermission(Role role, String permission) {
         if(!permissions.containsKey(role))
             permissions.put(role, new ArrayList<>());
+        
         permissions.get(role).add(permission);
     }
     
     /**
-     * Adds a new entry of the given role ascociated with the given list
+     * Adds a new entry of the given role associated with the given list
      * of permissions to this acl. If there already exists an entry for the 
      * given role, the permissions are replaced by the given permissions.
      * 
      * @param role The role to add
-     * @param permissionList The permissions to ascociate with the given role
+     * @param permissionList The permissions to associate with the given role
      */
-    public void addEntry(Role role, List<String> permissionList){
+    public void addEntry(Role role, List<String> permissionList) {
         if(permissionList == null)
             permissionList = new ArrayList<>();
+        
         permissions.put(role, new ArrayList<>(permissionList));
     }
-   
 }

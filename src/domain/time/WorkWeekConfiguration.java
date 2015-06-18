@@ -41,23 +41,23 @@ public class WorkWeekConfiguration implements Comparable<WorkWeekConfiguration> 
     private final LocalTime beginLunch;
     private final LocalTime endLunch;
 
-    /**
-     * **************************************
-     * Constructors **************************************
-     */
+    /***************************************
+     * Constructors                        *
+     ***************************************/
+    
     /**
      * Initialize this configuration with the given parameters
      *
-     * @param beginWorkWeek The day of the week to start the workweek (1 is
-     * monday, 7 is sunday)
-     * @param endWorkWeek The day of the week to end the workweek (1 is monday,
-     * 7 is sunday)
-     * @param beginWorkDay The time to start the workday
-     * @param endWorkDay The time to end the workday
+     * @param beginWorkWeek The day of the week to start the work week (1 is
+     * Monday, 7 is Sunday)
+     * @param endWorkWeek The day of the week to end the work week (1 is Monday,
+     * 7 is Sunday)
+     * @param beginWorkDay The time to start the work day
+     * @param endWorkDay The time to end the work day
      * @param beginLunch The time to begin lunch
      * @param endLunch The time to end lunch
      * @throws IllegalArgumentException The given begin and end time of a
-     * workday don't form a valid interval.
+     * work day don't form a valid interval.
      * @throws IllegalArgumentException The given begin and end time of a lunch
      * don't form a valid interval.
      */
@@ -67,7 +67,6 @@ public class WorkWeekConfiguration implements Comparable<WorkWeekConfiguration> 
         if (!isValidInterval(beginWorkDay, endWorkDay)) {
             throw new IllegalArgumentException("The given begin and end time of a workday don't form a valid interval");
         }
-
         if (!isValidLunch(beginLunch, endLunch)) {
             throw new IllegalArgumentException("The given begin and end time of the lunch don't form a valid interval");
         }
@@ -81,15 +80,15 @@ public class WorkWeekConfiguration implements Comparable<WorkWeekConfiguration> 
     }
 
     /**
-     * Initialize this configuration with a standard workweek of monday to
-     * friday and the given parameters
+     * Initialize this configuration with a standard work week of Monday to
+     * Friday and the given parameters
      *
-     * @param beginWorkDay The time to start the workday
-     * @param endWorkDay The time to end the workday
+     * @param beginWorkDay The time to start the work day
+     * @param endWorkDay The time to end the work day
      * @param beginLunch The time to begin lunch
      * @param endLunch The time to end lunch
      * @throws IllegalArgumentException The given begin and end time of a
-     * workday don't form a valid interval.
+     * work day don't form a valid interval.
      * @throws IllegalArgumentException The given begin and end time of a lunch
      * don't form a valid interval.
      */
@@ -100,11 +99,11 @@ public class WorkWeekConfiguration implements Comparable<WorkWeekConfiguration> 
     }
 
     /**
-     * Initialize this configuration with a standard workweek of monday to
-     * friday and workdays from the given hours and no lunchbreak
+     * Initialize this configuration with a standard work week from Monday to
+     * Friday and work days from the given hours and no lunch break
      *
-     * @param beginWorkDay The time to begin the workday
-     * @param endWorkDay The time to end the workday
+     * @param beginWorkDay The time to begin the work day
+     * @param endWorkDay The time to end the work day
      * @throws IllegalArgumentException The given begin and end time of a day
      * don't form a valid interval.
      */
@@ -113,61 +112,55 @@ public class WorkWeekConfiguration implements Comparable<WorkWeekConfiguration> 
     }
 
     /**
-     * Initialize this configuration with a standard workweek of monday to
-     * friday and workdays from 9 to 18h and a lunchbreak from 12 to 13h
+     * Initialize this configuration with a standard work week of Monday to
+     * Friday and work days from 9 to 18h and a lunch break from 12 to 13h
      *
      */
     public WorkWeekConfiguration() {
         this(BEGIN_WORKDAY, END_WORKDAY, BEGIN_LUNCHBREAK, END_LUNCHBREAK);
     }
 
+    /****************************************
+     * Getters and setters                  *
+     ****************************************/
+    
     /**
-     * **************************************
-     * Getters and setters **************************************
-     */
-    /**
-     *
-     * @return The start of this workweek (between 1 and 7)
+     * @return The start of this work week (between 1 and 7)
      */
     public int getBeginWorkWeek() {
         return beginWorkWeek;
     }
 
     /**
-     *
-     * @return The end of the workweek (between 1 and 7)
+     * @return The end of the work week (between 1 and 7)
      */
     public int getEndWorkWeek() {
         return endWorkWeek;
     }
 
     /**
-     *
-     * @return The time the workday starts
+     * @return The time the work day starts
      */
     public LocalTime getBeginWorkDay() {
         return beginWorkDay;
     }
 
     /**
-     *
-     * @return The time the workday ends
+     * @return The time the work day ends
      */
     public LocalTime getEndWorkDay() {
         return endWorkDay;
     }
 
     /**
-     *
-     * @return The time the lunchbreak starts
+     * @return The time the lunch break starts
      */
     public LocalTime getBeginLunch() {
         return beginLunch;
     }
 
     /**
-     *
-     * @return The time the lunchbreak ends
+     * @return The time the lunch break ends
      */
     public LocalTime getEndLunch() {
         return endLunch;
@@ -250,7 +243,7 @@ public class WorkWeekConfiguration implements Comparable<WorkWeekConfiguration> 
      *
      * @param time The time to check
      * @return True is and only in the following cases: - The given time is
-     * between the beginworkday time and the endworkday time, including the
+     * between the begin work day time and the end work day time, including the
      * boundaries and - The given time doesn't fall outside the work week - The
      * given time doesn't fall into a lunch break
      */
@@ -264,11 +257,11 @@ public class WorkWeekConfiguration implements Comparable<WorkWeekConfiguration> 
     }
 
     /**
-     * Check whether the given date falls within the workweek
+     * Check whether the given date falls within the work week
      *
      * @param date The date to check
      * @return True if and only if the given date is later than or equal to the
-     * start of the workweek, and before or equal to the end of the workweek.
+     * start of the work week, and before or equal to the end of the work week.
      */
     public boolean isValidWorkDay(LocalDateTime date) {
         return date.getDayOfWeek().getValue() >= getBeginWorkWeek()
@@ -287,36 +280,35 @@ public class WorkWeekConfiguration implements Comparable<WorkWeekConfiguration> 
      * working hours.
      */
     public LocalDateTime nextValidWorkTime(LocalDateTime time) {
-        if (isValidWorkTime(time)) {
+        if (isValidWorkTime(time))
             return time;
-        }
+        
+        if(!isValidWorkDay(time))
+        	return nextValidWorkTime(time.plusDays(1).toLocalDate().atTime(getBeginWorkDay()));
 
-        if (isValidWorkDay(time)) {
-            LocalTime beginTime = time.toLocalTime();
-            if (beginTime.compareTo(getEndWorkDay()) > 0) {
-                if (time.getDayOfWeek().getValue() == getEndWorkWeek()) {
-                    time = time.plusDays(7 - getDaysOfWorkWeek());
-                }
-                return LocalDateTime.of(time.toLocalDate().plusDays(1), getBeginWorkDay());
-            } else if (beginTime.compareTo(getBeginWorkDay()) < 0) {
-                return LocalDateTime.of(time.toLocalDate(), getBeginWorkDay());
-            } else {
-                return LocalDateTime.of(time.toLocalDate(), getEndLunch());
+        LocalTime beginTime = time.toLocalTime();
+        if (beginTime.compareTo(getEndWorkDay()) > 0) {
+            if (time.getDayOfWeek().getValue() == getEndWorkWeek()) {
+                time = time.plusDays(7 - getDaysOfWorkWeek());
             }
+            
+            return LocalDateTime.of(time.toLocalDate().plusDays(1), getBeginWorkDay());
+        } else if (beginTime.compareTo(getBeginWorkDay()) < 0) {
+            return LocalDateTime.of(time.toLocalDate(), getBeginWorkDay());
         } else {
-            return nextValidWorkTime(time.plusDays(1).toLocalDate().atTime(getBeginWorkDay()));
+            return LocalDateTime.of(time.toLocalDate(), getEndLunch());
         }
     }
 
     /**
-     * Compares this workweekconfiguration to the given workweekconfiguration,
+     * Compares this work week configuration to the given work week configuration,
      * in terms of the daily availability.
      * Note: this class has a natural ordering that is inconsistent with equals.
      *
-     * @param o The workweekconfiguration to compare with
-     * @return 1 if this workweekconfiguration has a longer daily availability
-     * -1 if this workweekconfiguration has a shorter daily availability 0 if
-     * this workweekconfiguration has an equal daily availability
+     * @param o The work week configuration to compare with
+     * @return 1 if this work week configuration has a longer daily availability
+     * -1 if this work week configuration has a shorter daily availability 0 if
+     * this work week configuration has an equal daily availability
      */
     @Override
     public int compareTo(WorkWeekConfiguration o) {
@@ -330,8 +322,7 @@ public class WorkWeekConfiguration implements Comparable<WorkWeekConfiguration> 
     }
     
     /**
-     * 
-     * @return A textual representation of this workweekconfiguration
+     * @return A textual representation of this work week configuration
      */
     @Override
     public String toString() {

@@ -9,13 +9,13 @@ import java.util.Stack;
  *
  */
 public class SimulatorCommand implements ICommand {
+	
 	private final Stack<ICommand> commandStack;
 	
 	/**
 	 * Initializes this SimulatorCommand.
 	 */
-	public SimulatorCommand()
-	{
+	public SimulatorCommand() {
 		commandStack = new Stack<>();
 	}
 	
@@ -24,8 +24,7 @@ public class SimulatorCommand implements ICommand {
 	 * 
 	 * @param command The command to add.
 	 */
-	public void add(ICommand command)
-	{
+	public void add(ICommand command) {
 		commandStack.add(command);
 	}
 	
@@ -35,8 +34,7 @@ public class SimulatorCommand implements ICommand {
 	 * @param command The command to excute and add to this simulatorcommand
 	 * 
 	 */
-	public void addAndExecute(ICommand command)
-	{
+	public void addAndExecute(ICommand command) {
 		command.execute();
 		add(command);
 	}
@@ -46,8 +44,7 @@ public class SimulatorCommand implements ICommand {
 	 * 
 	 * @param command The command to be added.
 	 */
-	public void remove(ICommand command)
-	{
+	public void remove(ICommand command) {
 		commandStack.remove(command);
 	}
 	
@@ -55,8 +52,7 @@ public class SimulatorCommand implements ICommand {
 	 * Executes all the commands in the same order as they were added.
 	 */
 	@Override
-	public void execute()
-	{
+	public void execute() {
 		for(ICommand command : commandStack)
 			command.execute();
 	}

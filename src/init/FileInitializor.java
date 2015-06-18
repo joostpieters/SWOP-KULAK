@@ -216,6 +216,7 @@ public class FileInitializor extends StreamTokenizer {
         List<List<Integer>> reqIntList = new ArrayList<>();
         List<List<ResourceType>> conflictList = new ArrayList<>();
         List<List<Integer>> conflictIntList = new ArrayList<>();
+        
         while (ttype == '-') {
             expectChar('-');
             String name = expectStringField("name");
@@ -257,8 +258,10 @@ public class FileInitializor extends StreamTokenizer {
                 conflictList.get(i).add(company.getResourceTypes().get(j));
             }
         }
+        
         expectLabel("resources");
         List<Resource> tempList = new ArrayList<>();
+        
         while (ttype == '-') {
             expectChar('-');
             String name = expectStringField("name");
@@ -281,7 +284,6 @@ public class FileInitializor extends StreamTokenizer {
             int officeId = expectIntField("office");
             GenericUser manager = new GenericUser(name, Role.MANAGER, company.getOffices().get(officeId));
             company.getOffices().get(officeId).addUser(manager);
-
         }
 
         /**
@@ -292,6 +294,7 @@ public class FileInitializor extends StreamTokenizer {
         ArrayList<Resource> devList = new ArrayList<>();
         ResourceType devType = ResourceType.DEVELOPER;
         company.addResourceType(devType);
+        
         while (ttype == '-') {
             expectChar('-');
             String name = expectStringField("name");
@@ -306,16 +309,15 @@ public class FileInitializor extends StreamTokenizer {
             // developer is user and resource at the same time
             
             tempList.add(dev);
-
         }
 
         /**
          * Projects
          */
         expectLabel("projects");
-
         HashMap<Project, BranchOffice> projectOffice = new HashMap<>();
         List<Project> tempProjects = new ArrayList<>();
+        
         while (ttype == '-') {
             expectChar('-');
             String name = expectStringField("name");
@@ -328,7 +330,6 @@ public class FileInitializor extends StreamTokenizer {
             Project project = office.getProjectContainer().createProject(name, description, creationTime, dueTime);
             projectOffice.put(project, office);
             tempProjects.add(project);
-
         }
 
         /**
@@ -364,13 +365,12 @@ public class FileInitializor extends StreamTokenizer {
             expectLabel("resources");
             List<IntPair> requirements = expectLabeledPairList("type", "quantity");
             HashMap<ResourceType, Integer> resourceMap = new LinkedHashMap<>();
+            
             for (IntPair pair : requirements) {
                 resourceMap.put(company.getResourceTypes().get(pair.first), pair.second);
             }
 
             Task task;
-            
-             
             task = tempProjects.get(projectId).createTask(description, duration, acceptableDeviation, alternativeFor, prerequisiteTasks, resourceMap);
              
             expectLabel("delegatedTo");
@@ -380,7 +380,6 @@ public class FileInitializor extends StreamTokenizer {
             }
            
             int planning = expectIntField("planned");
-           
            
             if (planning == 1) {
                 LocalDateTime plannedStartTime = expectDateField("plannedStartTime");
@@ -400,7 +399,6 @@ public class FileInitializor extends StreamTokenizer {
                 }
                 // add rest of resources
                 for (int id : resourcesIds) {
-                	
                     resources.add(tempList.get(id));
                 }
                 
@@ -418,6 +416,7 @@ public class FileInitializor extends StreamTokenizer {
                 nextToken();
                 status = "failed";
             }
+           
             if (isWord("executing")) {
                 nextToken();
                 status = "executing";
@@ -430,7 +429,6 @@ public class FileInitializor extends StreamTokenizer {
                     task.fail(new Timespan(startTime, endTime), clock.getTime());
                 } else if (status.equalsIgnoreCase("finished")) {
                     task.execute(clock);
-                    
                     task.finish(new Timespan(startTime, endTime), clock.getTime());
                 }
 
@@ -438,7 +436,6 @@ public class FileInitializor extends StreamTokenizer {
         }
 
         if (ttype != TT_EOF) {
-            
             error("End of file or '-' expected");
         }
     }

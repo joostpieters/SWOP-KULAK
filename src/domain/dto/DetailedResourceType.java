@@ -7,13 +7,9 @@ package domain.dto;
  * @author Mathias, Frederic, Pieter-Jan
  */
 public interface DetailedResourceType {
-    
-    
-
+	
     /**
-     *
      * @return The name of this resourcetype
      */
     String getName();
-    
 }

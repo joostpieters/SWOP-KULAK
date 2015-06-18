@@ -18,9 +18,7 @@ public class Available extends Status {
      * Initializes this available status.
      *
      */
-    public Available() {
-
-    }
+    public Available() { }
 
     /**
      * Updates the status of this task to UNAVAILABLE if not all the
@@ -30,6 +28,7 @@ public class Available extends Status {
     @Override
     void update(Task task) {
         boolean unavailable = false;
+        
         for (Task t : task.getPrerequisiteTasks()) {
             if (!t.isFulfilled()) {
                 unavailable = true;
@@ -87,7 +86,7 @@ public class Available extends Status {
     /**
      * Transition to the failed state
      *
-     * @param timespan The timespan of this failed task
+     * @param timespan The time span of this failed task
      * @param task The task which is to be set to failed.
      *
      * @throws IllegalStateException This state can't transition to finished.
@@ -101,6 +100,7 @@ public class Available extends Status {
         } else {
             task.setTimeSpan(timespan);
         }
+        
         task.setStatus(new Failed());
     }
 
@@ -108,28 +108,22 @@ public class Available extends Status {
      * Moves the given task to the executing state
      *
      * @param task The task to adjust
-     *
      */
     @Override
     public void execute(Task task, Clock clock) {
-
-        if (task.hasPlanning()) {
-            if (task.getPlanning().isBefore(clock.getTime())) {
-                
-                task.setStatus(new Executing());
-                
-            } else {
-                try {
-                    // unplanned execution
-                    task.plan(clock.getTime(), task.getPlanning().getResources(), clock);
-                    task.setStatus(new Executing());
-                } catch (ConflictException ex) {
-                    throw new IllegalStateException("This task can't move to executing because there are not enough resources available");
-                }
-            }
-        } else {
+    	if(!task.hasPlanning())
             throw new IllegalStateException("A task has to be planned before you can execute it!");
+    	
+        if (task.getPlanning().isBefore(clock.getTime())) {
+            task.setStatus(new Executing());
+        } else {
+            try {
+                // unplanned execution
+                task.plan(clock.getTime(), task.getPlanning().getResources(), clock);
+                task.setStatus(new Executing());
+            } catch (ConflictException ex) {
+                throw new IllegalStateException("This task can't move to executing because there are not enough resources available");
+            }
         }
-
     }
 }

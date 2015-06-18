@@ -18,8 +18,7 @@ public class Executing extends Status {
      * @param task The task to update the status of.
      */
     @Override
-    void update(Task task) {
-    }
+    void update(Task task) { }
     
     /**
      * Check whether the given task is fulfilled based on this status.
@@ -66,38 +65,36 @@ public class Executing extends Status {
     /**
     * Transition to the failed state
     * 
-    * @param timespan The timespan of this failed task
+    * @param timespan The time span of this failed task
     * @param task The task which is to be set to failed.
     * 
     * @throws IllegalStateException This state can't transition to finished.
     * @throws IllegalArgumentException The given task can't have the given time span as its time span 
    */
    @Override
-   void fail(Task task, Timespan timespan)
-   {
+   void fail(Task task, Timespan timespan) {
        if(!canHaveAsTimeSpan(task, timespan))
            throw new IllegalArgumentException("The given task can't have the given time span as its time span");
-       else
-           task.setTimeSpan(timespan);
+       
+       task.setTimeSpan(timespan);
        task.setStatus(new Failed());
    }
    
    /**
     * Transition to the finished state
     * 
-    * @param timespan The timespan of this finished task
+    * @param timespan The time span of this finished task
     * @param task The task which is to be set to failed.
     * 
     * @throws IllegalStateException This state can't transition to finished.
     * @throws IllegalArgumentException The given task can't have the given time span as its time span 
    */
    @Override
-   void finish(Task task, Timespan timespan) throws IllegalStateException
-   {
+   void finish(Task task, Timespan timespan) throws IllegalStateException {
        if(!canHaveAsTimeSpan(task, timespan))
            throw new IllegalArgumentException("The given task can't have the given time span as its time span");
-       else
-           task.setTimeSpan(timespan);
+       
+       task.setTimeSpan(timespan);
        task.setStatus(new Finished());
    }   
 }

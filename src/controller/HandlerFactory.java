@@ -20,8 +20,6 @@ public class HandlerFactory {
     private final Auth auth;
     private final Clock clock;
     
-    
-    
     /**
      * Initialize a new front controller with the given company, authentication manager, action control list and clock.
      * 
@@ -100,7 +98,7 @@ public class HandlerFactory {
         return new LoginHandler(company, auth);
     }
     
-    private BranchOffice getCurrentBranchOffice(){
+    private BranchOffice getCurrentBranchOffice() {
         if(auth.loggedIn()){
             return auth.getUser().getBranchOffice();
         }else{

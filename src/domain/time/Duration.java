@@ -17,27 +17,24 @@ public class Duration implements Comparable<Duration> {
     public static final Duration ZERO = new Duration(0);
 
     private final long minutes;
-
     private final WorkWeekConfiguration configuration;
 
-    /**
-     * **************************************
-     * Constructors	*
-     ***************************************
-     */
+    /****************************************
+     * Constructors	                        *
+     ****************************************/
+    
     /**
      * Initializes this duration based on the given begin and end time.
      *
      * @param begin When this duration begins
      * @param end When this duration ends
      * @throws IllegalArgumentException The given begin or end time falls out of
-     * the bussiness hours or the given begin and end time don't form a strictly
+     * the business hours or the given begin and end time don't form a strictly
      * valid interval.
      */
     public Duration(LocalDateTime begin, LocalDateTime end) {
         this.configuration = new WorkWeekConfiguration();
         this.minutes = getWorkTimeBetween(begin, end);
-
     }
 
     /**
@@ -48,7 +45,6 @@ public class Duration implements Comparable<Duration> {
      */
     public Duration(int hours, int minutes) {
         this((long) hours * 60 + minutes);
-
     }
 
     /**
@@ -70,18 +66,18 @@ public class Duration implements Comparable<Duration> {
      * @throws IllegalArgumentException The given amount of minutes is negative.
      */
     public Duration(long minutes, WorkWeekConfiguration conf) throws IllegalArgumentException {
-        this.configuration = conf;
         if (minutes < 0) {
             throw new IllegalArgumentException("The amount of minutes can't be negative.");
         }
+        
+        this.configuration = conf;
         this.minutes = minutes;
     }
 
-    /**
-     * **************************************
-     * Getters and setters	*
-     ***************************************
-     */
+    /****************************************
+     * Getters and setters	                *
+     ****************************************/
+    
     /**
      * @return The hour field of this duration.
      */
@@ -99,8 +95,7 @@ public class Duration implements Comparable<Duration> {
     /**
      * @return The work week configuration of this duration.
      */
-    public WorkWeekConfiguration getWorkWeekConfiguration()
-    {
+    public WorkWeekConfiguration getWorkWeekConfiguration() {
     	return this.configuration;
     }
 
@@ -111,11 +106,10 @@ public class Duration implements Comparable<Duration> {
         return minutes;
     }
 
-    /**
-     * **************************************
-     * arithmetics	*
-     ***************************************
-     */
+    /****************************************
+     * Arithmetics	                        *
+     ****************************************/
+    
     /**
      * Returns a copy of this duration with the given amount of minutes added.
      *
@@ -141,6 +135,7 @@ public class Duration implements Comparable<Duration> {
         if (otherDuration == null) {
             return this;
         }
+        
         return new Duration(minutes + otherDuration.toMinutes());
     }
 
@@ -158,6 +153,7 @@ public class Duration implements Comparable<Duration> {
         if (otherDuration == null) {
             return this;
         }
+        
         return new Duration(minutes - otherDuration.toMinutes());
     }
 
@@ -176,7 +172,6 @@ public class Duration implements Comparable<Duration> {
      * Calculate how much this duration lasts longer than another duration.
      *
      * @param other The duration to compare with.
-     *
      * @return	0 if the given duration is longer. (this - other) / other - 1
      * otherwise.
      */
@@ -202,11 +197,10 @@ public class Duration implements Comparable<Duration> {
         return Long.signum(minutes - duration.toMinutes());
     }
 
-    /**
-     * **************************************
-     * static methods	*
-     ***************************************
-     */
+    /****************************************
+     * static methods	                    *
+     ****************************************/
+    
     /**
      * Checks whether the given end and begin time are valid, compared to each
      * other.
@@ -245,6 +239,7 @@ public class Duration implements Comparable<Duration> {
         long totalMinutes = 0;
         LocalTime beginLocalTime = begin.toLocalTime();
         LocalDateTime nextBegin;
+        
         if (beginLocalTime.compareTo(configuration.getEndLunch()) < 0) {
             long minutesTillLunch = ChronoUnit.MINUTES.between(beginLocalTime, configuration.getBeginLunch());
             if (minutesTillEnd <= minutesTillLunch) {
@@ -271,15 +266,15 @@ public class Duration implements Comparable<Duration> {
                 nextBegin = LocalDateTime.of(begin.toLocalDate().plusDays(1), configuration.getBeginWorkDay());
             }
         }
+        
         return totalMinutes + getWorkTimeBetween(nextBegin, end);
     }
 
 
-    /**
-     * **************************************
-     * other methods	*
-	 ***************************************
-     */
+    /****************************************
+     * other methods	                    *
+	 ****************************************/
+    
     /**
      * Calculates the time this duration would end, given a start time, while
      * taking into account the business hours.
@@ -333,9 +328,7 @@ public class Duration implements Comparable<Duration> {
     }
 
     /**
-     *
-     * @return a textual representation of this duration in the form of: **hours
-     * **minutes
+     * @return a textual representation of this duration in the form of: **minutes
      */
     @Override
     public String toString() {
@@ -352,16 +345,16 @@ public class Duration implements Comparable<Duration> {
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Duration)) {
-
             return false;
         }
+        
         Duration other = (Duration) o;
         return this.toMinutes() == other.toMinutes();
     }
 
     /**
-     * @return the hashcode of this duration, durations that represent the same
-     * ammount of time,
+     * @return the hash code of this duration, durations that represent the same
+     * amount of time,
      */
     @Override
     public int hashCode() {

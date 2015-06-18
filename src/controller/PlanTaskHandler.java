@@ -139,5 +139,4 @@ public class PlanTaskHandler extends Handler {
 			throw new IllegalArgumentException("This type was not recognized by the system. \nPlease enter a valid type");
 		}
 	}
-    
 }

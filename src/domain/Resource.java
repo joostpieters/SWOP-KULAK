@@ -52,11 +52,10 @@ public class Resource implements DetailedResource {
                
     }
 
-	/**
-     * **************************************************
-     * Getters & Setters *
-	 ***************************************************
-     */
+	/****************************************************
+     * Getters & Setters                                *
+	 ****************************************************/
+    
     /**
      * Generates an id for a new Resource.
      *
@@ -124,11 +123,10 @@ public class Resource implements DetailedResource {
         return new ArrayList<>(previousReservations);
     }
 
-    /**
-     * **************************************************
-     * Accessors *
-	 ***************************************************
-     */
+    /****************************************************
+     * Accessors                                        *
+	 ****************************************************/
+    
     /**
      * Return whether or not this resource is available during a given time
      * span.
@@ -209,14 +207,48 @@ public class Resource implements DetailedResource {
         }
         return result;
     }
-
     
+    /**
+     * Checks whether this resource is available, based on its work week configuration.
+     * 
+     * @param time The time to check the availability on
+     * @return True if and only if the given time falls inside the working hours
+     * of this resource or if the resource has no work week configuration
+     */
+    public boolean isAvailable(LocalDateTime time) {
+        // if this resource doesn't have a work week configuration of itself, use that of its type
+        
+        if(availability == null){
+            return type.getAvailability().isValidWorkTime(time);
+        }
+        return availability.isValidWorkTime(time);
+    }
+    
+	/**
+	 * @return the availability of this resource if it is set, otherwise the 
+	 * availability of this resource its type is returned.
+	 */
+    public WorkWeekConfiguration getAvailability() {
+    	if(availability == null) {
+    		return type.getAvailability();
+        }
+    	
+        return availability;
+    }
 
     /**
-     * **************************************************
-     * Mutators *
-	 ***************************************************
+     *
+     * @return The name of this resource
      */
+    @Override
+    public String toString() {
+        return getName();
+    }
+
+    /****************************************************
+     * Mutators                                         *
+	 ****************************************************/
+    
     /**
      * Reserve this resource for a given task and a given time span.
      *
@@ -233,6 +265,7 @@ public class Resource implements DetailedResource {
             Set<Task> confl = findConflictingTasks(span);
             throw new ConflictException("This resource is not available for the given timespan.", task, confl);
         }
+        
         Reservation r = new Reservation(task, span);
         reservations.add(r);
         return r;
@@ -248,13 +281,11 @@ public class Resource implements DetailedResource {
     public void clearFutureReservations(LocalDateTime currentTime, Task task) {
         for (Iterator<Reservation> iterator = reservations.iterator(); iterator.hasNext();) {
             Reservation reservation = iterator.next();
+            
             if (reservation.getTask().equals(task)) {
-                if (reservation.getStartTime().compareTo(currentTime) >= 0) 
-                {
+                if (reservation.getStartTime().compareTo(currentTime) >= 0) {
                     iterator.remove();
-                } else if (reservation.getTimespan().overlapsWith(currentTime))
-                {
-                    
+                } else if (reservation.getTimespan().overlapsWith(currentTime)) {  
                     iterator.remove();
                     Timespan newTimeSpan = new Timespan(reservation.getStartTime(), currentTime);
                     archiveReservation(new Reservation(reservation.getTask(), newTimeSpan));
@@ -271,42 +302,6 @@ public class Resource implements DetailedResource {
     void archiveReservation(Reservation r) {
         previousReservations.add(r);
     }
-    
-    /**
-     * Sets the availability of this resource
-     * 
-     * @param availability The availability to set
-     */
-    public void setAvailability(WorkWeekConfiguration availability){
-        this.availability = availability;
-    }
-    
-    /**
-     * Checks whether this resource is available, based on its workweekconfiguration.
-     * 
-     * @param time The time to check the availability on
-     * @return True if and only if the given time falls inside the working hours
-     * of this resource or if the resource has no workweekconfiguration
-     */
-    public boolean isAvailable(LocalDateTime time){
-        // if this resource doesn't have a workweekconfiguration of itself, use that of its type
-        
-        if(availability == null){
-            return type.getAvailability().isValidWorkTime(time);
-        }
-        return availability.isValidWorkTime(time);
-    }
-    
-     /**
-     * @return the availability of this resource if it is set, otherwise the 
-     * availabiliity of this resource its type is returned.
-     */
-    public WorkWeekConfiguration getAvailability() {
-         if(availability == null){
-            return type.getAvailability();
-        }
-        return availability;
-    }
 
     /**
      * Archives the reservations which are in the past compared to the given
@@ -316,13 +311,26 @@ public class Resource implements DetailedResource {
     public void archiveOldReservations(LocalDateTime currentTime) {
         for (Iterator<Reservation> iterator = getReservations().iterator(); iterator.hasNext();) {
             Reservation reservation = iterator.next();
-            if (reservation.getTimespan().compareTo(currentTime) <= 0)
-            {
+            
+            if (reservation.getTimespan().compareTo(currentTime) <= 0) {
                 iterator.remove();
                 archiveReservation(reservation);
             }
         }
     }
+    
+    /**
+     * Sets the availability of this resource
+     * 
+     * @param availability The availability to set
+     */
+    public void setAvailability(WorkWeekConfiguration availability) {
+        this.availability = availability;
+    }
+
+    /****************************************************
+     * Memento                                          *
+	 ****************************************************/
 
     /**
      * Creates a memento for this resource.
@@ -344,15 +352,6 @@ public class Resource implements DetailedResource {
 
         this.previousReservations.clear();
         this.previousReservations.addAll(memento.getPreviousReservations());
-    }
-
-    /**
-     *
-     * @return The name of this resource
-     */
-    @Override
-    public String toString() {
-        return getName();
     }
     
     /**

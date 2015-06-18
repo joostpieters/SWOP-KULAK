@@ -9,8 +9,6 @@ import domain.Company;
  * @author Mathias, Frederic, Pieter-Jan
  */
 public class Auth {
-
-    
     
     private User user;
     private final Company company;
@@ -20,19 +18,19 @@ public class Auth {
      * 
      * @param company The company to use to retrieve the users
      */
-    public Auth(Company company){
+    public Auth(Company company) {
         this.company = company;
     }
     
     /**
-     * Attempts to login a user with the given username
+     * Attempts to login a user with the given user name
      * 
-     * @param username The username of the user to login
+     * @param username The user name of the user to login
      * @return True if and only if the login succeeded.
      */
-    public boolean login(String username){
-        for(User user : company.getUsers()){
-            if(user.getName().equalsIgnoreCase(username)){
+    public boolean login(String username) {
+        for(User user : company.getUsers()) {
+            if(user.getName().equalsIgnoreCase(username)) {
                 this.user = user;
                 return true;
             }
@@ -43,10 +41,9 @@ public class Auth {
     }
     
     /**
-     * 
      * @return The currently logged in user 
      */
-    public User getUser(){
+    public User getUser() {
         return user;
     }
     
@@ -55,15 +52,14 @@ public class Auth {
      * 
      * @return True if and only if a user is currently logged in.
      */
-    public boolean loggedIn(){
+    public boolean loggedIn() {
         return user != null;
     }
-    
         
     /**
      * Logs out the currently logged in user.
      */
-    public void logout(){
+    public void logout() {
         user = null;
     }
 }

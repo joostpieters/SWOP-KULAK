@@ -24,5 +24,4 @@ public interface DetailedResource {
      * @return the type of this resource
      */
     ResourceType getType();
-    
 }

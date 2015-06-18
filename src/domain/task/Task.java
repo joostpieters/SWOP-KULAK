@@ -28,6 +28,7 @@ import java.util.TreeSet;
  * @author Frederic, Mathias, Pieter-Jan
  */
 public class Task implements DetailedTask {
+	
     /**
      * A constant to indicate that a task requires no resources
      */
@@ -51,11 +52,10 @@ public class Task implements DetailedTask {
     private Planning planning;
 
 
-    /**
-     * **************************************
-     * Constructors	*
-     ***************************************
-     */
+    /****************************************
+     * Constructors	                        *
+     ****************************************/
+    
     /**
      * Initializes this task based on the given description, estimated duration,
      * acceptable deviation and prerequisite tasks.
@@ -89,7 +89,6 @@ public class Task implements DetailedTask {
             setPrerequisiteTasks(prereq);
         }
         
-        
         requiredResources = resourcesPlusDevs;
         
         initDuration(duration);
@@ -97,8 +96,6 @@ public class Task implements DetailedTask {
         Status initStatus = new Available();
         setStatus(initStatus);
         initStatus.update(this);
-        
-
         
         this.project.addTask(this);
     }
@@ -136,11 +133,9 @@ public class Task implements DetailedTask {
         this(description, duration, accDev, null, resources, project);
     }
 
-    /**
-     * **************************************
-     * Getters & Setters & Checkers	*
-     ***************************************
-     */
+    /****************************************
+     * Getters & Setters & Checkers	        *
+     ****************************************/
     
     /**
      * Generates an id for a new task.
@@ -316,6 +311,7 @@ public class Task implements DetailedTask {
             throw new IllegalArgumentException(
                     "This task can't have the given list of prerequisite tasks as its prerequisite tasks.");
         }
+        
         this.prerequisiteTasks = prereq;
     }
 
@@ -357,11 +353,13 @@ public class Task implements DetailedTask {
         if (resources == null) {
             return false;
         }
+        
         for (ResourceType type : resources.keySet()) {
             if (!type.canHaveAsCombination(resources)) {
                 return false;
             }
         }
+        
         return true;
     }
 
@@ -370,7 +368,6 @@ public class Task implements DetailedTask {
      */
     @Override
     public final Status getStatus() {
-        
         status.update(this);
         return this.status;
     }
@@ -385,11 +382,10 @@ public class Task implements DetailedTask {
         this.status = status;
     }
 
-    /**
-     * **************************************
-     * Other methods	*
-     ***************************************
-     */
+    /****************************************
+     * Other methods	                    *
+     ****************************************/
+    
     /**
      * Calculates the duration by which this task been delayed.
      *
@@ -429,7 +425,7 @@ public class Task implements DetailedTask {
     /**
      * Fail this task
      *
-     * @param timespan The timespan of this failed task
+     * @param timespan The time span of this failed task
      * @param currentTime The current time when this task is changed to finished
      *
      */
@@ -437,13 +433,13 @@ public class Task implements DetailedTask {
         if (timespan == null) {
             throw new IllegalArgumentException("The given timespan is not initialized.");
         }
-        
         if (timespan.endsAfter(currentTime)) {
             throw new IllegalArgumentException("The given timespan is after the current time.");
         }
         if (timespan.startsBefore(project.getCreationTime())) {
             throw new IllegalArgumentException("The given timespan is before the project creation time.");
         }
+        
         getStatus().fail(this, timespan);
         if(hasPlanning()){
             planning.clearFutureReservations(timespan.getEndTime());
@@ -453,7 +449,7 @@ public class Task implements DetailedTask {
     /**
      * Finish this task
      *
-     * @param timespan The timespan of this finished task
+     * @param timespan The time span of this finished task
      * @param currentTime The current time when this task is changed to finished
      *
      */
@@ -461,7 +457,6 @@ public class Task implements DetailedTask {
         if (timespan == null) {
             throw new IllegalArgumentException("The given timespan is not initialized.");
         }
-
         if (timespan.endsAfter(currentTime)) {
             throw new IllegalArgumentException("The given timespan is after the current time.");
         }
@@ -543,23 +538,24 @@ public class Task implements DetailedTask {
         if (getAlternativeTask() != null && getAlternativeTask().equals(task)) {
             return true;
         }
+        
         for (Task prereqTask : getPrerequisiteTasks()) {
             if (prereqTask.equals(task)) {
                 return true;
             }
-
             if (prereqTask.dependsOn(task)) {
                 return true;
             }
         }
+        
         return false;
     }
     
     /**
      * Returns the estimated span of a task based on the estimated duration.
      * 
-     * @param start The start of the timespan
-     * @return A new timespan that begins at the given start time and ends,
+     * @param start The start of the time span
+     * @return A new time span that begins at the given start time and ends,
      * based on the estimated duration of this task.
      */
     public Timespan getSpan(LocalDateTime start) {
@@ -600,8 +596,7 @@ public class Task implements DetailedTask {
      * alternative task of this task was fulfilled before the given time span.
      * 
      */
-    public boolean isFulfilledBefore(Task task, Timespan timeSpan)
-    {
+    public boolean isFulfilledBefore(Task task, Timespan timeSpan) {
     	return getStatus().isFulfilledBefore(task, timeSpan);
     }
     /**
@@ -692,10 +687,9 @@ public class Task implements DetailedTask {
     		throws ConflictException, IllegalArgumentException {
     	if(startTime.isBefore(clock.getTime()))
     		throw new IllegalArgumentException("The given planned start time is before the time of the clock");
-        Timespan span = new Timespan(startTime, estimatedDuration);
         
+    	Timespan span = new Timespan(startTime, estimatedDuration);
         PlanTaskCommand planCommand = new PlanTaskCommand(span, resources, this, clock);
-        
         planCommand.execute();
         return planCommand;
     }
@@ -714,6 +708,7 @@ public class Task implements DetailedTask {
     	SortedSet<LocalDateTime> result = new TreeSet<>();
     	Map<ResourceType, Integer> required = getRequiredResources();
     	LocalDateTime next = from;
+    	
     	if(next.getMinute() != 0)
     		next = next.withMinute(0).plusHours(1);
     	
@@ -722,11 +717,12 @@ public class Task implements DetailedTask {
 				throw new IllegalStateException("There are more resources required than there are available.");
 			}
     	}
+        
     	while(result.size() < n) {
-            
 			LocalDateTime end = getEstimatedDuration().getEndTimeFrom(next);
 			Timespan span = new Timespan(next, end);
 			boolean allAvailable = true;
+			
     		for(ResourceType type : required.keySet()) {
     			if(!resContainer.hasAvailableOfType(type, span, required.get(type))) {
     				allAvailable = false;
@@ -737,33 +733,10 @@ public class Task implements DetailedTask {
     		if(allAvailable)
     			result.add(next);
     		
-    		next = next.plusHours(1);
-                
+    		next = next.plusHours(1); 
     	}
     	
     	return result;
-    }
-
-    /**
-     * Creates a memento for this task.
-     *
-     * @return A memento which stores the the state of this task.
-     */
-    public Memento createMemento() {
-        return new Memento(timespan, alternativeTask, prerequisiteTasks, status, planning);
-    }
-
-    /**
-     * Sets the state of this task to the state stored inside the given memento.
-     *
-     * @param memento The memento containing the new state of this task.
-     */
-    public void setMemento(Memento memento) {
-        this.timespan = memento.getTimespan();
-        this.alternativeTask = memento.getAlternativeTask();
-        this.prerequisiteTasks = memento.getPrerequisiteTasks();
-        this.status = memento.getStatus();
-        this.planning = memento.getPlanning();
     }
 
     /**
@@ -856,6 +829,32 @@ public class Task implements DetailedTask {
          */
     public boolean isExecuting() {
         return getStatus() instanceof Executing;
+    }
+	
+	/****************************************
+	 * Memento                              * 
+	 ****************************************/
+
+    /**
+     * Creates a memento for this task.
+     *
+     * @return A memento which stores the the state of this task.
+     */
+    public Memento createMemento() {
+        return new Memento(timespan, alternativeTask, prerequisiteTasks, status, planning);
+    }
+
+    /**
+     * Sets the state of this task to the state stored inside the given memento.
+     *
+     * @param memento The memento containing the new state of this task.
+     */
+    public void setMemento(Memento memento) {
+        this.timespan = memento.getTimespan();
+        this.alternativeTask = memento.getAlternativeTask();
+        this.prerequisiteTasks = memento.getPrerequisiteTasks();
+        this.status = memento.getStatus();
+        this.planning = memento.getPlanning();
     }
 	
     /**

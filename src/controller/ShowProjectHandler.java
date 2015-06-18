@@ -51,10 +51,11 @@ public class ShowProjectHandler {
     public void selectProject(int projectId) {
     	currentProject = company.getProject(projectId);
     }
+    
     /**
      * @return The current project of this handler.
      */  
-    public DetailedProject  getProject(){
+    public DetailedProject  getProject() {
         return currentProject;
     }
     
@@ -66,10 +67,11 @@ public class ShowProjectHandler {
      * @throws IllegalStateException if the current project is null.
      * @see #getProject()
      */
-    public DetailedTask getTask(int taskId) throws IllegalStateException{
-        if(currentProject == null){
+    public DetailedTask getTask(int taskId) throws IllegalStateException {
+        if(currentProject == null) {
             throw new IllegalStateException("No project is currently selected in this handler.");
         }
+        
         return currentProject.getTask(taskId);
     }
     
@@ -77,7 +79,7 @@ public class ShowProjectHandler {
      * 
      * @return The clock used by this handler.
      */
-    public Clock getClock(){
+    public Clock getClock() {
         return clock;
     }
 }

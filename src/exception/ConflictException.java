@@ -45,5 +45,4 @@ public class ConflictException extends RuntimeException {
 	public Set<Task> getConflictingTasks() {
 		return conflictingTasks;
 	}
-
 }

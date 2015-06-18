@@ -12,11 +12,13 @@ import exception.ConflictException;
  * @author Mathias, Frederic, Pieter-Jan
  */
 public class CreateReservationCommand implements ICommand {
+	
     private final Task task;
     private final Resource resource;
     private Resource.Memento resourceMemento;
     private final Timespan timespan;
     private Reservation reservation;
+    
     /**
      * Initializes a new reservation command based on the given time span, resource and task.
      * 
@@ -24,7 +26,7 @@ public class CreateReservationCommand implements ICommand {
      * @param resource The resource of the reservation
      * @param task The task of the reservation
      */
-    public CreateReservationCommand(Timespan timespan, Resource resource, Task task){
+    public CreateReservationCommand(Timespan timespan, Resource resource, Task task) {
         this.task = task;
         this.resource = resource;
         this.timespan = timespan;
@@ -37,14 +39,13 @@ public class CreateReservationCommand implements ICommand {
      * with another reservation of this resource
      */
     @Override
-    public void execute() throws ConflictException{
-    	
+    public void execute() throws ConflictException {
     	resourceMemento = resource.createMemento();
     	reservation = resource.makeReservation(task, timespan);
     }
     
     @Override
-    public void revert(){
+    public void revert() {
         if(reservation != null && resourceMemento != null)
             resource.setMemento(resourceMemento);
     }

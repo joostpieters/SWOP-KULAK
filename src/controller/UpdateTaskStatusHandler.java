@@ -25,10 +25,10 @@ import java.util.logging.Logger;
 public class UpdateTaskStatusHandler extends Handler {
 
     private final ProjectContainer pc;
+    private final Clock clock;
 
     private Task currentTask;
     private Project currentProject;
-    private final Clock clock;
 
     /**
      * Initialize a new create task handler with the given projectContainer.
@@ -51,7 +51,6 @@ public class UpdateTaskStatusHandler extends Handler {
      * @return All available tasks in the projectContainer of this handler.
      */
     public Map<DetailedTask, DetailedProject> getAvailableTasks() {
-
         return new HashMap<>(pc.getAllAvailableTasks());
     }
 
@@ -81,6 +80,7 @@ public class UpdateTaskStatusHandler extends Handler {
         if (currentTask == null || currentProject == null) {
             throw new IllegalStateException("No task currently selected.");
         }
+        
         try {
             if (status.equalsIgnoreCase("finished")) {
                 currentTask.finish(new Timespan(startTime, endTime), clock.getTime());
@@ -98,18 +98,17 @@ public class UpdateTaskStatusHandler extends Handler {
             throw new RuntimeException("An unexpected error occured, please contact the system admin.");
 
         }
-
     }
     
     /**
      * Execute the currently selected task
      * @throws RuntimeException something went wrong when executing the task
      */
-    public void executeCurrentTask() throws RuntimeException {
-        
+    public void executeCurrentTask() throws RuntimeException {        
         if (currentTask == null || currentProject == null) {
             throw new IllegalStateException("No task currently selected.");
         }
+        
         try {
             if (((Resource) auth.getUser()).getReservation(currentTask) != null) {
                 currentTask.execute(clock);
@@ -120,5 +119,4 @@ public class UpdateTaskStatusHandler extends Handler {
             throw new NoAccessException("Sorry you don't have the right role to execute a task.");
         }
     }
-
 }

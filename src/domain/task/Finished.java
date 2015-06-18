@@ -14,8 +14,7 @@ public class Finished extends Status {
      * Initializes this finished status.
      *
      */
-    public Finished() {
-    }
+    public Finished() { }
 
     /**
      * The status is finished, so there's nothing to update
@@ -23,8 +22,7 @@ public class Finished extends Status {
      * @param task The task to update the status of
      */
     @Override
-    public void update(Task task) {
-    }
+    public void update(Task task) { }
 
     /**
      * Checks whether this task has been fulfilled.
@@ -77,17 +75,15 @@ public class Finished extends Status {
      */
     @Override
     public Duration getTimeSpent(Task task) {
-
         Duration temp, max = Duration.ZERO;
+        
         for (Task t : task.getPrerequisiteTasks()) {
             temp = t.getTimeSpent();
             if (temp.compareTo(max) > 0) {
                 max = temp;
             }
         }
-        temp = task.getTimeSpan().getDuration().add(max);
-
-        return temp;
-
+        
+        return task.getTimeSpan().getDuration().add(max);
     }
 }

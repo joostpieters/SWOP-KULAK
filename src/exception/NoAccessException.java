@@ -9,14 +9,12 @@ public class NoAccessException extends RuntimeException{
     
     private static final long serialVersionUID = -6476237094197413847L;
 
-    
     /**
-     * @see RuntimeException
      * @param message The message to display 
+     * @see RuntimeException
      * @see IllegalArgumentException
      */
     public NoAccessException(String message) {
         super(message);
-    }
-        
+    }  
 }

@@ -16,36 +16,34 @@ public class Company {
     private final List<ResourceType> resourceTypes;
     private final List<BranchOffice> offices;
     
-    
     /**
      * Initializes this new company
      */
-    public Company(){
+    public Company() {
         resourceTypes = new ArrayList<>();
         offices = new ArrayList<>();
     }
     
     /**
-     * 
      * @return The resource types stored in this company
      */
-    public List<ResourceType> getResourceTypes(){
+    public List<ResourceType> getResourceTypes() {
         return new ArrayList<>(resourceTypes);
     }
     
     /**
      * Adds the given resource type to this company
+     * 
      * @param type The resource type to add
      */
-    public void addResourceType(ResourceType type){
+    public void addResourceType(ResourceType type) {
         resourceTypes.add(type);
     }
     
     /**
-     * 
      * @return The users from all bracnh offices in this company
      */
-    public List<User> getUsers(){
+    public List<User> getUsers() {
         List<User> users = new ArrayList<>();
         
         for(BranchOffice office : offices){
@@ -59,15 +57,16 @@ public class Company {
     /**
      * @return The users stored in this company
      */
-    public List<BranchOffice> getOffices(){
+    public List<BranchOffice> getOffices() {
         return new ArrayList<>(offices);
     }
     
     /**
      * Adds the given user to this company
+     * 
      * @param office The office to add
      */
-    public void addOffice(BranchOffice office){
+    public void addOffice(BranchOffice office) {
         offices.add(office);
     }
     
@@ -76,7 +75,7 @@ public class Company {
     /**
      * @return all the projects from all branch offices in this company
      */
-    public List<Project> getProjects(){
+    public List<Project> getProjects() {
         List<Project> projects = new ArrayList<>();
         
         for(BranchOffice office : offices){

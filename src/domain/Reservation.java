@@ -17,14 +17,14 @@ public class Reservation {
 	private final Timespan timespan;
 	
 	/**
-         * Initializes a new reservation for the given task over the given timespan.
-         * 
-         * @param task The task to make the reservation for
-         * @param period The period over which to make the reservation
-         */
+     * Initializes a new reservation for the given task over the given timespan.
+     * 
+     * @param task The task to make the reservation for
+     * @param period The period over which to make the reservation
+     */
 	public Reservation(Task task, Timespan period) {
 		this.task = task;
-		timespan = period;
+		this.timespan = period;
 	}
 
 	/****************************************************
@@ -45,18 +45,16 @@ public class Reservation {
 		return timespan;
 	}
 	
-        /**
-         * 
-         * @return The starttime of this reservation
-         */
+    /**
+     * @return The starttime of this reservation
+     */
 	public LocalDateTime getStartTime() {
 		return timespan.getStartTime();
 	}
 	
-        /**
-         * 
-         * @return The end time of this reservation 
-         */
+    /**
+     * @return The end time of this reservation 
+     */
 	public LocalDateTime getEndTime() {
 		return timespan.getEndTime();
 	}
@@ -74,9 +72,7 @@ public class Reservation {
 	 * @see		Timespan#compareTo(Timespan)
 	 */
 	public static Comparator<Reservation> timespanComparator() {
-            
             return (Reservation o1, Reservation o2) -> o1.getTimespan().compareTo(o2.getTimespan());
-
 	}
 	
 	/****************************************************
@@ -94,35 +90,35 @@ public class Reservation {
 		return getTimespan().overlapsWith(span);
 	}
 	
-        /**
-         * Checks whether this reservation conflicts with another reservation
-         * 
-         * @param reservation The reservation to compare with
-         * @return True if and only if the timespan of this reservation
-         * overlaps with the timespan of the given reservation.
-         */
+	/**
+	 * Checks whether this reservation conflicts with another reservation
+	 * 
+	 * @param reservation The reservation to compare with
+	 * @return True if and only if the time span of this reservation
+	 * overlaps with the time span of the given reservation.
+	 */
 	public boolean conflictsWith(Reservation reservation) {
 		return conflictsWith(reservation.getTimespan());
 	}
-	
-        /**
-         * Checks whether this reservation expires before the given time
-         * 
-         * @param time The time to check
-         * @return True if and only if the timespan of this reservation end
-         * strictly before the given time.
-         */
+
+    /**
+     * Checks whether this reservation expires before the given time
+     * 
+     * @param time The time to check
+     * @return True if and only if the timespan of this reservation end
+     * strictly before the given time.
+     */
 	public boolean expiredBefore(LocalDateTime time) {
 		return getEndTime().isBefore(time);
 	}
         
-        /**
-         * Checks whether this reservation starts after the given time
-         * 
-         * @param time The time to check
-         * @return True if and only if the timespan of this reservation starts
-         * strictly after the given time.
-         */
+    /**
+     * Checks whether this reservation starts after the given time
+     * 
+     * @param time The time to check
+     * @return True if and only if the timespan of this reservation starts
+     * strictly after the given time.
+     */
 	public boolean startsAfter(LocalDateTime time) {
 		return getTimespan().startsAfter(time);
 	}

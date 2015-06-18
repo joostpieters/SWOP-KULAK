@@ -13,9 +13,7 @@ public class Unavailable extends Status {
     /**
      * Initializes this unavailable status.
      */
-    public Unavailable() {
-       
-    }
+    public Unavailable() { }
 
     /**
      * Updates the status of this task to AVAILABLE if all the prerequisite
@@ -26,6 +24,7 @@ public class Unavailable extends Status {
     @Override
     public void update(Task task) {
         boolean available = true;
+        
         for (Task t : task.getPrerequisiteTasks()) {
             if (!t.isFulfilled()) {
                 available = false;
@@ -48,6 +47,7 @@ public class Unavailable extends Status {
                 return false;
             }
         }
+        
         return true;
     }
 
@@ -62,16 +62,18 @@ public class Unavailable extends Status {
     @Override
     Duration estimatedWorkTimeNeeded(Task task) {
         Duration retDuration = task.getEstimatedDuration();
+        
         for (Task prereq : task.getPrerequisiteTasks()) {
             retDuration = retDuration.add(prereq.estimatedWorkTimeNeeded());
             if (prereq.hasAlternativeTask()) {
                 retDuration = retDuration.add(prereq.getAlternativeTask().getEstimatedDuration());
             }
         }
+        
         return retDuration;
     }
     
-     /**
+    /**
      * Checks whether this task was fulfilled before the given time span.
      *
      * @param task The task to check.
@@ -94,7 +96,7 @@ public class Unavailable extends Status {
         return false;
     }
     
-      /**
+    /**
      * Transition to the failed state
      * 
      * @param timespan The timespan of this failed task
@@ -102,14 +104,13 @@ public class Unavailable extends Status {
      * 
      * @throws IllegalStateException This state can't transition to finished.
      * @throws IllegalArgumentException The given task can't have the given time span as its time span 
-    */
+     */
     @Override
-    void fail(Task task, Timespan timespan)
-    {
+    void fail(Task task, Timespan timespan) {
         if(!canHaveAsTimeSpan(task, timespan))
             throw new IllegalArgumentException("The given task can't have the given time span as its time span");
-        else
-            task.setTimeSpan(timespan);
+        
+        task.setTimeSpan(timespan);
         task.setStatus(new Failed());
     }
 }
