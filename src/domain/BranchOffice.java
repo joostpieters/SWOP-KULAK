@@ -4,7 +4,6 @@ import domain.dto.DetailedBranchOffice;
 import domain.task.Task;
 import domain.user.User;
 import exception.ObjectNotFoundException;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -213,8 +212,8 @@ public class BranchOffice implements DetailedBranchOffice {
     public List<Task> getAssignedUnplannedTasks() {
     	List<Task> assignedUnplannedTasks = new ArrayList<>();
     	
-    	for(Task task : projectContainer.getUnplannedTasks())
-    		if(taskIsAssigned(task))
+    	for(Task task : getAssignedTasks())
+    		if(task.isUnplanned())
     			assignedUnplannedTasks.add(task);
     	
     	return assignedUnplannedTasks;
@@ -241,7 +240,7 @@ public class BranchOffice implements DetailedBranchOffice {
         List<Task> tasks = new ArrayList<>();
         
         for(Task task : delegatedTasks)
-            if(!task.isUnplanned())
+            if(task.isUnplanned())
                 tasks.add(task);
         
         return tasks;

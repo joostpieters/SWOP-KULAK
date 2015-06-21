@@ -85,8 +85,13 @@ public class PlanTaskHandler extends Handler {
      * @throws ConflictException if there were not enough resources available.
      */
     public List<? extends DetailedResource> getRequiredResources(int pId, int tId, LocalDateTime start) throws ConflictException {
-        Task currentTask = pc.getProject(pId).getTask(tId);
-        return rc.meetRequirements(currentTask, currentTask.getSpan(start), new ArrayList<>());
+        for(Task task : office.getUnplannedTasks()){
+            if(task.getId() == tId){
+                 return rc.meetRequirements(task, task.getSpan(start), new ArrayList<>());
+            }
+        }
+        return null;
+       
     }
 
 
@@ -101,7 +106,13 @@ public class PlanTaskHandler extends Handler {
      * could possible be started
      */
     public Set<LocalDateTime> getPossibleStartTimesCurrentTask(int pId, int tId) {
-        return office.getProject(pId).getTask(tId).nextAvailableStartingTimes(rc, clock.getTime(), 3);
+        for(Task task : office.getUnplannedTasks()){
+            if(task.getId() == tId){
+                return task.nextAvailableStartingTimes(rc, clock.getTime(), 3);
+            }
+        }
+        return null;
+        
     }
 
     /**
@@ -122,9 +133,14 @@ public class PlanTaskHandler extends Handler {
         for(int i : resources){
             res.add(rc.getResource(i));
         }
-        Task task = office.getProject(pId).getTask(tId);
         
-        simulatorCommand.add(task.plan(startTime, res, clock));
+        for(Task task : office.getUnplannedTasks()){
+            if(task.getId() == tId){
+                simulatorCommand.add(task.plan(startTime, res, clock));
+            }
+        }
+        
+        
     }
 
     /**

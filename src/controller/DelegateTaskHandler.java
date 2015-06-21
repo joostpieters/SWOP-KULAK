@@ -59,7 +59,8 @@ public class DelegateTaskHandler extends Handler {
      * @param officeId The id of the office to delegate to
      */
     public void delegateTask(int pId, int tId, int officeId) {
-        Task task = office.getProjectContainer().getProject(pId).getTask(tId);
-        office.delegateTaskTo(task, company.getOffices().get(officeId));
+        for(Task task : office.getUnplannedTasks())
+    		if(task.getId() == tId)
+    			office.delegateTaskTo(task, company.getOffices().get(officeId));
     }
 }
