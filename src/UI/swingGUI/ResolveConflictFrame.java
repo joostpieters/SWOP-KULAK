@@ -188,7 +188,9 @@ public class ResolveConflictFrame extends javax.swing.JFrame {
      * @param evt
      */
     private void MoveCurrentTaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MoveCurrentTaskButtonActionPerformed
-       originator.setVisible(true);
+       CardLayout card = (CardLayout) originator.getMainPanel().getLayout();
+        card.show(originator.getMainPanel(), "selectTime");
+        originator.setVisible(true);
        this.dispose();
     }//GEN-LAST:event_MoveCurrentTaskButtonActionPerformed
 

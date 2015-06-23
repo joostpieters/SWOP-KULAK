@@ -791,7 +791,7 @@ public class Task implements DetailedTask {
 	 */
 	public boolean isDelegated()
 	{
-		return this.delegatedBranchOffice != null;
+           return this.delegatedBranchOffice != null;
 	}
 	
 	/**

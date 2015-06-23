@@ -356,7 +356,7 @@ public class PlanTaskFrame extends javax.swing.JFrame {
             }
             selectedResources = new ArrayList<>();
             // init resource panel
-            
+            resourcePanel.removeAll();
             for (DetailedResource resource : handler.getRequiredResources(selectedProjectId, selectedTaskId, start)) {
                 
                 JComboBox<DetailedResource> comboBox = new JComboBox<>();

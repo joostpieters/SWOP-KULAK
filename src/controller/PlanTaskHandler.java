@@ -71,7 +71,7 @@ public class PlanTaskHandler extends Handler {
      * @return All unplanned tasks in the projectContainer of this handler.
      */
     public List<DetailedTask> getUnplannedTasks() {
-        return new ArrayList<>(office.getUnplannedTasks());
+        return new ArrayList<>(office.getAssignedUnplannedTasks());
     }
 
     /**
@@ -85,7 +85,7 @@ public class PlanTaskHandler extends Handler {
      * @throws ConflictException if there were not enough resources available.
      */
     public List<? extends DetailedResource> getRequiredResources(int pId, int tId, LocalDateTime start) throws ConflictException {
-        for(Task task : office.getUnplannedTasks()){
+        for(Task task : office.getAssignedTasks()){
             if(task.getId() == tId){
                  return rc.meetRequirements(task, task.getSpan(start), new ArrayList<>());
             }
@@ -106,7 +106,7 @@ public class PlanTaskHandler extends Handler {
      * could possible be started
      */
     public Set<LocalDateTime> getPossibleStartTimesCurrentTask(int pId, int tId) {
-        for(Task task : office.getUnplannedTasks()){
+        for(Task task : office.getAssignedTasks()){
             if(task.getId() == tId){
                 return task.nextAvailableStartingTimes(rc, clock.getTime(), 3);
             }
@@ -134,7 +134,7 @@ public class PlanTaskHandler extends Handler {
             res.add(rc.getResource(i));
         }
         
-        for(Task task : office.getUnplannedTasks()){
+        for(Task task : office.getAssignedTasks()){
             if(task.getId() == tId){
                 simulatorCommand.add(task.plan(startTime, res, clock));
             }

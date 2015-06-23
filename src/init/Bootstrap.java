@@ -54,10 +54,10 @@ public class Bootstrap {
         Acl acl = initAcl();
         
         HandlerFactory factory = new HandlerFactory(company, auth, acl, clock);
-        //display uncaught exceptions
-        Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
-            JOptionPane.showMessageDialog(null, e.getMessage(), null, JOptionPane.WARNING_MESSAGE);
-        });
+//        //display uncaught exceptions
+//        Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
+//            JOptionPane.showMessageDialog(null, e.getMessage(), null, JOptionPane.WARNING_MESSAGE);
+//        });
        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
